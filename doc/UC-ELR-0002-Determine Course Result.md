@@ -29,7 +29,7 @@ The score was calculated for the course and the approval status was determined
 
 ##### 1. Not all the related questions are submitted (step 6 of basic flow)
    1. The system verifies that not all the related questions were already submitted (“IsSubmitted” field in “Question Response” object is set to “false”)
-   2. The system calls, for each question, the Use Case [Determine Question Result]
+   2. The system calls, for each question, the Use Case [Determine Question Result](?name=UC-ELR-0001)
    5. For each correct answer, the system updates the “Score Value” field in “Course Response” by adding the question “Value”   
    4. Back to step 8 of basic flow
 
