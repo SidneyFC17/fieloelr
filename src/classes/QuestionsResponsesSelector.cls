@@ -1,0 +1,44 @@
+public with sharing class QuestionsResponsesSelector extends SObjectSelector {
+
+    public List<Schema.SObjectField> getSObjectFieldList(){
+        return new List<Schema.SObjectField> {
+                QuestionResponse__c.Id,
+                QuestionResponse__c.Name,
+                // QuestionResponse__c.ModuleResponse__c,
+                QuestionResponse__c.IsCorrect__c,
+                QuestionResponse__c.IsSubmitted__c,
+                QuestionResponse__c.NumberOfAttempts__c,
+                QuestionResponse__c.TextValue__c,
+                QuestionResponse__c.Question__c
+            };
+    }
+
+    public QuestionsResponsesSelector(Set<String> fields){
+        super(fields);
+    }
+
+    public QuestionsResponsesSelector(){
+        super();
+    }
+
+    public Schema.SObjectType getSObjectType(){
+        return QuestionResponse__c.sObjectType;
+    }
+
+    public List<QuestionResponse__c> selectById(Set<Id> questionResponseIds){
+        return (List<QuestionResponse__c>) selectSObjectsById(questionResponseIds);
+    }
+
+    public List<QuestionResponse__c> selectByIdWithAnswersResponses(Set<Id> questionResponseIds) {
+    	return (List<QuestionResponse__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', (SELECT Id, Answer__c, Name FROM AnswersResponses__r) ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :questionResponseIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+}
