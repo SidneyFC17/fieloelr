@@ -4,7 +4,7 @@ public with sharing class QuestionsResponsesSelector extends SObjectSelector {
         return new List<Schema.SObjectField> {
                 QuestionResponse__c.Id,
                 QuestionResponse__c.Name,
-                // QuestionResponse__c.ModuleResponse__c,
+                QuestionResponse__c.ModuleResponse__c,
                 QuestionResponse__c.IsCorrect__c,
                 QuestionResponse__c.IsSubmitted__c,
                 QuestionResponse__c.NumberOfAttempts__c,
