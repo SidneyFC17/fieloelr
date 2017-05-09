@@ -1,4 +1,4 @@
-public with sharing class QuestionsResponsesSelector extends SObjectSelector {
+public with sharing class QuestionResponsesSelector extends SObjectSelector {
 
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
@@ -13,11 +13,11 @@ public with sharing class QuestionsResponsesSelector extends SObjectSelector {
             };
     }
 
-    public QuestionsResponsesSelector(Set<String> fields){
+    public QuestionResponsesSelector(Set<String> fields){
         super(fields);
     }
 
-    public QuestionsResponsesSelector(){
+    public QuestionResponsesSelector(){
         super();
     }
 
@@ -32,7 +32,7 @@ public with sharing class QuestionsResponsesSelector extends SObjectSelector {
     public List<QuestionResponse__c> selectByIdWithAnswersResponses(Set<Id> questionResponseIds) {
     	return (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, Answer__c, Name FROM AnswersResponses__r) ' +
+                  ', (SELECT Id, Answer__c, Name FROM AnswerResponses__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionResponseIds ' +
                   'ORDER BY {2}',

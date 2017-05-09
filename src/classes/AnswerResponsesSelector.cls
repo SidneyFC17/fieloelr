@@ -1,4 +1,4 @@
-public with sharing class AnswersResponsesSelector extends SObjectSelector {
+public with sharing class AnswerResponsesSelector extends SObjectSelector {
 
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
@@ -10,11 +10,11 @@ public with sharing class AnswersResponsesSelector extends SObjectSelector {
             };
     }
 
-    public AnswersResponsesSelector(Set<String> fields){
+    public AnswerResponsesSelector(Set<String> fields){
         super(fields);
     }
 
-    public AnswersResponsesSelector(){
+    public AnswerResponsesSelector(){
         super();
     }
 
