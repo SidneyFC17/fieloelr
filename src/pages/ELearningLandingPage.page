@@ -1,0 +1,31 @@
+<apex:page tabStyle="ELearning__tab" docType="html-5.0" sidebar="false" controller="ELearningLandingController">
+	<!--  action="{!verifyProgram}" -->
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+	<link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'lightning/styles/salesforce-lightning-design-system-vf.min.css')}"></link>
+	<link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'fielo/styles/core.css')}"></link>
+	<link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'styles/core.css')}"></link>
+	<style type="text/css">
+	.slds-tabs--default .slds-tabs--default__content .slds-table { border-top: none; }
+	</style>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+</head>
+<body>
+	<div class="fielosf fielosf-elearning-landing">
+	<!--  HEADER  -->
+	<c:BackendHeaderRecord firstHeading="E-Learning"
+      secondHeading=""
+      icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#metrics"
+      helpUrl="http://documentation.fielo.com/docs/incentives"
+      parameters="{ 'FieloPLT__Program__c' : '{! currentProgram.Id}' } "      
+      record=""
+      buttons="{!landingSettings.FieloPLT__Buttons__c}"
+      tools="{!landingSettings.FieloPLT__Tools__c}"
+      truncate="true">
+    	<c:BackEndProgramSelector/>
+    </c:BackendHeaderRecord>
+    </div>
+    <c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloTabs','FieloPaginator','FieloRecentRecords','FieloFilter'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')}"/>
+</body>
+</html>
+</apex:page>

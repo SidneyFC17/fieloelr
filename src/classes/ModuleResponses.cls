@@ -65,31 +65,31 @@ public class ModuleResponses extends SObjectDomain {
         List<QuestionResponse__c> unsubmitedQuestionResponses = new List<QuestionResponse__c>();
         // Checking for unsubmitted questions
         for (ModuleResponse__c moduleResponse: existingModuleResponseMap.values()) {
-            if (moduleResponse.UnsubmittedQuestions__c > 0) {
+            // if (moduleResponse.UnsubmittedQuestions__c > 0) {
                 for (QuestionResponse__c questionResponse: moduleResponse.QuestionResponses__r) {
-                    if ( questionResponse.IsSubmitted__c ) {
+                    if ( !questionResponse.IsSubmitted__c ) {
                         unsubmitedQuestionResponses.add(questionResponse);
                     }
                 }
-            }
+            // }
         }
 
         if (!unsubmitedQuestionResponses.isEmpty()) {
             QuestionResponses.disableSubmit = true;
             QuestionResponses.setIsCorrect(unsubmitedQuestionResponses);
 
-            SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
-            for(QuestionResponse__c moduleResponse : unsubmitedQuestionResponses){
-                moduleResponse.IsSubmitted__c = true;
-                uow.registerDirty(moduleResponse);
+             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
+            for(QuestionResponse__c questionResponse : unsubmitedQuestionResponses){
+                questionResponse.IsSubmitted__c = true;
+                uow.registerDirty(questionResponse);
             }
             uow.commitWork();
             QuestionResponses.disableSubmit = false;
         }
 
         for (ModuleResponse__c moduleResponse: (List<ModuleResponse__c>)records) {
+            moduleResponse.GradeValue__c = 0.0;
             questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
-            penaltyMode = modulesMap.get(moduleResponse.Module__c).PenaltyMode__c;
 
             for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
                 moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;

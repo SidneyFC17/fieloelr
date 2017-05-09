@@ -8,5 +8,13 @@
 		<members>*</members>
 		<name>ApexTrigger</name>
 	</types>
+	<types>
+		<members>ELearningLandingPage</members>
+		<name>ApexPage</name>
+	</types>
+	<types>
+		<members>BackEndProgramSelector</members>
+		<name>ApexComponent</name>
+	</types>
 	<version>36.0</version>
 </Package>

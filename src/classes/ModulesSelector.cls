@@ -11,6 +11,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
                 Module__c.IsActive__c,
                 Module__c.QuestionPool__c,
                 Module__c.Order__c,
+                Module__c.PenaltyMode__c,
                 Module__c.ShuffleQuestions__c,
                 Module__c.TotalValue__c
             };
@@ -41,8 +42,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
                     'Order__c, ' +
                     'PenaltyPerAttempt__c, ' +
                     'Type__c, ' +
-                    'Weight__c, ' +
-                    'PenaltyMode__c,' +
+                    'CorrectWeight__c, ' +
                     'Name FROM Questions__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :moduleIds ' +
