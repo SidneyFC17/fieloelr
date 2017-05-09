@@ -42,6 +42,20 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
+    public List<Question__c> selectByIdWithCorrectAnswersAndPenaltyMode(Set<Id> questionIds) {
+        return (List<Question__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', Module__r.PenaltyMode__c' +
+                  ', (SELECT Id, Name FROM Answers__r WHERE IsCorrect__c = true) ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :questionIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
     public List<Question__c> selectByQuestionResponseIdWithCorrectAnswers(Set<Id> questionResponseIds) {
     	return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +

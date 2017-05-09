@@ -60,38 +60,45 @@ public class ModuleResponses extends SObjectDomain {
         Double penaltyPerQuestion;
         Integer isCorrectInt;
         Integer questionRespAttempts;
+        String penaltyMode;
+
+        List<QuestionResponse__c> unsubmitedQuestionResponses = new List<QuestionResponse__c>();
+        // Checking for unsubmitted questions
+        for (ModuleResponse__c moduleResponse: existingModuleResponseMap.values()) {
+            if (moduleResponse.UnsubmittedQuestions__c > 0) {
+                for (QuestionResponse__c questionResponse: moduleResponse.QuestionResponses__r) {
+                    if ( questionResponse.IsSubmitted__c ) {
+                        unsubmitedQuestionResponses.add(questionResponse);
+                    }
+                }
+            }
+        }
+
+        if (!unsubmitedQuestionResponses.isEmpty()) {
+            QuestionResponses.disableSubmit = true;
+            QuestionResponses.setIsCorrect(unsubmitedQuestionResponses);
+
+            SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
+            for(QuestionResponse__c moduleResponse : unsubmitedQuestionResponses){
+                moduleResponse.IsSubmitted__c = true;
+                uow.registerDirty(moduleResponse);
+            }
+            uow.commitWork();
+            QuestionResponses.disableSubmit = false;
+        }
 
         for (ModuleResponse__c moduleResponse: (List<ModuleResponse__c>)records) {
-            moduleResponse.GradeValue__c = 0.0;
-            moduleResponse.TotalValue__c = 0.0;
             questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
+            penaltyMode = modulesMap.get(moduleResponse.Module__c).PenaltyMode__c;
 
             for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
-                incorrectWeight = questionMap.get(questionResponse.Question__c).IncorrectWeight__c;
-                questionWeight = questionMap.get(questionResponse.Question__c).CorrectWeight__c;
-                penaltyPerQuestion = questionMap.get(questionResponse.Question__c).PenaltyPerAttempt__c;
-                isCorrectInt = questionResponse.IsCorrect__c ? 1 : 0;
-                questionRespAttempts = Integer.valueOf(questionResponse.NumberOfAttempts__c);
-
-                if (incorrectWeight != null && penaltyPerQuestion != null) {
-                    moduleResponse.addError(Label.PenaltyAndIncorrectWeightSet);
-                } else {
-                    moduleResponse.GradeValue__c +=
-                        penaltyPerQuestion != null ?
-                            isCorrectInt * (questionWeight * Math.pow((1 - penaltyPerQuestion / 100),questionRespAttempts-1)) :
-                            (isCorrectInt * questionWeight + (isCorrectInt - 1) * incorrectWeight);
-                }
-
-                moduleResponse.TotalValue__c += questionWeight;
+                moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
             }
             moduleResponse.GradePercent__c =
-                (moduleResponse.GradeValue__c / moduleResponse.TotalValue__c) * 100;
-
+                (moduleResponse.GradeValue__c / modulesMap.get(moduleResponse.Module__c).TotalValue__c) * 100;
             moduleResponse.IsApproved__c =
-                moduleResponse.GradePercent__c >=
-                    (modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c!=null ?
-                        modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c :
-                        0.0);
+                moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
+
         }
     }
 }

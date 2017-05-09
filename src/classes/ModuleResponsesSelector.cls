@@ -10,9 +10,9 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                 ModuleResponse__c.GradeValue__c,
                 ModuleResponse__c.IsApproved__c,
                 ModuleResponse__c.IsSubmitted__c,
+                ModuleResponse__c.UnsubmittedQuestions__c,
                 ModuleResponse__c.Module__c,
-                ModuleResponse__c.NumberOfAttempts__c,
-                ModuleResponse__c.TotalValue__c
+                ModuleResponse__c.NumberOfAttempts__c
             };
     }
 

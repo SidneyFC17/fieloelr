@@ -1,6 +1,6 @@
 public class QuestionResponses extends SObjectDomain {
 	public static Set<Id> processedIds = new Set<Id>();
-    public static Boolean validateAdminFields = true;
+    public static Boolean disableSubmit = false;
 
 	public QuestionResponses(List<QuestionResponse__c> records) {
         super(records);
@@ -25,7 +25,7 @@ public class QuestionResponses extends SObjectDomain {
             }
         }
 
-        if(!submittedRecords.isEmpty()){
+        if(!submittedRecords.isEmpty() && !disableSubmit){
             setIsCorrect(submittedRecords);
         }
     }
@@ -37,13 +37,14 @@ public class QuestionResponses extends SObjectDomain {
             questionIds.add(questionResponse.Question__c);
         }
         Map<Id,QuestionResponse__c> existingQuestionResponses = new Map<Id,QuestionResponse__c>(new QuestionResponsesSelector().selectByIdWithAnswersResponses(questionResponseIds));
-        Map<Id,Question__c> questionsMap = new Map<Id,Question__c>(new QuestionsSelector().selectByIdWithCorrectAnswers(questionIds));
+        Map<Id,Question__c> questionsMap = new Map<Id,Question__c>(new QuestionsSelector().selectByIdWithCorrectAnswersAndPenaltyMode(questionIds));
 
         Double incorrectWeight;
         Double questionWeight;
         Double penaltyPerQuestion;
         Integer isCorrectInt;
         Integer questionRespAttempts;
+        String penaltyMode;
 
         for (QuestionResponse__c questionResponse: records) {
             questionResponse.IsCorrect__c = true;
@@ -81,11 +82,14 @@ public class QuestionResponses extends SObjectDomain {
             penaltyPerQuestion = questionsMap.get(questionResponse.Question__c).PenaltyPerAttempt__c;
             isCorrectInt = questionResponse.IsCorrect__c ? 1 : 0;
             questionRespAttempts = Integer.valueOf(questionResponse.NumberOfAttempts__c);
+            penaltyMode = questionsMap.get(questionResponse.Question__c).Module__r.PenaltyMode__c;
 
             questionResponse.PartialGradeValue__c =
-                penaltyPerQuestion != null ?
-                    isCorrectInt * (questionWeight * Math.pow((1 - penaltyPerQuestion / 100),questionRespAttempts-1)) :
-                    (isCorrectInt * questionWeight + (isCorrectInt - 1) * incorrectWeight);
+                penaltyMode == 'Percent Decrease' ?
+                        isCorrectInt * (questionWeight * Math.pow((1 - penaltyPerQuestion / 100),questionRespAttempts-1)) :
+                        penaltyMode == 'Negative Weight' ?
+                            (isCorrectInt * questionWeight + (isCorrectInt - 1) * incorrectWeight) :
+                            isCorrectInt * questionWeight;
         }
     }
 }
