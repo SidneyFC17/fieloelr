@@ -1,4 +1,4 @@
-## Determine Module Result
+## Submit Module Response
 
 ### Objectives
 This use case describes the course calculations performed when a course is submitted (IsSubmitted = TRUE)
