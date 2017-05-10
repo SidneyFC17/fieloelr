@@ -18,7 +18,7 @@ The grade % was calculated for the module response and the approval status was d
    4. The system verifies that the submission date is within the allowed period for at least one of the the active related courses
    5. The system verifies that not all the related questions are submitted and that the Question Pool is set to “null”
    6. The system sets, for each question response, its “IsSubmitted” field to “true”
-   7. The system calls, for each question, the Use Case [Submit Question Response](?name=UC-ELR-002)
+   7. The system calls, for each question, the Use Case [Submit Question Response](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0002-Submit%20Question%20Response.md)
    8. The system updates the “Grade Value” field by adding each question “Partial Grade Value”
    9. The system calculates the “Grade %” by dividing the “Grade Value” by the “Total Value”
    10. The system verifies that the “Grade %” is equal or higher than the “Approval Grade”
@@ -36,7 +36,7 @@ The grade % was calculated for the module response and the approval status was d
 ##### 2. The module is approved when not all the related questions are submitted and the Question Pool is not “null” (step 5 of basic flow)
    1. The system verifies that not all the related questions were already submitted and that the “Question Pool” value is equal or greater than 1
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
-   3. The system calls, for each question, the Use Case [Submit Question Response](?name=UC-ELR-002)
+   3. The system calls, for each question, the Use Case [Submit Question Response](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0002-Submit%20Question%20Response.md)
    4. The system updates the “Grade Value” field by adding each question “Partial Grade Value”
    5. The system calculates the “Grade %” by dividing the “Grade Value” by the “Question Pool”
    6. Back to step 10 of basic flow
@@ -44,7 +44,7 @@ The grade % was calculated for the module response and the approval status was d
 ##### 7. The module fails when not all the related questions are submitted and the Question Pool is not “null” (step 5 of basic flow)
    1. The system verifies that not all the related questions were already submitted and that the “Question Pool” value is equal or greater than 1
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
-   3. The system calls, for each question, the Use Case [Submit Question Response](?name=UC-ELR-002)
+   3. The system calls, for each question, the Use Case [Submit Question Response](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0002-Submit%20Question%20Response.md)
    4. The system updates the “Grade Value” field by adding each question “Partial Grade Value”
    5. The system calculates the “Grade %” by dividing the “Grade Value” by the “Question Pool”
    6. The system verifies that the “Grade %” is less than the “Approval Grade”
