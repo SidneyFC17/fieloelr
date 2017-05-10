@@ -4,7 +4,7 @@
 This use case describes the partial grade calculations performed when a question response has its correction determined
 
 ### Preconditions
-The question response correction is already determined (Use Case *Determine Question Response Correction* already run)
+The question response correction is already determined (Use Case [*Determine Question Response Correction*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0001-Determine%20Question%20Response%20Correction.md) already run)
 
 ### Postconditions
 The partial grade value was calculated
