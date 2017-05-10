@@ -34,7 +34,7 @@ The grade % was calculated for the module response and the approval status was d
    3. End of flow
    
 ##### 2. The module is approved when not all the related questions are submitted and the Question Pool is not “null” (step 5 of basic flow)
-   1. The system verifies that not all the related questions were already submitted and that the “Question Pool” is equal or greater than 1
+   1. The system verifies that not all the related questions were already submitted and that the “Question Pool” value is equal or greater than 1
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
    3. The system calls, for each question, the Use Case [Submit Question Response](?name=UC-ELR-002)
    4. The system updates the “Grade Value” field by adding each question “Partial Grade Value”
@@ -42,7 +42,7 @@ The grade % was calculated for the module response and the approval status was d
    6. Back to step 10 of basic flow
    
 ##### 7. The module fails when not all the related questions are submitted and the Question Pool is not “null” (step 5 of basic flow)
-   1. The system verifies that not all the related questions were already submitted and that the “Question Pool” is equal or greater than 1
+   1. The system verifies that not all the related questions were already submitted and that the “Question Pool” value is equal or greater than 1
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
    3. The system calls, for each question, the Use Case [Submit Question Response](?name=UC-ELR-002)
    4. The system updates the “Grade Value” field by adding each question “Partial Grade Value”
@@ -56,7 +56,7 @@ The grade % was calculated for the module response and the approval status was d
    2. Back to step 8 of basic flow
    
 ##### 9. The module fails when all the related questions are submitted and the Question Pool is set to “null” (step 5 of basic flow)
-   1. The system verifies that all the related questions were already submitted and that the “Question Pool” is “null”
+   1. The system verifies that all the related questions are submitted and that the “Question Pool” is “null”
    2. The system updates the “Grade Value” field by adding each question “Partial Grade Value”  
    3. The system calculates the “Grade %” by dividing the “Grade Value” by the “Total Value”
    4. The system verifies that the “Grade %” is less than the “Approval Grade”
@@ -64,13 +64,13 @@ The grade % was calculated for the module response and the approval status was d
    6. End of flow
 
 ##### 10. The module is approved when all the related questions are submitted and the “Question Pool” is not null (step 5 of basic flow)
-   1. The system verifies that all the related questions are submitted and that the Question Pool is equal or greater than 1
+   1. The system verifies that all the related questions are submitted and that the “Question Pool” value is equal or greater than 1
    2. The system calculates the “Grade Value” field by adding the partial grades of the questions
    3. The system calculates the “Grade %” by dividing the “Grade Value” by the “Question Pool”
    4. Back to step 10 of basic flow
    
 ##### 11. The module fails when all the related questions are submitted and the “Question Pool” is not null (step 5 of basic flow)
-   1. The system verifies that all the related questions are submitted and that the Question Pool value is equal or greater than 1
+   1. The system verifies that all the related questions are submitted and that the “Question Pool” value is equal or greater than 1
    2. The system calculates the “Grade Value” field by adding the partial grades of the questions
    3. The system calculates the “Grade %” by dividing the “Grade Value” by the “Question Pool”
    4. The system verifies that the “Grade %” is less than the “Approval Grade”
