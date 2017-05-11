@@ -33,7 +33,7 @@ A course dependency is created
    4. End of flow
 
 ##### 2. Predecessor field is null (step 4 of basic flow)
-   1. The system verifies that Course field is null
+   1. The system verifies that Predecessor field is null
    2. The system does not save the course dependency
    3. The system displays an error message
    4. End of flow
