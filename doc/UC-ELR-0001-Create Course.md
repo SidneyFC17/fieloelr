@@ -85,11 +85,12 @@ A course is created
    1. The administrator presses the Delete button
    2. The system verifies that the course has no related course status
    3. The system deletes the course
+   4. The system deletes all the related course dependencies, related Modules and related Course Status
    4. End of flow
 
 ##### 9. An active course with related course statuses is deleted (step 8 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the course has related course status
-   3. The system does not delete the module
+   3. The system does not delete the course
    4. The system displays an error message
    5. End of flow
