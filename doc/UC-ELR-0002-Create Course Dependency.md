@@ -54,3 +54,8 @@ A course dependency is created
    2. The system does not save the course dependency
    3. The system displays an error message
    4. End of flow
+
+##### 6. Course dependency is edited (step 9 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the Course and/or the Predecessor
+   3. Back to step 2 of basic flow
