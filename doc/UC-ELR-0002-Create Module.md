@@ -5,7 +5,7 @@ This use case describes the creation of a Module
 
 ### Preconditions
 The administrator must be logged in  
-The related course is already created (Use Case [*Create Course*] already run)
+The related course is already created (Use Case [*Create Course*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0001-Create%20Course.md) already run)
 
 ### Postconditions
 A module is created
