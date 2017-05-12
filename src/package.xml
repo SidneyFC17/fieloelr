@@ -10,6 +10,7 @@
 	</types>
 	<types>
 		<members>ELearningLandingPage</members>
+		<members>CourseView</members>
 		<name>ApexPage</name>
 	</types>
 	<types>
