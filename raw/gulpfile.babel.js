@@ -63,36 +63,16 @@ var platformSalesforceJs = [
   {
     src: [
       // Components
-      'resources/FieloElr_Salesforce/scripts/programSelector.js'
-      // 'resources/FieloPlt_Salesforce/scripts/items.js',
-      // 'resources/FieloPlt_Salesforce/scripts/levelOrder.js',
-      // 'resources/FieloPlt_Salesforce/scripts/fileUpload.js',
+      'resources/FieloElr_Salesforce/scripts/programSelector.js',
+      'resources/FieloElr_Salesforce/scripts/elearning.js'
       // Formularios
       // 'resources/FieloPlt_Salesforce/scripts/formMission.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formRule.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formLevel.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formSegment.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formRedemption.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formMember.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formChallengeReward.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formAction.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formLogicalExpression.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formAdjustTransaction.js',
-      // 'resources/FieloPlt_Salesforce/scripts/formReward.js',
       // Landings
-      // 'resources/FieloPlt_Salesforce/scripts/incentivesLanding.js',
-      // 'resources/FieloPlt_Salesforce/scripts/redemptionLanding.js',
-      // 'resources/FieloPlt_Salesforce/scripts/memberCreateFromAccount.js',
-      // 'resources/FieloPlt_Salesforce/scripts/contactConvertion.js',
+      // 'resources/FieloElr_Salesforce/scripts/elearningLanding.js'
       // Views
-      // 'resources/FieloPlt_Salesforce/scripts/challengeView.js',
-      // 'resources/FieloPlt_Salesforce/scripts/programView.js',
-      // 'resources/FieloPlt_Salesforce/scripts/promotionView.js',
+      // 'resources/FieloElr_Salesforce/scripts/courseView.js'
       // Create
-      // 'resources/FieloPlt_Salesforce/scripts/programCreate.js',
-      // 'resources/FieloPlt_Salesforce/scripts/challengeCreate.js',
-      // 'resources/FieloPlt_Salesforce/scripts/modelCreate.js',
-      // 'resources/FieloPlt_Salesforce/scripts/promotionCreate.js'
+      // 'resources/FieloPlt_Salesforce/scripts/programCreate.js'
     ],
     name: 'core.js',
     dest: '../resource-bundles/FieloElr_Salesforce.resource/scripts'

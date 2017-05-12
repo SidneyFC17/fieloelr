@@ -26,7 +26,7 @@
    * @private
    */
   FieloProgramSelectorELR.prototype.Constant_ = {
-    PROGRAM: 'FieloPRP__Program__c'
+    PROGRAM: 'FieloELR__Program__c'
   };
 
   /**
@@ -41,6 +41,7 @@
   };
 
   FieloProgramSelectorELR.prototype.onChange = function() {
+    console.log('Changing Program.');
     var filter = {};
     this.getProgramId_();
     [].forEach.call(this.programActions_, function(action) {
@@ -51,7 +52,7 @@
 
     try {
       Visualforce.remoting.Manager.invokeAction(
-        'FieloPRP.BackEndProgramSelectorController.selectProgram',
+        'FieloELR.BackEndProgramSelectorController.selectProgram',
         filter[this.field_],
         function() {},
         {escape: false}
@@ -85,9 +86,10 @@
    */
   FieloProgramSelectorELR.prototype.init = function() {
     if (this.element_) {
+      console.log('Program Selector enabled.');
       componentHandler.upgradeElement(this.element_);
       window.FieloProgramSelectorELR = this.onChange.bind(this);
-      this.field_ = 'FieloPLT__Program__c';
+      this.field_ = 'Program__c';
       this.getProgramId_();
       // para evitar el undefined
       this.callback = function() {};
