@@ -48,40 +48,50 @@ An answer was created
    3. The system displays an error message
    4. End of flow
 
-##### 5. Related question “Type” is “Single Choice” (step 6 of basic flow)
+##### 5. Related question “Type” is “Single Choice” and no other answer was defined as correct (step 6 of basic flow)
    1. The system verifies that the related question “Type” is “Single Choice”
-   2. Back to step 7 of basic flow
+   2. The system verifies that the “IsCorrect” field is set to “true”
+   3. The system verifies that no other answer of the same related question has its “IsCorrect” field set to “true”
+   4. Back to step 7 of basic flow
+   
+##### 6. Related question “Type” is “Single Choice” and another answer was defined as correct (step 6 of basic flow)
+   1. The system verifies that the related question “Type” is “Single Choice”
+   2. The system verifies that the “IsCorrect” field is set to “true”
+   3. The system verifies that there is another answer of the same related question that has its “IsCorrect” field set to “true”
+   4. The system does not create the answer
+   5. The system displays an error message
+   6. End of flow
 
-##### 6. Related question “Type” is “Short Answer” (step 6 of basic flow)
+##### 7. Related question “Type” is “Short Answer” (step 6 of basic flow)
    1. The system verifies that the related question “Type” is “Short Answer”
    2. Back to step 7 of basic flow
 
-##### 7. Related question “Type” is “Matching Options” and “Answer Text” format is correct (step 6 of basic flow)
+##### 8. Related question “Type” is “Matching Options” and “Answer Text” format is correct (step 6 of basic flow)
    1. The system verifies that the related question “Type” is “Matching Options”
    2. The system verifies that the format of “Answer Text” field is correct (validates {"xx":"yy"})
    3. Back to step 7 of basic flow
 
-##### 8. Related question “Type” is “Matching Options” and “Answer Text” format is incorrect (step 6 of basic flow)
+##### 9. Related question “Type” is “Matching Options” and “Answer Text” format is incorrect (step 6 of basic flow)
    1. The system verifies that the related question “Type” is “Matching Options”
    2. The system verifies that the format of “Answer Text” field is incorrect
    3. The system does not create the answer
    4. The system displays an error message
    5. End of flow
 
-##### 9. Delete answer when related module is not active (step 8 of basic flow)
+##### 10. Delete answer when related module is not active (step 8 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is not active
    3. The system deletes the answer
    4. End of flow
 
-##### 10. Delete answer when related module is active (step 8 of basic flow)
+##### 11. Delete answer when related module is active (step 8 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is active
    3. The system does not delete the answer
    4. The system displays an error message
    5. End of flow
 
-##### 11. Edit answer when related module is not active (step 8 of basic flow)
+##### 12. Edit answer when related module is not active (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
@@ -91,7 +101,7 @@ An answer was created
    7. The system displays the answer detail page
    8. End of flow
 
-##### 12. Edit answer when related module is active (step 8 of basic flow)
+##### 13. Edit answer when related module is active (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
@@ -99,3 +109,23 @@ An answer was created
    5. The system does not save the answer
    6. The system displays an error message
    7. End of flow
+   
+##### 14. Set correct answer for question Type “Statement” and no other answer is defined as correct (step 8 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator sets the “IsCorrect” field to “true”
+   3. The administrator presses the Save button
+   4. The system verifies that the related question “Type” is “Statement”
+   5. The system verifies that no other answer of the same related question has its “IsCorrect” field set to “true”
+   6. The system updates the answer
+   7. The system displays the answer detail page
+   8. End of flow
+
+##### 15. Set correct answer for question Type “Statement” and another answer is defined as correct (step 8 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator sets the “IsCorrect” field to “true”
+   3. The administrator presses the Save button
+   4. The system verifies that the related question “Type” is “Statement”
+   5. The system verifies that there is another answer of the same related question that has its “IsCorrect” field set to “true”
+   6. The system does not create the answer
+   7. The system displays an error message
+   8. End of flow
