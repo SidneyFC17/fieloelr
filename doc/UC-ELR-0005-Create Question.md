@@ -44,12 +44,12 @@ A question was created
 ##### 3. The system verifies that the Order field is null (step 5 of basic flow)
    1. The system verifies that the Order field is null
    2. The system automatically numbers the Order field
-   3. Back to step 10 of basic flow
+   3. Back to step 6 of basic flow
 
 ##### 4.The system verifies that the “Correct Weight” field is null (step 6 of basic flow)
    1. The system verifies that the “Correct Weight” field is null
    2. The system automatically updates the “Correct Weight” field with value = 1
-   3. Back to step 10 of basic flow
+   3. Back to step 7 of basic flow
 
 ##### 5. “Correct Weight” field is not valid (step 6 of basic flow)
    1. The system verifies that the "Correct Weight" field is not greater 0
@@ -61,23 +61,23 @@ A question was created
    1. The system verifies that the "Correct Weight" field is greater 0
    2. The system verifies that the “Weighted Questions” field of the related module is set to “false” 
    3. The system automatically updates the “Correct Weight” field with value = 1
-   4. Back to step 10 of basic flow
+   4. Back to step 7 of basic flow
 
 ##### 7. “Correct Weight” field is greater than zero and “Question Pool” of related module is different from null (step 6 of basic flow)
    1. The system verifies that the "Correct Weight" field is greater 0
    2. The system verifies that the “Question Pool” field of the related module is different from “null” 
    3. The system automatically updates the “Correct Weight” field with value = 1
-   4. Back to step 10 of basic flow
+   4. Back to step 7 of basic flow
 
 ##### 8. “Incorrect Weight” field is null (step 7 of basic flow)
    1. The system verifies that the “Incorrect Weight” field is null
    2. The system automatically updates the “Incorrect Weight” field with value = 0
-   3. Back to step 10 of basic flow
+   3. Back to step 8 of basic flow
 
 ##### 9. The system verifies that the “Penalty per Attempt” field is valid (step 8 of basic flow)
    1. The system verifies that the “Penalty per Attempt” field is null
    2. The system automatically updates the “Penalty per Attempt” field with value = 0
-   3. Back to step 10 of basic flow
+   3. Back to step 9 of basic flow
 
 ##### 10. “Penalty per Attempt” field is not valid (step 8 of basic flow)
    1. The system verifies that the "Penalty per attempt" field is not between 0 - 100
@@ -116,30 +116,31 @@ A question was created
    1. The system verifies that the Type field is “Matching Options”
    2. Back to step 10 of basic flow
 
-##### 17. Delete question when related module is not active (step 15 of basic flow)
+##### 17. Delete question when related module is not active (step 11 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is not active
    3. The system deletes the question
    4. The system deletes all related answers
    5. End of flow
 
-##### 18. Delete question when related module is active (step 15 of basic flow)
+##### 18. Delete question when related module is active (step 11 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is active
    3. The system does not delete the question
    4. The system displays an error message
    5. End of flow
 
-##### 19. Edit question when related module is not active (step 15 of basic flow)
+##### 19. Edit question when related module is not active (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
    4. The system verifies that the related module is not active
    5. The system verifies that all other validations succeed
    6. The system updates the question
-   7. Back to step 11 of basic flow
+   7. The system displays the question detail page
+   8. End of flow
 
-##### 20. Edit question when related module is active (step 15 of basic flow)
+##### 20. Edit question when related module is active (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
@@ -148,16 +149,16 @@ A question was created
    6. The system displays an error message
    7. End of flow
 
-##### 21. Edit question when related module is not active (step 15 of basic flow)
+##### 21. Edit question when related module is not active (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
    4. The system verifies that the related module is not active
    5. The system verifies that all other validations succeed
-   6. The system updates the question
-   7. Back to step 11 of basic flow
+   6. The system displays the question detail page
+   7. End of flow
 
-##### 22. Edit question when “Question Pool” of related module is different from null (step 15 of basic flow)
+##### 22. Edit question when “Question Pool” of related module is different from null (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Correct Weight” to a value greater than 1
    3. The administrator presses the Save button
@@ -165,4 +166,5 @@ A question was created
    5. The system verifies that all other validations succeed
    6. The system automatically updates the “Correct Weight” field with value = 1
    7. The system updates the question
-   8. Back to step 11 of basic flow
+   8. The system displays the question detail page
+   9. End of flow
