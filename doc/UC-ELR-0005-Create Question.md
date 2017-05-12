@@ -14,7 +14,7 @@ A question was created
 
 ### Basic Flow
 
-1. The system receives the field values for the module
+1. The system receives the field values for the question
 2. The administrator presses the Save button
 3. The system verifies that the related module is not active
 4. The system verifies that the Question Text field is not null
