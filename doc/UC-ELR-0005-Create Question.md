@@ -43,7 +43,7 @@ A question was created
 
 ##### 3. The system verifies that the Order field is null (step 5 of basic flow)
    1. The system verifies that the Order field is null
-   2. The system automatically numbers the field Order
+   2. The system automatically numbers the Order field
    3. Back to step 10 of basic flow
 
 ##### 4.The system verifies that the “Correct Weight” field is null (step 6 of basic flow)
