@@ -149,16 +149,7 @@ A question was created
    6. The system displays an error message
    7. End of flow
 
-##### 21. Edit question when related module is not active (step 11 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator makes the desired changes 
-   3. The administrator presses the Save button
-   4. The system verifies that the related module is not active
-   5. The system verifies that all other validations succeed
-   6. The system displays the question detail page
-   7. End of flow
-
-##### 22. Edit question when “Question Pool” of related module is different from null (step 11 of basic flow)
+##### 21. Edit question when “Question Pool” of related module is different from null (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Correct Weight” to a value greater than 1
    3. The administrator presses the Save button
