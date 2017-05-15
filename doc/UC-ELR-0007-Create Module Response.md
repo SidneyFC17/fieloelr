@@ -4,7 +4,8 @@
 This use case describes the creation of a Module Response
 
 ### Preconditions
-The administrator must be logged in
+The administrator must be logged in  
+The related module is already created (Use Case [*Create Module*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0003-Create%20Module.md) already run)
 
 ### Postconditions
 A module response was created
@@ -63,7 +64,7 @@ A module response was created
 ##### 7. The related course subscription mode is automatic and the course status does not exist (step 8 of basic flow)
    1. The system verifies that the related course subscription mode is automatic and the related course status does not exists
    2. The system saves the module response
-   3 The system displays the module response detail page
+   3. The system displays the module response detail page
    4. The system automatically creates the related course status
    5. End of flow
    
@@ -98,5 +99,5 @@ A module response was created
 ##### 12. Submit a module response (step 10 of basic flow)
    1. The administrator presses the Edit button of a module response not submitted
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
-   3. The system calls the use case [*Submit Module Response*]
+   3. The system calls the use case [*Submit Module Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0010-Submit%20Module%20Response.md)
    4. End of flow
