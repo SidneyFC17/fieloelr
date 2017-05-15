@@ -55,26 +55,39 @@ A module response was created
    2. The system does not create the module response
    3. The system displays an error message
    4. End of flow
+   
+##### 6. The related course subscription mode is automatic and the course status already exists (step 8 of basic flow)
+   1. The system verifies that the related course subscription mode is automatic and the related course status already exists
+   2. Back to step 9 of basic flow
 
-##### 6. Delete a module response not submitted (step 10 of basic flow)
+##### 7. The related course subscription mode is automatic and the course status does not exist (step 8 of basic flow)
+   1. The system verifies that the related course subscription mode is automatic and the related course status does not exists
+   2. The system saves the module response
+   3 The system displays the module response detail page
+   4. The system automatically creates the related course status
+   5. End of flow
+   
+##### 8. Delete a module response not submitted (step 10 of basic flow)
    1. The administrator presses the Delete button of a module response not submitted 
    2. The system deletes the module response
    3. The system deletes all related questions responses and answers responses
    4. End of flow
 
-##### 7. Delete a module response already submitted (step 10 of basic flow)
+##### 9. Delete a module response already submitted (step 10 of basic flow)
    1. The administrator presses the Delete button of a module response already submitted
    2. The system does not delete the module response
    3. The system displays an error message
    4. End of flow
-##### 8. Edit a module response not submitted (step 10 of basic flow)
+   
+##### 10. Edit a module response not submitted (step 10 of basic flow)
    1. The administrator presses the Edit button of a module response not submitted 
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
    4. The system saves the module response
    5. The system displays the module response detail page
    6. End of flow
-##### 9. Edit a module response already submitted (step 10 of basic flow)
+   
+##### 11. Edit a module response already submitted (step 10 of basic flow)
    1. The administrator presses the Edit button of a module response already submitted 
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
@@ -82,7 +95,7 @@ A module response was created
    5. The system displays an error message
    6. End of flow
 
-##### 10. Submit a module response (step 10 of basic flow)
+##### 12. Submit a module response (step 10 of basic flow)
    1. The administrator presses the Edit button of a module response not submitted
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
    3. The system calls the use case [*Submit Module Response*]
