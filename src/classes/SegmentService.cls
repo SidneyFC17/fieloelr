@@ -33,12 +33,12 @@ public with sharing class SegmentService {
         return metasegment[0].Id;
     }
 
-    public static String getRecordTypeId(String sobjectName, String recordTypeName) {
+    public static Id getRecordTypeId(String sobjectName, String recordTypeName) {
     	try{
     		return Schema.describeSObjects(
     			new String[]{sobjectName})[0].getRecordTypeInfosByName().get(recordTypeName).getRecordTypeId();
     	}catch(Exception e){
-    		return '';
+    		return null;
     	}
     	
     }
