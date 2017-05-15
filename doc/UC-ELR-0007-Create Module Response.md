@@ -12,7 +12,7 @@ A module response was created
 ### Flow of Events
 
 ### Basic Flow
-   1. The The system receives the field values for the module response
+   1. The system receives the field values for the module response
    2. The administrator presses the Save button
    3. The system verifies that the “Module” lookup field is not null
    4. The system automatically completes the “Number of Attempts” field
