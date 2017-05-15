@@ -171,7 +171,6 @@ public with sharing class CourseViewController extends PageSettingsController {
 
   	@RemoteAction
   	public static RemoteActionResult saveModule( SObject record, List<String> nullFields) {
-  		System.debug('Record: ' + record);
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
 		try{
@@ -185,6 +184,33 @@ public with sharing class CourseViewController extends PageSettingsController {
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + record.Id;
+    	}catch(DMLException e){
+            result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+        }catch(Exception e){
+    		system.debug('Exception: ' + e);
+        	if(sp != null){
+	            Database.rollback(sp);
+        	}
+        	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+    	}
+    	return result;
+  	}
+
+  	@RemoteAction
+  	public static RemoteActionResult saveCourseDependency( SObject record, List<String> nullFields) {
+		Savepoint sp;
+		RemoteActionResult result = new RemoteActionResult();
+		try{
+			sp = Database.setSavepoint();
+			for ( String f :nullFields ) {
+         		record.put(f, null );
+			}
+			// TODO: Change to Create API
+        	upsert (CourseDependency__c) record;
+
+			//TODO Crear Label DataSavedSuccessfully
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.redirectURL = '/' + ((CourseDependency__c)record).Course__c;
     	}catch(DMLException e){
             result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
         }catch(Exception e){
