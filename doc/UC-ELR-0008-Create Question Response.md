@@ -5,7 +5,7 @@ This use case describes the creation of a Question Response
 
 ### Preconditions
 The administrator must be logged in  
-The module response was created
+The module response is already created (Use Case [*Create Module Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0007-Create%20Module%20Response.md) already run)
 
 ### Postconditions
 A question response was created
@@ -78,7 +78,7 @@ A question response was created
    1. The administrator presses the Edit button 
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
    3. The system verifies that the related question doesn’t have another correct question response
-   4. The system calls the use case [*Determine Question Response Correction*]
+   4. The system calls the use case [*Determine Question Response Correction*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-XXXX-Determine%20Question%20Response%20Correction.md)
    5. The system updates the question response
    6. The system displays the question response detail page
    7. End of flow
