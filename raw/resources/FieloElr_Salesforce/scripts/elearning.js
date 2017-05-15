@@ -112,6 +112,22 @@
     }
   };
 
+  FieloELearning.prototype.disableProgramChange_ = function() {
+    if (document.getElementsByClassName(
+        this.CssClasses_.VIEW_PAGE)[0] !== undefined) {
+      $('[data-field-name="FieloELR__Program__c"]')
+      .addClass('disabled');
+    }
+  };
+
+  FieloELearning.prototype.disableCourseChange_ = function() {
+    if (document.getElementsByClassName(
+        this.CssClasses_.VIEW_PAGE)[0] !== undefined) {
+      $('[data-field-name="FieloELR__Course__c"]')
+      .addClass('disabled');
+    }
+  };
+
   FieloELearning.prototype.programChangeProxy_ = function(value) {
     var _this = document.getElementsByClassName(
       'fielosf-elearning')[0].FieloELearning;
@@ -129,6 +145,24 @@
   FieloELearning.prototype.init = function() {
     if (this.element_) {
       this.setDefaults_();
+
+      $(this.element_).on('shown.aljs.modal', function() {
+        var _this = document.getElementsByClassName(
+          'fielosf-elearning')[0];
+        _this.FieloELearning.disableProgramChange_();
+      });
+
+      $('#FieloELR__Module__cFormNew').on('shown.aljs.modal', function() {
+        var _this = document.getElementsByClassName(
+          'fielosf-elearning')[0];
+        _this.FieloELearning.disableCourseChange_();
+      });
+
+      $('#FieloELR__CourseDependency__cFormNew').on('shown.aljs.modal', function() {
+        var _this = document.getElementsByClassName(
+          'fielosf-elearning')[0];
+        _this.FieloELearning.disableCourseChange_();
+      });
     }
   };
 
