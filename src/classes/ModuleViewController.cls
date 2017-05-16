@@ -13,24 +13,12 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		String objectName = 'FieloELR__Module__c';
 		this.controller = controller;
 		Id recordId = controller.getId();
-		Set<String> fields;
+		Set<String> fields = new Set<String>();
+
+		fields.addAll(Schema.describeSObjects(
+			new String[]{objectName})[0].fields.getMap().keySet());
 
 		if(!Test.isRunningTest()){
-			fields = new Set<String>{
-	            'Name',
-	            'FieloELR__Course__r.Name',
-	            'FieloELR__Course__c',
-	            'FieloELR__ApprovalGrade__c',
-				'FieloELR__AttemptsAllowed__c',
-				'FieloELR__WeightedQuestions__c',
-				'FieloELR__PenaltyMode__c',
-				'FieloELR__QuestionPool__c',
-				'FieloELR__ShuffleQuestions__c',
-				'FieloELR__AttemptsAllowedPerQuestion__c',
-				'FieloELR__Order__c',
-				'FieloELR__IsActive__c'
-            };
-
             this.controller.addFields(new List<String>(fields));
         }
         // Cast all fieldNames to lowercase

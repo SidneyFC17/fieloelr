@@ -13,23 +13,13 @@ public with sharing class CourseViewController extends PageSettingsController {
 		String objectName = 'FieloELR__Course__c';
 		this.controller = controller;
 		Id recordId = controller.getId();
-		Set<String> fields;
+		Set<String> fields = new Set<String>();
 
-		if(!Test.isRunningTest()){
-			fields = new Set<String>{
-	            'Name',
-	            'FieloELR__Program__r.Name',
-	            'FieloELR__Program__c',
-	            'FieloELR__Status__c',
-	            'FieloELR__Segment__r.Name',
-	            'FieloELR__Segment__r.FieloPLT__RelatedSegments__c',
-	            'FieloELR__Segment__c',
-	            'FieloELR__SubscriptionMode__c',
-	            'FieloELR__Description__c',
-	            'FieloELR__StartDate__c',
-	            'FieloELR__EndDate__c'
-            };
+		
+		fields.addAll(Schema.describeSObjects(
+			new String[]{objectName})[0].fields.getMap().keySet());
 
+        if(!Test.isRunningTest()){
             this.controller.addFields(new List<String>(fields));
         }
         // Cast all fieldNames to lowercase
