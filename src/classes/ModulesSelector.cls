@@ -53,7 +53,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-    public List<Module__c> selectByIdWithModuleResponses(Set<Id> moduleIds) {
+    public List<Module__c> selectByIdHavingModuleResponses(Set<Id> moduleIds) {
       return (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id ' +
@@ -67,4 +67,31 @@ public with sharing class ModulesSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
+    public List<Module__c> selectByIdHavingQuestions(Set<Id> moduleIds) {
+      return (List<Module__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', (SELECT Id ' +
+                  '   FROM Questions__r LIMIT 1) ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :moduleIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
+    public List<Question__c> selectByIdHavingCorrectAnswers(Set<Id> questionIds) {
+      return (List<Question__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', (SELECT Id ' +
+                  '   FROM Answers__r LIMIT 1) ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :questionIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }
