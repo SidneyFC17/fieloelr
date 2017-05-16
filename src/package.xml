@@ -19,12 +19,8 @@
 		<name>ApexComponent</name>
 	</types>
 	<types>
-        <members>Courses</members>
+        <members>*</members>
         <name>CustomTab</name>
-    </types>
-	<types>
-        <members>FieloElr_Salesforce</members>
-        <name>StaticResource</name>
     </types>
     <types>
         <members>FieloPLT__Tracker__c</members>
