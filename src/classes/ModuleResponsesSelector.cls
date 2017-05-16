@@ -49,4 +49,16 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
     }
+
+    public List<ModuleResponse__c> selectByKeyAndApproved(Set<String> keys) {
+        return (List<ModuleResponse__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Key__c IN : keys AND IsApproved__c = true ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }
