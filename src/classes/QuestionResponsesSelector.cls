@@ -7,7 +7,7 @@ public with sharing class QuestionResponsesSelector extends SObjectSelector {
                 QuestionResponse__c.ModuleResponse__c,
                 QuestionResponse__c.IsCorrect__c,
                 QuestionResponse__c.IsSubmitted__c,
-                QuestionResponse__c.NumberOfAttempts__c,
+                QuestionResponse__c.NumberOfAttempt__c,
                 QuestionResponse__c.TextValue__c,
                 QuestionResponse__c.Question__c
             };
