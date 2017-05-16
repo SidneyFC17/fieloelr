@@ -5,7 +5,7 @@ This use case describes the creation of a Course Dependency
 
 ### Preconditions
 The administrator must be logged in  
-A course is already created (Use Case [*Create Course*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0001-Create%20Course.md) already run)
+Two courses were already created for the same program (Use Case [*Create Course*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0001-Create%20Course.md) already run)
 
 ### Postconditions
 A course dependency is created
