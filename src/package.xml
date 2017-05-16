@@ -22,5 +22,9 @@
         <members>Courses</members>
         <name>CustomTab</name>
     </types>
+	<types>
+        <members>FieloElr_Salesforce</members>
+        <name>StaticResource</name>
+    </types>
 	<version>36.0</version>
 </Package>
