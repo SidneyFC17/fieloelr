@@ -41,5 +41,9 @@
         <members>Question__c</members>
         <name>CustomObject</name>
     </types>
+    <types>
+        <members>FieloPlatform</members>
+        <name>CustomApplication</name>
+    </types>
 	<version>36.0</version>
 </Package>
