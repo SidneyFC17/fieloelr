@@ -38,11 +38,15 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Tab</actionName>
-        <type>Default</type>
+        <content>ELearningLandingPage</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <content>CourseView</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
@@ -169,9 +173,9 @@
     </validationRules>
     <validationRules>
         <fullName>SameProgramSegment</fullName>
-        <active>true</active>
+        <active>false</active>
         <description>The course must have a segment within the same program.</description>
-        <errorConditionFormula>Segment__r.FieloPLT__Program__c  &lt;&gt;  Program__c</errorConditionFormula>
+        <errorConditionFormula>Segment__r.FieloPLT__Program__c  &lt;&gt;  Program__c &amp;&amp;  NOT(ISNULL(Segment__r.FieloPLT__Program__c) ||  ISBLANK(Segment__r.FieloPLT__Program__c))</errorConditionFormula>
         <errorDisplayField>Segment__c</errorDisplayField>
         <errorMessage>Segment must be on the same program.</errorMessage>
     </validationRules>
