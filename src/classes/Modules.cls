@@ -23,44 +23,51 @@ public class Modules extends SObjectDomain {
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
 
-    	List<Module__c> inactivatedModules = new List<Module__c>();
    		List<Module__c> activatedModules = new List<Module__c>();
+    	List<Module__c> inactivatedModules = new List<Module__c>();
 
-   		// When the module is changed to active, must validate that has at least one question
-   		// An active module with related module responses cannot be deleted or inactivated.
 		for(Module__c module : (List<Module__c>)records) {
-			// Select only active modules that are being activated
+			// Select only modules that are being activated
 			if(!(((Module__c)(existingRecords.get(module.Id))).IsActive__c) && module.IsActive__c) {
-				inactivatedModules.add(module);
-			}
-			if(((Module__c)(existingRecords.get(module.Id))).IsActive__c && !(module.IsActive__c)) {
 				activatedModules.add(module);
+			}
+			// Select only modules that are being inactivated
+			if(((Module__c)(existingRecords.get(module.Id))).IsActive__c && !(module.IsActive__c)) {
+				inactivatedModules.add(module);
 			}	
-		}   		
-   		getQuestions(inactivatedModules);
-		getModuleResponses(activatedModules);
+		}
+
+		// When the module is changed to active, must validate that has at least one question.
+   		checkQuestions(activatedModules);
+
+		// An active module with related module responses cannot be inactivated.
+		checkModuleResponses(inactivatedModules);
+
+   		// When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
+
     }
 
 	public override void onBeforeDelete() {
 
    		List<Module__c> activeModules = new List<Module__c>();
 
-		// An active module with related module responses cannot be deleted or inactivated.
 		for(Module__c module : (List<Module__c>)records) {
    			// Select only active modules
 			if(module.IsActive__c) {
 				activeModules.add(module);
 			}
 		}
-     	getModuleResponses(activeModules);
+
+		// An active module with related module responses cannot be deleted.
+     	checkModuleResponses(activeModules);
     }
 
-	// Returns the questions for a list of modules
-    private void getQuestions(List<Module__c> inactiveModules) {
+	// Check the questions for a list of modules
+    private void checkQuestions(List<Module__c> activatedModules) {
 		
-	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(inactiveModules);
+	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(activatedModules);
 
-	    List<Module__c> modulesWithQuestion = new ModulesSelector(new Set<String> {'Id'}).selectByIdWithQuestions(modulesMap.KeySet()); 
+	    List<Module__c> modulesWithQuestion = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingQuestions(modulesMap.KeySet()); 
 	    																		
 	    for(Module__c module : modulesWithQuestion) {
 	        if(module.Questions__r.isEmpty()){
@@ -69,16 +76,30 @@ public class Modules extends SObjectDomain {
 	    }
     }
 
-	// Returns the responses for a list of modules
-    private void getModuleResponses(List<Module__c> activeModules) {
+	// Check the responses for a list of modules
+    private void checkModuleResponses(List<Module__c> inactivatedModules) {
 		
-	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(activeModules);
+	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(inactivatedModules);
 
-	    List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String> {'Id'}).selectByIdWithModuleResponses(modulesMap.KeySet()); 
+	    List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingModuleResponses(modulesMap.KeySet()); 
 	    																		
 	    for(Module__c module : modulesWithResponse) {
 	        if(!module.ModuleResponses__r.isEmpty()){
 	        	modulesMap.get(module.Id).addError('Cannot delete or inactivate a module with response.');        
+	        }        
+	    }
+    }
+
+	// Check the answers for a list of modules
+    private void checkAnswers(List<Question__c> questions) {
+		
+	    Map<Id,Question__c> modulesMap = new Map<Id, Question__c>(questions);
+
+	    List<Question__c> modulesWithAnswer = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingCorrectAnswers(modulesMap.KeySet()); 
+	    																		
+	    for(Question__c module : modulesWithAnswer) {
+	        if(module.Answers__r.isEmpty()){
+	        	modulesMap.get(module.Id).addError('Cannot activate a module without any question.');    //TODO: Message    
 	        }        
 	    }
     }
