@@ -76,6 +76,16 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 
+		for(FieloPLT__PageSettings__c settings:relatedSettings) {
+			if(settings.FieloPLT__TargetObject__c == 'FieloELR__CourseDependency__c') {
+				settings.FieloPLT__Sections__c = getSectionsWithCourseWhereCondition(
+					settings.FieloPLT__Sections__c,
+					record.Program__c,
+					record.Id
+				);
+			}
+		}
+
 		if ( fieldList.size() > 0  ) {
 			for(String fieldName:fieldList) {
 				fields.add(fieldName);
@@ -248,6 +258,20 @@ public with sharing class CourseViewController extends PageSettingsController {
           }
         }
         return JSON.serialize(sections);
+    }
+
+    public static String getSectionsWithCourseWhereCondition(String sectionsString, String programId, String courseId){
+	    Section section = (Section) JSON.deserialize( sectionsString, CourseViewController.Section.class );
+		for ( List<FormField> r :section.rows ) {
+			for ( FormField f :r ) {
+		  		if(f.Name != null) {
+		    		if(f.Name == 'FieloELR__Predecessor__c') {
+		        		f.WhereCondition = ' FieloELR__Program__c = /' + programId + '/ AND Id != /' + courseId + '/';
+		    		}
+		  		}
+			}
+		}
+        return JSON.serialize(section);
     }
 
     @RemoteAction

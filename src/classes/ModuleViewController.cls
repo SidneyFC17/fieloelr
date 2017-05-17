@@ -73,6 +73,16 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		initPageSettings(objectName, record, buttonString, '', '');
 
+		for(FieloPLT__PageSettings__c settings:relatedSettings) {
+			if(settings.FieloPLT__TargetObject__c == 'FieloELR__ModuleDependency__c') {
+				settings.FieloPLT__Sections__c = getSectionsWithModuleWhereCondition(
+					settings.FieloPLT__Sections__c,
+					record.Course__c,
+					record.Id
+				);
+			}
+		}
+
 		if ( fieldList.size() > 0  ) {
 			for(String fieldName:fieldList) {
 				fields.add(fieldName);
@@ -96,6 +106,20 @@ public with sharing class ModuleViewController extends PageSettingsController {
 	public Boolean getShowInActivate() {
 		return this.record.FieloELR__IsActive__c;
 	}
+
+	public static String getSectionsWithModuleWhereCondition(String sectionsString, String courseId, String moduleId){
+	    Section section = (Section) JSON.deserialize( sectionsString, ModuleViewController.Section.class );
+		for ( List<FormField> r :section.rows ) {
+			for ( FormField f :r ) {
+		  		if(f.Name != null) {
+		    		if(f.Name == 'FieloELR__Predecessor__c') {
+		        		f.WhereCondition = ' FieloELR__Course__c = /' + courseId + '/ AND Id != /' + moduleId + '/';
+		    		}
+		  		}
+			}
+		}
+        return JSON.serialize(section);
+    }
 
 	@RemoteAction
   	public static RemoteActionResult save( Module__c record, List<String> nullFields) {
@@ -264,4 +288,18 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		}
 		return whereCondition;
 	}
+
+	public class Section {
+        public String Name{get;set;}
+        public List<List<FormField>> Rows{get;set;}
+    }
+
+    public class FormField {
+        public String Type{get;set;}
+        public String Name{get;set;}
+        public String onchange{get;set;}
+        public String Label{get;set;}
+        public String Value{get;set;}
+        public String WhereCondition{get;set;}
+    }
 }
