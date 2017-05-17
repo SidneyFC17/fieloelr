@@ -37,7 +37,7 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                   ', (SELECT Id, ' +
                   	'IsCorrect__c, ' +
                   	'IsSubmitted__c, ' +
-                    'NumberOfAttempts__c, ' +
+                    'NumberOfAttempt__c, ' +
                     'Question__c, ' +
                   	'PartialGradeValue__c, ' +
                   	'Name FROM QuestionResponses__r) ' +
