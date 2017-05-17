@@ -10,8 +10,6 @@ public class Modules extends SObjectDomain {
         }
     }
 
-    // When the module is changed to active, must validate that has at least one question
-
     public override void onValidate() {
     }
 
@@ -44,8 +42,9 @@ public class Modules extends SObjectDomain {
 		checkModuleResponses(inactivatedModules);
 
    		// When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
-
+   		checkAnswers(activatedModules);
     }
+
 
 	public override void onBeforeDelete() {
 
@@ -62,6 +61,7 @@ public class Modules extends SObjectDomain {
      	checkModuleResponses(activeModules);
     }
 
+
 	// Check the questions for a list of modules
     private void checkQuestions(List<Module__c> activatedModules) {
 		
@@ -75,6 +75,7 @@ public class Modules extends SObjectDomain {
 	        }        
 	    }
     }
+
 
 	// Check the responses for a list of modules
     private void checkModuleResponses(List<Module__c> inactivatedModules) {
@@ -90,17 +91,27 @@ public class Modules extends SObjectDomain {
 	    }
     }
 
-	// Check the answers for a list of modules
-    private void checkAnswers(List<Question__c> questions) {
-		
-	    Map<Id,Question__c> modulesMap = new Map<Id, Question__c>(questions);
 
-	    List<Question__c> modulesWithAnswer = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingCorrectAnswers(modulesMap.KeySet()); 
+	// Check the answers for a list of modules
+    private void checkAnswers(List<Module__c> activatedModules) {
+
+    	Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(activatedModules);
+
+		// Then check for answers for those questions
+	    List<Question__c> questionsWithCorrectAnswer = new QuestionsSelector(new Set<String> {'Id', 'Name', 'Module__c', 'Type__c'}).selectByModuleHavingAnswers(modulesMap.KeySet()); 
 	    																		
-	    for(Question__c module : modulesWithAnswer) {
-	        if(module.Answers__r.isEmpty()){
-	        	modulesMap.get(module.Id).addError('Cannot activate a module without any question.');    //TODO: Message    
-	        }        
+	    for(Question__c question : questionsWithCorrectAnswer) {
+	    	// Question types "statement", "single choice","multiple choice" and "Matching" must have at least one answer.
+	        if(question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options') {
+	        	if(question.Answers__r.isEmpty()) {
+					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without any answer. Question: ' + question.Name);    
+	        	} else {
+	        		// Question types "statement" and "single choice" must have a correct answer.
+	        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && question.Answers__r[0].IsCorrect__c != true) {
+						modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without a correct answer. Question: ' + question.Name);    
+	        		}
+	        	}
+	        } 
 	    }
     }
 

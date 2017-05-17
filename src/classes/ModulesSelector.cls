@@ -81,13 +81,13 @@ public with sharing class ModulesSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-    public List<Question__c> selectByIdHavingCorrectAnswers(Set<Id> questionIds) {
-      return (List<Question__c>) Database.query(String.format(
+    public List<Module__c> selectByIdHavingDependencies(Set<Id> moduleIds) {
+      return (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id ' +
-                  '   FROM Answers__r LIMIT 1) ' +
+                  ', (SELECT Module__c, Predecessor__c ' +
+                  '   FROM PredecessorModules__r) ' +
                   'FROM {1} ' +
-                  'WHERE Id IN :questionIds ' +
+                  'WHERE Id IN :moduleIds ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),

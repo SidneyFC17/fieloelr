@@ -68,4 +68,32 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
     }
+
+    public List<Question__c> selectByModuleHavingAnswers(Set<Id> moduleIds) {
+      return (List<Question__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', (SELECT Id, IsCorrect__c ' +
+                  '   FROM Answers__r ' +
+                  '   ORDER BY IsCorrect__c DESC ' +
+                  '   LIMIT 1) ' +
+                  'FROM {1} ' +
+                  'WHERE Module__c IN :moduleIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
+    public List<Question__c> selectByIdWithActiveModule(Set<Id> questionIds) {
+        return (List<Question__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Module__r.IsActive__c = true ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }    
 }
