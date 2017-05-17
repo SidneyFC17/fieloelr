@@ -61,7 +61,7 @@ private class TestELearningLandingController
 			new List<FieloELR__Course__c>{course}
 		);
         
-        ELearningLandingController controller = new ELearningLandingController(standardController);
+        ELearningLandingController controller = new ELearningLandingController();
 
         List<SelectOption> views = ELearningLandingController.getStatusViews();        
 	}

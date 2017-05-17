@@ -16,7 +16,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
         return currentProgram;
     }set;}
 
-	public ELearningLandingController(ApexPages.StandardSetController stController) {
+	public ELearningLandingController() {
 		if( currentProgram != null ){
             String standardTools  = '';
             String standardButtons = '';
