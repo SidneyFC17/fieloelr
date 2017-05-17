@@ -41,6 +41,8 @@
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            showPaginator="true"
+            dataController="ModuleViewController.getRecords"
             />
           <c:Form namespace="FieloELR" formId="FieloELR__Question__cForm"
 			heading="{!$Label.fieloelr__edit} {!$ObjectType.Question__c.label}"
@@ -67,6 +69,7 @@
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            showPaginator="true"
             />
           <c:Form namespace="FieloELR" formId="FieloELR__ModuleDependency__cForm"
 			heading="{!$Label.fieloelr__edit} {!$ObjectType.ModuleDependency__c.label}"
