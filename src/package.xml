@@ -19,23 +19,23 @@
 		<name>ApexComponent</name>
 	</types>
 	<types>
-        <members>*</members>
-        <name>CustomTab</name>
-    </types>
-    <types>
-        <members>FieloPLT__Tracker__c</members>
-        <members>FieloPLT__Transaction__c</members>
-        <members>AnswerResponse__c</members>
-        <members>Answer__c</members>
-        <members>CourseDependency__c</members>
-        <members>CourseStatus__c</members>
-        <members>Course__c</members>
-        <members>ModuleDependency__c</members>
-        <members>ModuleResponse__c</members>
-        <members>Module__c</members>
-        <members>QuestionResponse__c</members>
-        <members>Question__c</members>
-        <name>CustomObject</name>
-    </types>
+		<members>*</members>
+		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>FieloPLT__Tracker__c</members>
+		<members>FieloPLT__Transaction__c</members>
+		<members>AnswerResponse__c</members>
+		<members>Answer__c</members>
+		<members>CourseDependency__c</members>
+		<members>CourseStatus__c</members>
+		<members>Course__c</members>
+		<members>ModuleDependency__c</members>
+		<members>ModuleResponse__c</members>
+		<members>Module__c</members>
+		<members>QuestionResponse__c</members>
+		<members>Question__c</members>
+		<name>CustomObject</name>
+	</types>
 	<version>36.0</version>
 </Package>

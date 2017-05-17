@@ -5,9 +5,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
 
 	public String currentView {get;set;}
     public FieloPLT__PageSettings__c newCourse {get;set;}
-    public FieloPLT__PageSettings__c newModule {get;set;}
     public FieloPLT__PageSettings__c landingCourse {get;set;}
-    public FieloPLT__PageSettings__c landingModule {get;set;}
     public static String secondaryParameters {get;set;}
     public static String saveController {get;set;}
 
@@ -146,21 +144,15 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
                 result.redirectURL = '/' + record.Id;
             }
         }catch(DmlException e){
-            Database.rollback(sp);
-            if(ApexPages.hasMessages()){
-                result.redirectURL = '';
-                for(ApexPages.Message m : ApexPages.getMessages()){
-                    result.addMessage(new RemoteActionResult.RemoteActionMessage(m, 'Program__c'));
-                }
-            } else {
-              result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+            if(sp != null){
+                Database.rollback(sp);
             }
+            result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
         }catch(Exception e){
             if(sp != null){
                 Database.rollback(sp);
             }
             result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
-
         }
 
         return result;

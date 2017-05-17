@@ -1,7 +1,7 @@
 public with sharing class CourseViewController extends PageSettingsController {
 	public Course__c record {get;set;}
 	public String buttonString {get;set;}
-	public String toolsString {get;set;}
+	// public String toolsString {get;set;}
 	public static String secondaryParameters {get;set;}
 	public List<Map<String,Object>> buttonList {get;set;}
 	private ApexPages.StandardController controller;
@@ -140,16 +140,10 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
-			// Agrega las Validation Rules asociadas al Campo
-			Database.rollback(sp);
-			if(ApexPages.hasMessages()){
-				result.redirectURL = '';
-            	for(ApexPages.Message m : ApexPages.getMessages()){
-	                result.addMessage(new RemoteActionResult.RemoteActionMessage(m, record.getSobjectType().getDescribe().getName() ));
-            	}
-        	} else {
-          	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+    		if(sp != null){
+	            Database.rollback(sp);
         	}
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
     	}catch(Exception e){
         	if(sp != null){
 	            Database.rollback(sp);
@@ -175,6 +169,9 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + record.Id;
     	}catch(DMLException e){
+    		if(sp != null){
+	            Database.rollback(sp);
+        	}
             result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
         }catch(Exception e){
     		system.debug('Exception: ' + e);
@@ -202,6 +199,9 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + ((CourseDependency__c)record).Course__c;
     	}catch(DMLException e){
+    		if(sp != null){
+	            Database.rollback(sp);
+        	}
             result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
         }catch(Exception e){
     		system.debug('Exception: ' + e);
@@ -261,7 +261,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
 		}
@@ -280,7 +280,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
 		}
