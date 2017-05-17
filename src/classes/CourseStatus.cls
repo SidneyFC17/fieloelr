@@ -1,12 +1,12 @@
-public class Courses extends SObjectDomain{
+public class CourseStatus extends SObjectDomain {
 	
-	public Courses(List<Course__c> records) {
+	public CourseStatus(List<CourseStatus__c> records) {
 		super(records);
 	}
 
 	public class Constructor implements SObjectDomain.IConstructable {
-        public SObjectDomain construct(List<Course__c> sObjectList) {
-            return new Courses(sObjectList);
+        public SObjectDomain construct(List<CourseStatus__c> sObjectList) {
+            return new CourseStatus(sObjectList);
         }
     }
 
@@ -17,6 +17,4 @@ public class Courses extends SObjectDomain{
     public override void onValidate(Map<Id,SObject> existingRecords) {
     	//before update
     }
-
-    
 }
