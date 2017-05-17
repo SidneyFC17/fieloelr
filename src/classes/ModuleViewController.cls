@@ -111,16 +111,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
-			// Agrega las Validation Rules asociadas al Campo
-			Database.rollback(sp);
-			if(ApexPages.hasMessages()){
-				result.redirectURL = '';
-            	for(ApexPages.Message m : ApexPages.getMessages()){
-	                result.addMessage(new RemoteActionResult.RemoteActionMessage(m, record.getSobjectType().getDescribe().getName() ));
-            	}
-        	} else {
-          	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
-        	}
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
     	}catch(Exception e){
         	if(sp != null){
 	            Database.rollback(sp);
