@@ -219,4 +219,49 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		}
 		return result;
 	}
+
+	@RemoteAction
+  	public static List<SObject> getRecords( String objectName, String fields, Integer offset, String orderBy, String dataFilters, Integer recordsPerPage ) {
+		String query = 'SELECT Id, ' + fields;
+		query += ' FROM ' + objectName;
+		query += getWhereCondition( dataFilters ); 
+		// ORDER BY       
+		if ( orderBy == null ) {
+		  orderBy = 'LastModifiedDate DESC';
+		}
+		query += ' ORDER BY '+ orderBy; //DESC
+		// LIMIT & OFFSET
+		if ( recordsPerPage == null ) {
+		  recordsPerPage = 10;
+		}
+		query += ' LIMIT '+ String.valueOf(recordsPerPage);
+		if ( offset != null ){
+		query += ' OFFSET '+ String.valueOf(offset);
+		}
+		system.debug('### query: ' + query);      
+		return Database.query(query);
+	}
+
+	private static String getWhereCondition( String filterJson ) {
+		String whereCondition = '';
+		if (filterJson != null ) { 
+			try {
+				Map<String,Object> filter = (Map<String, Object>) JSON.deserializeUntyped( filterJson);
+		  		for ( String k :filter.keySet() ) {
+			    	String value = (String) filter.get(k);
+		    		if ( value.startsWith('!') ) {
+			      		whereCondition += ' AND ' + k + ' <> \'' +  value.substring(1) + '\'';            
+		    		} else {
+			      		whereCondition += ' AND ' + k + ' = \'' +  value + '\'';
+		    		}
+		  		}
+				if ( whereCondition != '') {          
+				    whereCondition = ' WHERE ' + whereCondition.substring(4);
+		  		}
+			} catch( JSONException e ) {
+				system.debug(LoggingLevel.ERROR, 'INVALID JSON ' + filterJson );        
+			}
+		}
+		return whereCondition;
+	}
 }

@@ -97,7 +97,8 @@ public with sharing class CourseViewController extends PageSettingsController {
 	}
 
 	public Boolean getShowActivate() {
-		return this.record.FieloELR__Status__c == 'Draft';
+		return this.record.FieloELR__Status__c == 'Draft' ||
+			this.record.FieloELR__Status__c == 'Inactive';
 	}
 
 	public Boolean getShowInActivate() {
