@@ -1,8 +1,8 @@
 public class ModuleResponses extends SObjectDomain {
-	public static Set<Id> processedIds = new Set<Id>();
+    public static Set<Id> processedIds = new Set<Id>();
     public static Boolean validateAdminFields = true;
 
-	public ModuleResponses(List<ModuleResponse__c> records) {
+    public ModuleResponses(List<ModuleResponse__c> records) {
         super(records);
     }
 
@@ -12,8 +12,74 @@ public class ModuleResponses extends SObjectDomain {
         }
     }
 
+    public override void onValidate(){
+        //store module Ids
+        Set<Id> moduleIds = new Set<Id>();
+        for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
+            moduleIds.add(moduleResponse.Module__c);                
+        }
+
+        if(!moduleIds.isEmpty()){
+            //Creates a set to know wich are the required modules to be approved for each of the related members
+            Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Id'}).selectByIdHavingDependencies(moduleIds));
+            Set<String> mrKeysRequired = new Set<String>();
+            Set<Id> modulesProcessedIds = new Set<Id>();
+            for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
+                if(!modulesProcessedIds.contains(moduleResponse.Module__c)){
+                    for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
+                        mrKeysRequired.add(String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+                    }
+                    modulesProcessedIds.add(moduleResponse.Module__c);
+                }
+            }
+
+            //query in the database only the moduleResponses that we the related modules were approved for the related members
+            List<ModuleResponse__c> predecessorModuleResponses = new ModuleResponsesSelector(new Set<String>{'Key__c'}).selectByKeyAndApproved(mrKeysRequired);
+            Set<String> approvedKeys = new Set<String>();
+            for(ModuleResponse__c mr : predecessorModuleResponses){
+                approvedKeys.add(mr.Key__c);
+            }
+
+            //verifies for each module response if the related modules where approved for the member
+            Set<String> keysWithError = new Set<String>();
+            for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
+                String key = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                if(keysWithError.contains(key)){
+                    moduleResponse.addError('The member didn\'t approve the dependent Modules');
+                    continue;
+                }
+                
+                for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
+                    String dependentKey = String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                    if(!approvedKeys.contains(dependentKey)){
+                        moduleResponse.addError('The member didn\'t approve the dependent Modules');
+                        keysWithError.add(key);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
+        List<ModuleResponse__c> submittedRecords = new List<ModuleResponse__c>();
+
+        for(ModuleResponse__c moduleResp: (List<ModuleResponse__c>)records){
+            //Add only submitted records.
+            if( moduleResp.IsSubmitted__c ){
+                if( !((ModuleResponse__c)existingRecords.get(moduleResp.Id)).IsSubmitted__c){
+                    submittedRecords.add(moduleResp);
+                }
+            }
+        }
+
+        if(!submittedRecords.isEmpty()){
+            setGradeAndApprovalFlag(submittedRecords);
+        }
+    }
+
     public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
-    	List<ModuleResponse__c> recordsToProcess = new List<ModuleResponse__c>();
+        List<ModuleResponse__c> recordsToProcess = new List<ModuleResponse__c>();
         Map<Id,ModuleResponse__c> mapExistingRecordsToProcess = new Map<Id,ModuleResponse__c>();
 
         for(ModuleResponse__c record : (List<ModuleResponse__c>)records){
@@ -28,23 +94,6 @@ public class ModuleResponses extends SObjectDomain {
         }
     }
 
-    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
-        List<ModuleResponse__c> submittedRecords = new List<ModuleResponse__c>();
-
-        for(ModuleResponse__c moduleResp: (List<ModuleResponse__c>)records){
-            //Add only submitted records.
-            if( moduleResp.IsSubmitted__c ){
-            	if( !((ModuleResponse__c)existingRecords.get(moduleResp.Id)).IsSubmitted__c){
-	                submittedRecords.add(moduleResp);
-            	}
-            }
-        }
-
-        if(!submittedRecords.isEmpty()){
-            setGradeAndApprovalFlag(submittedRecords);
-        }
-    }
-
     public static void setGradeAndApprovalFlag(List<ModuleResponse__c> records) {
         Set<Id> moduleResponseIds = new Map<Id,ModuleResponse__c>(records).keySet();
         Set<Id> moduleIds = new Set<Id>();
@@ -55,30 +104,21 @@ public class ModuleResponses extends SObjectDomain {
         Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector().selectByIdWithQuestions(moduleIds));
         Map<Id,Question__c> questionMap;
 
-        Double incorrectWeight;
-        Double questionWeight;
-        Double penaltyPerQuestion;
-        Integer isCorrectInt;
-        Integer questionRespAttempts;
-        String penaltyMode;
-
         List<QuestionResponse__c> unsubmitedQuestionResponses = new List<QuestionResponse__c>();
         // Checking for unsubmitted questions
         for (ModuleResponse__c moduleResponse: existingModuleResponseMap.values()) {
-            // if (moduleResponse.UnsubmittedQuestions__c > 0) {
-                for (QuestionResponse__c questionResponse: moduleResponse.QuestionResponses__r) {
-                    if ( !questionResponse.IsSubmitted__c ) {
-                        unsubmitedQuestionResponses.add(questionResponse);
-                    }
+            for (QuestionResponse__c questionResponse: moduleResponse.QuestionResponses__r) {
+                if ( !questionResponse.IsSubmitted__c ) {
+                    unsubmitedQuestionResponses.add(questionResponse);
                 }
-            // }
+            }
         }
 
         if (!unsubmitedQuestionResponses.isEmpty()) {
             QuestionResponses.disableSubmit = true;
             QuestionResponses.setIsCorrect(unsubmitedQuestionResponses);
 
-             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
+            SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
             for(QuestionResponse__c questionResponse : unsubmitedQuestionResponses){
                 questionResponse.IsSubmitted__c = true;
                 uow.registerDirty(questionResponse);
@@ -94,11 +134,8 @@ public class ModuleResponses extends SObjectDomain {
             for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
                 moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
             }
-            moduleResponse.GradePercent__c =
-                (moduleResponse.GradeValue__c / modulesMap.get(moduleResponse.Module__c).TotalValue__c) * 100;
-            moduleResponse.IsApproved__c =
-                moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
-
+            moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / modulesMap.get(moduleResponse.Module__c).TotalValue__c) * 100;
+            moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
         }
     }
 }

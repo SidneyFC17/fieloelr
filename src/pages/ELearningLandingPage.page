@@ -1,4 +1,4 @@
-<apex:page tabStyle="ELearning__tab" docType="html-5.0" sidebar="false" controller="ELearningLandingController">
+<apex:page tabStyle="Courses__tab" docType="html-5.0" sidebar="false" controller="ELearningLandingController">
 	<!--  action="{!verifyProgram}" -->
 <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <head>
@@ -56,7 +56,7 @@
               dataFilters="{'Program__c':'{!currentProgram.Id}', 'viewName':'{!currentView}'}"
             />
             <c:Form namespace="FieloELR" formId="FieloELR__Course__cForm"
-              saveController="ELearningLandingController.createCourse"
+              saveController="{!saveController}"
               heading="{!$Label.fieloelr__new} {!$ObjectType.Course__c.label}"
               fieldset="{!newCourse.FieloPLT__Sections__c}"
               secondaryParameters="{!secondaryParameters}"

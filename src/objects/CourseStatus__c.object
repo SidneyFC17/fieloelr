@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>false</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>false</enableSharing>
+    <enableStreamingApi>false</enableStreamingApi>
+    <fields>
+        <fullName>CompletedPercent__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Completed %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Course__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Course</label>
+        <referenceTo>Course__c</referenceTo>
+        <relationshipLabel>Courses Status</relationshipLabel>
+        <relationshipName>CoursesStatus</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Member__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Member</label>
+        <referenceTo>FieloPLT__Member__c</referenceTo>
+        <relationshipLabel>Courses Status</relationshipLabel>
+        <relationshipName>CoursesStatus</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TotalValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <gender>Feminine</gender>
+    <label>Course Status</label>
+    <nameField>
+        <label>Course Status Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Courses Status</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>CompletedCanNotBeNull</fullName>
+        <active>true</active>
+        <description>The Completed % field cannot be null.</description>
+        <errorConditionFormula>ISBLANK(CompletedPercent__c)</errorConditionFormula>
+        <errorDisplayField>CompletedPercent__c</errorDisplayField>
+        <errorMessage>The Completed % field cannot be null.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CompletedMustBePercentage</fullName>
+        <active>true</active>
+        <description>The Completed field must be between 0 and 100.</description>
+        <errorConditionFormula>OR(
+    CompletedPercent__c  &gt; 1.0,
+    CompletedPercent__c &lt; 0.0
+)</errorConditionFormula>
+        <errorDisplayField>CompletedPercent__c</errorDisplayField>
+        <errorMessage>The Completed field must be between 0 and 100.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CourseStatusMustBeActive</fullName>
+        <active>true</active>
+        <errorConditionFormula>NOT(ISPICKVAL(Course__r.Status__c,&quot;Active&quot;))</errorConditionFormula>
+        <errorDisplayField>Course__c</errorDisplayField>
+        <errorMessage>Course Status must be related to a Course with the Status Active</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>MemberRequired</fullName>
+        <active>true</active>
+        <description>The Member is required.</description>
+        <errorConditionFormula>ISNULL(Member__c ) || ISBLANK(Member__c )</errorConditionFormula>
+        <errorDisplayField>Member__c</errorDisplayField>
+        <errorMessage>Member is required.</errorMessage>
+    </validationRules>
+</CustomObject>

@@ -81,7 +81,7 @@ public class QuestionResponses extends SObjectDomain {
             questionWeight = questionsMap.get(questionResponse.Question__c).CorrectWeight__c;
             penaltyPerQuestion = questionsMap.get(questionResponse.Question__c).PenaltyPerAttempt__c;
             isCorrectInt = questionResponse.IsCorrect__c ? 1 : 0;
-            questionRespAttempts = Integer.valueOf(questionResponse.NumberOfAttempts__c);
+            questionRespAttempts = Integer.valueOf(questionResponse.NumberOfAttempt__c);
             penaltyMode = questionsMap.get(questionResponse.Question__c).Module__r.PenaltyMode__c;
 
             questionResponse.PartialGradeValue__c =

@@ -9,6 +9,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
     public FieloPLT__PageSettings__c landingCourse {get;set;}
     public FieloPLT__PageSettings__c landingModule {get;set;}
     public static String secondaryParameters {get;set;}
+    public static String saveController {get;set;}
 
     public FieloPLT__Program__c currentProgram { get {
         if ( currentProgram == null) {
@@ -60,6 +61,9 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
     }
 
     public static String getSectionsWithSegmentWhereCondition(String sectionsString){
+        
+        saveController = 'ELearningLandingController.createCourseWithoutSegments';
+
         List<Section> sections = (List<Section>) JSON.deserialize( sectionsString, List<ELearningLandingController.Section>.class );
         for ( Section s :sections ) {
           for ( List<FormField> r :s.rows ) {
@@ -68,6 +72,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
                 if(f.Name == 'FieloELR__Segment__c') {
                     f.WhereCondition = ' FieloPLT__Program__c IN ( //, /' + ProgramService.getActiveProgram().Id + '/ ) AND RecordType.Name <> /Metasegment/ ';
                     secondaryParameters = 'FieloELR__Segment__c';
+                    saveController = 'ELearningLandingController.createCourseWithSegments';
                 }
               }
             }
@@ -106,15 +111,15 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
         in the case that segments are not used.
     */
     @RemoteAction
-    public static RemoteActionResult createCourse(sObject objectRecord, List<String> nullFields) {
-        return createCourse(objectRecord,nullFields,new List<String>());
+    public static RemoteActionResult createCourseWithoutSegments(sObject objectRecord, List<String> nullFields) {
+        return createCourseWithSegments(objectRecord,nullFields,new List<String>());
     }
 
     /*
         Create Courses Method
     */
     @RemoteAction
-    public static RemoteActionResult createCourse(sObject objectRecord, List<String> nullFields, List<String> segments) {
+    public static RemoteActionResult createCourseWithSegments(sObject objectRecord, List<String> nullFields, List<String> segments) {
         Savepoint sp;
         RemoteActionResult result = new RemoteActionResult();
 
@@ -123,7 +128,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
             sp = Database.setSavepoint();
             // nullFields is not used becouse its an insert
             // Si tiene mas de un Segmento pasa por Metasegments
-            
+
             if ( segments.size() == 1 ) {
                 record.segment__c = segments.get(0);
             } else if ( segments.size() > 1 ) {
@@ -132,6 +137,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
               record.segment__c = null;
             }
             //TODO Change to ELR Create API
+
             insert record;
             
             //TODO Crear Label DataSavedSuccessfully
