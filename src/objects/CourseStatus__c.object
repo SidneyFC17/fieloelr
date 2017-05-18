@@ -56,15 +56,15 @@
     <enableSharing>false</enableSharing>
     <enableStreamingApi>false</enableStreamingApi>
     <fields>
-        <fullName>CompletedPercent__c</fullName>
-        <defaultValue>0</defaultValue>
+        <fullName>ApprovedModules__c</fullName>
         <externalId>false</externalId>
-        <label>Completed %</label>
-        <precision>18</precision>
+        <label>Approved Modules</label>
+        <precision>3</precision>
         <required>false</required>
-        <scale>2</scale>
+        <scale>0</scale>
         <trackTrending>false</trackTrending>
-        <type>Percent</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Course__c</fullName>
@@ -102,43 +102,33 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>TotalValue__c</fullName>
+        <fullName>Progress__c</fullName>
         <externalId>false</externalId>
-        <label>Total Value</label>
+        <formula>ApprovedModules__c / Course__r.ActiveModules__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Progress</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Percent</type>
     </fields>
     <gender>Feminine</gender>
     <label>Course Status</label>
     <nameField>
+        <displayFormat>CS-{0000}</displayFormat>
         <label>Course Status Name</label>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Courses Status</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
-        <fullName>CompletedCanNotBeNull</fullName>
+        <fullName>ApprovedModulesCanNotBeNull</fullName>
         <active>true</active>
-        <description>The Completed % field cannot be null.</description>
-        <errorConditionFormula>ISBLANK(CompletedPercent__c)</errorConditionFormula>
-        <errorDisplayField>CompletedPercent__c</errorDisplayField>
-        <errorMessage>The Completed % field cannot be null.</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>CompletedMustBePercentage</fullName>
-        <active>true</active>
-        <description>The Completed field must be between 0 and 100.</description>
-        <errorConditionFormula>OR(
-    CompletedPercent__c  &gt; 1.0,
-    CompletedPercent__c &lt; 0.0
-)</errorConditionFormula>
-        <errorDisplayField>CompletedPercent__c</errorDisplayField>
-        <errorMessage>The Completed field must be between 0 and 100.</errorMessage>
+        <description>The Approved Modules field cannot be null.</description>
+        <errorConditionFormula>ISBLANK(ApprovedModules__c)</errorConditionFormula>
+        <errorMessage>The Approved Modules cannot be null.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>CourseStatusMustBeActive</fullName>
