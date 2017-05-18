@@ -1,5 +1,7 @@
 public class Modules extends SObjectDomain {
 
+	public static Boolean validateAdminFields = true;
+
 	public Modules(List<Module__c> records) {
         super(records);
     }
@@ -10,10 +12,23 @@ public class Modules extends SObjectDomain {
         }
     }
 
+	public override void onApplyDefaults() {
+       for(Module__c module : (List<Module__c>)records){
+           module.IsActive__c = false;
+       }
+   }    
+
     public override void onValidate() {
     }
 
     public override void onValidate(Map<Id,SObject> existingRecords) {
+		if(validateAdminFields) {
+            for(Module__c module : (List<Module__c>)records) {
+                if(((Module__c)(existingRecords.get(module.Id))).IsActive__c) {
+                	module.addError('An active module cannot be modified.');
+                }
+            }
+        }
     }
 
     public override void onBeforeInsert() {
@@ -101,18 +116,16 @@ public class Modules extends SObjectDomain {
 	    List<Question__c> questionsWithCorrectAnswer = new QuestionsSelector(new Set<String> {'Id', 'Name', 'Module__c', 'Type__c'}).selectByModuleHavingAnswers(modulesMap.KeySet()); 
 	    																		
 	    for(Question__c question : questionsWithCorrectAnswer) {
-	    	// Question types "statement", "single choice","multiple choice" and "Matching" must have at least one answer.
 	        if(question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options') {
+	    		// Question types "statement", "single choice","multiple choice" and "Matching" must have at least one answer.
 	        	if(question.Answers__r.isEmpty()) {
 					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without any answer. Question: ' + question.Name);    
-	        	} else {
-	        		// Question types "statement" and "single choice" must have a correct answer.
-	        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && question.Answers__r[0].IsCorrect__c != true) {
-						modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without a correct answer. Question: ' + question.Name);    
-	        		}
-	        	}
+	        	} 
+        		// Question types "statement" and "single choice" must have a correct answer.
+        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && question.Answers__r[0].IsCorrect__c != true) {
+					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without a correct answer. Question: ' + question.Name);    
+        		}
 	        } 
 	    }
     }
-
 }

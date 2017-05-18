@@ -33,6 +33,19 @@ public with sharing class ModulesSelector extends SObjectSelector {
         return (List<Module__c>) selectSObjectsById(moduleIds);
     }
 
+     public List<Module__c> selectByIdActive(Set<Id> moduleIds) {
+      return (List<Module__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :moduleIds ' +
+                  '  AND IsActive__c = true ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }  
+
     public List<Module__c> selectByIdWithQuestions(Set<Id> moduleIds) {
       return (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +

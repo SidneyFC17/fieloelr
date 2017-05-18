@@ -10,6 +10,22 @@ public class Answers extends SObjectDomain {
         }
     }
 
+    public override void onBeforeInsert() {
+		// If the module is active, answers cannot be deleted, updated or added.																		
+    	checkModule(records);
+    }
+
+    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
+		// If the module is active, answers cannot be deleted, updated or added.																		
+		checkModule(records);
+    }
+
+
+	public override void onBeforeDelete() {
+		// If the module is active, answers cannot be deleted, updated or added.																		
+     	checkModule(records);
+    }
+
 
 	// Check the modules for a list of answers
     private void checkModule(List<Answer__c> answers) {
@@ -21,10 +37,10 @@ public class Answers extends SObjectDomain {
 
 		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id'}).selectByIdWithActiveModule(questions));
 
-		// If the module is Active cannot be deleted, updated or added new answers.																		
+		// If the module is active, answers cannot be deleted, updated or added.																		
 	    for(Answer__c answer : answers) {
-	    	if(questionsMap.containsKey(answer.Question__c) != null) {
-	        	answer.addError('Active modules cannot have changes in their answers.');             
+	    	if(questionsMap.containsKey(answer.Question__c)) {
+	        	answer.addError('Active modules cannot have changes in their set of answers.');             
 	    	}
 	    }
     }
