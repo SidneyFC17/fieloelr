@@ -17,4 +17,12 @@ public class CourseDependencies extends SObjectDomain{
     public override void onValidate(Map<Id,SObject> existingRecords) {
     	//before update
     }
+
+    public override void onBeforeDelete() {
+
+    }
+    public override void onBeforeInsert() {
+    }
+    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
+    }
 }
