@@ -18,9 +18,29 @@ public class ModuleResponses extends SObjectDomain {
     }
 
     public override void onApplyDefaults() {
+        Set<String> mrKeys = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             moduleResponse.IsSubmitted__c = false;
             moduleResponse.IsApproved__c = false;
+            moduleResponse.Key__c = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+            mrKeys.add(moduleResponse.Key__c);
+        }
+
+        List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : mrKeys GROUP BY Key__c];
+        Map<String,Integer> maxNumbByKey = new Map<String,Integer>();
+        for(AggregateResult mr : aggResult){
+            maxNumbByKey.put((String)mr.get('Key__c'), (Integer)mr.get('attemptNumber'));
+        }
+        
+        for(ModuleResponse__c moduleResp : (List<ModuleResponse__c>)records){
+            if(maxNumbByKey.containsKey(moduleResp.Key__c)){
+                Integer maxAttempt = maxNumbByKey.get(moduleResp.Key__c);
+                moduleResp.NumberOfAttempt__c = ++maxAttempt;
+                maxNumbByKey.put(moduleResp.Key__c, maxAttempt);
+            }else{
+                moduleResp.NumberOfAttempt__c = 1;
+                maxNumbByKey.put(moduleResp.Key__c, 1);
+            }
         }
     }
 
@@ -72,8 +92,7 @@ public class ModuleResponses extends SObjectDomain {
                 moduleResponse.addError('The member is not registered in the related course.');
             }
 
-            String mrkey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
-            if(mrKeysWithError.contains(mrkey)){
+            if(mrKeysWithError.contains(moduleResponse.Key__c)){
                 moduleResponse.addError('The member didn\'t approve the dependent Modules');
                 continue;
             }
@@ -82,7 +101,7 @@ public class ModuleResponses extends SObjectDomain {
                 String dependentKey = String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
                 if(!approvedMRKeys.contains(dependentKey)){
                     moduleResponse.addError('The member didn\'t approve the dependent Modules');
-                    mrKeysWithError.add(mrkey);
+                    mrKeysWithError.add(moduleResponse.Key__c);
                     break;
                 }
             }            
@@ -95,8 +114,17 @@ public class ModuleResponses extends SObjectDomain {
                 if(((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsSubmitted__c){
                     moduleResponse.addError('Cannot modify a moduleResponse that was already submitted.');
                 }
-                if(moduleResponse.IsApproved__c && !((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsSubmitted__c){
-                    moduleResponse.IsApproved__c = false;
+                if(moduleResponse.IsApproved__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c){
+                    moduleResponse.IsApproved__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c;
+                }
+                if(moduleResponse.GradeValue__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradeValue__c){
+                    moduleResponse.GradeValue__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradeValue__c;
+                }
+                if(moduleResponse.GradePercent__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c){
+                    moduleResponse.GradePercent__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c;
+                }
+                if(moduleResponse.Key__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).Key__c){
+                    moduleResponse.Key__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).Key__c;
                 }
             }
         }
@@ -144,14 +172,6 @@ public class ModuleResponses extends SObjectDomain {
     }
 
     public override void onBeforeDelete(){
-        if(validateAdminFields){
-            for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
-                if(moduleResponse.IsSubmitted__c){
-                    moduleResponse.addError('Cannot modify a moduleResponse that was already submitted.');
-                }
-            }
-        }
-
         List<ModuleResponse__c> approvedRecords = new List<ModuleResponse__c>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             if(moduleResponse.IsApproved__c){
@@ -195,6 +215,8 @@ public class ModuleResponses extends SObjectDomain {
             QuestionResponses.disableSubmit = false;
         }
 
+        Set<String> mrKeys = new Set<String>();
+        List<ModuleResponse__c> approvedResponses = new List<ModuleResponse__c>();
         for (ModuleResponse__c moduleResponse: (List<ModuleResponse__c>)records) {
             moduleResponse.GradeValue__c = 0.0;
             questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
@@ -204,6 +226,30 @@ public class ModuleResponses extends SObjectDomain {
             }
             moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / modulesMap.get(moduleResponse.Module__c).TotalValue__c) * 100;
             moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
+
+            if(moduleResponse.IsApproved__c){
+                mrKeys.add(moduleResponse.Key__c);
+                approvedResponses.add(moduleResponse);
+            }
+        }
+
+        if(!mrKeys.isEmpty()){
+            List<AggregateResult> aggResult = [SELECT MAX(NumberOfApprove__c) approveNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : mrKeys GROUP BY Key__c];
+            Map<String,Integer> maxAppByKey = new Map<String,Integer>();
+            for(AggregateResult mr : aggResult){
+                maxAppByKey.put((String)mr.get('Key__c'), (Integer)mr.get('approveNumber'));
+            }
+
+            for(ModuleResponse__c moduleResponse : approvedResponses){
+                if(maxAppByKey.containsKey(moduleResponse.Key__c)){
+                    Integer maxApprove = maxAppByKey.get(moduleResponse.Key__c);
+                    moduleResponse.NumberOfApprove__c = ++maxApprove;
+                    maxAppByKey.put(moduleResponse.Key__c, maxApprove);
+                }else{
+                    moduleResponse.NumberOfApprove__c = 1;
+                    maxAppByKey.put(moduleResponse.Key__c, 1);
+                }
+            }
         }
     }
 
@@ -213,7 +259,7 @@ public class ModuleResponses extends SObjectDomain {
         Set<String> mrKeys = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             moduleIds.add(moduleResponse.Module__c);                
-            mrKeys.add(String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+            mrKeys.add(moduleResponse.Key__c);
         }
 
         //Creates a set to know wich are the required modules to be approved for each of the related members
@@ -221,12 +267,12 @@ public class ModuleResponses extends SObjectDomain {
 
         //look for already approved modules
         ModuleResponsesSelector mrSelector = new ModuleResponsesSelector(new Set<String>{'Id','Key__c'});
-        List<ModuleResponse__c> approvedModuleResponses = isUpdate ? mrSelector.selectByKeyAndApproved(mrKeys, null) : mrSelector.selectByKeyAndApproved(mrKeys, moduleIds);
+        List<ModuleResponse__c> approvedModuleResponses = isUpdate ? mrSelector.selectByKeyAndApproved(mrKeys, new Map<Id,ModuleResponse__c>(records).keySet()) : mrSelector.selectByKeyAndApproved(mrKeys, null);
         Set<String> approvedMRKeys = new Set<String>();
         for(ModuleResponse__c mr : approvedModuleResponses){
             approvedMRKeys.add(mr.Key__c);
         }
-
+        
         //store course status keys
         Set<String> csKeys = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
@@ -235,18 +281,17 @@ public class ModuleResponses extends SObjectDomain {
 
         //look for existing course status
         Map<String,CourseStatus__c> csMap = new Map<String,CourseStatus__c>();
-        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c','Progress__c'}).selectByKey(csKeys)){
+        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c','ApprovedModules__c'}).selectByKey(csKeys)){
             csMap.put(cs.Key__c, cs);
         }
 
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseStatus__c.SObjectType});
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             //verifies if the module was not approved previously
-            String mrKey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
-            if(approvedMRKeys.contains(mrKey)){
+            if(approvedMRKeys.contains(moduleResponse.Key__c)){
                 continue;
             }else{
-                approvedMRKeys.add(mrKey);
+                approvedMRKeys.add(moduleResponse.Key__c);
             }
 
             //looks for the course status where needs to update the progress
@@ -285,6 +330,7 @@ public class ModuleResponses extends SObjectDomain {
             }
         }
 
+        //CourseStatus.validateAdminFields = false;
         uow.commitWork();
     }
 }

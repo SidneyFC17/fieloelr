@@ -5,7 +5,6 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                 ModuleResponse__c.Id,
                 ModuleResponse__c.Name,
                 ModuleResponse__c.Date__c,
-                ModuleResponse__c.Description__c,
                 ModuleResponse__c.GradePercent__c,
                 ModuleResponse__c.GradeValue__c,
                 ModuleResponse__c.IsApproved__c,
@@ -29,6 +28,18 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
 
     public List<ModuleResponse__c> selectById(Set<Id> moduleResponseIds){
         return (List<ModuleResponse__c>) selectSObjectsById(moduleResponseIds);
+    }
+
+    public List<ModuleResponse__c> selectByIdAndSubmitted(Set<Id> recordIds) {
+        return (List<ModuleResponse__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN : recordIds AND IsSubmitted__c = true ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
     }
 
     public List<ModuleResponse__c> selectByIdWithQuestionResponses(Set<Id> moduleResponseIds) {
@@ -63,11 +74,16 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
     }
 
     public List<ModuleResponse__c> selectByKeyAndApproved(Set<String> keys, Set<Id> moduleExcludeIds) {
-        return (List<ModuleResponse__c>) Database.query(String.format(
-                'SELECT {0} ' +
+        String query = 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys AND IsApproved__c = true AND Id NOT in : moduleExcludeIds ' +
-                  'ORDER BY {2}',
+                  'WHERE Key__c IN : keys AND IsApproved__c = true ';
+        if(moduleExcludeIds != null){
+            query += ' AND Id NOT in : moduleExcludeIds ';
+        }
+                  
+        query += 'ORDER BY {2}';
+        system.debug('query: ' + query);
+        return (List<ModuleResponse__c>) Database.query(String.format(query,
                 new List<String> {
                     getFieldListString(),
                     getSObjectName(),
