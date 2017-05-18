@@ -73,8 +73,8 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		initPageSettings(objectName, record, buttonString, '', '');
 
-		for(FieloPLT__PageSettings__c settings:relatedSettings) {
-			if(settings.FieloPLT__TargetObject__c == 'FieloELR__ModuleDependency__c') {
+		for(FieloPLT__PageSettings__c settings:relatedFormsSettings) {
+			if(settings.FieloPLT__Object__c == 'FieloELR__ModuleDependency__c') {
 				settings.FieloPLT__Sections__c = getSectionsWithModuleWhereCondition(
 					settings.FieloPLT__Sections__c,
 					record.Course__c,
