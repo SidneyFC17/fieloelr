@@ -40,20 +40,28 @@
             buttons="{!rel.FieloPLT__Buttons__c}"
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
-            dataOrderBy="FieloELR__Order__c"
+            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            showPaginator="true"
+            dataController="ModuleViewController.getRecords"
             />
-          <c:Form namespace="FieloELR" formId="FieloELR__Question__cForm"
-			heading="{!$Label.fieloelr__edit} {!$ObjectType.Question__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="ModuleViewController.saveQuestion"
-			/>
-          <c:Form namespace="FieloELR" formId="FieloELR__Question__cFormNew"
-			heading="{!$Label.fieloelr__new} {!$ObjectType.Question__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="ModuleViewController.saveQuestion"
-			/>
+            <apex:repeat value="{!relatedFormsSettings}" var="relForm">
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Question__c' && relForm.FieloPLT__Type__c = 'Edit'}">
+	            	<c:Form namespace="FieloELR" formId="FieloELR__Question__cForm"
+					heading="{!$Label.fieloelr__edit} {!$ObjectType.Question__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="ModuleViewController.saveQuestion"
+					/>
+            	</apex:panelGroup>
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Question__c' && relForm.FieloPLT__Type__c = 'New'}">
+	            	<c:Form namespace="FieloELR" formId="FieloELR__Question__cFormNew"
+					heading="{!$Label.fieloelr__new} {!$ObjectType.Question__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="ModuleViewController.saveQuestion"
+					/>
+            	</apex:panelGroup>
+            </apex:repeat>
         </apex:panelGroup>
 
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__ModuleDependency__c'}">
@@ -66,21 +74,28 @@
             buttons="{!rel.FieloPLT__Buttons__c}"
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
+            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            showPaginator="true"
             />
-          <c:Form namespace="FieloELR" formId="FieloELR__ModuleDependency__cForm"
-			heading="{!$Label.fieloelr__edit} {!$ObjectType.ModuleDependency__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="ModuleViewController.saveModuleDependency"
-			/>
-          <c:Form namespace="FieloELR" formId="FieloELR__ModuleDependency__cFormNew"
-			heading="{!$Label.fieloelr__new} {!$ObjectType.ModuleDependency__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="ModuleViewController.saveModuleDependency"
-			/>
+            <apex:repeat value="{!relatedFormsSettings}" var="relForm">
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__ModuleDependency__c' && relForm.FieloPLT__Type__c = 'Edit'}">
+					<c:Form namespace="FieloELR" formId="FieloELR__ModuleDependency__cForm"
+					heading="{!$Label.fieloelr__edit} {!$ObjectType.ModuleDependency__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="ModuleViewController.saveModuleDependency"
+					/>
+            	</apex:panelGroup>
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__ModuleDependency__c' && relForm.FieloPLT__Type__c = 'New'}">
+					<c:Form namespace="FieloELR" formId="FieloELR__ModuleDependency__cFormNew"
+					heading="{!$Label.fieloelr__new} {!$ObjectType.ModuleDependency__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="ModuleViewController.saveModuleDependency"
+					/>
+            	</apex:panelGroup>
+            </apex:repeat>
         </apex:panelGroup>
-
     	</apex:repeat>
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>

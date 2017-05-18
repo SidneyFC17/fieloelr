@@ -60,6 +60,17 @@
     <enableSharing>false</enableSharing>
     <enableStreamingApi>false</enableStreamingApi>
     <fields>
+        <fullName>ActiveModules__c</fullName>
+        <externalId>false</externalId>
+        <label>Active Modules</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Description__c</fullName>
         <externalId>false</externalId>
         <label>Description</label>
@@ -173,7 +184,7 @@
     </validationRules>
     <validationRules>
         <fullName>SameProgramSegment</fullName>
-        <active>false</active>
+        <active>true</active>
         <description>The course must have a segment within the same program.</description>
         <errorConditionFormula>Segment__r.FieloPLT__Program__c  &lt;&gt;  Program__c &amp;&amp;  NOT(ISNULL(Segment__r.FieloPLT__Program__c) ||  ISBLANK(Segment__r.FieloPLT__Program__c))</errorConditionFormula>
         <errorDisplayField>Segment__c</errorDisplayField>
