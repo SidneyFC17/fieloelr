@@ -36,5 +36,9 @@ public class Courses extends SObjectDomain{
                 }
             }
         }
-    }    
+    }
+
+    public override void onBeforeDelete(){
+
+    }     
 }
