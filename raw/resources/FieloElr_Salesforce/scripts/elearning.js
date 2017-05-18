@@ -88,8 +88,14 @@
   };
 
   FieloELearning.prototype.updateViewTitle = function() {
-    this.title_.textContent =
-      String(this.viewSelector_.itemActive_.textContent).trim() + ' Courses';
+    if (this.viewSelector_ !== undefined && this.viewSelector_ !== null) {
+      if (this.viewSelector_.itemActive_ !== undefined &&
+          this.viewSelector_.itemActive_ !== null) {
+        this.title_.textContent =
+          String(this.viewSelector_.itemActive_.textContent).trim() +
+            ' Courses';
+      }
+    }
   };
 
   FieloELearning.prototype.renderSegments_ = function(result) {

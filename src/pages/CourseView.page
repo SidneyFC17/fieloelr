@@ -43,18 +43,24 @@
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
             />
-          <c:Form namespace="FieloELR" formId="FieloELR__Module__cForm"
-			heading="{!$Label.fieloelr__edit} {!$ObjectType.Module__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="CourseViewController.saveModule"
-			/>
-          <c:Form namespace="FieloELR" formId="FieloELR__Module__cFormNew"
-			heading="{!$Label.fieloelr__new} {!$ObjectType.Module__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="CourseViewController.saveModule"
-			/>
+            <apex:repeat value="{!relatedFormsSettings}" var="relForm">
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Module__c' && relForm.FieloPLT__Type__c = 'Edit'}">
+            		<c:Form namespace="FieloELR" formId="FieloELR__Module__cForm"
+					heading="{!$Label.fieloelr__edit} {!$ObjectType.Module__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="CourseViewController.saveModule"
+					/>
+            	</apex:panelGroup>
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Module__c' && relForm.FieloPLT__Type__c = 'New'}">
+					<c:Form namespace="FieloELR" formId="FieloELR__Module__cFormNew"
+					heading="{!$Label.fieloelr__new} {!$ObjectType.Module__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="CourseViewController.saveModule"
+					/>
+            	</apex:panelGroup>
+            </apex:repeat>
         </apex:panelGroup>
 
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__CourseDependency__c'}">
@@ -69,22 +75,26 @@
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
             />
-          <c:Form namespace="FieloELR" formId="FieloELR__CourseDependency__cForm"
-			heading="{!$Label.fieloelr__edit} {!$ObjectType.CourseDependency__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="CourseViewController.saveCourseDependency"
-			/>
-          <c:Form namespace="FieloELR" formId="FieloELR__CourseDependency__cFormNew"
-			heading="{!$Label.fieloelr__new} {!$ObjectType.CourseDependency__c.label}"
-			sObjectName="{!rel.FieloPLT__TargetObject__c}"
-			fieldset="{!rel.FieloPLT__Sections__c}"
-			saveController="CourseViewController.saveCourseDependency"
-			/>
+            <apex:repeat value="{!relatedFormsSettings}" var="relForm">
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__CourseDependency__c' && relForm.FieloPLT__Type__c = 'Edit'}">
+            		<c:Form namespace="FieloELR" formId="FieloELR__CourseDependency__cForm"
+					heading="{!$Label.fieloelr__edit} {!$ObjectType.CourseDependency__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="CourseViewController.saveCourseDependency"
+					/>
+            	</apex:panelGroup>
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__CourseDependency__c' && relForm.FieloPLT__Type__c = 'New'}">
+            		<c:Form namespace="FieloELR" formId="FieloELR__CourseDependency__cFormNew"
+					heading="{!$Label.fieloelr__new} {!$ObjectType.CourseDependency__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="CourseViewController.saveCourseDependency"
+					/>
+            	</apex:panelGroup>
+            </apex:repeat>
         </apex:panelGroup>
-        
     </apex:repeat>
-    
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
 </body>
