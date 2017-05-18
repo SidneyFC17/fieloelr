@@ -41,12 +41,12 @@ A question was created
    3. The system displays an error message
    4. End of flow
 
-##### 3. The system verifies that the Order field is null (step 5 of basic flow)
+##### 3. "Order" field is null (step 5 of basic flow)
    1. The system verifies that the Order field is null
    2. The system automatically numbers the field Order
    3. Back to step 6 of basic flow
 
-##### 4.The system verifies that the “Correct Weight” field is null (step 6 of basic flow)
+##### 4.“Correct Weight” field is null (step 6 of basic flow)
    1. The system verifies that the “Correct Weight” field is null
    2. The system automatically updates the “Correct Weight” field with value = 1
    3. Back to step 7 of basic flow
@@ -74,7 +74,7 @@ A question was created
    2. The system automatically updates the “Incorrect Weight” field with value = 0
    3. Back to step 8 of basic flow
 
-##### 9. The system verifies that the “Penalty per Attempt” field is null (step 8 of basic flow)
+##### 9. “Penalty per Attempt” field is null (step 8 of basic flow)
    1. The system verifies that the “Penalty per Attempt” field is null
    2. The system automatically updates the “Penalty per Attempt” field with value = 0
    3. Back to step 9 of basic flow
