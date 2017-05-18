@@ -42,7 +42,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <content>ModuleView</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
@@ -228,6 +230,14 @@
         <errorMessage>When filled, the number of attempts allowed must be positive.</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>CannotChangeCourse</fullName>
+        <active>true</active>
+        <description>The course cannot be changed.</description>
+        <errorConditionFormula>ISCHANGED( Course__c )</errorConditionFormula>
+        <errorDisplayField>Course__c</errorDisplayField>
+        <errorMessage>The course cannot be changed.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>CourseMandatory</fullName>
         <active>true</active>
         <description>The course field is mandatory.</description>
@@ -247,19 +257,13 @@
         <fullName>NoActiveCourseOnCreation</fullName>
         <active>true</active>
         <description>A Module cannot be created with a relation to an active Course, and the Course cannot be modified afterwards.</description>
-        <errorConditionFormula>OR( 
-   AND( 
+        <errorConditionFormula>AND( 
       ISNEW() , 
       ISPICKVAL(Course__r.Status__c , 
          &apos;Active&apos;) 
-   ) ,  
-   AND( 
-      NOT( ISNEW() ) , 
-      ISCHANGED( Course__c ) 
-   ) 
-)</errorConditionFormula>
+   )</errorConditionFormula>
         <errorDisplayField>Course__c</errorDisplayField>
-        <errorMessage>Course cannot be edited and, on creation, it cannot be an active one.</errorMessage>
+        <errorMessage>On module creation, course cannot be active.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>NoQuestionPoolIfWeightedQuestions</fullName>

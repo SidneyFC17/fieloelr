@@ -76,8 +76,8 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 
-		for(FieloPLT__PageSettings__c settings:relatedSettings) {
-			if(settings.FieloPLT__TargetObject__c == 'FieloELR__CourseDependency__c') {
+		for(FieloPLT__PageSettings__c settings:relatedFormsSettings) {
+			if(settings.FieloPLT__Object__c == 'FieloELR__CourseDependency__c') {
 				settings.FieloPLT__Sections__c = getSectionsWithCourseWhereCondition(
 					settings.FieloPLT__Sections__c,
 					record.Program__c,
