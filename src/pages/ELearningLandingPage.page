@@ -13,7 +13,7 @@
 <body>
 	<div class="fielosf fielosf-elearning fielosf-elearning-landing">
 	<!--  HEADER  -->
-	<c:BackendHeaderRecord firstHeading="E-Learning"
+	<c:BackendHeaderRecord firstHeading="Courses"
       secondHeading=""
       icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#metrics"
       helpUrl="http://documentation.fielo.com/docs/elearning"

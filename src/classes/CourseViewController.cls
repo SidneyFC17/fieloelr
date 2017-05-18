@@ -1,7 +1,7 @@
 public with sharing class CourseViewController extends PageSettingsController {
 	public Course__c record {get;set;}
 	public String buttonString {get;set;}
-	public String toolsString {get;set;}
+	// public String toolsString {get;set;}
 	public static String secondaryParameters {get;set;}
 	public List<Map<String,Object>> buttonList {get;set;}
 	private ApexPages.StandardController controller;
@@ -76,6 +76,16 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 
+		for(FieloPLT__PageSettings__c settings:relatedSettings) {
+			if(settings.FieloPLT__TargetObject__c == 'FieloELR__CourseDependency__c') {
+				settings.FieloPLT__Sections__c = getSectionsWithCourseWhereCondition(
+					settings.FieloPLT__Sections__c,
+					record.Program__c,
+					record.Id
+				);
+			}
+		}
+
 		if ( fieldList.size() > 0  ) {
 			for(String fieldName:fieldList) {
 				fields.add(fieldName);
@@ -97,7 +107,8 @@ public with sharing class CourseViewController extends PageSettingsController {
 	}
 
 	public Boolean getShowActivate() {
-		return this.record.FieloELR__Status__c == 'Draft';
+		return this.record.FieloELR__Status__c == 'Draft' ||
+			this.record.FieloELR__Status__c == 'Inactive';
 	}
 
 	public Boolean getShowInActivate() {
@@ -140,16 +151,10 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
-			// Agrega las Validation Rules asociadas al Campo
-			Database.rollback(sp);
-			if(ApexPages.hasMessages()){
-				result.redirectURL = '';
-            	for(ApexPages.Message m : ApexPages.getMessages()){
-	                result.addMessage(new RemoteActionResult.RemoteActionMessage(m, record.getSobjectType().getDescribe().getName() ));
-            	}
-        	} else {
-          	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+    		if(sp != null){
+	            Database.rollback(sp);
         	}
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
     	}catch(Exception e){
         	if(sp != null){
 	            Database.rollback(sp);
@@ -175,6 +180,9 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + record.Id;
     	}catch(DMLException e){
+    		if(sp != null){
+	            Database.rollback(sp);
+        	}
             result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
         }catch(Exception e){
     		system.debug('Exception: ' + e);
@@ -202,6 +210,9 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 			result.redirectURL = '/' + ((CourseDependency__c)record).Course__c;
     	}catch(DMLException e){
+    		if(sp != null){
+	            Database.rollback(sp);
+        	}
             result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
         }catch(Exception e){
     		system.debug('Exception: ' + e);
@@ -249,6 +260,20 @@ public with sharing class CourseViewController extends PageSettingsController {
         return JSON.serialize(sections);
     }
 
+    public static String getSectionsWithCourseWhereCondition(String sectionsString, String programId, String courseId){
+	    Section section = (Section) JSON.deserialize( sectionsString, CourseViewController.Section.class );
+		for ( List<FormField> r :section.rows ) {
+			for ( FormField f :r ) {
+		  		if(f.Name != null) {
+		    		if(f.Name == 'FieloELR__Predecessor__c') {
+		        		f.WhereCondition = ' FieloELR__Program__c = /' + programId + '/ AND Id != /' + courseId + '/';
+		    		}
+		  		}
+			}
+		}
+        return JSON.serialize(section);
+    }
+
     @RemoteAction
   	public static RemoteActionResult activate( Id recordId ){
 		RemoteActionResult result = new RemoteActionResult();
@@ -261,7 +286,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
 		}
@@ -280,7 +305,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
 		}

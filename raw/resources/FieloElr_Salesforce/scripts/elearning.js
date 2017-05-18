@@ -64,6 +64,10 @@
   * Setea valoes por defecto
   */
   FieloELearning.prototype.setDefaults_ = function() {
+    // tabs
+    this.title_ =
+      this.element_.getElementsByClassName(this.CssClasses_.TITLE)[0];
+
     // New Button
     this.createcourse_ = this.element_
       .getElementsByClassName(this.CssClasses_.CREATE_COURSE)[0];
@@ -71,12 +75,21 @@
     // Object to get the data
     // Courses
     this.viewSelector_ = this.element_
-      .getElementsByClassName(this.CssClasses_.VIEW_SELECTOR)[0] === null ?
+      .getElementsByClassName(this.CssClasses_.VIEW_SELECTOR)[0] === undefined ?
+        null :
         this.element_.getElementsByClassName(
-          this.CssClasses_.VIEW_SELECTOR)[0].FieloFilter :
-        null;
+          this.CssClasses_.VIEW_SELECTOR)[0].FieloFilter;
+    if (this.viewSelector_ !== null) {
+      this.viewSelector_.callback = this.updateViewTitle.bind(this);
+    }
 
     this.memberId_ = null;
+    this.updateViewTitle();
+  };
+
+  FieloELearning.prototype.updateViewTitle = function() {
+    this.title_.textContent =
+      String(this.viewSelector_.itemActive_.textContent).trim() + ' Courses';
   };
 
   FieloELearning.prototype.renderSegments_ = function(result) {

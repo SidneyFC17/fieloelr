@@ -7,12 +7,12 @@ public class Courses extends SObjectDomain{
 	}
 
 	public class Constructor implements SObjectDomain.IConstructable {
+
         public SObjectDomain construct(List<Course__c> sObjectList) {            
             //If has Admin Permission allow "validateAdminFields"
             if(FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()) != null && FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()).FieloPLT__To__c >= system.now()){
                 validateAdminFields = false;
             }
-
             return new Courses(sObjectList);
         }
     }
@@ -37,4 +37,12 @@ public class Courses extends SObjectDomain{
             }
         }
     }    
+
+    public override void onValidate() {
+    	//before insert
+    }
+
+    public override void onValidate(Map<Id,SObject> existingRecords) {
+    	//before update
+    }
 }
