@@ -37,12 +37,4 @@ public class Courses extends SObjectDomain{
             }
         }
     }    
-
-    public override void onValidate() {
-    	//before insert
-    }
-
-    public override void onValidate(Map<Id,SObject> existingRecords) {
-    	//before update
-    }
 }
