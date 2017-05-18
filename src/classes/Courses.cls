@@ -38,7 +38,11 @@ public class Courses extends SObjectDomain{
         }
     }
 
-    public override void onBeforeDelete(){
+    public override void onBeforeDelete() {
 
+    }
+    public override void onBeforeInsert() {
+    }
+    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
     }     
 }
