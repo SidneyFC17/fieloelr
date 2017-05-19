@@ -37,7 +37,8 @@ public class Courses extends SObjectDomain{
             }
         }
 
-       
+        // Check Courses before update 
+        checkCoursesWithStatus(existingRecords, 'update'); 
    } 
 
     public override void onBeforeDelete() {
@@ -45,7 +46,7 @@ public class Courses extends SObjectDomain{
         checkCoursesWithStatus(null, 'delete'); 
     }
     
-       
+        
     // If the course is active, has at least 1 related course status, 
     // and any of the following fields was modified the Course cannot be edited or deleted.
     private void checkCoursesWithStatus(Map<Id,SObject> existingRecords, String event){
@@ -60,32 +61,29 @@ public class Courses extends SObjectDomain{
                     if (event == 'update'){                        
                          // Check OLD records (existingRecords) to see if any of these fields were modified       
                         if( (((Course__c)(existingRecords.get(course.Id))).SubscriptionMode__c) != coursesMap.get(course.Id).SubscriptionMode__c ){
-                         coursesMap.get(course.Id).addError('Can not edit Course because Subscription Mode was modified.');
+                            coursesMap.get(course.Id).addError(Label.ValidateCourseErrorSubscriptionMode);
                         }              
                         if( (((Course__c)(existingRecords.get(course.Id))).Segment__c) != coursesMap.get(course.Id).Segment__c ) {
-                        coursesMap.get(course.Id).addError('Can not edit Course because Segment was modified.');
+                            coursesMap.get(course.Id).addError(Label.ValidateCourseErrorSegment);
                         }                  
                         if( (((Course__c)(existingRecords.get(course.Id))).StartDate__c) != coursesMap.get(course.Id).StartDate__c ) {
-                        coursesMap.get(course.Id).addError('Can not edit Course because Start Date was modified.');
+                            coursesMap.get(course.Id).addError(Label.ValidateCourseStartDate);
                         }                       
                         if( (((Course__c)(existingRecords.get(course.Id))).EndDate__c) != coursesMap.get(course.Id).EndDate__c ) {
-                        coursesMap.get(course.Id).addError('Can not edit Course because End Date Mode was modified.');
+                            coursesMap.get(course.Id).addError(Label.ValidateCourseEndDate);
                         }          
-                    }
-                        if (event == 'delete'){
-                           coursesMap.get(course.Id).addError('Can not delete Course because it is Active.');
-                        }                                                                        
+                    }else if (event == 'delete'){
+                        coursesMap.get(course.Id).addError(Label.ValidateCourseErrorDelete);
+                    }                                                                        
                 }
             }
-            
         }
     }
    
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) { 
-          // Check Courses before update
-        checkCoursesWithStatus(existingRecords, 'update'); 
+        
     }  
 
-     public override void onBeforeInsert() {
+    public override void onBeforeInsert() {
     }   
 }

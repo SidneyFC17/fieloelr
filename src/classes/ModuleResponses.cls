@@ -27,14 +27,14 @@ public class ModuleResponses extends SObjectDomain {
         }
 
         List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : mrKeys GROUP BY Key__c];
-        Map<String,Integer> maxNumbByKey = new Map<String,Integer>();
+        Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
         for(AggregateResult mr : aggResult){
-            maxNumbByKey.put((String)mr.get('Key__c'), (Integer)mr.get('attemptNumber'));
+            maxNumbByKey.put((String)mr.get('FieloELR__Key__c'), (Decimal)mr.get('attemptNumber'));
         }
         
         for(ModuleResponse__c moduleResp : (List<ModuleResponse__c>)records){
             if(maxNumbByKey.containsKey(moduleResp.Key__c)){
-                Integer maxAttempt = maxNumbByKey.get(moduleResp.Key__c);
+                Decimal maxAttempt = maxNumbByKey.get(moduleResp.Key__c);
                 moduleResp.NumberOfAttempt__c = ++maxAttempt;
                 maxNumbByKey.put(moduleResp.Key__c, maxAttempt);
             }else{
@@ -88,7 +88,7 @@ public class ModuleResponses extends SObjectDomain {
         Set<String> mrKeysWithError = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
-            if(!existingCSKeys.contains(cskey)){
+            if(modulesMap.get(moduleResponse.Module__c).Course__r.SubscriptionMode__c == 'Manual' && !existingCSKeys.contains(cskey)){
                 moduleResponse.addError('The member is not registered in the related course.');
             }
 
@@ -189,7 +189,7 @@ public class ModuleResponses extends SObjectDomain {
             moduleIds.add(moduleResponse.Module__c);
         }
         Map<Id,ModuleResponse__c> existingModuleResponseMap = new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector().selectByIdWithQuestionResponses(moduleResponseIds));
-        Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Course__c','TotalValue__c','ApprovalGrade__c'}).selectByIdWithQuestions(moduleIds));
+        Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Course__c','TotalValue__c','ApprovalGrade__c','QuestionPool__c'}).selectByIdWithQuestions(moduleIds));
         Map<Id,Question__c> questionMap;
 
         List<QuestionResponse__c> unsubmitedQuestionResponses = new List<QuestionResponse__c>();
@@ -211,7 +211,9 @@ public class ModuleResponses extends SObjectDomain {
                 questionResponse.IsSubmitted__c = true;
                 uow.registerDirty(questionResponse);
             }
+            QuestionResponses.validateAdminFields = false;
             uow.commitWork();
+            QuestionResponses.validateAdminFields = true;
             QuestionResponses.disableSubmit = false;
         }
 
@@ -224,7 +226,9 @@ public class ModuleResponses extends SObjectDomain {
             for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
                 moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
             }
-            moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / modulesMap.get(moduleResponse.Module__c).TotalValue__c) * 100;
+
+            Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
+            moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / totalValue) * 100;
             moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
 
             if(moduleResponse.IsApproved__c){
@@ -235,14 +239,14 @@ public class ModuleResponses extends SObjectDomain {
 
         if(!mrKeys.isEmpty()){
             List<AggregateResult> aggResult = [SELECT MAX(NumberOfApprove__c) approveNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : mrKeys GROUP BY Key__c];
-            Map<String,Integer> maxAppByKey = new Map<String,Integer>();
+            Map<String,Decimal> maxAppByKey = new Map<String,Decimal>();
             for(AggregateResult mr : aggResult){
-                maxAppByKey.put((String)mr.get('Key__c'), (Integer)mr.get('approveNumber'));
+                maxAppByKey.put((String)mr.get('FieloELR__Key__c'), (Decimal)mr.get('approveNumber'));
             }
 
             for(ModuleResponse__c moduleResponse : approvedResponses){
                 if(maxAppByKey.containsKey(moduleResponse.Key__c)){
-                    Integer maxApprove = maxAppByKey.get(moduleResponse.Key__c);
+                    Decimal maxApprove = maxAppByKey.get(moduleResponse.Key__c);
                     moduleResponse.NumberOfApprove__c = ++maxApprove;
                     maxAppByKey.put(moduleResponse.Key__c, maxApprove);
                 }else{
