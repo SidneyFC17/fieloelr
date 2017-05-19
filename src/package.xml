@@ -23,6 +23,10 @@
 		<name>CustomTab</name>
 	</types>
 	<types>
+		<members>*</members>
+		<name>CustomLabels</name>
+	</types>
+	<types>
 		<members>FieloPLT__Tracker__c</members>
 		<members>FieloPLT__Transaction__c</members>
 		<members>AnswerResponse__c</members>
