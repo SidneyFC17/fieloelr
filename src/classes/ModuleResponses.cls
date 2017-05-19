@@ -189,7 +189,7 @@ public class ModuleResponses extends SObjectDomain {
             moduleIds.add(moduleResponse.Module__c);
         }
         Map<Id,ModuleResponse__c> existingModuleResponseMap = new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector().selectByIdWithQuestionResponses(moduleResponseIds));
-        Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Course__c','TotalValue__c','ApprovalGrade__c'}).selectByIdWithQuestions(moduleIds));
+        Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Course__c','TotalValue__c','ApprovalGrade__c','QuestionPool__c'}).selectByIdWithQuestions(moduleIds));
         Map<Id,Question__c> questionMap;
 
         List<QuestionResponse__c> unsubmitedQuestionResponses = new List<QuestionResponse__c>();
@@ -226,7 +226,9 @@ public class ModuleResponses extends SObjectDomain {
             for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
                 moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
             }
-            moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / modulesMap.get(moduleResponse.Module__c).TotalValue__c) * 100;
+
+            Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
+            moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / totalValue) * 100;
             moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
 
             if(moduleResponse.IsApproved__c){
