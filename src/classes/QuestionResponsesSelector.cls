@@ -41,4 +41,16 @@ public with sharing class QuestionResponsesSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
     }
+
+    public List<QuestionResponse__c> selectByKeyAndCorrect(Set<String> keys) {
+        return (List<QuestionResponse__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Key__c IN : keys AND IsCorrect__c = true ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }

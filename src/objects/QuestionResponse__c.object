@@ -72,6 +72,16 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Key__c</fullName>
+        <externalId>false</externalId>
+        <label>Key</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ModuleResponse__c</fullName>
         <externalId>false</externalId>
         <label>Module Response</label>
