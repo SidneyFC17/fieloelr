@@ -1,3 +1,3 @@
-trigger Courses on Course__c (before insert) {
-	//SObjectDomain.triggerHandler(Courses.class);
+trigger Courses on Course__c (before update, before delete) {
+	SObjectDomain.triggerHandler(Courses.class);
 }
