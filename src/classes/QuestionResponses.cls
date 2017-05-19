@@ -72,6 +72,33 @@ public class QuestionResponses extends SObjectDomain {
                 }
             }
         }
+
+        List<QuestionResponse__c> submittedRecords = new List<QuestionResponse__c>();
+        Set<String> submittedKeys = new Set<String>();
+        for(QuestionResponse__c questionResp : (List<QuestionResponse__c>)records){
+            //Add only submitted records.
+            if( questionResp.IsSubmitted__c && !((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsSubmitted__c){
+                submittedRecords.add(questionResp);
+                submittedKeys.add(questionResp.Key__c);
+            }
+        }
+
+        List<QuestionResponse__c> correctedQuestionResponses = new QuestionResponsesSelector().selectByKeyAndCorrect(submittedKeys);
+        Set<String> existingSubmittedResponses = new Set<String>();
+        for(QuestionResponse__c qr : correctedQuestionResponses){
+            existingSubmittedResponses.add(qr.Key__c);
+        }
+
+        for(QuestionResponse__c questionResp : submittedRecords){
+            if(existingSubmittedResponses.contains(questionResp.Key__c)){
+                questionResp.addError('The question cannot be submitted because was already answered correct.');
+            }
+            /*//Add only submitted records.
+            if( questionResp.IsSubmitted__c && !((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsSubmitted__c){
+                submittedRecords.add(questionResp);
+                submittedKeys.add(questionResp.Key__c);
+            }*/
+        }
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
@@ -128,6 +155,7 @@ public class QuestionResponses extends SObjectDomain {
         Integer questionRespAttempts;
         String penaltyMode;
 
+        Set<String> correctKeys = new Set<String>();
         for (QuestionResponse__c questionResponse: records) {
             if (questionsMap.containsKey(questionResponse.Question__c)) {
                 Question__c question = questionsMap.get(questionResponse.Question__c);
@@ -181,19 +209,27 @@ public class QuestionResponses extends SObjectDomain {
                     }
                 }
 
-                incorrectWeight = question.IncorrectWeight__c;
-                questionWeight = question.CorrectWeight__c;
-                penaltyPerQuestion = question.PenaltyPerAttempt__c;
-                isCorrectInt = questionResponse.IsCorrect__c ? 1 : 0;
-                questionRespAttempts = Integer.valueOf(questionResponse.NumberOfAttempt__c);
-                penaltyMode = question.Module__r.PenaltyMode__c;
+                if(questionResponse.IsCorrect__c && correctKeys.contains(questionResponse.Key__c)){
+                    questionResponse.addError('This question was already answered correct.');
+                }else{
+                    if(questionResponse.IsCorrect__c){
+                        correctKeys.add(questionResponse.Key__c);                        
+                    }
+                
+                    incorrectWeight = question.IncorrectWeight__c;
+                    questionWeight = question.CorrectWeight__c;
+                    penaltyPerQuestion = question.PenaltyPerAttempt__c;
+                    isCorrectInt = questionResponse.IsCorrect__c ? 1 : 0;
+                    questionRespAttempts = Integer.valueOf(questionResponse.NumberOfAttempt__c);
+                    penaltyMode = question.Module__r.PenaltyMode__c;
 
-                questionResponse.PartialGradeValue__c =
-                    penaltyMode == 'Percent Decrease' ?
-                            isCorrectInt * (questionWeight * Math.pow((1 - penaltyPerQuestion / 100),questionRespAttempts-1)) :
-                            penaltyMode == 'Negative Weight' ?
-                                (isCorrectInt * questionWeight + (isCorrectInt - 1) * incorrectWeight) :
-                                isCorrectInt * questionWeight;
+                    questionResponse.PartialGradeValue__c =
+                        penaltyMode == 'Percent Decrease' ?
+                                isCorrectInt * (questionWeight * Math.pow((1 - penaltyPerQuestion / 100),questionRespAttempts-1)) :
+                                penaltyMode == 'Negative Weight' ?
+                                    (isCorrectInt * questionWeight + (isCorrectInt - 1) * incorrectWeight) :
+                                    isCorrectInt * questionWeight;
+                }
             }
         }
     }
