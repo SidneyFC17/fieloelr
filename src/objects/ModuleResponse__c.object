@@ -65,22 +65,6 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>Description__c</fullName>
-        <externalId>false</externalId>
-        <label>Description</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>TextArea</type>
-    </fields>
-    <fields>
-        <fullName>FirstApproved__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>First Approved</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>GradePercent__c</fullName>
         <externalId>false</externalId>
         <label>Grade %</label>
@@ -120,9 +104,8 @@
     <fields>
         <fullName>Key__c</fullName>
         <externalId>false</externalId>
-        <formula>LEFT(Module__c, 15) + LEFT(Member__c, 15)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Key</label>
+        <length>30</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -166,6 +149,18 @@
         <externalId>false</externalId>
         <label>Number of Attempt</label>
         <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NumberofApprove__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Number of Approve</label>
+        <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
         <trackTrending>false</trackTrending>
