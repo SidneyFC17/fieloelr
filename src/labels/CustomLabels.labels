@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>ValidateCourseErrorDelete</fullName>
+        <categories>TriggerCourses</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateCourseErrorDelete</shortDescription>
+        <value>Can not delete Course because it is Active.</value>
+    </labels>
+    <labels>
+        <fullName>ValidateCourseEndDate</fullName>
+        <categories>TriggerCourses</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateCourseEndDate</shortDescription>
+        <value>Can not edit Course because End Date Mode was modified.</value>
+    </labels>
+    <labels>
+        <fullName>ValidateCourseStartDate</fullName>
+        <categories>TriggerCourses</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateCourseStartDate</shortDescription>
+        <value>Can not edit Course because Start Date was modified.</value>
+    </labels>
+    <labels>
+        <fullName>ValidateCourseErrorSegment</fullName>
+        <categories>TriggerCourses</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateCourseErrorSegment</shortDescription>
+        <value>Can not edit Course because Segment was modified.</value>
+    </labels>
+    <labels>
+        <fullName>ValidateCourseErrorSubscriptionMode</fullName>
+        <categories>TriggerCourses</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateCourseErrorSubscriptionMode</shortDescription>
+        <value>Can not edit Course because Subscription Mode was modified.</value>
+    </labels>
+    <labels>
+        <fullName>PenaltyAndIncorrectWeightSet</fullName>
+        <categories>ModuleResponseService.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PenaltyAndIncorrectWeightSet</shortDescription>
+        <value>Cannot set both Penalty Per Attempt and Incorrect Weight field.</value>
+    </labels>
+</CustomLabels>
