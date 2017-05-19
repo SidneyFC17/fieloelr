@@ -93,11 +93,6 @@ public class QuestionResponses extends SObjectDomain {
             if(existingSubmittedResponses.contains(questionResp.Key__c)){
                 questionResp.addError('The question cannot be submitted because was already answered correct.');
             }
-            /*//Add only submitted records.
-            if( questionResp.IsSubmitted__c && !((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsSubmitted__c){
-                submittedRecords.add(questionResp);
-                submittedKeys.add(questionResp.Key__c);
-            }*/
         }
     }
 
@@ -133,7 +128,7 @@ public class QuestionResponses extends SObjectDomain {
 
         Map<Id,ModuleResponse__c> submittedModuleResponsesMap = new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector(new Set<String>{'Id','IsSubmitted__c'}).selectByIdAndSubmitted(moduleResponseIds));
         for(QuestionResponse__c questionResp : questionResponses){
-            if(submittedModuleResponsesMap.get(questionResp.ModuleResponse__c).IsSubmitted__c){
+            if(submittedModuleResponsesMap.containsKey(questionResp.ModuleResponse__c) && submittedModuleResponsesMap.get(questionResp.ModuleResponse__c).IsSubmitted__c){
                 questionResp.addError('Cannot add question response to a module that was already submitted.');
             }
         }
@@ -179,6 +174,8 @@ public class QuestionResponses extends SObjectDomain {
                 }else if (question.Type__c == 'Short Answer') {
                     questionResponse.IsCorrect__c = false;
                     for (Answer__c answer: questionsMap.get(questionResponse.Question__c).Answers__r) {
+                        system.debug(answer.AnswerText__c);
+                        system.debug(questionResponse.TextValue__c);
                         if (answer.AnswerText__c == questionResponse.TextValue__c) {
                             questionResponse.IsCorrect__c = true;
                             break;
