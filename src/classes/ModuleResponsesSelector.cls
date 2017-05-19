@@ -51,6 +51,7 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                     'NumberOfAttempt__c, ' +
                     'Question__c, ' +
                   	'PartialGradeValue__c, ' +
+                    'TextValue__c, ' +
                   	'Name FROM QuestionResponses__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :moduleResponseIds ' +
