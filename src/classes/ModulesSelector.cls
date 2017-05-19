@@ -13,7 +13,8 @@ public with sharing class ModulesSelector extends SObjectSelector {
                 Module__c.Order__c,
                 Module__c.PenaltyMode__c,
                 Module__c.ShuffleQuestions__c,
-                Module__c.TotalValue__c
+                Module__c.TotalValue__c,
+                Module__c.WeightedQuestions__c
             };
     }
 
