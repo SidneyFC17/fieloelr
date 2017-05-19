@@ -136,63 +136,52 @@ public class Questions extends SObjectDomain {
     	String questionText;
     	for(Question__c question : questions) {
 	    	if(question.Type__c == 'Fill in the Blanks') {
-	    		// TODO: Validate format
+	    		// Validate format
 	    		questionText = question.QuestionText__c;
-				/*
-				String answer = '{!(JavaScript),C++,Java} is also used in environments that are not {!Web}-based, such as {!PDF} documents, site-specific browsers, and desktop widgets. Newer and faster JavaScript virtual machines (VMs) and platforms built upon them have also increased the popularity of JavaScript for server-side Web {!(applications),software}.';
 
-				System.debug('size: ' + answer.length() );
+				String regex = '(?<=\\{\\!)(.*?)(?=\\})';
+				Pattern regexPattern = Pattern.compile(regex);
+				Matcher regexMatcher = regexPattern.matcher(questionText);
 
-				String currChar;
-				String lastChar = ''; 
-				String lastCharNonSpace = ''; 
-				Boolean openBrackets = false;
-				Boolean openParenthesis = false;
-				Boolean answerOk = true;
+				String error = '';
 
-				for(integer i = 0; i < answer.length(); i++) {
-					currChar = answer.substring(i, i + 1);
-				    
-				    if(lastChar == '{' && currChar != '!')
-				        answerOk = false;
-				    else if(currChar == '{' && openBrackets)
-				        answerOk = false;
-				    else if(!openBrackets && currChar == '}')
-						answerOk = false;
-				    else if(currChar == '(' && openParenthesis)
-				        answerOk = false;
-				    else if(!openParenthesis && currChar == ')')
-				        answerOk = false;
-				    else if(currChar == ',' && openBrackets && openParenthesis)
-						answerOk = false;
-				    else if(currChar == ',' && (lastCharNonSpace == ',' || lastCharNonSpace == '(' || lastCharNonSpace == '!' || lastCharNonSpace == '{'))
-						answerOk = false;
-				    
-				    System.debug(lastChar + ' >>> ' + lastCharNonSpace + ' => ' + currChar + ' -> ' + answerOk);
-				    if(!answerOk)
+				while(regexMatcher.find()) {
+				    			    
+				    if(regexMatcher.group().contains('{') || regexMatcher.group().contains('}')) {
+						error = 'nested bracket';
+				    } else {
+				    	List<String> words = regexMatcher.group().split(',');
+				        if(words.size() == 1) {
+							if(String.IsBlank(words[0])) {
+				                error = 'empty answer';
+				            }
+				        } else {
+				            Integer correctWords = 0;
+				            for(String word : words) {
+				                if(String.IsBlank(word)) {
+				                	error = 'empty answer';
+				                } else {
+				                    if(word.substring(0,1) == '(' && word.substring(word.length() - 1, word.length()) == ')') {
+				                        if(correctwords == 0) {
+				                			correctwords++;
+				                        } else {
+				                			error = 'more than one correct answer';
+				                        }
+				                    }
+				                }
+							}
+				            if(correctWords == 0) {
+								error = 'missing correct answer';
+				            }
+				        }
+				    }
+				    if(!String.IsBlank(error)) {
 				        break;
-				    
-				    if(lastChar == '{' && currChar == '!')
-				        openBrackets = true;
-					else if(currChar == '}' && openBrackets)
-				        openBrackets = false;
-					else if(currChar == '(')
-				        openParenthesis = true;
-				    else if(currChar == ')' && openParenthesis)
-						openParenthesis = false;
-				    
-				    lastChar = currChar;
-					if(currChar != ' ')
-				    	lastCharNonSpace = currChar;
+					}
 				}
-				if(!answerOk) {
-				    System.debug('Oops!!!');
-				}
-
-				*/	    		
-	    		if(false) {	
-		        	question.addError('Question text is in the wrong format for a question of the type "Fill in the Blanks".');             
-	    		}
+				if(!String.IsBlank(error)) {
+					question.addError('Question text is in the wrong format for a question of the type "Fill in the Blanks". Error: ' + error + '.');             
+				} 
 	    	}
 		}
 	}

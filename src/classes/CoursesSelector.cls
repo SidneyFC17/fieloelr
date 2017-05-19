@@ -33,7 +33,7 @@ public with sharing class CoursesSelector extends SObjectSelector{
       return (List<Course__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id ' +
-                  '   FROM CourseStatus__r LIMIT 1) ' +
+                  '   FROM CoursesStatus__r LIMIT 1) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :courseIds ' +
                   'ORDER BY {2}',

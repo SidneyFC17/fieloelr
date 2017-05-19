@@ -32,7 +32,8 @@ public class Answers extends SObjectDomain {
 			questions.add(answer.Question__c);
 	    }
 
-		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__r.IsActive__c', 'Type__c'}).selectById(questions));
+		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(
+			new QuestionsSelector(new Set<String> {'Id', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithAnswers(questions));
 
 	    for(Answer__c answer : answers) {
 
@@ -51,6 +52,11 @@ public class Answers extends SObjectDomain {
 		        	answer.addError('Answer is in the wrong format. It should be {"abc":"xyz"}.');             
 				}
 	    	}
+
+	    	// If Order__c field is null, calculate it automatically
+    		if( Trigger.isInsert && answer.Order__c == null) {
+    			answer.Order__c = questionsMap.get(answer.Question__c).Answers__r.size() + 1;
+    		}
 	    }
     }
 

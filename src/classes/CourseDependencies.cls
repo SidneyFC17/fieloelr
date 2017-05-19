@@ -22,14 +22,17 @@ public class CourseDependencies extends SObjectDomain{
 
     }
     public override void onBeforeInsert() {
-        List<CourseDependency__c> courseDependencies = new List<CourseDependency__c>();
 
         for(CourseDependency__c courseDependency : (List<CourseDependency__c>)records){
-            courseDependency.Key__C = ((string)courseDependency.Course__c).substring(0, 14) + ((string)courseDependency.Predecessor__c).substring(0, 14);
-            courseDependencies.add(courseDependency);
+            courseDependency.Key__C = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
 
         }
     }
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
+
+        for(CourseDependency__c courseDependency : (List<CourseDependency__c>)records){
+            courseDependency.Key__C = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
+
+        }
     }
 }

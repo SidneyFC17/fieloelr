@@ -17,4 +17,7 @@ public class CourseStatus extends SObjectDomain {
     public override void onValidate(Map<Id,SObject> existingRecords) {
     	//before update
     }
+
+    public override void onApplyDefaults() {
+    }
 }
