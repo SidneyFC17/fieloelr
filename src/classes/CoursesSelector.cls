@@ -56,19 +56,5 @@ public with sharing class CoursesSelector extends SObjectSelector{
                     getSObjectName(),
                     getOrderBy() } ));
     }
-    public List<Course__c> selectByIdHavingPredecessorCourses(Set<Id> courseIds) {
-      return (List<Course__c>) Database.query(String.format(
-                'SELECT {0} ' +
-                  ', (SELECT Id ' +
-                  '   FROM PredecessorCourses__r LIMIT 1) ' +
-                  'FROM {1} ' +
-                  'WHERE Id IN :courseIds ' +
-                  'ORDER BY {2}',
-                new List<String> {
-                    getFieldListString(),
-                    getSObjectName(),
-                    getOrderBy() } ));
-    }
-
 
 }
