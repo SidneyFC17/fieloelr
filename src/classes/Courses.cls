@@ -44,8 +44,44 @@ public class Courses extends SObjectDomain{
     public override void onBeforeDelete() {
         // Check Courses before delete
         checkCoursesWithStatus(null, 'delete'); 
+
+        // When the course is deleted, must delete course dependencies. 
+        deleteCourseDependencies();
     }
     
+    private void deleteCourseDependencies(){
+        List<CourseDependency__c> dependenciesToDelete = new List<CourseDependency__c>();
+        
+        // Map with NEW records       
+        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
+        //Records to obtain dependencies from: (List<Course__c>)records
+        //DependentCourses__r
+        //PredecessorCourses__r
+        List<Course__c> coursesWithDependents = new CoursesSelector(new Set<String>{'Id'}).selectByIdHavingDependentCourses(coursesMap.KeySet());
+        List<Course__c> coursesWithPredecessors = new CoursesSelector(new Set<String>{'Id'}).selectByIdHavingPredecessorCourses(coursesMap.KeySet());
+
+        // Look for dependencies first
+          for (Course__c course: coursesWithDependents){
+                if (!course.DependentCourses__r.isEmpty()){
+                    for (CourseDependency__c dependency : course.DependentCourses__r){
+                        dependenciesToDelete.add(dependency);
+                    }
+                }
+              }
+        // Look for predecessors
+            for (Course__c course: coursesWithPredecessors){
+                if (!course.PredecessorCourses__r.isEmpty()){
+                    for (CourseDependency__c predecessor : course.PredecessorCourses__r){
+                        dependenciesToDelete.add(predecessor);
+                    }
+                }
+              }
+
+        // Delete related dependencies
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseDependency__c.SObjectType});
+        uow.registerDeleted(dependenciesToDelete);      
+        uow.commitWork();
+    }
         
     // If the course is active, has at least 1 related course status, 
     // and any of the following fields was modified the Course cannot be edited or deleted.
