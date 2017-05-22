@@ -77,7 +77,7 @@ A course is created
    8. The system displays the course detail page
    9. End of flow
 
-##### 7. Edit an active course with related course statuses (step 8 of basic flow)
+##### 7. Edit the name of an active course with related course statuses (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Course Name” 
    3. The administrator presses the Save button
@@ -87,7 +87,7 @@ A course is created
    7. The system displays the course detail page
    8. End of flow
 
-##### 8. Edit an active course with related course statuses (step 8 of basic flow)
+##### 8. Edit the description of an active course with related course statuses (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the course “Description”
    3. The administrator presses the Save button
@@ -97,7 +97,7 @@ A course is created
    7. The system displays the course detail page
    8. End of flow
 
-##### 9. Edit an active course with related course statuses (step 8 of basic flow)
+##### 9. Edit the subscription mode of an active course with related course statuses (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Subscription Mode”
    3. The administrator presses the Save button
@@ -107,7 +107,7 @@ A course is created
    7. The system displays an error message
    8. End of flow
 
-##### 10. Edit an active course with related course statuses (step 8 of basic flow)
+##### 10. Edit the program of an active course with related course statuses (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Program”
    3. The administrator presses the Save button
@@ -117,7 +117,7 @@ A course is created
    7. The system displays an error message
    8. End of flow
 
-##### 11. Edit an active course with related course statuses (step 8 of basic flow)
+##### 11. Edit the segment of an active course with related course statuses (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Segment”
    3. The administrator presses the Save button
@@ -127,7 +127,7 @@ A course is created
    7. The system displays an error message
    8. End of flow
 
-##### 12. Edit an active course with related course statuses (step 8 of basic flow)
+##### 12. Edit the start date of an active course with related course statuses (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Start Date”
    3. The administrator presses the Save button
@@ -137,7 +137,7 @@ A course is created
    7. The system displays an error message
    8. End of flow
 
-##### 13. Edit an active course with related course statuses (step 8 of basic flow)
+##### 13. Edit  the end date of an active course with related course statuses (step 8 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “End Date”
    3. The administrator presses the Save button
