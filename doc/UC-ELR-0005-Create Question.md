@@ -47,12 +47,12 @@ A question was created
    2. The system automatically numbers the Order field 
    3. Back to step 6 of basic flow
  
-##### 4.“Correct Weight” field is null (step 6 of basic flow)
+##### 4. “Correct Weight” field is null (step 6 of basic flow)
    1. The system verifies that the “Correct Weight” field is null
    2. The system automatically updates the “Correct Weight” field with value = 1
    3. Back to step 7 of basic flow
  
-##### 5.“Correct Weight” field is greater than one and “Question Pool” of related module is not null (step 6 of basic flow)
+##### 5. “Correct Weight” field is greater than one and “Question Pool” of related module is not null (step 6 of basic flow)
    1. The system verifies that the “Correct Weight” field is greater than one
    2. The system verifies that “Question Pool” field of the related module is not null
    3. The system automatically updates the “Correct Weight” field with value = 1
@@ -141,17 +141,7 @@ A question was created
    6. The system displays an error message
    7. End of flow
  
-##### 20. Edit question when related module is not active (step 12 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator makes the desired changes 
-   3. The administrator presses the Save button
-   4. The system verifies that the related module is not active
-   5. The system verifies that all other validations succeed
-   6. The system updates the question
-   7. The system displays the question detail page
-   8. End of flow
- 
-##### 21. Edit question when “Question Pool” of related module is different from null (step 12 of basic flow)
+##### 20. Edit question when “Question Pool” of related module is different from null (step 12 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Correct Weight” to a value greater than 1
    3. The administrator presses the Save button
@@ -162,7 +152,7 @@ A question was created
    8. The system displays the question detail page
    9. End of flow
  
-##### 22. Edit question type (step 12 of basic flow)
+##### 21. Edit question type (step 12 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Type” field
    3. The administrator presses the Save button
