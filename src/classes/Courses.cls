@@ -48,7 +48,7 @@ public class Courses extends SObjectDomain{
         // When the course is deleted, must delete course dependencies. 
         deleteCourseDependencies();
 
-        // When the course is deleted, must delete related modules.
+        // When the course is deleted, must delete related modules
         deleteCourseModules();
     }
 
@@ -57,10 +57,10 @@ public class Courses extends SObjectDomain{
         Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
        
         // Looks up for courses IDs contained in modules
-        List<Modules__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id'}).selectByIdHavingCourses(coursesMap.KeySet());  
+        List<Module__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id'}).selectByIdHavingCourses(coursesMap.KeySet());  
   
         // Delete related modules
-        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Modules__c.SObjectType});
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
         uow.registerDeleted(modulesToDelete);      
         uow.commitWork();
     }
