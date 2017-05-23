@@ -5,7 +5,7 @@ This use case describes the creation of a Question
  
 ### Preconditions
 The administrator must be logged in
-The related module is already created (Use Case [*Create Module*] (https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0003-Create%20Module.md) already run)
+The related module is already created (Use Case [*Create Module*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0003-Create%20Module.md) already run)
  
 ### Postconditions
 A question was created
