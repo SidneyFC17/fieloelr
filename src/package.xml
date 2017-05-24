@@ -16,6 +16,9 @@
 	</types>
 	<types>
 		<members>BackEndProgramSelector</members>
+		<members>FormReorder</members>
+		<members>FormModuleReorder</members>
+		<members>FormQuestionManage</members>
 		<name>ApexComponent</name>
 	</types>
 	<types>
