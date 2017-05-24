@@ -61,6 +61,17 @@
 					saveController="ModuleViewController.saveQuestion"
 					/>
             	</apex:panelGroup>
+            	<c:FormQuestionManage
+	        		namespace="FieloELR" 
+	        		formId="FieloELR__Question__cFormManage"
+					heading="Manage {!$ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+					sObjectName="{!objectName}"
+					fieldset="{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__PenaltyMode__c','Type':'picklist'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'}"
+					sRecentFieldset="{!rel.FieloPLT__Fieldset__c}"
+					dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+					sRecentObjectName="{!rel.FieloPLT__TargetObject__c}"
+					record="{!record}"
+	        	/>
             </apex:repeat>
         </apex:panelGroup>
 
@@ -98,7 +109,8 @@
         </apex:panelGroup>
     	</apex:repeat>
 	</div>
-	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
+	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
+	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
 </body>
 </html>
 </apex:page>
