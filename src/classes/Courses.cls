@@ -44,8 +44,39 @@ public class Courses extends SObjectDomain{
     public override void onBeforeDelete() {
         // Check Courses before delete
         checkCoursesWithStatus(null, 'delete'); 
+
+        // When the course is deleted, must delete course dependencies. 
+        deleteCourseDependencies();
+
+        // When the course is deleted, must delete related modules
+        deleteCourseModules();
+    }
+
+    private void deleteCourseModules(){
+        // Map with NEW records       
+        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
+       
+        // Looks up for courses IDs contained in modules
+        List<Module__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id'}).selectByIdHavingCourses(coursesMap.KeySet());  
+  
+        // Delete related modules
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
+        uow.registerDeleted(modulesToDelete);      
+        uow.commitWork();
     }
     
+    private void deleteCourseDependencies(){        
+        // Map with NEW records       
+        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
+       
+        // Looks up for courses IDs contained in course dependencies and predecessors
+        List<CourseDependency__c> dependenciesToDelete = new CourseDependenciesSelector(new Set<String>{'Course__c,Predecessor__c'}).selectDependenciesAndPredecessors(coursesMap.KeySet());
+  
+        // Delete related dependencies
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseDependency__c.SObjectType});
+        uow.registerDeleted(dependenciesToDelete);      
+        uow.commitWork();
+    }
         
     // If the course is active, has at least 1 related course status, 
     // and any of the following fields was modified the Course cannot be edited or deleted.

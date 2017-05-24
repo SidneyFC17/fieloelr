@@ -60,6 +60,14 @@
 					saveController="CourseViewController.saveModule"
 					/>
             	</apex:panelGroup>
+            	<c:FormModuleReorder
+            		namespace="FieloELR" 
+            		formId="FieloELR__Module__cFormReorder"
+					heading="Reorder {!$ObjectType.Module__c.label}"
+					sObjectName="{!rel.FieloPLT__TargetObject__c}"
+					fieldset="{!rel.FieloPLT__Fieldset__c}"
+					dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Course__c.Id}'}"
+            	/>
             </apex:repeat>
         </apex:panelGroup>
 
@@ -96,7 +104,8 @@
         </apex:panelGroup>
     </apex:repeat>
 	</div>
-	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
+	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
+	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
 </body>
 </html>
 </apex:page>
