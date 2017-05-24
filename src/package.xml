@@ -5,6 +5,7 @@
 		<members>Modules</members>
 		<members>Answers</members>
 		<members>Questions</members>
+		<members>AnswerResponses</members>
 		<name>ApexTrigger</name>
 	</types>
 	<types>
@@ -13,6 +14,7 @@
 		<members>Answers</members>
 		<members>Questions</members>
 		<members>ModuleDependenciesSelector</members>
+		<members>AnswerResponses</members>
 		<name>ApexClass</name>
 	</types>
 	<version>36.0</version>
