@@ -79,11 +79,13 @@ public class Modules extends SObjectDomain {
 			}	
 		}
 
-		updateCourses(activatedModules, inactivatedModules);
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+		updateCourses(activatedModules, inactivatedModules, uow);
+		uow.commitWork();
     }
 
     // Check the responses for a list of modules
-    private void updateCourses(List<Module__c> activatedModules, List<Module__c> inactivatedModules) {
+    private void updateCourses(List<Module__c> activatedModules, List<Module__c> inactivatedModules, SObjectUnitOfWork uow) {
 	    
 	    Set<Id> courseIds = new Set<Id>();
 	    if(activatedModules != null){
@@ -113,10 +115,10 @@ public class Modules extends SObjectDomain {
 		    }
 		}
 
-		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+		//SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
 		uow.registerDirty(coursesMap.values());
 		Courses.validateAdminFields = false;
-		uow.commitWork();
+		//uow.commitWork();
     }
 
 	public override void onBeforeDelete() {
@@ -133,7 +135,11 @@ public class Modules extends SObjectDomain {
 		// An active module with related module responses cannot be deleted.
      	checkModuleResponses(activeModules);
 
-     	updateCourses(null, activeModules);
+     	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType});
+     	deleteModuleResponses(uow);
+
+     	updateCourses(null, activeModules, uow);
+     	uow.commitWork();
     }
 
 
@@ -161,9 +167,27 @@ public class Modules extends SObjectDomain {
 	    																		
 	    for(Module__c module : modulesWithResponse) {
 	        if(!module.ModuleResponses__r.isEmpty()){
-	        	modulesMap.get(module.Id).addError('Cannot delete or inactivate a module with response.');        
+	        	//modulesMap.get(module.Id).addError('Cannot delete or inactivate a module with response.');    
+	        	addError(modulesMap.get(module.Id), 'Cannot delete or inactivate a module with response.');    
 	        }        
 	    }
+    }
+
+    private void deleteModuleResponses(SObjectUnitOfWork uow) {
+		
+		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
+
+    	List<ModuleDependency__c> moduleDependencies = 
+    								new ModuleDependenciesSelector(new Set<String> {'Id'}).selectByIdWithExceptions(modulesMap.KeySet(), RecordErrors);
+    	//SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleDependency__c.SObjectType});
+    	uow.registerDeleted(moduleDependencies);
+    	//uow.commitWork();
+    	/*
+    	for(Module__c module : (List<Module__c>)records) {
+    		if(!hasError(module.Id)) {
+    			//Delete MOdule Dependency
+    		}
+    	}*/
     }
 
 

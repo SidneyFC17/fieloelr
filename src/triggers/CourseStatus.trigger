@@ -1,3 +1,3 @@
 trigger CourseStatus on CourseStatus__c (before insert) {
-	//SObjectDomain.triggerHandler(CourseStatus.class);
+  SObjectDomain.triggerHandler(CourseStatus.class);
 }
