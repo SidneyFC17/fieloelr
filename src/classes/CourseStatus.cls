@@ -29,4 +29,26 @@ public class CourseStatus extends SObjectDomain {
             cStatus.ApprovedModules__c = 0;
         }
     }
+        
+    public override void onBeforeDelete() {
+            Set<Id> coursesIds = new Set<Id>();
+            Set<Id> courseValidateIds = new Set<Id>();
+            
+            for(CourseStatus__c cs : (List<CourseStatus__c>)records){
+                coursesIds.add(cs.Course__c);
+            }
+
+            List<ModuleResponse__c> modulesList = new List<ModuleResponse__c>(new ModuleResponsesSelector(new Set<String>{'Id','Module__r.Course__c'}).selectModuleResponseIds(coursesIds));
+            
+            for(ModuleResponse__c mr : modulesList){
+                courseValidateIds.add(mr.Module__r.Course__c); 
+            }
+            
+            for(CourseStatus__c cs : (List<CourseStatus__c>)records){
+                if(courseValidateIds.contains(cs.Course__c)){
+                    cs.addError('You cannot delete a course status if you have a related module response  for any of the related modules  to the course');
+                }
+            }
+
+        }
 }
