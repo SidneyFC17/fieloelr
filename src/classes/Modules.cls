@@ -18,9 +18,34 @@ public class Modules extends SObjectDomain {
     }
 
 	public override void onApplyDefaults() {
-       for(Module__c module : (List<Module__c>)records){
-           module.IsActive__c = false;
-       }
+		
+		Set<Id> courseIds = new Set<Id>();
+		for(Module__c module : (List<Module__c>)records){
+        	module.IsActive__c = false;
+			if(module.Order__c == null) {
+	        	courseIds.add(module.Course__c);
+	        }
+		}
+    	
+		List<AggregateResult> aggResult = new ModulesSelector().selectByCourseGroupByCourse(courseIds);
+        Map<String, Decimal> maxOrderByCourse = new Map<String, Decimal>();
+        for(AggregateResult ar : aggResult){
+            maxOrderByCourse.put((String)ar.get('FieloELR__Course__c'), (Decimal)ar.get('orderNumber'));
+        }
+        
+		for(Module__c module : (List<Module__c>)records) {
+			if(module.Order__c == null) {
+	            if(maxOrderByCourse.containsKey(module.Course__c)){
+	                Decimal maxOrder = maxOrderByCourse.get(module.Course__c);
+	                maxOrder = (maxOrder == null ? 0 : maxOrder);
+	                module.Order__c = ++maxOrder;
+	                maxOrderByCourse.put(module.Course__c, maxOrder);
+	            }else{
+	                module.Order__c = 1;
+	                maxOrderByCourse.put(module.Course__c, 1);
+	            }
+			}
+		}
     }    
 
     public override void onValidate() {
