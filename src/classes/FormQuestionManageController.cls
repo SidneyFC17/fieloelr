@@ -1,7 +1,8 @@
 public with sharing class FormQuestionManageController {
 	/*****  Datos  *****/
   	public String csObjectName{get;set;}
-  	public String cFilter{get;set;}
+    public String cFilter{get;set;}
+  	public String cLayout{get;set;}
   	public static Boolean cRecordRedirect{get;set;}
     public SObject cRecord {get;set;}  
   	private Boolean queryRecordNotDone = true;
@@ -57,19 +58,33 @@ public with sharing class FormQuestionManageController {
   	}
 
   	public List<Section> sections { get {
-		if ( sections == null ) {
-        	if ( !String.isBlank(cFieldset)  ) {
-          		// Si empieza con [ es un valor seteado en una visual force => lo tiene que modificar para que sea json
-          		if ( !cFieldset.startsWith('[') ) {
-            		cFieldset = '[' + cFieldset.replace('\'', '"') + ']';
-          		}
-          		sections = (List<Section>) JSON.deserialize( cFieldset, List<FormQuestionManageController.Section>.class );
-        	} else {
-          		sections = new List<Section>();
-        	}
-      	}
-      	return sections;
-    } set;}
+        if ( sections == null ) {
+            if ( !String.isBlank(cFieldset)  ) {
+                // Si empieza con [ es un valor seteado en una visual force => lo tiene que modificar para que sea json
+                if ( !cFieldset.startsWith('[') ) {
+                    cFieldset = '[' + cFieldset.replace('\'', '"') + ']';
+                }
+                try {
+                    if ( cLayout == 'inline'  ) {
+                        Section s = new Section();
+                        s.Name = '';
+                        s.Rows =  new List<List<FormField>>();
+                        s.Rows.add( (List<FormField>) JSON.deserialize( cFieldset, List<FormField>.class ));
+                        sections = new List<Section>();
+                        sections.add(s);
+                    } else {
+                        sections = (List<Section>) JSON.deserialize( cFieldset, List<Section>.class );
+                    }
+                } catch( JSONException e ) {
+                    system.debug(LoggingLevel.ERROR, 'INVALID JSON ' + cFieldset );        
+                }
+            } else {
+                sections = new List<Section>();
+            }
+        }
+        return sections;
+        } set;
+    }
 
 	/*****  Piclklist Values *****/
   	private Map<String, Schema.SObjectField> fieldMap { get {
@@ -134,14 +149,26 @@ public with sharing class FormQuestionManageController {
 
 	/*****  Metodos Remote para Save y Retrieve *****/
     @RemoteAction
-    public static RemoteActionResult reorder( List<sObject> records){
+    public static RemoteActionResult save( sObject module, List<String> moduleNullFields, List<sObject> questions, Map<Id,List<String>> questionsNullFields){
 	    Savepoint sp;
 	    RemoteActionResult result = new RemoteActionResult();
 
 	    try{
+            for( String f :moduleNullFields ) {
+                module.put(f, null );
+            }
+
+            for( sObject question: questions) {
+                if(questionsNullFields.containsKey(question.Id)){
+                    for(String f: questionsNullFields.get(question.Id)){
+                        question.put(f, null);
+                    }
+                }
+            }
 
 	        sp = Database.setSavepoint();
-	        update records;
+	        update (FieloELR__Module__c) module;
+            update (List<FieloELR__Question__c>) questions;
 	        //TODO Crear Label DataSavedSuccessfully
 	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 
@@ -165,9 +192,8 @@ public with sharing class FormQuestionManageController {
 	    return result;
    }
 
-    /*
-	@RemoteAction
-  	public static sObject retrieve( String objectName, String recordId, String fields ){
+    @RemoteAction
+    public static sObject retrieve( String objectName, String recordId, String fields ){
 	    String query = 'SELECT ' + fields;
 	    query += ' FROM ' + objectName;
 	    query += ' WHERE ID = :recordId' ;
@@ -178,5 +204,4 @@ public with sharing class FormQuestionManageController {
     	}
     	return null;
   	}
-  	*/
 }

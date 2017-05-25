@@ -46,7 +46,7 @@
   * Get
   */
 
-  FieloRecentReorder.prototype.get_ = function() {
+  FieloRecentReorder.prototype.get = function() {
     var items = this.container_.getElementsByClassName(this.CssClasses_.MODEL);
     var sObjectList = [];
     [].forEach.call(items, function(item) {
@@ -64,19 +64,21 @@
   * Save Order
   */
   FieloRecentReorder.prototype.save_ = function() {
-    fielo.util.spinner.FieloSpinner.show();
-    var orderValues = this.get_();
-    try {
-      Visualforce.remoting.Manager.invokeAction(
-        this.element_.getAttribute('data-save-controller'),
-        orderValues,
-        this.processRemoteActionResult_.bind(this),
-        {
-          escape: false
-        }
-      );
-    } catch (e) {
-      console.warn(e);
+    if (!this.disableReorder) {
+      fielo.util.spinner.FieloSpinner.show();
+      var orderValues = this.get();
+      try {
+        Visualforce.remoting.Manager.invokeAction(
+          this.element_.getAttribute('data-save-controller'),
+          orderValues,
+          this.processRemoteActionResult_.bind(this),
+          {
+            escape: false
+          }
+        );
+      } catch (e) {
+        console.warn(e);
+      }
     }
   };
 
@@ -152,8 +154,11 @@
 
       this.sortable_();
       this.order_();
-      this.element_.getElementsByClassName(this.CssClasses_.SAVE)[0]
-        .addEventListener('click', this.save_.bind(this));
+      this.saveBtn_ = this.element_
+        .getElementsByClassName(this.CssClasses_.SAVE)[0];
+      if (this.saveBtn_) {
+        this.saveBtn_.addEventListener('click', this.save_.bind(this));
+      }
     }
   };
 
