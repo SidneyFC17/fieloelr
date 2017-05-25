@@ -20,6 +20,10 @@ public class Courses extends SObjectDomain{
     public override void onApplyDefaults() {
         for(Course__c course : (List<Course__c>)records){
             course.ActiveModules__c = 0;
+            course.Status__c = 'Draft';
+            if(String.isBlank(course.SubscriptionMode__c)){
+                course.SubscriptionMode__c = 'Manual';
+            }
         }
     }
 

@@ -26,7 +26,7 @@ public class ModuleResponses extends SObjectDomain {
             mrKeys.add(moduleResponse.Key__c);
         }
 
-        List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : mrKeys GROUP BY Key__c];
+        List<AggregateResult> aggResult = new ModuleResponsesSelector().selectByKeyGroupByKey(mrKeys);
         Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
         for(AggregateResult mr : aggResult){
             maxNumbByKey.put((String)mr.get('FieloELR__Key__c'), (Decimal)mr.get('attemptNumber'));
@@ -78,33 +78,61 @@ public class ModuleResponses extends SObjectDomain {
         }
 
         //query in the database only the courseStatus that exist for the related members
-        List<CourseStatus__c> manualCourseStatus = new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(csKeysRequired);
-        Set<String> existingCSKeys = new Set<String>();
-        for(CourseStatus__c cs : manualCourseStatus){
-            existingCSKeys.add(cs.Key__c);
+        List<CourseStatus__c> currentCourseStatus = new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(csKeysRequired);
+        Map<String,CourseStatus__c> existingCSMap = new Map<String,CourseStatus__c>();
+        for(CourseStatus__c cs : currentCourseStatus){
+            existingCSMap.put(cs.Key__c, cs);
         }
 
         //verifies for each module response if the related modules where approved for the member
         Set<String> mrKeysWithError = new Set<String>();
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseStatus__c.SobjectType});
+        Map<String,CourseStatus__c> newCourseStatusMap = new Map<String,CourseStatus__c>();
+        List<ModuleResponse__c> mrWithNewCourseStatus = new List<ModuleResponse__c>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
-            if(modulesMap.get(moduleResponse.Module__c).Course__r.SubscriptionMode__c == 'Manual' && !existingCSKeys.contains(cskey)){
-                moduleResponse.addError('The member is not registered in the related course.');
-            }
 
             if(mrKeysWithError.contains(moduleResponse.Key__c)){
                 moduleResponse.addError('The member didn\'t approve the dependent Modules');
                 continue;
             }
             
+            Boolean errorDependency = false;
             for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
                 String dependentKey = String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
                 if(!approvedMRKeys.contains(dependentKey)){
                     moduleResponse.addError('The member didn\'t approve the dependent Modules');
                     mrKeysWithError.add(moduleResponse.Key__c);
+                    errorDependency = true;
                     break;
                 }
+            }
+
+            if(errorDependency)
+                continue;
+
+            if(existingCSMap.containsKey(cskey)){
+                moduleResponse.CourseStatus__c = existingCSMap.get(cskey).Id;
+            }else{
+                if(modulesMap.get(moduleResponse.Module__c).Course__r.SubscriptionMode__c == 'Manual'){
+                    moduleResponse.addError('The member is not registered in the related course.');
+                }else{
+                    if(!newCourseStatusMap.containsKey(cskey)){
+                        CourseStatus__c cs = new CourseStatus__c(Course__c = modulesMap.get(moduleResponse.Module__c).Course__c, Member__c = moduleResponse.Member__c);
+                        newCourseStatusMap.put(cskey, cs);
+                        uow.registerNew(cs);
+                    }
+                    mrWithNewCourseStatus.add(moduleResponse);
+                }
             }            
+        }
+
+        if(!mrWithNewCourseStatus.isEmpty()){
+            uow.commitWork();
+            for(ModuleResponse__c mr : mrWithNewCourseStatus){
+                String cskey = String.valueOf(modulesMap.get(mr.Module__c).Course__c).subString(0,15) + String.valueOf(mr.Member__c).subString(0,15);
+                mr.CourseStatus__c = newCourseStatusMap.get(cskey).Id;
+            }
         }
     }
 
