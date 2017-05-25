@@ -1,11 +1,17 @@
 public class AnswerResponses extends SObjectDomain {
 
+    public static Boolean validateAdminFields = true;
+
 	public AnswerResponses(List<AnswerResponse__c> records) {
         super(records);
     }
 
     public class Constructor implements SObjectDomain.IConstructable {
         public SObjectDomain construct(List<AnswerResponse__c> sObjectList) {
+            //If has Admin Permission allow "validateAdminFields"
+            if(FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()) != null && FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()).FieloPLT__To__c >= system.now()){
+                validateAdminFields = false;
+            }        	
             return new AnswerResponses(sObjectList);
         }
     }
@@ -25,19 +31,22 @@ public class AnswerResponses extends SObjectDomain {
 
 	private void validateRecords(List<AnswerResponse__c> answerResponses) {
 	    
-	    Set<Id> questionResponses = new Set<Id>();
-	    for(AnswerResponse__c answerResponse : answerResponses) {
-			questionResponses.add(answerResponse.QuestionResponse__c);
-	    }
-	    Map<Id, QuestionResponse__c> submittedQuestionResponsesMap = new Map<Id, QuestionResponse__c>(
-	    												new QuestionResponsesSelector(new Set<String> {'Id', 'IsSubmitted__c'}).selectByKeyAndSubmitted(questionResponses)); 
+		if(validateAdminFields) {
+			
+		    Set<Id> questionResponses = new Set<Id>();
+		    for(AnswerResponse__c answerResponse : answerResponses) {
+				questionResponses.add(answerResponse.QuestionResponse__c);
+		    }
+		    Map<Id, QuestionResponse__c> submittedQuestionResponsesMap = new Map<Id, QuestionResponse__c>(
+		    												new QuestionResponsesSelector(new Set<String> {'Id', 'IsSubmitted__c'}).selectByKeyAndSubmitted(questionResponses)); 
 
-	    for(AnswerResponse__c answerResponse : answerResponses) {
-			// If the related Question Response was already submitted, the answer response cannot be deleted or updated (Only with Admin Permissions) or create new ones.    																		    	
-	    	if(submittedQuestionResponsesMap.containsKey(answerResponse.QuestionResponse__c)) {
-	        	answerResponse.addError('Question responses already submitted cannot have any modification in their set of answer responses.');             
-	    	}   
-	    }
+		    for(AnswerResponse__c answerResponse : answerResponses) {
+				// If the related Question Response was already submitted, the answer response cannot be deleted or updated (Only with Admin Permissions) or create new ones.    																		    	
+		    	if(submittedQuestionResponsesMap.containsKey(answerResponse.QuestionResponse__c)) {
+		        	answerResponse.addError('Question responses already submitted cannot have any modification in their set of answer responses.');             
+		    	}   
+		    }
+		}
 
 	}
 

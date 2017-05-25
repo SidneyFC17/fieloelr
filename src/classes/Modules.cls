@@ -200,13 +200,13 @@ public class Modules extends SObjectDomain {
 	    List<Question__c> questionsWithCorrectAnswer = new QuestionsSelector(new Set<String> {'Id', 'Name', 'Module__c', 'Type__c'}).selectByModuleHavingAnswers(modulesMap.KeySet()); 
 	    																		
 	    for(Question__c question : questionsWithCorrectAnswer) {
-	        if(question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options') {
+	        if(question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options' || question.Type__c == 'Short Answer') {
 	    		// Question types "statement", "single choice","multiple choice" and "Matching" must have at least one answer.
 	        	if(question.Answers__r.isEmpty()) {
 					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without any answer. Question: ' + question.Name);    
 	        	} 
         		// Question types "statement" and "single choice" must have a correct answer.
-        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && question.Answers__r[0].IsCorrect__c != true) {
+        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.Answers__r.isEmpty() || question.Answers__r[0].IsCorrect__c != true)) {
 					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without a correct answer. Question: ' + question.Name);    
         		}
 	        } 
