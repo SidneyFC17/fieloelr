@@ -53,4 +53,16 @@ public with sharing class QuestionResponsesSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
     }
+
+    public List<QuestionResponse__c> selectByKeyAndSubmitted(Set<Id> questionResponseIds) {
+        return (List<QuestionResponse__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :questionResponseIds AND IsSubmitted__c = true ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }

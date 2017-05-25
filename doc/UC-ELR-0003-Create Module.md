@@ -55,9 +55,13 @@ A module was created
 
 ##### 5. Create a module in status “Active” (step 6 of basic flow)
    1. The system verifies that “IsActive” field is set to “true”
-   2. The system does not create the module
-   3. The system displays an error message
-   4. End of flow
+   2. The system verifies that the “Attempts Allowed” is “null” or greater than 0
+   3. The system verifies that the “Attempts Allowed per Question” is “null” or greater than 0
+   4. The system verifies that the “Order” is not null
+   5. The system automatically sets the “IsActive” field to “false”
+   6. The system saves the module
+   7. The system displays the module detail page
+   8. End of flow
 
 ##### 6. “Attempts Allowed” is negative (step 7 of basic flow)
    1. The system verifies that the “Attempts Allowed” field value is negative

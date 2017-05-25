@@ -42,8 +42,9 @@ An answer was created
    2. The system automatically numbers the Order field
    3. Back to step 6 of basic flow
 
-##### 4. Related question “Type” is “Statement” (step 6 of basic flow)
+##### 4. Related question “Type” is “Statement” and it has already two answers (step 6 of basic flow)
    1. The system verifies that the related question “Type” is “Statement”
+   2. The system verifies that there are already two answers for the related question
    2. The system does not create the answer
    3. The system displays an error message
    4. End of flow

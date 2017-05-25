@@ -45,7 +45,7 @@ public with sharing class QuestionsSelector extends SObjectSelector {
     public List<Question__c> selectByIdWithAnswers(Set<Id> questionIds) {
         return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, Name, AnswerText__c FROM Answers__r) ' +
+                  ', (SELECT Id, Name, AnswerText__c, IsCorrect__c FROM Answers__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionIds ' +
                   'ORDER BY {2}',

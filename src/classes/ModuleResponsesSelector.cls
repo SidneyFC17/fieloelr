@@ -43,16 +43,16 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
     }
 
     public List<ModuleResponse__c> selectByIdWithQuestionResponses(Set<Id> moduleResponseIds) {
-    	return (List<ModuleResponse__c>) Database.query(String.format(
+        return (List<ModuleResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id, ' +
-                  	'IsCorrect__c, ' +
-                  	'IsSubmitted__c, ' +
+                    'IsCorrect__c, ' +
+                    'IsSubmitted__c, ' +
                     'NumberOfAttempt__c, ' +
                     'Question__c, ' +
-                  	'PartialGradeValue__c, ' +
+                    'PartialGradeValue__c, ' +
                     'TextValue__c, ' +
-                  	'Name FROM QuestionResponses__r) ' +
+                    'Name FROM QuestionResponses__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :moduleResponseIds ' +
                   'ORDER BY {2}',
@@ -89,5 +89,15 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+    }
+
+       public List<ModuleResponse__c> selectModuleResponseIds(Set<Id> coursesIds) {
+                String query = 'SELECT {0} ' +
+                    'FROM {1} ' +
+                    'WHERE Module__r.Course__c IN :  coursesIds';
+        return (List<ModuleResponse__c>) Database.query(String.format(query,
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName() } ));
     }
 }
