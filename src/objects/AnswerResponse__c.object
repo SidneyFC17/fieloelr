@@ -68,6 +68,16 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Key__c</fullName>
+        <externalId>false</externalId>
+        <label>Key</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>QuestionResponse__c</fullName>
         <externalId>false</externalId>
         <label>Question Response</label>
@@ -90,6 +100,13 @@
     <pluralLabel>Answer Responses</pluralLabel>
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>AnswerResponseCannotBeEdited</fullName>
+        <active>true</active>
+        <description>An answer response cannot be edited.</description>
+        <errorConditionFormula>NOT( ISNEW() )</errorConditionFormula>
+        <errorMessage>An answer response cannot be edited.</errorMessage>
+    </validationRules>
     <validationRules>
         <fullName>ValidateAnswerLookup</fullName>
         <active>true</active>
