@@ -67,6 +67,7 @@ var platformSalesforceJs = [
       'resources/FieloElr_Salesforce/scripts/elearning.js',
       // Formularios
       'resources/FieloElr_Salesforce/scripts/recentOrder.js',
+      'resources/FieloElr_Salesforce/scripts/questionManage.js'
       // Landings
       // 'resources/FieloElr_Salesforce/scripts/elearningLanding.js'
       // Views
