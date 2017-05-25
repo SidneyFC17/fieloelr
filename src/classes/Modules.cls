@@ -161,7 +161,7 @@ public class Modules extends SObjectDomain {
      	checkModuleResponses(activeModules);
 
      	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType});
-     	deleteModuleResponses(uow);
+     	deleteModuleDependencies(uow);
 
      	updateCourses(null, activeModules, uow);
      	uow.commitWork();
@@ -198,7 +198,7 @@ public class Modules extends SObjectDomain {
 	    }
     }
 
-    private void deleteModuleResponses(SObjectUnitOfWork uow) {
+    private void deleteModuleDependencies(SObjectUnitOfWork uow) {
 		
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
 
