@@ -56,24 +56,15 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>AnswerText__c</fullName>
+        <fullName>CorrectAnswerOptions__c</fullName>
         <externalId>false</externalId>
-        <label>Answer Text</label>
-        <length>1000</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CorrectAnswers__c</fullName>
-        <externalId>false</externalId>
-        <label>Correct Answers</label>
+        <label>Correct Answer Options</label>
         <summaryFilterItems>
-            <field>Answer__c.IsCorrect__c</field>
+            <field>AnswerOption__c.IsCorrect__c</field>
             <operation>equals</operation>
             <value>True</value>
         </summaryFilterItems>
-        <summaryForeignKey>Answer__c.Question__c</summaryForeignKey>
+        <summaryForeignKey>AnswerOption__c.Question__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
@@ -99,15 +90,6 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>MetadataAnswer__c</fullName>
-        <externalId>false</externalId>
-        <label>Metadata Answer</label>
-        <length>1000</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Module__c</fullName>
@@ -152,18 +134,18 @@
         <type>TextArea</type>
     </fields>
     <fields>
-        <fullName>ShuffleAnswers__c</fullName>
+        <fullName>ShuffleAnswerOptions__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <label>Shuffle Answers</label>
+        <label>Shuffle Answer Options</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>TotalAnswers__c</fullName>
+        <fullName>TotalAnswerOptions__c</fullName>
         <externalId>false</externalId>
-        <label>Total Answers</label>
-        <summaryForeignKey>Answer__c.Question__c</summaryForeignKey>
+        <label>Total Answer Options</label>
+        <summaryForeignKey>AnswerOption__c.Question__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
@@ -200,7 +182,7 @@
             <restrictedPicklist>true</restrictedPicklist>
             <sorted>false</sorted>
         </picklist>
-        <required>false</required>
+        <required>true</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
@@ -227,17 +209,25 @@
         <errorMessage>The correct weight must be a positive number.</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>CorrectWeightWhenWeightedQuestions</fullName>
+        <active>true</active>
+        <description>When Module uses Weighted Questions, the field Correct Weight cannot be null.</description>
+        <errorConditionFormula>AND( ISNULL( CorrectWeight__c ) , Module__r.WeightedQuestions__c)</errorConditionFormula>
+        <errorDisplayField>CorrectWeight__c</errorDisplayField>
+        <errorMessage>A value for correct weight must be specified when the corresponding module uses weighted questions.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>LimitOfAnswers</fullName>
         <active>true</active>
         <description>If the question type is &quot;Statement&quot; no more than two answers can be created.</description>
-        <errorConditionFormula>AND( TEXT(Type__c)  = &apos;Statement&apos;,  TotalAnswers__c &gt; 2)</errorConditionFormula>
+        <errorConditionFormula>AND( TEXT(Type__c)  = &apos;Statement&apos;,  TotalAnswerOptions__c &gt; 2)</errorConditionFormula>
         <errorMessage>For &quot;Statement&quot; questions, no more than two answers can be created.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>LimitOfCorrectAnswers</fullName>
         <active>true</active>
         <description>If the question type is &quot;Single choice&quot; or &quot;Statement&quot; only one answer can be marked as &quot;IsCorrect&quot;.</description>
-        <errorConditionFormula>AND( OR( TEXT(Type__c)  = &apos;Single Choice&apos;, TEXT(Type__c)   = &apos;Statement&apos; ) , CorrectAnswers__c &gt; 1)</errorConditionFormula>
+        <errorConditionFormula>AND( OR( TEXT(Type__c)  = &apos;Single Choice&apos;, TEXT(Type__c)   = &apos;Statement&apos; ) , CorrectAnswerOptions__c &gt; 1)</errorConditionFormula>
         <errorMessage>For &quot;Single Choice&quot; and &quot;Statement&quot; questions, only one answer can be marked as correct.</errorMessage>
     </validationRules>
     <validationRules>

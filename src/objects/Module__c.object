@@ -254,6 +254,14 @@
         <errorMessage>Active modules must have an approval grade.</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>IsActiveChangedWhenCourseIsActive</fullName>
+        <active>true</active>
+        <description>The module &quot;IsActive&quot; field cannot be changed if the related course is active.</description>
+        <errorConditionFormula>AND( ISCHANGED( IsActive__c ) ,  TEXT(Course__r.Status__c) = &apos;Active&apos;)</errorConditionFormula>
+        <errorDisplayField>IsActive__c</errorDisplayField>
+        <errorMessage>&quot;Active&quot; status cannot be changed if the related course is active.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>NoActiveCourseOnCreation</fullName>
         <active>true</active>
         <description>A Module cannot be created with a relation to an active Course, and the Course cannot be modified afterwards.</description>

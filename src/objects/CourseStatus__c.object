@@ -81,9 +81,8 @@
     <fields>
         <fullName>Key__c</fullName>
         <externalId>false</externalId>
-        <formula>LEFT(Course__c, 15) + LEFT(Member__c, 15)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Key</label>
+        <length>30</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>

@@ -118,16 +118,16 @@ public class Questions extends SObjectDomain {
     	Map<Id, Question__c> existingQuestions = new Map<Id, Question__c>(
     		new QuestionsSelector().selectByModuleHavingAnswers(new Map<Id,Question__c>(questions).keySet()));
 
-    	List<Answer__c> existingAnswers = new List<Answer__c>();
+    	List<AnswerOption__c> existingAnswerOptions = new List<AnswerOption__c>();
 
     	for (Question__c question: questions) {
-    		if(existingQuestions.get(question.Id).Answers__r.size()>0) {
-    			existingAnswers.addAll(existingQuestions.get(question.Id).Answers__r);
+    		if(existingQuestions.get(question.Id).AnswerOptions__r.size()>0) {
+    			existingAnswerOptions.addAll(existingQuestions.get(question.Id).AnswerOptions__r);
     		}
     	}
 
-    	if (!existingAnswers.isEmpty()) {
-    		delete existingAnswers;
+    	if (!existingAnswerOptions.isEmpty()) {
+    		delete existingAnswerOptions;
     	}
     }
 

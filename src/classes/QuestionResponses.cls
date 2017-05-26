@@ -157,13 +157,13 @@ public class QuestionResponses extends SObjectDomain {
                 if(question.Type__c == 'Multiple Choice' || question.Type__c == 'Single Choice' || question.Type__c == 'Statement'){
                     questionResponse.IsCorrect__c = true;
                     //verifies if the number of answers are the same as the correct ones
-                    List<AnswerResponse__c> answerResponses = existingQuestionResponses.get(questionResponse.Id).AnswerResponses__r;
-                    if (answerResponses.size() == questionsMap.get(questionResponse.Question__c).Answers__r.size()) {
-                        Set<Id> correctAnswerIds = new Map<Id,Answer__c>(question.Answers__r).keySet();
+                    List<Answer__c> answers = existingQuestionResponses.get(questionResponse.Id).answers__r;
+                    if (answers.size() == questionsMap.get(questionResponse.Question__c).AnswerOptions__r.size()) {
+                        Set<Id> correctAnswerIds = new Map<Id,AnswerOption__c>(question.AnswerOptions__r).keySet();
                         
-                        //loop the answer responses and verify that all of them are related to correct answers
-                        for(AnswerResponse__c answerResponse : existingQuestionResponses.get(questionResponse.Id).AnswerResponses__r) {
-                            if (!correctAnswerIds.contains(answerResponse.Answer__c)) {
+                        //loop the answers and verify that all of them are related to correct answer options
+                        for(Answer__c answer : existingQuestionResponses.get(questionResponse.Id).answers__r) {
+                            if (!correctAnswerIds.contains(answer.AnswerOption__c)) {
                                 questionResponse.IsCorrect__c = false;
                                 break;
                             }
@@ -173,10 +173,8 @@ public class QuestionResponses extends SObjectDomain {
                     }
                 }else if (question.Type__c == 'Short Answer') {
                     questionResponse.IsCorrect__c = false;
-                    for (Answer__c answer: questionsMap.get(questionResponse.Question__c).Answers__r) {
-                        system.debug(answer.AnswerText__c);
-                        system.debug(questionResponse.TextValue__c);
-                        if (answer.AnswerText__c == questionResponse.TextValue__c) {
+                    for (AnswerOption__c answerOption: questionsMap.get(questionResponse.Question__c).AnswerOptions__r) {
+                        if (answerOption.AnswerOptionText__c == questionResponse.TextValue__c) {
                             questionResponse.IsCorrect__c = true;
                             break;
                         }
@@ -185,20 +183,20 @@ public class QuestionResponses extends SObjectDomain {
                     questionResponse.IsCorrect__c = question.AnswerText__c == questionResponse.TextValue__c;
                 }*/else if (question.Type__c == 'Matching') {
                     questionResponse.IsCorrect__c = true;
-                    List<AnswerResponse__c> answerResponses = existingQuestionResponses.get(questionResponse.Id).AnswerResponses__r;
-                    if (answerResponses.size() == questionsMap.get(questionResponse.Question__c).Answers__r.size()) {
+                    List<Answer__c> answers = existingQuestionResponses.get(questionResponse.Id).answers__r;
+                    if (answers.size() == questionsMap.get(questionResponse.Question__c).AnswerOptions__r.size()) {
                         Set<String> correctAnswers = new Set<String>();
-                        for(Answer__c answer : question.Answers__r){
-                            correctAnswers.add(answer.AnswerText__c);
+                        for(AnswerOption__c answerOption : question.AnswerOptions__r){
+                            correctAnswers.add(answerOption.AnswerOptionText__c);
                         }
 
-                        //loop the answer responses and verify that all of them are related to correct answers
-                        for(AnswerResponse__c answerResponse : existingQuestionResponses.get(questionResponse.Id).AnswerResponses__r) {
-                            if(!correctAnswers.contains(answerResponse.Answer__c)) {
+                        //loop the answers and verify that all of them are related to correct answer options
+                        for(Answer__c answer : existingQuestionResponses.get(questionResponse.Id).answers__r) {
+                            if(!correctAnswers.contains(answer.AnswerOption__c)) {
                                 questionResponse.IsCorrect__c = false;
                                 break;
                             }else{
-                                correctAnswers.remove(answerResponse.Answer__c);
+                                correctAnswers.remove(answer.AnswerOption__c);
                             }
                         }
                     } else {
