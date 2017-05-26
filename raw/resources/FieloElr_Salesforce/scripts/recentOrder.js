@@ -110,7 +110,8 @@
   * Inicializa el drag and drop
   */
 
-  FieloRecentReorder.prototype.enableSort = function() {
+  FieloRecentReorder.prototype.sortable_ = function() {
+    console.log('sortable');
     // Si el contenedor es tabla fija el ancho
     if (this.container_.nodeName === 'TBODY') {
       var columns = this.container_.querySelectorAll('td, th');
@@ -119,11 +120,6 @@
         cell.width(cell.width());
       });
     }
-    var rows = $(this.element_).find('tr');
-    [].forEach.call(rows, function(row) {
-      $(row).removeClass('ui-state-disabled');
-      $(row).addClass('ui-sortable-handle');
-    });
     $(this.container_).sortable({
       update: this.order_.bind(this),
       revert: true,
@@ -137,10 +133,25 @@
 
   FieloRecentReorder.prototype.disableSort = function() {
     // Si el contenedor es tabla fija el ancho
+    console.log('disableSort');
     var rows = $(this.element_).find('tr');
     [].forEach.call(rows, function(row) {
       $(row).addClass('ui-state-disabled');
-      $(row).removeClass('ui-sortable-handle');
+    });
+  };
+
+  /**
+  * Re-enable the drag and drop
+  */
+
+  FieloRecentReorder.prototype.enableSort = function() {
+    console.log('enableSort');
+    // Si el contenedor es tabla fija el ancho
+    var rows = $(this.element_).find('tr');
+    [].forEach.call(rows, function(row) {
+      if ($(row).hasClass('ui-state-disabled')) {
+        $(row).removeClass('ui-state-disabled');
+      }
     });
   };
 
@@ -170,7 +181,7 @@
       this.orderByField_ =
         this.element_.getAttribute('data-order-by');
 
-      this.enableSort();
+      this.sortable_();
       this.order_();
       this.saveBtn_ = this.element_
         .getElementsByClassName(this.CssClasses_.SAVE)[0];

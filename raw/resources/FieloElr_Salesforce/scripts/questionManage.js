@@ -444,6 +444,9 @@
           .set('value', currentField.innerHTML);
         $(currentField).closest('td')[0]
           .appendChild(newField);
+        if (!$(currentField).closest('td').hasClass('ui-state-disabled')) {
+          $(currentField).closest('td').addClass('ui-state-disabled');
+        }
 
         if (newField) {
           $(currentField).closest('td')[0]
@@ -461,9 +464,6 @@
     var currentField = null;
     var newField = null;
     this.removeField(fieldName);
-    if (fieldName === 'FieloELR__Order__c') {
-      this.reorderObject.disableSort();
-    }
     [].forEach.call(items, function(item) {
       currentField = $(item)
         .find('[data-field-name="' + fieldName + '"]')[0];
@@ -493,6 +493,9 @@
       }
     }, this);
     this.hideColumn(fieldName);
+    if (fieldName === 'FieloELR__Order__c') {
+      this.reorderObject.disableSort();
+    }
   };
 
   FieloQuestionManage.prototype.hideColumn = function(fieldName) {
@@ -538,9 +541,6 @@
         $(currentField).toggle(true);
         $(currentField).closest('td').toggle(true);
       }
-      if (fieldName === 'FieloELR__Order__c') {
-        this.reorderObject.enableSort();
-      }
     }, this);
 
     if (currentField) {
@@ -549,6 +549,9 @@
         .find('thead')
           .find('tr')[0].cells[index];
       $(column).toggle(true);
+    }
+    if (fieldName === 'FieloELR__Order__c') {
+      this.reorderObject.enableSort();
     }
   };
 
