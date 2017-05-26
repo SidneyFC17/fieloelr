@@ -37,21 +37,6 @@
         data-redirect="{!redirect}"
         data-order-by="{!dataOrderBy}"
     >
-    <!--
-    <div id="{!formId}"
-        role="dialog"
-        tabindex="-1"
-        aria-labelledby="{!formId}headerModal"
-        class="slds-hide slds-modal slds-fade-in-open slds-form {!className}"
-        data-on-show="FieloForm_retrieve"
-        data-save-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!saveController}"
-        data-retrieve-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!retrieveController}" 
-        data-object-name="{!sObjectName}"
-        data-fields="{!fields}"
-        data-secondary-parameters="{!secondaryParameters}"
-        data-redirect="{!redirect}">
-    -->
-
         <div class="slds-modal__container">
             <div class="slds-modal__header slds-text-heading--medium">
                 <button class="slds-button slds-modal__close slds-button--icon-inverse" data-aljs-dismiss="modal" title="Close">
@@ -72,7 +57,7 @@
 				<c:Sections
             		formId="{!formId}-questionsection"
             		sObjectName="{!sRecentObjectName}"
-            		fieldset="{'Name':'FieloELR__ShuffleAnswers__c','Type':'checkbox'},{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
+            		fieldset="{'Name':'FieloELR__ShuffleAnswerOptions__c','Type':'checkbox'},{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
             		mode="{!mode}"
             		layout="{!layout}"/>
             	<article class="slds-card slds-m-around--medium">
