@@ -4,11 +4,11 @@ public with sharing class AnswersSelector extends SObjectSelector {
         return new List<Schema.SObjectField> {
                 Answer__c.Id,
                 Answer__c.Name,
-                Answer__c.IsCorrect__c,
-                Answer__c.Question__c
-            };
-    }
+                Answer__c.AnswerOption__c,
+                Answer__c.QuestionResponse__c
 
+          };
+    }
     public AnswersSelector(Set<String> fields){
         super(fields);
     }
@@ -19,7 +19,7 @@ public with sharing class AnswersSelector extends SObjectSelector {
 
     public Schema.SObjectType getSObjectType(){
         return Answer__c.sObjectType;
-    }
+    }//test github
 
     public List<Answer__c> selectById(Set<Id> answerIds) {
         return (List<Answer__c>) selectSObjectsById(answerIds);

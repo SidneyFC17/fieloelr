@@ -18,9 +18,34 @@ public class Modules extends SObjectDomain {
     }
 
 	public override void onApplyDefaults() {
-       for(Module__c module : (List<Module__c>)records){
-           module.IsActive__c = false;
-       }
+		
+		Set<Id> courseIds = new Set<Id>();
+		for(Module__c module : (List<Module__c>)records){
+        	module.IsActive__c = false;
+			if(module.Order__c == null) {
+	        	courseIds.add(module.Course__c);
+	        }
+		}
+    	
+		List<AggregateResult> aggResult = new ModulesSelector().selectByCourseGroupByCourse(courseIds);
+        Map<String, Decimal> maxOrderByCourse = new Map<String, Decimal>();
+        for(AggregateResult ar : aggResult){
+            maxOrderByCourse.put((String)ar.get('FieloELR__Course__c'), (Decimal)ar.get('orderNumber'));
+        }
+        
+		for(Module__c module : (List<Module__c>)records) {
+			if(module.Order__c == null) {
+	            if(maxOrderByCourse.containsKey(module.Course__c)){
+	                Decimal maxOrder = maxOrderByCourse.get(module.Course__c);
+	                maxOrder = (maxOrder == null ? 0 : maxOrder);
+	                module.Order__c = ++maxOrder;
+	                maxOrderByCourse.put(module.Course__c, maxOrder);
+	            }else{
+	                module.Order__c = 1;
+	                maxOrderByCourse.put(module.Course__c, 1);
+	            }
+			}
+		}
     }    
 
     public override void onValidate() {
@@ -136,7 +161,7 @@ public class Modules extends SObjectDomain {
      	checkModuleResponses(activeModules);
 
      	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType});
-     	deleteModuleResponses(uow);
+     	deleteModuleDependencies(uow);
 
      	updateCourses(null, activeModules, uow);
      	uow.commitWork();
@@ -173,7 +198,7 @@ public class Modules extends SObjectDomain {
 	    }
     }
 
-    private void deleteModuleResponses(SObjectUnitOfWork uow) {
+    private void deleteModuleDependencies(SObjectUnitOfWork uow) {
 		
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
 
@@ -191,6 +216,16 @@ public class Modules extends SObjectDomain {
     }
 
 
+    private void deleteQuestions(SObjectUnitOfWork uow) {
+		
+		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
+
+    	List<Question__c> questions = 
+    								new QuestionsSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
+    	uow.registerDeleted(questions);
+    }
+
+
 	// Check the answers for a list of modules
     private void checkAnswers(List<Module__c> activatedModules) {
 
@@ -202,11 +237,11 @@ public class Modules extends SObjectDomain {
 	    for(Question__c question : questionsWithCorrectAnswer) {
 	        if(question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options' || question.Type__c == 'Short Answer') {
 	    		// Question types "statement", "single choice","multiple choice" and "Matching" must have at least one answer.
-	        	if(question.Answers__r.isEmpty()) {
+	        	if(question.AnswerOptions__r.isEmpty()) {
 					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without any answer. Question: ' + question.Name);    
 	        	} 
         		// Question types "statement" and "single choice" must have a correct answer.
-        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.Answers__r.isEmpty() || question.Answers__r[0].IsCorrect__c != true)) {
+        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.AnswerOptions__r.isEmpty() || question.AnswerOptions__r[0].IsCorrect__c != true)) {
 					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without a correct answer. Question: ' + question.Name);    
         		}
 	        } 

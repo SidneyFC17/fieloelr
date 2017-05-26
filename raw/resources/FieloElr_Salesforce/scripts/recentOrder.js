@@ -46,7 +46,7 @@
   * Get
   */
 
-  FieloRecentReorder.prototype.get_ = function() {
+  FieloRecentReorder.prototype.get = function() {
     var items = this.container_.getElementsByClassName(this.CssClasses_.MODEL);
     var sObjectList = [];
     [].forEach.call(items, function(item) {
@@ -64,19 +64,21 @@
   * Save Order
   */
   FieloRecentReorder.prototype.save_ = function() {
-    fielo.util.spinner.FieloSpinner.show();
-    var orderValues = this.get_();
-    try {
-      Visualforce.remoting.Manager.invokeAction(
-        this.element_.getAttribute('data-save-controller'),
-        orderValues,
-        this.processRemoteActionResult_.bind(this),
-        {
-          escape: false
-        }
-      );
-    } catch (e) {
-      console.warn(e);
+    if (!this.disableReorder) {
+      fielo.util.spinner.FieloSpinner.show();
+      var orderValues = this.get();
+      try {
+        Visualforce.remoting.Manager.invokeAction(
+          this.element_.getAttribute('data-save-controller'),
+          orderValues,
+          this.processRemoteActionResult_.bind(this),
+          {
+            escape: false
+          }
+        );
+      } catch (e) {
+        console.warn(e);
+      }
     }
   };
 
@@ -108,7 +110,7 @@
   * Inicializa el drag and drop
   */
 
-  FieloRecentReorder.prototype.sortable_ = function() {
+  FieloRecentReorder.prototype.enableSort = function() {
     // Si el contenedor es tabla fija el ancho
     if (this.container_.nodeName === 'TBODY') {
       var columns = this.container_.querySelectorAll('td, th');
@@ -117,10 +119,28 @@
         cell.width(cell.width());
       });
     }
-
+    var rows = $(this.element_).find('tr');
+    [].forEach.call(rows, function(row) {
+      $(row).removeClass('ui-state-disabled');
+      $(row).addClass('ui-sortable-handle');
+    });
     $(this.container_).sortable({
       update: this.order_.bind(this),
-      revert: true
+      revert: true,
+      cancel: '.ui-state-disabled'
+    });
+  };
+
+  /**
+  * Disable the drag and drop
+  */
+
+  FieloRecentReorder.prototype.disableSort = function() {
+    // Si el contenedor es tabla fija el ancho
+    var rows = $(this.element_).find('tr');
+    [].forEach.call(rows, function(row) {
+      $(row).addClass('ui-state-disabled');
+      $(row).removeClass('ui-sortable-handle');
     });
   };
 
@@ -150,10 +170,13 @@
       this.orderByField_ =
         this.element_.getAttribute('data-order-by');
 
-      this.sortable_();
+      this.enableSort();
       this.order_();
-      this.element_.getElementsByClassName(this.CssClasses_.SAVE)[0]
-        .addEventListener('click', this.save_.bind(this));
+      this.saveBtn_ = this.element_
+        .getElementsByClassName(this.CssClasses_.SAVE)[0];
+      if (this.saveBtn_) {
+        this.saveBtn_.addEventListener('click', this.save_.bind(this));
+      }
     }
   };
 

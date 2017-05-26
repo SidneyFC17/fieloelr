@@ -26,9 +26,9 @@ public class Questions extends SObjectDomain {
     	validateFormat(records);
 
     	//If the MetadataAnswer field is set, convert it to plain text.
-    	for(Question__c record: (List<Question__c>) records) {
+    	/*for(Question__c record: (List<Question__c>) records) {
     		formatAnswer(record);
-    	}
+    	}*/
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
@@ -42,11 +42,11 @@ public class Questions extends SObjectDomain {
     	validateFormat(records);
 
     	//If the MetadataAnswer field is set, convert it to plain text.
-    	for(Question__c record: (List<Question__c>) records) {
+    	/*for(Question__c record: (List<Question__c>) records) {
     		if(record.MetadataAnswer__c != ((Question__c)existingRecords.get(record.Id)).MetadataAnswer__c  ) {
     			formatAnswer(record);
     		}
-    	}
+    	}*/
     }
 
 
@@ -118,16 +118,16 @@ public class Questions extends SObjectDomain {
     	Map<Id, Question__c> existingQuestions = new Map<Id, Question__c>(
     		new QuestionsSelector().selectByModuleHavingAnswers(new Map<Id,Question__c>(questions).keySet()));
 
-    	List<Answer__c> existingAnswers = new List<Answer__c>();
+    	List<AnswerOption__c> existingAnswerOptions = new List<AnswerOption__c>();
 
     	for (Question__c question: questions) {
-    		if(existingQuestions.get(question.Id).Answers__r.size()>0) {
-    			existingAnswers.addAll(existingQuestions.get(question.Id).Answers__r);
+    		if(existingQuestions.get(question.Id).AnswerOptions__r.size()>0) {
+    			existingAnswerOptions.addAll(existingQuestions.get(question.Id).AnswerOptions__r);
     		}
     	}
 
-    	if (!existingAnswers.isEmpty()) {
-    		delete existingAnswers;
+    	if (!existingAnswerOptions.isEmpty()) {
+    		delete existingAnswerOptions;
     	}
     }
 
@@ -187,7 +187,7 @@ public class Questions extends SObjectDomain {
 	}
 
 	// Convert an answer with markups to an plain text answer.
-	private void formatAnswer(Question__c question) {
+	/*private void formatAnswer(Question__c question) {
 		if ( question.MetadataAnswer__c != null && question.MetadataAnswer__c != '') {
 			String answer = question.MetadataAnswer__c;
 			String regex = '(?<=\\{\\!)(.*?)(?=\\})';
@@ -228,5 +228,5 @@ public class Questions extends SObjectDomain {
 		} else {
 			question.AnswerText__c = null;
 		}
-    }
+    }*/
 }

@@ -121,4 +121,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
+    public List<AggregateResult> selectByCourseGroupByCourse(Set<Id> courseIds) {
+        return [SELECT MAX(Order__c) orderNumber, Course__c FROM Module__c WHERE Course__c in : courseIds GROUP BY Course__c];
+    }
 }

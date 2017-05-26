@@ -52,38 +52,43 @@
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
-    <enableSearch>false</enableSearch>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>Answer__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
+        <fullName>AnswerOptionText__c</fullName>
         <externalId>false</externalId>
-        <label>Answer</label>
-        <referenceTo>Answer__c</referenceTo>
-        <relationshipLabel>Answer Responses</relationshipLabel>
-        <relationshipName>AnswerResponses</relationshipName>
+        <label>Answer Option Text</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>Lookup</type>
+        <type>TextArea</type>
     </fields>
     <fields>
-        <fullName>Key__c</fullName>
+        <fullName>IsCorrect__c</fullName>
+        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <label>Key</label>
-        <length>30</length>
-        <required>false</required>
+        <label>Is Correct</label>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Order__c</fullName>
+        <externalId>false</externalId>
+        <label>Order</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>QuestionResponse__c</fullName>
+        <fullName>Question__c</fullName>
         <externalId>false</externalId>
-        <label>Question Response</label>
-        <referenceTo>QuestionResponse__c</referenceTo>
-        <relationshipLabel>Answer Responses</relationshipLabel>
-        <relationshipName>AnswerResponses</relationshipName>
+        <label>Question</label>
+        <referenceTo>Question__c</referenceTo>
+        <relationshipLabel>Answer Options</relationshipLabel>
+        <relationshipName>AnswerOptions</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
         <trackTrending>false</trackTrending>
@@ -91,33 +96,26 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <gender>Feminine</gender>
-    <label>Answer Response</label>
+    <label>Answer Option</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
     <nameField>
-        <displayFormat>AR-{00000000}</displayFormat>
-        <label>Answer Reponse Name</label>
+        <displayFormat>AO-{00000000}</displayFormat>
+        <label>Answer Option Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Answer Responses</pluralLabel>
+    <pluralLabel>Answer Options</pluralLabel>
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
-        <fullName>AnswerResponseCannotBeEdited</fullName>
+        <fullName>AnswerTextRequired</fullName>
         <active>true</active>
-        <description>An answer response cannot be edited.</description>
-        <errorConditionFormula>NOT( ISNEW() )</errorConditionFormula>
-        <errorMessage>An answer response cannot be edited.</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>ValidateAnswerLookup</fullName>
-        <active>true</active>
-        <errorConditionFormula>AND(NOT(ISBLANK( Answer__c )),  Answer__r.Question__c !=  QuestionResponse__r.Question__c )</errorConditionFormula>
-        <errorMessage>The answer must belong to the same question.</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>ValidateAnswerRequired</fullName>
-        <active>true</active>
-        <errorConditionFormula>AND(NOT(ISPICKVAL(QuestionResponse__r.Question__r.Type__c, &apos;Matching Options&apos;)), ISBLANK( Answer__c ))</errorConditionFormula>
-        <errorDisplayField>Answer__c</errorDisplayField>
-        <errorMessage>The answer is required.</errorMessage>
+        <description>The Answer text is required.</description>
+        <errorConditionFormula>ISBLANK( AnswerOptionText__c )</errorConditionFormula>
+        <errorDisplayField>AnswerOptionText__c</errorDisplayField>
+        <errorMessage>The answer text is required.</errorMessage>
     </validationRules>
 </CustomObject>

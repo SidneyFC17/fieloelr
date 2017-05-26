@@ -5,14 +5,15 @@
     <apex:attribute name="className" description="Inject a css class to the form container" type="String" />
 	<!-- Controladores -->
     <apex:attribute name="namespace" description="namespace of package" type="String" default="" />
-    <apex:attribute name="saveController" description="controller with save remote action" type="String" default="FormModuleReorderController.reorder" />
+    <apex:attribute name="saveController" description="controller with save remote action" type="String" default="FormQuestionManageController.save" />
+    <apex:attribute name="retrieveController" description="controller with retrieve remote action" type="String" default="FormQuestionManageController.retrieve" />
     <apex:attribute name="secondaryParameters" description="Parameters to be passed after sobject. Separated by comma" type="String" default="" />
 	<!-- Sections y Elementos -->
     <apex:attribute name="mode" description="new, update, view" type="String" />
     <apex:attribute name="sObjectName" type="String" default="" description="" assignTo="{!csObjectName}" />
     <apex:attribute name="sRecentObjectName" type="String" default="" description=""/>
     <apex:attribute name="sRecentFieldset" type="String" default="" description=""/>
-    <apex:attribute name="fieldset" type="String" default="" description="Form Fields"/>
+    <apex:attribute name="fieldset" type="String" default="" description="Form Fields" assignTo="{!cFieldset}"/>
     <apex:attribute name="record" type="SObject" description="" assignTo="{!recordObject}"/>
     <apex:attribute name="redirect" description="Redirects after save" type="Boolean" default="true" />
     <apex:attribute name="saveConfirm" description="Confirmation before save" type="String" default="false" />
@@ -20,20 +21,37 @@
     <apex:attribute name="sections" type="String" default="" description="Form Fields" />
     <apex:attribute name="dataOrderBy" type="String" default="FieloELR__Order__c" description="Form Fields" />
     <apex:attribute name="dataFilters" type="String" description=""/>
+    <apex:attribute name="layout" type="String" default="inline" description="" assignTo="{!cLayout}"/>
 
     <div id="{!formId}" 
         role="dialog" 
         tabindex="-1" 
         aria-labelledby="{!formId}headerModal" 
-        class="slds-hide slds-modal slds-modal--large slds-fade-in-open slds-form fielosf-recent-reorder {!className}" 
-        data-on-show="" 
-        data-save-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!saveController}" 
+        class="slds-hide slds-modal slds-modal--large slds-fade-in-open slds-form fielosf-recent-reorder fielosf-question-manage {!className}" 
+        data-save-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!saveController}"
+        data-retrieve-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!retrieveController}"
+        data-on-show="FieloQuestionManage_retrieve"
         data-object-name="{!sObjectName}"
         data-fields="{!fields}"
         data-secondary-parameters="{!secondaryParameters}"
         data-redirect="{!redirect}"
         data-order-by="{!dataOrderBy}"
     >
+    <!--
+    <div id="{!formId}"
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="{!formId}headerModal"
+        class="slds-hide slds-modal slds-fade-in-open slds-form {!className}"
+        data-on-show="FieloForm_retrieve"
+        data-save-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!saveController}"
+        data-retrieve-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!retrieveController}" 
+        data-object-name="{!sObjectName}"
+        data-fields="{!fields}"
+        data-secondary-parameters="{!secondaryParameters}"
+        data-redirect="{!redirect}">
+    -->
+
         <div class="slds-modal__container">
             <div class="slds-modal__header slds-text-heading--medium">
                 <button class="slds-button slds-modal__close slds-button--icon-inverse" data-aljs-dismiss="modal" title="Close">
@@ -50,13 +68,13 @@
             		sObjectName="{!sObjectName}"
             		fieldset="{!fieldset}"
             		mode="update"
-            		layout="inline"/>
+            		layout="{!layout}"/>
 				<c:Sections
             		formId="{!formId}-questionsection"
             		sObjectName="{!sRecentObjectName}"
-            		fieldset="{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'}"
+            		fieldset="{'Name':'FieloELR__ShuffleAnswers__c','Type':'checkbox'},{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
             		mode="{!mode}"
-            		layout="inline"/>
+            		layout="{!layout}"/>
             	<article class="slds-card slds-m-around--medium">
 				    <div class="slds-card__header slds-grid">
 				      <header class="slds-media slds-media--center slds-has-flexi-truncate">
@@ -80,8 +98,8 @@
 			    </article>
             </div>
             <div class="slds-modal__footer">
-                <a data-aljs-dismiss="modal" class="slds-button slds-button--neutral slds-form__cancel">{!$Label.Cancel}</a>
-                <a data-aljs-dismiss="modal" class="slds-button slds-button--brand slds-form__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
+                <a data-aljs-dismiss="modal" class="slds-button slds-button--neutral fielosf-question-manage__cancel">{!$Label.Cancel}</a>
+                <a data-aljs-dismiss="modal" class="slds-button slds-button--brand fielosf-question-manage__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
             </div>          
         </div>
     </div>

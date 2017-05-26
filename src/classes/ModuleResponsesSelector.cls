@@ -91,7 +91,7 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-       public List<ModuleResponse__c> selectModuleResponseIds(Set<Id> coursesIds) {
+    public List<ModuleResponse__c> selectModuleResponseIds(Set<Id> coursesIds) {
                 String query = 'SELECT {0} ' +
                     'FROM {1} ' +
                     'WHERE Module__r.Course__c IN :  coursesIds';
@@ -99,5 +99,9 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                 new List<String> {
                     getFieldListString(),
                     getSObjectName() } ));
+    }
+
+    public List<AggregateResult> selectByKeyGroupByKey(Set<String> keys) {
+        return [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : keys GROUP BY Key__c];
     }
 }
