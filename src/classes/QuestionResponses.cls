@@ -30,7 +30,7 @@ public class QuestionResponses extends SObjectDomain {
         List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM QuestionResponse__c WHERE Key__c in : qrKeys GROUP BY Key__c];
         Map<String,Integer> maxNumbByKey = new Map<String,Integer>();
         for(AggregateResult qr : aggResult){
-            maxNumbByKey.put((String)qr.get('Key__c'), (Integer)qr.get('attemptNumber'));
+            maxNumbByKey.put((String)qr.get('FieloELR__Key__c'), (Integer)qr.get('attemptNumber'));
         }
         
         for(QuestionResponse__c questionResp : (List<QuestionResponse__c>)records){
