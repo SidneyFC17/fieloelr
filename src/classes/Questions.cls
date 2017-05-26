@@ -55,10 +55,30 @@ public class Questions extends SObjectDomain {
      	checkModule(records);
     }
 
+	public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
+    }
+
     public override void onAfterDelete() {
     	// Delete related answers upon question delete
     	deleteRelatedAnswers(records);
     }
+
+    // If the question is updated or inserted and the weigth is null or the question pool is != null then the weight will be 1 
+    private void updateWeight(List<Question__c> questions, SObjectUnitOfWork uow) {
+	    Set<Id> modules = new Set<Id>();
+	    for(Question__c question : questions) {
+			modules.add(question.Module__c);
+	    }
+
+		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id'}).selectById(modules));
+
+	    for(Question__c question : questions) {
+	    	if(question.CorrectWeight__c == null || (modulesMap.containsKey(question.Module__c) && modulesMap.get(question.Module__c).QuestionPool__c != null)) {
+	        	question.CorrectWeight__c = 1;             
+	    	}
+	    }
+		uow.registerDirty(questions);
+	}
 
 	// Check the modules
     private void checkModule(List<Question__c> questions) {
