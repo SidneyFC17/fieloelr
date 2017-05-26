@@ -160,8 +160,9 @@ public class Modules extends SObjectDomain {
 		// An active module with related module responses cannot be deleted.
      	checkModuleResponses(activeModules);
 
-     	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType});
+     	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType, Question__c.SObjectType});
      	deleteModuleDependencies(uow);
+     	deleteQuestions(uow);     	
 
      	updateCourses(null, activeModules, uow);
      	uow.commitWork();
