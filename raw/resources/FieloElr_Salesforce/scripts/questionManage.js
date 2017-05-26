@@ -82,13 +82,17 @@
 
     var items = $(this.element_)
       .find('.' + this.CssClasses_.MODEL);
-
+    var shuffleQuestions =
+      this.elements_.FieloELR__ShuffleQuestions__c
+        .FieloFormElement.get('value');
     var sObjectList = [];
     [].forEach.call(items, function(item) {
       var sObject = {};
       sObject.id = item.getAttribute('data-record-id');
-      sObject.FieloELR__Order__c =// eslint-disable-line camelcase
-        $(item).find('[data-field = "FieloELR__Order__c"]')[0].innerHTML;
+      if (!shuffleQuestions) {
+        sObject.FieloELR__Order__c =// eslint-disable-line camelcase
+          $(item).find('[data-field = "FieloELR__Order__c"]')[0].innerHTML;
+      }
 
       if (this.questionFields_) {
         this.questionFields_.forEach(function(fieldName) {
@@ -317,6 +321,9 @@
     var weightedQuestions =
       this.elements_.FieloELR__WeightedQuestions__c
         .FieloFormElement.get('value');
+    var shuffleQuestions =
+      this.elements_.FieloELR__ShuffleQuestions__c
+        .FieloFormElement.get('value');
     var incorrectWeight =
       $($('.' + this.CssClasses_.SECTION_PANEL)[1])
         .find('[data-field-name="FieloELR__IncorrectWeight__c"]');
@@ -324,6 +331,11 @@
       $($('.' + this.CssClasses_.SECTION_PANEL)[1])
         .find('[data-field-name="FieloELR__PenaltyPerAttempt__c"]');
 
+    if (shuffleQuestions) {
+      this.removeInputs('FieloELR__Order__c');
+    } else {
+      this.showColumn('FieloELR__Order__c');
+    }
     if (penaltyMode === 'None') {
       incorrectWeight.toggle(false);
       penaltyPerAttempt.toggle(false);
@@ -449,6 +461,9 @@
     var currentField = null;
     var newField = null;
     this.removeField(fieldName);
+    if (fieldName === 'FieloELR__Order__c') {
+      this.reorderObject.disableSort();
+    }
     [].forEach.call(items, function(item) {
       currentField = $(item)
         .find('[data-field-name="' + fieldName + '"]')[0];
@@ -463,7 +478,6 @@
           newField =
             this.penaltyPerAttemptOutputModel.cloneNode(true);
         }
-
         newField.innerHTML =
           currentField.FieloFormElement
             .get('value');
@@ -519,6 +533,13 @@
       if (!currentField) {
         currentField = $(item)
           .find('[data-field="' + fieldName + '"]')[0];
+      }
+      if (currentField) {
+        $(currentField).toggle(true);
+        $(currentField).closest('td').toggle(true);
+      }
+      if (fieldName === 'FieloELR__Order__c') {
+        this.reorderObject.enableSort();
       }
     }, this);
 
@@ -591,7 +612,8 @@
       this.initModels();
 
       [].forEach.call(Object.keys(this.elements_), function(field) {
-        if (field === 'FieloELR__WeightedQuestions__c') {
+        if (field === 'FieloELR__WeightedQuestions__c' ||
+            field === 'FieloELR__ShuffleQuestions__c') {
           this.elements_[field].addEventListener('change',
             this.changeForm.bind(this));
           componentHandler.upgradeElement(this.elements_[field]);
