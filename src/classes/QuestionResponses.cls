@@ -181,9 +181,9 @@ public class QuestionResponses extends SObjectDomain {
                             break;
                         }
                     }
-                }else if (question.Type__c == 'Fill in the Blanks') {
+                }/*else if (question.Type__c == 'Fill in the Blanks') {
                     questionResponse.IsCorrect__c = question.AnswerText__c == questionResponse.TextValue__c;
-                }else if (question.Type__c == 'Matching') {
+                }*/else if (question.Type__c == 'Matching') {
                     questionResponse.IsCorrect__c = true;
                     List<AnswerResponse__c> answerResponses = existingQuestionResponses.get(questionResponse.Id).AnswerResponses__r;
                     if (answerResponses.size() == questionsMap.get(questionResponse.Question__c).Answers__r.size()) {
