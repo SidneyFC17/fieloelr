@@ -140,7 +140,7 @@ public class QuestionResponses extends SObjectDomain {
         for (QuestionResponse__c questionResponse:records) {
             questionIds.add(questionResponse.Question__c);
         }
-        Map<Id,QuestionResponse__c> existingQuestionResponses = new Map<Id,QuestionResponse__c>(new QuestionResponsesSelector().selectByIdWithAnswersResponses(questionResponseIds));
+        Map<Id,QuestionResponse__c> existingQuestionResponses = new Map<Id,QuestionResponse__c>(new QuestionResponsesSelector().selectByIdWithAnswers(questionResponseIds));
         Map<Id,Question__c> questionsMap = new Map<Id,Question__c>(new QuestionsSelector(new Set<String>{'PenaltyPerAttempt__c','CorrectWeight__c','IncorrectWeight__c','Type__c','Module__r.PenaltyMode__c'}).selectByIdWithCorrectAnswers(questionIds));
 
         Double incorrectWeight;

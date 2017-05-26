@@ -29,10 +29,10 @@ public with sharing class QuestionResponsesSelector extends SObjectSelector {
         return (List<QuestionResponse__c>) selectSObjectsById(questionResponseIds);
     }
 
-    public List<QuestionResponse__c> selectByIdWithAnswersResponses(Set<Id> questionResponseIds) {
+    public List<QuestionResponse__c> selectByIdWithAnswers(Set<Id> questionResponseIds) {
     	return (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, Answer__c, Name FROM AnswerResponses__r) ' +
+                  ', (SELECT Id, AnswerOption__c, Name FROM Answers__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionResponseIds ' +
                   'ORDER BY {2}',
