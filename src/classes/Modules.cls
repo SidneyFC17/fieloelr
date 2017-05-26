@@ -216,6 +216,16 @@ public class Modules extends SObjectDomain {
     }
 
 
+    private void deleteQuestions(SObjectUnitOfWork uow) {
+		
+		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
+
+    	List<Question__c> questions = 
+    								new QuestionsSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
+    	uow.registerDeleted(questions);
+    }
+
+
 	// Check the answers for a list of modules
     private void checkAnswers(List<Module__c> activatedModules) {
 
@@ -227,11 +237,11 @@ public class Modules extends SObjectDomain {
 	    for(Question__c question : questionsWithCorrectAnswer) {
 	        if(question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options' || question.Type__c == 'Short Answer') {
 	    		// Question types "statement", "single choice","multiple choice" and "Matching" must have at least one answer.
-	        	if(question.Answers__r.isEmpty()) {
+	        	if(question.AnswerOptions__r.isEmpty()) {
 					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without any answer. Question: ' + question.Name);    
 	        	} 
         		// Question types "statement" and "single choice" must have a correct answer.
-        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.Answers__r.isEmpty() || question.Answers__r[0].IsCorrect__c != true)) {
+        		if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.AnswerOptions__r.isEmpty() || question.AnswerOptions__r[0].IsCorrect__c != true)) {
 					modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without a correct answer. Question: ' + question.Name);    
         		}
 	        } 

@@ -82,7 +82,7 @@ public class TestModuleViewController
         	, CorrectWeight__c = 20
         	, Module__c = module.Id
         	, Order__c = 1
-        	, ShuffleAnswers__c = false
+        	, ShuffleAnswerOptions__c = false
         	, Type__c = 'Short Answer'
         );
 

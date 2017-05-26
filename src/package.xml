@@ -32,8 +32,8 @@
 	<types>
 		<members>FieloPLT__Tracker__c</members>
 		<members>FieloPLT__Transaction__c</members>
-		<members>AnswerResponse__c</members>
 		<members>Answer__c</members>
+		<members>AnswerOption__c</members>
 		<members>CourseDependency__c</members>
 		<members>CourseStatus__c</members>
 		<members>Course__c</members>
