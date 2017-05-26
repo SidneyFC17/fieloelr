@@ -216,6 +216,16 @@ public class Modules extends SObjectDomain {
     }
 
 
+    private void deleteQuestions(SObjectUnitOfWork uow) {
+		
+		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
+
+    	List<Question__c> questions = 
+    								new QuestionsSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
+    	uow.registerDeleted(questions);
+    }
+
+
 	// Check the answers for a list of modules
     private void checkAnswers(List<Module__c> activatedModules) {
 
