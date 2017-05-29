@@ -23,7 +23,7 @@ A module response was created
    8. The system automatically completes the “Number of Attempts” field
    9. The system verifies that the “Number of Attempts” is less than the “Attempts Allowed” of the related module
    10. The system verifies that the related course subscription mode is manual and the related course status already exists for the member   
-   11. The system automatically fills the “Course Status” field in the module response
+   11. The system automatically fills in the “Course Status” field with the existing course status
    12. The system verifies that “IsApproved” field is set to “false”
    13. The system saves the module response
    14. The system displays the module response detail page with the options to Edit or Delete
@@ -72,19 +72,19 @@ A module response was created
    3. The system displays an error message
    4. End of flow
  
-##### 8. The related course subscription mode is manual and the course status does not exist (step 10 of basic flow)
+##### 8. The related course subscription mode is manual and the related course status does not exist (step 10 of basic flow)
    1. The system verifies that the related course subscription mode is manual and the related course status does not exists
    2. The system does not create the module response
    3. The system displays an error message
    4. End of flow
  
-##### 9. The related course subscription mode is automatic and the course status already exists (step 10 of basic flow)
+##### 9. The related course subscription mode is automatic and the related course status already exists (step 10 of basic flow)
    1. The system verifies that the related course subscription mode is automatic and the related course status already exists
    2. Back to step 11 of basic flow
  
 ##### 10. The related course subscription mode is automatic and the course status does not exist (step 10 of basic flow)
    1. The system verifies that the related course subscription mode is automatic and the related course status does not exists
-   2. The system automatically creates the course status
+   2. The system automatically creates the related course status
    3. Back to step 11 of basic flow
  
 ##### 11. The administrator sets the “IsApproved” field to “true” (step 12 of basic flow)
@@ -125,4 +125,3 @@ A module response was created
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
    3. The system calls the use case [*Submit Module Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0010-Submit%20Module%20Response.md)
    4. End of flow
-
