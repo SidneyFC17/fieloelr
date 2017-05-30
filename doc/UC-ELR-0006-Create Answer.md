@@ -1,7 +1,7 @@
-## Create Answer
+## Create Answer Option
 
 ### Objectives 
-This use case describes the creation of an Answer
+This use case describes the creation of an Answer Option
 
 ### Preconditions
 The administrator must be logged in  
