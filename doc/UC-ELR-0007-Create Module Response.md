@@ -22,16 +22,16 @@ A module response was created
    7. The system verifies that the date of the response in within the period of the course
    8. The system automatically completes the “Number of Attempts” field
    9. The system verifies that the “Number of Attempts” is less than the “Attempts Allowed” of the related module
-   10. The system verifies that the related course subscription mode is manual and the related course status already exists for the member
-   11. The system automatically fills the “Course Status” field in the module response
-   12. The systems automatically sets the “IsApproved” field to “false”
+   10. The system verifies that the related course subscription mode is manual and the related course status already exists for the member   
+   11. The system automatically fills in the “Course Status” field with the existing course status
+   12. The system verifies that “IsApproved” field is set to “false”
    13. The system saves the module response
    14. The system displays the module response detail page with the options to Edit or Delete
    15. End of flow
  
 ### Alternative flows
  
-##### 1. Module lookup field is null (step 3 of basic flow)
+##### 1. Module field is null (step 3 of basic flow)
    1. The system verifies that the Module field is null
    2. The system does not create the module response
    3. The system displays an error message
@@ -66,40 +66,45 @@ A module response was created
    2. The system sets the “Last Chance” field to “true”
    3. Back to step 10 of basic flow)
  
-##### 7. Number of Attempts is greater than the “Attempts Allowed” of related module (step 7 of basic flow)
+##### 7. Number of Attempts is greater than the “Attempts Allowed” of related module (step 9 of basic flow)
    1. The system verifies that the “Number of Attempts” is greater than the “Attempts Allowed” of related module
    2. The system does not create the module response
    3. The system displays an error message
    4. End of flow
  
-##### 8. The related course subscription mode is manual and the course status does not exist (step 10 of basic flow)
+##### 8. The related course subscription mode is manual and the related course status does not exist (step 10 of basic flow)
    1. The system verifies that the related course subscription mode is manual and the related course status does not exists
    2. The system does not create the module response
    3. The system displays an error message
    4. End of flow
  
-##### 9. The related course subscription mode is automatic and the course status already exists (step 10 of basic flow)
+##### 9. The related course subscription mode is automatic and the related course status already exists (step 10 of basic flow)
    1. The system verifies that the related course subscription mode is automatic and the related course status already exists
    2. Back to step 11 of basic flow
  
 ##### 10. The related course subscription mode is automatic and the course status does not exist (step 10 of basic flow)
    1. The system verifies that the related course subscription mode is automatic and the related course status does not exists
-   2. The system automatically creates the course status
+   2. The system automatically creates the related course status
    3. Back to step 11 of basic flow
  
-##### 11. Delete a module response not submitted (step 14 of basic flow)
+##### 11. The administrator sets the “IsApproved” field to “true” (step 12 of basic flow)
+   1. The system verifies that “IsApproved” field is set to “true”
+   2. The system automatically sets the “IsApproved” fiels to “false”
+   3. Back to step 13 of basic flow
+ 
+##### 12. Delete a module response not submitted (step 14 of basic flow)
    1. The administrator presses the Delete button of a module response not submitted 
    2. The system deletes the module response
-   3. The system deletes all related questions responses and answers responses
+   3. The system deletes all related questions responses and answers
    4. End of flow
  
-##### 12. Delete a module response already submitted (step 14 of basic flow)
+##### 13. Delete a module response already submitted (step 14 of basic flow)
    1. The administrator presses the Delete button of a module response already submitted
    2. The system does not delete the module response
    3. The system displays an error message
    4. End of flow
  
-##### 13. Edit the course status of a module response not submitted (step 14 of basic flow)
+##### 14. Edit the course status of a module response not submitted (step 14 of basic flow)
    1. The administrator presses the Edit button of a module response not submitted
    2. The administrator changes the Course Status field
    3. The administrator presses the Save button
@@ -107,7 +112,7 @@ A module response was created
    5. The system displays an error message
    6. End of flow
  
-##### 14. Edit a module response already submitted (step 14 of basic flow)
+##### 15. Edit a module response already submitted (step 14 of basic flow)
    1. The administrator presses the Edit button of a module response already submitted 
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
@@ -115,7 +120,7 @@ A module response was created
    5. The system displays an error message
    6. End of flow
  
-##### 15. Submit a module response (step 14 of basic flow)
+##### 16. Submit a module response (step 14 of basic flow)
    1. The administrator presses the Edit button of a module response not submitted
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
    3. The system calls the use case [*Submit Module Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0010-Submit%20Module%20Response.md)
