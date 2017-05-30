@@ -26,7 +26,7 @@ The question correction was determined
  
 ##### 2. The related question is from type “Multiple Choice” and all the answers are correct (step 1 of basic flow)
    1. The system verifies that the related question is from type “Multiple Choice”
-   2. The system verifies that all answers match the correct answers options
+   2. The system verifies that all answer match the correct answers options
    3. The system verifies that no answer is missing
    4. The system sets the “IsCorrect” field to “true”
    5. End of flow
@@ -44,7 +44,7 @@ The question correction was determined
    4. End of flow
  
 ##### 5. The related question is from type “Short Answer” and the answer is not correct (step 1 of basic flow)
-   1. The system verifies that the related question is from type “Short Answer”
+   1. The system verifies that the question is from type “Short Answer”
    2. The system verifies that the “Text Value” field in the question response does not match any of the possible correct answers
    3. The system sets the “IsCorrect” field to “false”
    4. End of flow
