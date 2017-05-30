@@ -12,7 +12,7 @@ The partial grade value was calculated
 ### Flow of Events
 
 ### Basic Flow 
-   1. The system verifies that “IsCorrect” field to set to “true” and the “Penalty Mode” is set to “None”
+   1. The system verifies that “IsCorrect” field is set to “true” and the “Penalty Mode” is set to “None”
    2. The system updates the “Partial Grade Value” with the “Correct Weight” field of the related question
    3. End of flow
    
