@@ -4,7 +4,7 @@
 This use case describes the creation of a Question Response
  
 ### Preconditions
-The administrator must be logged in
+The administrator must be logged in  
 The module response is already created (Use Case [*Create Module Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0007-Create%20Module%20Response.md) already run)
 ### Postconditions
 A question response was created
