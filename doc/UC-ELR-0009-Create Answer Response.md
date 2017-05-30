@@ -20,7 +20,7 @@ An Answer was created
    4. The system verifies that the related question type is not “Matching Options”
    5. The system verifies that the “Answer Option” lookup field is not null
    6. The system verifies that  the “Answer Option” and the “Question Response” belong to the same related question
-   7. The system verifies that there is no equal answer already created (Question Response + Answer Option
+   7. The system verifies that there is no equal answer already created (Question Response + Answer Option)
    8. The system saves the answer
    9. The system displays the answer detail page with the options to Edit or Delete
    10. End of flow
