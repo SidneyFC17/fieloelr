@@ -86,7 +86,7 @@ A question response was created
    1. The administrator presses the Edit button 
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
    3. The system verifies that the related question doesn’t have another correct question response
-   4. The system calls the use case [*Determine Question Response Correction*]
+   4. The system calls the use case [*Submit Question Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0012-Submit%20Question%20Response.md)
    5. The system updates the question response
    6. The system displays the question response detail page
    7. End of flow
