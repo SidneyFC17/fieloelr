@@ -42,6 +42,18 @@ public with sharing class CoursesSelector extends SObjectSelector{
                     getSObjectName(),
                     getOrderBy() } ));
     }
+    
+      public List<Course__c> selectAllByIdHavingCourseStatus(Set<Id> courseIds) {
+      return (List<Course__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', (SELECT Id ' +
+                  '   FROM CoursesStatus__r) ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :courseIds',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName() } ));
+    }
 
     public List<Course__c> selectByIdHavingDependentCourses(Set<Id> courseIds) {
       return (List<Course__c>) Database.query(String.format(
