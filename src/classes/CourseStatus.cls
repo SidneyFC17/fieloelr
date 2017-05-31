@@ -35,16 +35,13 @@ public class CourseStatus extends SObjectDomain {
         }
         
         // List of courses with subscription field
-        List<Course__c> coursesList = new List<Course__c>(new CoursesSelector(new Set<String>{'Id, SubscriptionMode__c'}).selectAllByIdHavingCourseStatus(courseIds));        
-        
-        for (Course__c course : coursesList){
-            if (course.SubscriptionMode__c == 'Automatic') courseAutomaticIds.add(course.Id);            
-        } 
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id, SubscriptionMode__c'}).selectByIdBeingAutomatic(courseIds));        
                
         // Adding errors if those courses are in a course status
         for (CourseStatus__c courseStatus : records){
-            if (courseAutomaticIds.contains(courseStatus.Course__c)){
-                courseStatus.addError('Course Status cannot be created if Course Subscription Mode is set on Automatic');
+            if (coursesMap.containsKey(courseStatus.Course__c)){
+                courseStatus.addError(Label.ValidateCourseStatusErrorSubscriptionMode);
+
             }
         }
         
@@ -84,7 +81,7 @@ public class CourseStatus extends SObjectDomain {
              for(CourseDependency__c cd : coursesMap.get(courseStatus.Course__c).PredecessorCourses__r){
                 String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
                 if(!keysPredecessorsCompleted.contains(cskey)){
-                    courseStatus.addError('Predecessor Course was not completed.');
+                    courseStatus.addError(Label.ValidateCourseStatusErrorPredecessorIncomplete);
                     break;
                 }
              }            

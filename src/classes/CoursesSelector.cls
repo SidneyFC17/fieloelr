@@ -96,5 +96,16 @@ public with sharing class CoursesSelector extends SObjectSelector{
                     getOrderBy() } ));
     }
 
-
+      public List<Course__c> selectByIdBeingAutomatic(Set<Id> courseIds) {
+      String automatic = 'Automatic';
+      return (List<Course__c>) Database.query(String.format(       
+               'SELECT {0} ' +                
+                  'FROM {1} ' +
+                  'WHERE Id IN : courseIds and SubscriptionMode__c = :automatic ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }
