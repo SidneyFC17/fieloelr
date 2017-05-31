@@ -24,9 +24,11 @@ public class CourseStatus extends SObjectDomain {
         
         // The course status cannot be created if the subscription mode of the course is "Automatic"
         // Can be skipped if Admin       
-        if(validateAdminFields) validateCourseStatusSubscriptionMode(records);        
-
+        if(validateAdminFields) {
+            validateCourseStatusSubscriptionMode(records);
+        }      
     }
+
     public static void validateCourseStatusSubscriptionMode(List<CourseStatus__c> records){
         Set<Id> courseIds = new Set<Id>();
         Set<Id> courseAutomaticIds = new Set<Id>();
@@ -41,13 +43,12 @@ public class CourseStatus extends SObjectDomain {
         for (CourseStatus__c courseStatus : records){
             if (coursesMap.containsKey(courseStatus.Course__c)){
                 courseStatus.addError(Label.ValidateCourseStatusErrorSubscriptionMode);
-
             }
         }
         
     }
     
-     public static void validateCourseStatusPredesessorCompleted(List<CourseStatus__c> records){
+    public static void validateCourseStatusPredesessorCompleted(List<CourseStatus__c> records){
         // Courses to validate
         Set<Id> courseIds = new Set<Id>();
         for (CourseStatus__c courseStatus : records){
@@ -85,8 +86,7 @@ public class CourseStatus extends SObjectDomain {
                     break;
                 }
              }            
-         }
-        
+         }        
     }
   
     public override void onValidate(Map<Id,SObject> existingRecords) {
