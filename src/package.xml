@@ -9,18 +9,11 @@
 		<name>ApexTrigger</name>
 	</types>
 	<types>
-		<members>ELearningLandingPage</members>
-		<members>CourseView</members>
-		<members>ModuleView</members>
+		<members>*</members>
 		<name>ApexPage</name>
 	</types>
 	<types>
-		<members>BackEndProgramSelector</members>
-		<members>FormReorder</members>
-		<members>FormModuleReorder</members>
-		<members>FormQuestionManage</members>
-		<members>AnswerOptions</members>
-		<members>InputField</members>
+		<members>*</members>
 		<name>ApexComponent</name>
 	</types>
 	<types>
