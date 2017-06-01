@@ -19,6 +19,8 @@
 		<members>FormReorder</members>
 		<members>FormModuleReorder</members>
 		<members>FormQuestionManage</members>
+		<members>AnswerOptions</members>
+		<members>InputField</members>
 		<name>ApexComponent</name>
 	</types>
 	<types>
