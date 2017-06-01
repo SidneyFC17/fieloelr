@@ -28,14 +28,14 @@ public class QuestionResponses extends SObjectDomain {
         }
 
         List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM QuestionResponse__c WHERE Key__c in : qrKeys GROUP BY Key__c];
-        Map<String,Integer> maxNumbByKey = new Map<String,Integer>();
+        Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
         for(AggregateResult qr : aggResult){
-            maxNumbByKey.put((String)qr.get('FieloELR__Key__c'), (Integer)qr.get('attemptNumber'));
+            maxNumbByKey.put((String)qr.get('FieloELR__Key__c'), (Decimal)qr.get('attemptNumber'));
         }
         
         for(QuestionResponse__c questionResp : (List<QuestionResponse__c>)records){
             if(maxNumbByKey.containsKey(questionResp.Key__c)){
-                Integer maxAttempt = maxNumbByKey.get(questionResp.Key__c);
+                Decimal maxAttempt = maxNumbByKey.get(questionResp.Key__c);
                 questionResp.NumberOfAttempt__c = ++maxAttempt;
                 maxNumbByKey.put(questionResp.Key__c, maxAttempt);
             }else{

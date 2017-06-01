@@ -106,7 +106,10 @@ public class Courses extends SObjectDomain{
                         }                       
                         if( (((Course__c)(existingRecords.get(course.Id))).EndDate__c) != coursesMap.get(course.Id).EndDate__c ) {
                             coursesMap.get(course.Id).addError(Label.ValidateCourseEndDate);
-                        }          
+                        }
+                       if( (((Course__c)(existingRecords.get(course.Id))).Status__c) != coursesMap.get(course.Id).Status__c ) {
+                            coursesMap.get(course.Id).addError(Label.ValidateCourseStatus);
+                        }         
                     }else if (event == 'delete'){
                         coursesMap.get(course.Id).addError(Label.ValidateCourseErrorDelete);
                     }                                                                        

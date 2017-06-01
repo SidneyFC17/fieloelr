@@ -35,4 +35,57 @@ public class CourseDependencies extends SObjectDomain{
 
         }
     }
+
+    public override void onAfterInsert() {
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+        updateCourses(records, uow);
+        uow.commitWork();
+    }
+
+    public override void onAfterDelete() {
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+        updateCourses(records, uow);
+        uow.commitWork();
+    }  
+
+    private void updateCourses(List<CourseDependency__c> courseDependencies, SObjectUnitOfWork uow) {
+
+        Set<Id> courseIds = new Set<Id>();
+        for(CourseDependency__c coursedependency : courseDependencies) {
+            courseIds.add(coursedependency.Course__c);
+        }
+        Map<Id, Course__c> coursesMap = 
+                    new Map<Id, Course__c>(new CoursesSelector(new Set<String> {'Id', 'HasDependencies__c', 'KeyDependencies__c'}).selectById(courseIds));
+        Course__c course;
+        String predecessor;
+        List<String> Keys;
+
+        for(CourseDependency__c coursedependency : courseDependencies) {
+            course = coursesMap.get(coursedependency.Course__c);
+            predecessor = coursedependency.Predecessor__c;
+            if(Trigger.IsInsert) {
+                // Add key
+                if(String.IsBlank(course.KeyDependencies__c)) {
+                    course.KeyDependencies__c = predecessor;
+                } else {
+                    Keys = course.KeyDependencies__c.split(',');
+                    Keys.add(predecessor);
+                    Keys.sort();            
+                    course.KeyDependencies__c = String.join(Keys, ',');
+                }   
+                // If a course dependency is inserted and course has no dependencies yet, the attribute must be updated
+                if(!(course.HasDependencies__c)) {
+                    course.HasDependencies__c = true;
+                }
+            } else if(Trigger.IsDelete) {
+                // Remove key
+                course.KeyDependencies__c = course.KeyDependencies__c.replace(predecessor + ',', '').replace(',' + predecessor, '').replace(predecessor, '');
+                // If a course dependency is deleted and course has no more dependencies, the attribute must be updated
+                if(course.KeyDependencies__c.length() == 0 && course.HasDependencies__c) {
+                    course.HasDependencies__c = false;
+                }                
+            }
+            uow.registerDirty(course); 
+        }
+    }  
 }

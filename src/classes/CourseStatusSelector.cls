@@ -34,11 +34,12 @@ public with sharing class CourseStatusSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-      public List<CourseStatus__c> selectByKeyAndCompleted(Set<String> keys) {
+        public List<CourseStatus__c> selectByKeyCompleted(Set<String> keys) {
         return (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN :keys',
+                  'WHERE Key__c IN : keys and Progress__c = 100' +
+                  'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
                     getSObjectName(),
