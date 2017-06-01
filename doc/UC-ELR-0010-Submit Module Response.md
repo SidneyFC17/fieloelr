@@ -7,15 +7,15 @@ This use case describes the module response calculations performed when it was s
 The module response is submitted (IsSubmitted = TRUE)
  
 ### Postconditions
-The grade value was calculated for the module response  
+The grade value was calculated for the module response
 The grade % was calculated for the module response  
-The approval status was determined for the module  
+The approval status was determined for the module
 The progress was calculated for the related course status 
  
 ### Flow of Events
  
 ### Basic Flow
-   1.  The system verifies that there are unsubmitted related questions responses and that the Question Pool is set to “null”
+   1.  The system verifies that there are unsubmitted related questions responses and that the Question Pool is “null”
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
    3. The system calls, for each question, the Use Case [*Determine Question Response Correction*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0011-Determine%20Question%20Response%20Correction.md)
    4. The system calls, for each question, the Use Case [*Submit Question Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0012-Submit%20Question%20Response.md)
@@ -26,24 +26,24 @@ The progress was calculated for the related course status
    9. The system calculates the quantity of approved module responses for the related module
    10. The system updates the “Number of Approve” field
    11. The system saves the module response
-   12. The system calculates the quantity of module approvals, considering only its first approved related module response for the member
-   13. The system calculates the course progress by dividing the quantity of module approvals by the course total number of modules
+   12. The system updates the “Approved Modules” field in the "Course Status" with the quantity of approved modules, by considering for each module only the first approval of its related "module responses".
+   13. The system calculates the course progress by dividing the “Approved Modules” value by the course total number of modules
    14. The system updates the “Progress” field in the Course Status with the previous step calculated value
    15. End of flow
  
 ### Alternative Flows
  
-##### 1. The module response is approved when all the related questions are submitted and the Question Pool is set to “null” (step 1 of basic flow)
+##### 1. The module response is approved when all the related question responses were submitted and the Question Pool is “null” (step 1 of basic flow)
    1. The system verifies that all the related questions were already submitted and that the “Question Pool” is “null”
    2. Back to step 5 of basic flow
  
-##### 2. The module response is not approved when there are unsubmitted related questions responses and the Question Pool is set to “null” (step 7 of basic flow)
+##### 2. The module response is not approved when there are unsubmitted related question responses and the Question Pool is “null” (step 7 of basic flow)
    1. The system verifies that the “Grade %” is less than the “Approval Grade”
    2. The system sets the “IsApproved” field to “false”
    3. The system saves the module response
    4. End of flow
    
-##### 3. The module response is approved when there are unsubmitted related questions responses and the Question Pool is not “null” (step 1 of basic flow)
+##### 3. The module response is approved when there are unsubmitted related question responses and the Question Pool is not “null” (step 1 of basic flow)
    1. The system verifies that not all the related questions were already submitted and that the “Question Pool” value is equal or greater than 1
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
    3. The system calls, for each question, the Use Case [*Determine Question Response Correction*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0011-Determine%20Question%20Response%20Correction.md)
@@ -52,7 +52,7 @@ The progress was calculated for the related course status
    6. The system calculates the “Grade %” by dividing the “Grade Value” by the “Question Pool” field in the related module
    7. Back to step 7 of basic flow
    
-##### 4. The module response is not approved when there are unsubmitted related questions and the Question Pool is not “null” (step 1 of basic flow)
+##### 4. The module response is not approved when there are unsubmitted related question responses and the Question Pool is not “null” (step 1 of basic flow)
    1. The system verifies that not all the related questions were already submitted and that the “Question Pool” value is equal or greater than 1
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
    3. The system calls, for each question, the Use Case [*Determine Question Response Correction*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0011-Determine%20Question%20Response%20Correction.md)
@@ -64,7 +64,7 @@ The progress was calculated for the related course status
    9. The system saves the module response
    10. End of flow   
       
-##### 5. The module response is not approved when all the related questions are submitted and the Question Pool is set to “null” (step 5 of basic flow)
+##### 5. The module response is not approved when all the related question responses are submitted and the Question Pool is “null” (step 5 of basic flow)
    1. The system verifies that all the related questions are submitted and that the “Question Pool” is “null”
    2. The system updates the “Grade Value” field with the addition of “Partial Grade Value” of all question responses
    3. The system calculates the “Grade %” by dividing the “Grade Value” by the “Total Value” field in the related module
@@ -73,13 +73,13 @@ The progress was calculated for the related course status
    6. The system saves the module response
    7. End of flow
  
-##### 6. The module response is approved when all the related questions are submitted and the “Question Pool” is not null (step 5 of basic flow)
+##### 6. The module response is approved when all the related question responses are submitted and the “Question Pool” is not null (step 5 of basic flow)
    1. The system verifies that all the related questions are submitted and that the “Question Pool” value is equal or greater than 1
    2. The system updates the “Grade Value” field with the addition of “Partial Grade Value” of all question responses
    3. The system calculates the “Grade %” by dividing the “Grade Value” by the “Question Pool” field in the related module
    4. Back to step 7 of basic flow
    
-##### 7. The module response is not approved when all the related questions are submitted and the “Question Pool” is not null (step 5 of basic flow)
+##### 7. The module response is not approved when all the related question responses are submitted and the “Question Pool” is not null (step 5 of basic flow)
    1. The system verifies that all the related questions are submitted and that the “Question Pool” value is equal or greater than 1
    2. The system updates the “Grade Value” field with the addition of “Partial Grade Value” of all question responses
    3. The system calculates the “Grade %” by dividing the “Grade Value” by the “Question Pool” field in the related module
