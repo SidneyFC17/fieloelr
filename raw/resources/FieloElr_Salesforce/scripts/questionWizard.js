@@ -416,6 +416,9 @@
         this.getMatchingAnswerOptions_() :
           this.getAnswerOptions_();
     var deletedIds = this.getDeletedAnswerIds_();
+    deletedIds = deletedIds ?
+      deletedIds :
+      [];
     var answerOptionNullFields = {};
 
     var errorMsgs = [];
@@ -433,8 +436,10 @@
             answerOptionNullFields[row.id].push(field);
           }
         }
-        if (deletedIds.includes(row.Id)) {
-          delete answerOptionValues[answerOptionValues.indexOf(row)];
+        if (deletedIds) {
+          if (deletedIds.includes(row.Id)) {
+            delete answerOptionValues[answerOptionValues.indexOf(row)];
+          }
         }
       });
       if (row.error) {

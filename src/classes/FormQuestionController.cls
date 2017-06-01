@@ -162,6 +162,8 @@ public with sharing class FormQuestionController {
 
             if (question.Id == null) {
                 uow.registerNew(question);
+            } else {
+                uow.registerDirty(question);
             }
 
             for( FieloELR__AnswerOption__c answerOption: answerOptions) {
