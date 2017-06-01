@@ -85,6 +85,14 @@
   };
 
   FieloAnswerOptions.prototype.deleteItem_ = function(answerOptionItem) {
+    var answerOptionId =
+      answerOptionItem.getAttribute('data-record-id');
+    if (answerOptionId) {
+      if (!this.deletedItems) {
+        this.deletedItems = [];
+      }
+      this.deletedItems.push(answerOptionId);
+    }
     if (this.answerOptionItems_.length > 1) {
       answerOptionItem.remove();
       if (this.recentReorder_) {
@@ -183,6 +191,7 @@
     if (this.recentReorder_) {
       this.recentReorder_.FieloRecentReorder.order();
     }
+    this.deletedItems = null;
   };
 
   /**

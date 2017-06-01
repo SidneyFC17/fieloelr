@@ -149,7 +149,7 @@ public with sharing class FormQuestionController {
 
 	/*****  Metodos Remote para Save y Retrieve *****/
     @RemoteAction
-    public static RemoteActionResult save( FieloELR__Question__c question, List<String> questionNullFields, List<FieloELR__AnswerOption__c> answerOptions, Map<Id,List<String>> answerOptionsNullFields){
+    public static RemoteActionResult save( FieloELR__Question__c question, List<String> questionNullFields, List<FieloELR__AnswerOption__c> answerOptions, Map<Id,List<String>> answerOptionsNullFields, List<Id> deletedIds){
 	    Savepoint sp;
 	    RemoteActionResult result = new RemoteActionResult();
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{FieloELR__Question__c.SObjectType, FieloELR__AnswerOption__c.SObjectType});
@@ -175,6 +175,10 @@ public with sharing class FormQuestionController {
                 }else{
                     uow.registerDirty(answerOption);
                 }
+            }
+
+            if (!deletedIds.isEmpty()) {
+              uow.registerDeleted(new AnswerOptionsSelector().selectById(new Set<Id>(deletedIds)));
             }
 
             uow.commitWork();
