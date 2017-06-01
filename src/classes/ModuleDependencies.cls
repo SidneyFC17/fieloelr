@@ -26,5 +26,57 @@ public class ModuleDependencies extends SObjectDomain {
     	}
     }
 
+    public override void onAfterInsert() {
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
+        updateModules(records, uow);
+        uow.commitWork();
+    }
+
+    public override void onAfterDelete() {
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
+        updateModules(records, uow);
+        uow.commitWork();
+    }  
+
+    private void updateModules(List<ModuleDependency__c> moduleDependencies, SObjectUnitOfWork uow) {
+
+        Set<Id> moduleIds = new Set<Id>();
+        for(ModuleDependency__c moduledependency : moduleDependencies) {
+            moduleIds.add(moduledependency.Module__c);
+        }
+        Map<Id, Module__c> modulesMap = 
+                    new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id', 'HasDependencies__c', 'KeyDependencies__c'}).selectById(moduleIds));
+        Module__c module;
+        String predecessor;
+        List<String> Keys;
+
+        for(ModuleDependency__c moduledependency : moduleDependencies) {
+            module = modulesMap.get(moduledependency.Module__c);
+            predecessor = moduledependency.Predecessor__c;
+            if(Trigger.IsInsert) {
+                // Add key
+                if(String.IsBlank(module.KeyDependencies__c)) {
+                    module.KeyDependencies__c = predecessor;
+                } else {
+                    Keys = module.KeyDependencies__c.split(',');
+                    Keys.add(predecessor);
+                    Keys.sort();            
+                    module.KeyDependencies__c = String.join(Keys, ',');
+                }   
+                // If a module dependency is inserted and module has no dependencies yet, the attribute must be updated
+                if(!(module.HasDependencies__c)) {
+                    module.HasDependencies__c = true;
+                }
+            } else if(Trigger.IsDelete) {
+                // Remove key
+                module.KeyDependencies__c = module.KeyDependencies__c.replace(predecessor + ',', '').replace(',' + predecessor, '').replace(predecessor, '');
+                // If a module dependency is deleted and module has no more dependencies, the attribute must be updated
+                if(module.KeyDependencies__c.length() == 0 && module.HasDependencies__c) {
+                    module.HasDependencies__c = false;
+                }                
+            }
+            uow.registerDirty(module); 
+        }
+    }  
 
 }

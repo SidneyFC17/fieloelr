@@ -32,7 +32,7 @@ public with sharing class QuestionsSelector extends SObjectSelector {
     public List<Question__c> selectByIdWithCorrectAnswers(Set<Id> questionIds) {
         return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, Name, AnswerText__c FROM Answers__r WHERE IsCorrect__c = true) ' +
+                  ', (SELECT Id, Name, AnswerOptionText__c FROM AnswerOptions__r WHERE IsCorrect__c = true) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionIds ' +
                   'ORDER BY {2}',
@@ -45,7 +45,7 @@ public with sharing class QuestionsSelector extends SObjectSelector {
     public List<Question__c> selectByIdWithAnswers(Set<Id> questionIds) {
         return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, Name, AnswerText__c, IsCorrect__c FROM Answers__r) ' +
+                  ', (SELECT Id, Name, AnswerOptionText__c, IsCorrect__c FROM AnswerOptions__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionIds ' +
                   'ORDER BY {2}',
@@ -59,7 +59,7 @@ public with sharing class QuestionsSelector extends SObjectSelector {
       return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id, IsCorrect__c ' +
-                  '   FROM Answers__r ' +
+                  '   FROM AnswerOptions__r ' +
                   '   ORDER BY IsCorrect__c DESC ' +
                   '   LIMIT 1) ' +
                   'FROM {1} ' +
@@ -89,6 +89,18 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                   'FROM {1} ' +
                   'WHERE (Module__c IN :moduleIds) ' +
                   '  AND (Module__c NOT IN :moduleExecptionIds) ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+    
+     public List<Question__c> selectByModule(Set<Id> moduleIds) {
+      return (List<Question__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE (Module__c IN :moduleIds) ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),

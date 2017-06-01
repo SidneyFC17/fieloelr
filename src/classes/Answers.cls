@@ -43,7 +43,7 @@ public class Answers extends SObjectDomain {
 		    for(Answer__c answer : answers) {
 				// If the related Question Response was already submitted, the answer response cannot be deleted or updated (Only with Admin Permissions) or create new ones.    																		    	
 		    	if(submittedQuestionResponsesMap.containsKey(answer.QuestionResponse__c)) {
-		        	answer.addError('Question responses already submitted cannot have any modification in their set of answers.');             
+		        	answer.addError('Question responses already submitted cannot have new answers or their existing ones updated or deleted.');             		        	             
 		    	}   
 		    }
 		}
