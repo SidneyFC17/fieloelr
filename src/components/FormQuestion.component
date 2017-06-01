@@ -116,8 +116,8 @@
 	            </div>
 	            <div class="slds-modal__footer">
 	                <a data-aljs-dismiss="modal" class="slds-button slds-button--neutral fielosf-question-wizard__cancel">{!$Label.Cancel}</a>
-	                <a data-aljs-dismiss="modal" class="slds-button slds-button--brand fielosf-question-wizard__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
-	                <a data-aljs-dismiss="modal" class="slds-button slds-button--brand fielosf-question-wizard__saveNew" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.SaveAndNew}</a>
+	                <a class="slds-button slds-button--brand fielosf-question-wizard__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
+	                <a class="slds-button slds-button--brand fielosf-question-wizard__saveNew" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.SaveAndNew}</a>
 	            </div>          
 	        </div>
 	    </div>

@@ -50,9 +50,13 @@
     CANCEL: 'fielosf-question-wizard__cancel',
     SECTION_PANEL: 'slds-panel__section',
     FORM_ELEMENT: 'slds-form-element',
+    FORM_ELEMENT_LABEL: 'slds-form-element__label',
     REORDER: 'fielosf-recent-reorder',
     ANSWER_OPTIONS: 'fielosf-answer-options',
-    ANSWER_OPTIONS_ITEM: 'fielosf-answer-options__item'
+    ANSWER_OPTIONS_ITEM: 'fielosf-answer-options__item',
+    DATA_FIELD_NAME: 'data-field-name',
+    DATA_FIELD_TABLE: 'data-field',
+    OUTPUT_ELEMENT: 'fielosf-output'
   };
   /**
   * Get Question
@@ -81,6 +85,16 @@
     return sObject;
   };
 
+  FieloQuestionWizard.prototype.getDeletedAnswerIds_ = function() {
+    var itemContainer = $(this.form_)
+      .find('.' + this.CssClasses_.ANSWER_OPTIONS)[0];
+    var deletedIds = null;
+    if (itemContainer) {
+      deletedIds = itemContainer.FieloAnswerOptions.deletedItems;
+    }
+    return deletedIds;
+  };
+
   FieloQuestionWizard.prototype.getAnswerOptions_ = function() {
     var itemContainer = $(this.form_)
       .find('.' + this.CssClasses_.ANSWER_OPTIONS)[0];
@@ -89,6 +103,72 @@
       items = itemContainer.FieloAnswerOptions.get();
     }
     return items;
+  };
+
+  FieloQuestionWizard.prototype.getMatchingAnswerOptions_ = function() {
+    var items =
+      $(this.form_)
+        .find('.' + this.CssClasses_.ANSWER_OPTIONS_ITEM);
+    var sObjectList = [];
+    var fields = null;
+    var fieldName = null;
+    var sObject = null;
+    var answerOptions = null;
+    var answerOptionObject = null;
+    [].forEach.call(items, function(item) {
+      answerOptions = [];
+      sObject = {};
+      // Input Fields
+      fields = item.getElementsByClassName(
+        this.CssClasses_.FORM_ELEMENT);
+      [].forEach.call(fields, function(field) {
+        var sObjectValue = field.FieloFormElement.get('value');
+        fieldName = field.getAttribute(this.CssClasses_.DATA_FIELD_NAME);
+        if (fieldName === 'FieloELR__AnswerOptionText__c') {
+          answerOptions.push(sObjectValue);
+        } else {
+          sObject[fieldName] = sObjectValue;
+        }
+      }, this);
+
+      // Output Fields
+      fields = item.getElementsByClassName(this
+          .CssClasses_.OUTPUT_ELEMENT);
+      [].forEach.call(fields, function(field) {
+        var sObjectValue = field.innerHTML;
+        fieldName = field.getAttribute(this.CssClasses_.DATA_FIELD_TABLE);
+        sObject[fieldName] = sObjectValue;
+      }, this);
+
+      sObject.FieloELR__IsCorrect__c = true; // eslint-disable-line camelcase
+
+      // Matching Special Treatment
+      if (answerOptions.length > 0) {
+        answerOptionObject = {};
+        answerOptionObject.option = answerOptions[0];
+        answerOptionObject.matches = answerOptions[1];
+        if (answerOptionObject.matches === null ||
+          answerOptionObject.matches === undefined ||
+          answerOptionObject.matches === '') {
+          sObject.error = 'Matches cannot be blank.';
+        }
+        sObject.FieloELR__AnswerOptionText__c = // eslint-disable-line camelcase
+          JSON.stringify(answerOptionObject);
+      }
+      if (item.getAttribute('data-record-id') !== '') {
+        sObject.Id = item.getAttribute('data-record-id');
+      }
+      sObjectList.push(sObject);
+    }, this);
+    return sObjectList;
+  };
+
+  FieloQuestionWizard.prototype.throwMessage = function(type, errorMsg) {
+    var notify = fielo.util.notify.create();
+    notify.FieloNotify
+      .addMessages([errorMsg]);
+    notify.FieloNotify.setTheme(type);
+    notify.FieloNotify.show();
   };
 
   FieloQuestionWizard.prototype.retrieve_ = function(source) {
@@ -137,7 +217,6 @@
 
   FieloQuestionWizard.prototype.retrieveHandler_ = function(result) {
     fielo.util.spinner.FieloSpinner.show();
-    console.log(result);
     this.result = result;
     // Set form type
     $('#' + this.Constant_.FORM_ID)
@@ -249,7 +328,21 @@
             $(answerItem)
               .find('[data-field-name="' + fieldName + '"]')[0];
           if (field) {
-            field.FieloFormElement.set('value', answer[fieldName]);
+            if (fieldName === 'FieloELR__AnswerOptionText__c' &&
+                this.result.FieloELR__Type__c === 'Matching Options') {
+              var answerOptionObject =
+                JSON.parse(this.unencodeHTML(answer[fieldName]));
+              field =
+                $(answerItem)
+                  .find('[data-field-name="' + fieldName + '"]')[0];
+              field.FieloFormElement.set('value', answerOptionObject.option);
+              field =
+                $(answerItem)
+                  .find('[data-field-name="' + fieldName + '"]')[1];
+              field.FieloFormElement.set('value', answerOptionObject.matches);
+            } else {
+              field.FieloFormElement.set('value', answer[fieldName]);
+            }
           }
           if (!field) {
             field =
@@ -264,6 +357,18 @@
         row++;
       }
     }, this);
+  };
+
+  FieloQuestionWizard.prototype.unencodeHTML = function(htmlString) {
+    var encodedStr = htmlString;
+
+    var parser = new DOMParser();
+    var dom = parser.parseFromString(
+        '<!doctype html><body>' + encodedStr,
+        'text/html');
+    var decodedString = dom.body.textContent;
+
+    return decodedString;
   };
 
   FieloQuestionWizard.prototype.setParameters_ = function() {
@@ -282,11 +387,13 @@
   FieloQuestionWizard.prototype.saveOnly_ = function() {
     this.isSaveAndNew = false;
     this.save_();
+    $(this.form_).modal('dismiss');
   };
 
   FieloQuestionWizard.prototype.saveAndNew_ = function() {
     this.isSaveAndNew = true;
     this.save_();
+    $(this.form_).modal('dismiss');
   };
 
   /**
@@ -304,9 +411,14 @@
       }
     });
 
-    var answerOptionValues = this.getAnswerOptions_();
+    var answerOptionValues =
+      questionValues.FieloELR__Type__c === 'Matching Options' ?
+        this.getMatchingAnswerOptions_() :
+          this.getAnswerOptions_();
+    var deletedIds = this.getDeletedAnswerIds_();
     var answerOptionNullFields = {};
 
+    var errorMsgs = [];
     answerOptionValues.forEach(function(row) {
       if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
@@ -321,21 +433,31 @@
             answerOptionNullFields[row.id].push(field);
           }
         }
-      });
-    });
-    console.log(answerOptionValues);
-    try {
-      Visualforce.remoting.Manager.invokeAction(
-        this.form_.getAttribute('data-save-controller'),
-        questionValues,
-        questionNullFields,
-        answerOptionValues,
-        answerOptionNullFields,
-        this.processRemoteActionResult_.bind(this),
-        {
-          escape: false
+        if (deletedIds.includes(row.Id)) {
+          delete answerOptionValues[answerOptionValues.indexOf(row)];
         }
-      );
+      });
+      if (row.error) {
+        errorMsgs.push(row.error);
+      }
+    });
+    try {
+      if (errorMsgs.length > 0) {
+        this.throwMessage('error', errorMsgs);
+      } else {
+        Visualforce.remoting.Manager.invokeAction(
+          this.form_.getAttribute('data-save-controller'),
+          questionValues,
+          questionNullFields,
+          answerOptionValues,
+          answerOptionNullFields,
+          deletedIds,
+          this.processRemoteActionResult_.bind(this),
+          {
+            escape: false
+          }
+        );
+      }
     } catch (e) {
       console.warn(e);
     }
@@ -361,6 +483,7 @@
           this.initStatementForm();
           break;
         case 'Matching Options':
+          this.initMatchingForm();
           break;
         default:
           this.formIdSufix_ = 'error';
@@ -370,11 +493,7 @@
     }
     if (this.formIdSufix_ === 'error' ||
         this.formIdSufix_ === '') {
-      var notify = fielo.util.notify.create();
-      notify.FieloNotify
-        .addMessages(['Must choose a question type.']);
-      notify.FieloNotify.setTheme('error');
-      notify.FieloNotify.show();
+      this.throwMessage('error', 'Must choose a question type.');
     } else if (!$(this.form_).is(':visible')) {
       $(this.element_)
         .find('.' + this.CssClasses_.NEXT + '-' + this.formIdSufix_)[0]
@@ -408,6 +527,19 @@
     $($(this.form_)
       .find('[data-field-name="FieloELR__Type__c"]')[0])
         .toggle(false);
+    $($(this.form_)
+      .find('.slds-button--new-answer')[0])
+        .toggle(true);
+    var answerTextFieldLabel = $(this.form_)
+      .find('[title="Answer Option Text"]')[0];
+    answerTextFieldLabel.innerHTML =
+      answerTextFieldLabel.getAttribute('title');
+    answerTextFieldLabel = $(this.form_)
+      .find('[title="Matches"]')[0];
+    if (answerTextFieldLabel) {
+      this.removeColumn('Matches');
+    }
+    this.toggleRemoveButton(true);
   };
 
   FieloQuestionWizard.prototype.initSingleChoiceForm = function() {
@@ -424,6 +556,10 @@
     this.initMultipleChoiceForm();
     this.enableRadio();
     this.newAnswer();
+    this.toggleRemoveButton(false);
+    $($(this.form_)
+      .find('.slds-button--new-answer')[0])
+        .toggle(false);
     var fields = $(this.form_)
       .find('[data-field-name="FieloELR__AnswerOptionText__c"]');
     if (fields) {
@@ -432,6 +568,43 @@
       fields[1].FieloFormElement.set('value', 'False');
       $($(fields[1]).find('input')[0]).prop('disabled', true);
     }
+  };
+
+  FieloQuestionWizard.prototype.initMatchingForm = function() {
+    this.initMultipleChoiceForm();
+    this.hideColumn('FieloELR__IsCorrect__c');
+    var answerTextField = $(this.form_)
+      .find('[data-field-name="FieloELR__AnswerOptionText__c"]')[0];
+    var index = $(answerTextField).closest('td').index();
+    var headerRow = $(answerTextField)
+      .closest('table')
+      .find('thead')
+        .find('tr')[0];
+    var column = headerRow.cells[index];
+    var lastColumn = headerRow.cells[headerRow.cells.length - 1];
+    $($(column).clone(true)[0]).insertBefore(lastColumn);
+    var rows = $(this.form_)
+      .find('.slds-table tr');
+    rows = $(rows).not(rows[0]);
+
+    [].forEach.call(rows, function(row) {
+      $($($(answerTextField)
+          .closest('td')[0])
+            .clone(true)[0])
+              .insertBefore(
+                row.cells[row.cells.length - 1]);
+    });
+
+    var option = $(headerRow)
+      .find('[title="Answer Option Text"]')[0];
+    var matches = $(headerRow)
+      .find('[title="Answer Option Text"]')[1];
+    option.innerHTML = 'Option';
+    matches.innerHTML = 'Matches';
+    matches.setAttribute('title', 'Matches');
+
+    this.newAnswer();
+    this.deleteAnswer(0);
   };
 
   FieloQuestionWizard.prototype.radioChoice = function(source) {
@@ -500,6 +673,29 @@
       this.hideColumn('FieloELR__Order__c');
     } else {
       this.showColumn('FieloELR__Order__c');
+    }
+  };
+
+  FieloQuestionWizard.prototype.toggleRemoveButton = function(toggleValue) {
+    var removeBtns = $(this.form_)
+      .find('.slds-button--delete');
+    [].forEach.call(removeBtns, function(button) {
+      $(button).toggle(toggleValue);
+    });
+  };
+
+  FieloQuestionWizard.prototype.removeColumn = function(title) {
+    var answerTextFieldLabel = $(this.form_)
+      .find('[title="' + title + '"]')[0];
+    if (answerTextFieldLabel) {
+      var index = $(answerTextFieldLabel)
+        .closest('th').index();
+      $(answerTextFieldLabel).closest('th').remove();
+      var items = $(this.form_)
+        .find('.' + this.CssClasses_.ANSWER_OPTIONS_ITEM);
+      [].forEach.call(items, function(item) {
+        $(item.cells[index]).remove();
+      });
     }
   };
 
@@ -633,6 +829,9 @@
     } else {
       notify.FieloNotify.setTheme('success');
       window.location.href = this.getNewURL();
+      if (!this.isSaveAndNew) {
+        location.reload();
+      }
     }
     fielo.util.spinner.FieloSpinner.hide();
     notify.FieloNotify.show();
@@ -648,7 +847,6 @@
         newUrl = newUrl.substr(0, newUrl.length - 1);
       }
       newUrl += newParam;
-      console.log(newUrl);
     }
     return newUrl;
   };
@@ -664,6 +862,17 @@
       $(this.form_)
         .find('.slds-button--new-answer')[0]
           .click();
+    }
+  };
+
+  FieloQuestionWizard.prototype.deleteAnswer = function(index) {
+    if (this.form_) {
+      if ($(this.form_)
+        .find('.slds-button--delete')[index]) {
+        $(this.form_)
+          .find('.slds-button--delete')[index]
+            .click();
+      }
     }
   };
 
@@ -720,7 +929,6 @@
         'FieloELR__CorrectWeight__c',
         'FieloELR__PenaltyPerAttempt__c');
 
-      console.log(this.getUrlParameter('newQuestion'));
       if (this.getUrlParameter('newQuestion') === 'true') {
         $('[data-action="' + this.formId_ + '"]')[0]
           .click();
