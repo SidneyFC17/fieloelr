@@ -48,6 +48,7 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                   ', (SELECT Id, ' +
                     'IsCorrect__c, ' +
                     'IsSubmitted__c, ' +
+                    'ModuleResponse__c, ' +
                     'NumberOfAttempt__c, ' +
                     'Question__c, ' +
                     'PartialGradeValue__c, ' +

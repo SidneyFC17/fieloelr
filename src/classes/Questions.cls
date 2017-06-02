@@ -1,11 +1,18 @@
 public class Questions extends SObjectDomain {
 
+	public static Boolean validateAdminFields = true;
+
 	public Questions(List<Question__c> records) {
         super(records);
     }
 
     public class Constructor implements SObjectDomain.IConstructable {
         public SObjectDomain construct(List<Question__c> sObjectList) {
+            //If has Admin Permission allow "validateAdminFields"
+            if(FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()) != null && FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()).FieloPLT__To__c >= system.now()){
+                validateAdminFields = false;
+            }
+
             return new Questions(sObjectList);
         }
     }
@@ -57,8 +64,10 @@ public class Questions extends SObjectDomain {
 
 
 	public override void onBeforeDelete() {
-		// If the module is active, questions cannot be deleted, updated or added.																		
-     	checkModule(records);
+		if(validateAdminFields){
+			// If the module is active, questions cannot be deleted, updated or added.																		
+	    	checkModule(records);
+	    }
     }
 
 	public override void onAfterInsert() {

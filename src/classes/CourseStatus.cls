@@ -16,8 +16,16 @@ public class CourseStatus extends SObjectDomain {
         }
     }
 
+    public override void onApplyDefaults() {
+        for(CourseStatus__c cStatus : (List<CourseStatus__c>)records){
+            cStatus.ApprovedModules__c = 0;
+            cStatus.Key__c = String.valueOf(cStatus.Course__c).subString(0,15) + String.valueOf(cStatus.Member__c).subString(0,15);
+        }
+    }
+
     public override void onValidate() {
-        //before insert
+        //before insert        
+        validateExistingCourseStatus(records);
 
         // Validate that course predecessor has a course status progress at 100 per cent
         validateCourseStatusPredesessorCompleted(records);    
@@ -48,6 +56,37 @@ public class CourseStatus extends SObjectDomain {
         
     }
     
+    public static void validateExistingCourseStatus(List<CourseStatus__c> records){
+        // Courses to validate
+        Set<String> keys = new Set<String>();
+        for (CourseStatus__c courseStatus : records){
+            keys.add(courseStatus.Key__c);
+        }
+
+        Set<String> existingKeys = new Set<String>();
+        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(keys)){
+            existingKeys.add(cs.Key__c);
+        }
+
+        Map<String,CourseStatus__c> csByKey = new Map<String,CourseStatus__c>();
+        for (CourseStatus__c courseStatus : records){
+            //checks agains the database
+            if(existingKeys.contains(courseStatus.Key__c)){
+                //checks against the trigger list
+                if(csByKey.containsKey(courseStatus.Key__c)){
+                    csByKey.get(courseStatus.Key__c).addError('The Member is already registered in this Course.');
+                    csByKey.remove(courseStatus.Key__c);
+                }
+
+                courseStatus.addError('The Member is already registered in this Course.');
+                continue;
+            }else{
+                csByKey.put(courseStatus.Key__c, courseStatus);
+                existingKeys.add(courseStatus.Key__c);
+            }
+        }      
+    }
+
     public static void validateCourseStatusPredesessorCompleted(List<CourseStatus__c> records){
         // Courses to validate
         Set<Id> courseIds = new Set<Id>();
@@ -91,13 +130,6 @@ public class CourseStatus extends SObjectDomain {
   
     public override void onValidate(Map<Id,SObject> existingRecords) {
         //before update
-    }
-
-    public override void onApplyDefaults() {
-        for(CourseStatus__c cStatus : (List<CourseStatus__c>)records){
-            cStatus.ApprovedModules__c = 0;
-            cStatus.Key__c = String.valueOf(cStatus.Course__c).subString(0,15) + String.valueOf(cStatus.Member__c).subString(0,15);
-        }
     }
         
     public override void onBeforeDelete() {

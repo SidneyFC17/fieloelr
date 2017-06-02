@@ -97,20 +97,25 @@ public class QuestionResponses extends SObjectDomain {
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
-        List<QuestionResponse__c> submittedRecords = new List<QuestionResponse__c>();
+        Map<Id,QuestionResponse__c> submittedRecords = new Map<Id,QuestionResponse__c>();
 
         for(QuestionResponse__c questionResp: (List<QuestionResponse__c>)records){
             //Add only submitted records.
             if( questionResp.IsSubmitted__c ){
                 if( !((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsSubmitted__c ||
                     ((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsSubmitted__c == null){
-                    submittedRecords.add(questionResp);
+                    submittedRecords.put(questionResp.Id, questionResp);
                 }
             }
         }
 
         if(!submittedRecords.isEmpty() && !disableSubmit){
-            setIsCorrect(submittedRecords);
+            Map<Id,String> mapErrors = setIsCorrect(submittedRecords.values());
+            if(!mapErrors.isEmpty()){
+                for(Id qrId : mapErrors.keySet()){
+                    submittedRecords.get(qrId).addError(mapErrors.get(qrId));
+                }
+            }
         }
     }
 
@@ -134,7 +139,8 @@ public class QuestionResponses extends SObjectDomain {
         }
     }
 
-    public static void setIsCorrect(List<QuestionResponse__c> records) {
+    public static Map<Id,String> setIsCorrect(List<QuestionResponse__c> records) {
+        Map<Id,String> mapErrors = new Map<Id,String>();
         Set<Id> questionResponseIds = new Map<Id,QuestionResponse__c>(records).keySet();
         Set<Id> questionIds = new Set<Id>();
         for (QuestionResponse__c questionResponse:records) {
@@ -181,31 +187,43 @@ public class QuestionResponses extends SObjectDomain {
                     }
                 }/*else if (question.Type__c == 'Fill in the Blanks') {
                     questionResponse.IsCorrect__c = question.AnswerText__c == questionResponse.TextValue__c;
-                }*/else if (question.Type__c == 'Matching') {
+                }*/else if (question.Type__c == 'Matching Options') {
                     questionResponse.IsCorrect__c = true;
                     List<Answer__c> answers = existingQuestionResponses.get(questionResponse.Id).answers__r;
+                    Map<String, String> answerOptionText = new Map<String, String>();
+                    Map<String, String> answerText = new Map<String, String>();
+                    Set<Id> correctAnswerIds = new Set<Id>();
                     if (answers.size() == questionsMap.get(questionResponse.Question__c).AnswerOptions__r.size()) {
-                        Set<String> correctAnswers = new Set<String>();
-                        for(AnswerOption__c answerOption : question.AnswerOptions__r){
-                            correctAnswers.add(answerOption.AnswerOptionText__c);
-                        }
-
-                        //loop the answers and verify that all of them are related to correct answer options
-                        for(Answer__c answer : existingQuestionResponses.get(questionResponse.Id).answers__r) {
-                            if(!correctAnswers.contains(answer.AnswerOption__c)) {
+                        correctAnswerIds = (new Map<Id,AnswerOption__c>(questionsMap.get(questionResponse.Question__c).AnswerOptions__r)).keySet();
+                        for (AnswerOption__c answerOption: questionsMap.get(questionResponse.Question__c).AnswerOptions__r) {
+                            try{
+                                answerOptionText = (Map<String,String>) JSON.deserialize(answerOption.AnswerOptionText__c, Map<String,String>.class);
+                                for(Answer__c answer: answers) {
+                                    answerText = (Map<String,String>) JSON.deserialize(answer.FieloELR__TextValue__c, Map<String,String>.class);
+                                    if (answerOptionText.get('option') == answerText.get('option')) {
+                                        if (answerOptionText.get('matches') != answerText.get('matches')) {
+                                            questionResponse.IsCorrect__c = false;
+                                            break;
+                                        }
+                                        correctAnswerIds.remove(answerOption.Id);
+                                    }
+                                }
+                            } catch(Exception e) {
                                 questionResponse.IsCorrect__c = false;
                                 break;
-                            }else{
-                                correctAnswers.remove(answer.AnswerOption__c);
                             }
                         }
                     } else {
                         questionResponse.IsCorrect__c = false;
                     }
+                    if (!correctAnswerIds.isEmpty()) {
+                        questionResponse.IsCorrect__c = false;
+                    }
                 }
 
                 if(questionResponse.IsCorrect__c && correctKeys.contains(questionResponse.Key__c)){
-                    questionResponse.addError('This question was already answered correct.');
+                    mapErrors.put(questionResponse.Id, 'This question was already answered correct.');
+                    //questionResponse.addError('This question was already answered correct.');
                 }else{
                     if(questionResponse.IsCorrect__c){
                         correctKeys.add(questionResponse.Key__c);                        
@@ -227,5 +245,6 @@ public class QuestionResponses extends SObjectDomain {
                 }
             }
         }
+        return mapErrors;
     }
 }
