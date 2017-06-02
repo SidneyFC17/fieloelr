@@ -172,8 +172,7 @@
 
   FieloQuestionWizard.prototype.throwMessage = function(type, errorMsg) {
     var notify = fielo.util.notify.create();
-    notify.FieloNotify
-      .addMessages([errorMsg]);
+    notify.FieloNotify.addMessages(errorMsg);
     notify.FieloNotify.setTheme(type);
     notify.FieloNotify.show();
   };
