@@ -65,23 +65,19 @@ public class ModuleResponses extends SObjectDomain {
                 modulesProcessedIds.add(moduleResponseKey);
             }
 
-            //checks manual courses to verify if the status was already created
-            if(modulesMap.get(moduleResponse.Module__c).Course__r.SubscriptionMode__c == 'Manual'){
-                csKeysRequired.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
-            }
+            //add keys to query course status
+            csKeysRequired.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
         }
 
         //query in the database only the moduleResponses that were approved for the related members
-        List<ModuleResponse__c> predecessorModuleResponses = new ModuleResponsesSelector(new Set<String>{'Key__c'}).selectByKeyAndApproved(mrKeysRequired);
         Set<String> approvedMRKeys = new Set<String>();
-        for(ModuleResponse__c mr : predecessorModuleResponses){
+        for(ModuleResponse__c mr : new ModuleResponsesSelector(new Set<String>{'Key__c'}).selectByKeyAndApproved(mrKeysRequired)){
             approvedMRKeys.add(mr.Key__c);
         }
 
         //query in the database only the courseStatus that exist for the related members
-        List<CourseStatus__c> currentCourseStatus = new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(csKeysRequired);
         Map<String,CourseStatus__c> existingCSMap = new Map<String,CourseStatus__c>();
-        for(CourseStatus__c cs : currentCourseStatus){
+        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(csKeysRequired)){
             existingCSMap.put(cs.Key__c, cs);
         }
 
@@ -129,6 +125,7 @@ public class ModuleResponses extends SObjectDomain {
         }
 
         if(!mrWithNewCourseStatus.isEmpty()){
+            CourseStatus.validateAdminFields = false;
             uow.commitWork();
             for(ModuleResponse__c mr : mrWithNewCourseStatus){
                 String cskey = String.valueOf(modulesMap.get(mr.Module__c).Course__c).subString(0,15) + String.valueOf(mr.Member__c).subString(0,15);
@@ -211,34 +208,40 @@ public class ModuleResponses extends SObjectDomain {
         calculateCourseStatusProgress(approvedRecords, false);
     }
 
-    public static void setGradeAndApprovalFlag(List<ModuleResponse__c> records) {
-        Set<Id> moduleResponseIds = new Map<Id,ModuleResponse__c>(records).keySet();
+    public void setGradeAndApprovalFlag(List<ModuleResponse__c> records) {
+        Map<Id,ModuleResponse__c> moduleResponsesMap = new Map<Id,ModuleResponse__c>(records);
         Set<Id> moduleIds = new Set<Id>();
         for(ModuleResponse__c moduleResponse: records) {
             moduleIds.add(moduleResponse.Module__c);
         }
-        Map<Id,ModuleResponse__c> existingModuleResponseMap = new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector().selectByIdWithQuestionResponses(moduleResponseIds));
+        Map<Id,ModuleResponse__c> existingModuleResponseMap = new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector().selectByIdWithQuestionResponses(moduleResponsesMap.keySet()));
         Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Course__c','TotalValue__c','ApprovalGrade__c','QuestionPool__c'}).selectByIdWithQuestions(moduleIds));
         Map<Id,Question__c> questionMap;
 
-        List<QuestionResponse__c> unsubmitedQuestionResponses = new List<QuestionResponse__c>();
+        Map<Id,QuestionResponse__c> unsubmitedQuestionResponses = new Map<Id,QuestionResponse__c>();
         // Checking for unsubmitted questions
         for (ModuleResponse__c moduleResponse: existingModuleResponseMap.values()) {
             for (QuestionResponse__c questionResponse: moduleResponse.QuestionResponses__r) {
                 if ( !questionResponse.IsSubmitted__c ) {
-                    unsubmitedQuestionResponses.add(questionResponse);
+                    unsubmitedQuestionResponses.put(questionResponse.Id,questionResponse);
                 }
             }
         }
 
         if (!unsubmitedQuestionResponses.isEmpty()) {
             QuestionResponses.disableSubmit = true;
-            QuestionResponses.setIsCorrect(unsubmitedQuestionResponses);
+            Map<Id,String> mapErrors = QuestionResponses.setIsCorrect(unsubmitedQuestionResponses.values());
 
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
-            for(QuestionResponse__c questionResponse : unsubmitedQuestionResponses){
-                questionResponse.IsSubmitted__c = true;
-                uow.registerDirty(questionResponse);
+            for(Id qrId : unsubmitedQuestionResponses.keySet()){
+            //for(QuestionResponse__c questionResponse : unsubmitedQuestionResponses.keySet()){
+                QuestionResponse__c questionResponse = unsubmitedQuestionResponses.get(qrId);
+                if(!mapErrors.containsKey(qrId)){
+                    questionResponse.IsSubmitted__c = true;
+                    uow.registerDirty(questionResponse);
+                }else{
+                    addError(moduleResponsesMap.get(questionResponse.ModuleResponse__c),mapErrors.get(qrId));
+                }
             }
             QuestionResponses.validateAdminFields = false;
             uow.commitWork();
@@ -249,20 +252,22 @@ public class ModuleResponses extends SObjectDomain {
         Set<String> mrKeys = new Set<String>();
         List<ModuleResponse__c> approvedResponses = new List<ModuleResponse__c>();
         for (ModuleResponse__c moduleResponse: (List<ModuleResponse__c>)records) {
-            moduleResponse.GradeValue__c = 0.0;
-            questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
+            if(!hasError(moduleResponse.Id)){
+                moduleResponse.GradeValue__c = 0.0;
+                questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
 
-            for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
-                moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
-            }
+                for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
+                    moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
+                }
 
-            Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
-            moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / totalValue) * 100;
-            moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
+                Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
+                moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / totalValue) * 100;
+                moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
 
-            if(moduleResponse.IsApproved__c){
-                mrKeys.add(moduleResponse.Key__c);
-                approvedResponses.add(moduleResponse);
+                if(moduleResponse.IsApproved__c){
+                    mrKeys.add(moduleResponse.Key__c);
+                    approvedResponses.add(moduleResponse);
+                }
             }
         }
 
@@ -274,13 +279,15 @@ public class ModuleResponses extends SObjectDomain {
             }
 
             for(ModuleResponse__c moduleResponse : approvedResponses){
-                if(maxAppByKey.containsKey(moduleResponse.Key__c)){
-                    Decimal maxApprove = maxAppByKey.get(moduleResponse.Key__c);
-                    moduleResponse.NumberOfApprove__c = ++maxApprove;
-                    maxAppByKey.put(moduleResponse.Key__c, maxApprove);
-                }else{
-                    moduleResponse.NumberOfApprove__c = 1;
-                    maxAppByKey.put(moduleResponse.Key__c, 1);
+                if(!hasError(moduleResponse.Id)){
+                    if(maxAppByKey.containsKey(moduleResponse.Key__c)){
+                        Decimal maxApprove = maxAppByKey.get(moduleResponse.Key__c);
+                        moduleResponse.NumberOfApprove__c = ++maxApprove;
+                        maxAppByKey.put(moduleResponse.Key__c, maxApprove);
+                    }else{
+                        moduleResponse.NumberOfApprove__c = 1;
+                        maxAppByKey.put(moduleResponse.Key__c, 1);
+                    }
                 }
             }
         }

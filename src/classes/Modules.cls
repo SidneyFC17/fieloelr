@@ -167,10 +167,8 @@ public class Modules extends SObjectDomain {
 		    }
 		}
 
-		//SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
 		uow.registerDirty(coursesMap.values());
 		Courses.validateAdminFields = false;
-		//uow.commitWork();
     }
 
     private void updateQuestions(List<Module__c> modulesWithChangedWeigth, SObjectUnitOfWork uow) {
@@ -199,9 +197,10 @@ public class Modules extends SObjectDomain {
 
      	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType, Question__c.SObjectType});
      	deleteModuleDependencies(uow);
-     	deleteQuestions(uow);     	
-
+     	deleteQuestions(uow);
      	updateCourses(null, activeModules, uow);
+     	Courses.validateAdminFields = false;
+     	Questions.validateAdminFields = false;
      	uow.commitWork();
     }
 
@@ -220,7 +219,6 @@ public class Modules extends SObjectDomain {
 	    }
     }
 
-
     // If the Module is active, has at least 1 related Module response, and any of the following fields (see error message) was modified the Module cannot be edited or deleted 
     private void checkModuleResponses(List<Module__c> modules) {
 		
@@ -236,31 +234,15 @@ public class Modules extends SObjectDomain {
 	    }
     }
 
-
     private void deleteModuleDependencies(SObjectUnitOfWork uow) {
-		
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
-
-    	List<ModuleDependency__c> moduleDependencies = 
-    								new ModuleDependenciesSelector(new Set<String> {'Id'}).selectByIdWithExceptions(modulesMap.KeySet(), RecordErrors);
-    	//SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleDependency__c.SObjectType});
+    	List<ModuleDependency__c> moduleDependencies = new ModuleDependenciesSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
     	uow.registerDeleted(moduleDependencies);
-    	//uow.commitWork();
-    	/*
-    	for(Module__c module : (List<Module__c>)records) {
-    		if(!hasError(module.Id)) {
-    			//Delete MOdule Dependency
-    		}
-    	}*/
     }
 
-
     private void deleteQuestions(SObjectUnitOfWork uow) {
-		
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
-
-    	List<Question__c> questions = 
-    								new QuestionsSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
+    	List<Question__c> questions = new QuestionsSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
     	uow.registerDeleted(questions);
     }
 
