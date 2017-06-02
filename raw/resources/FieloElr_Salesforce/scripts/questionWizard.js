@@ -106,7 +106,7 @@
       if (item.FieloELR__AnswerOptionText__c === '' ||
         item.FieloELR__AnswerOptionText__c === null ||
         item.FieloELR__AnswerOptionText__c === undefined) {
-        item.error = 'The answer text is required';
+        item.error = 'The answer option text is required';
       }
     });
     return items;
@@ -436,7 +436,7 @@
     if (questionValues.Name === '' ||
       questionValues.Name === null ||
       questionValues.Name === undefined) {
-      errorMsgs.add('Name is a required field.');
+      errorMsgs.add('Name is a required field');
     }
 
     answerOptionValues.forEach(function(row) {
