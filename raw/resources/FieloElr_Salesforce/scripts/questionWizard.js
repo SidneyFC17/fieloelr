@@ -436,7 +436,7 @@
     if (questionValues.Name === '' ||
       questionValues.Name === null ||
       questionValues.Name === undefined) {
-      errorMsgs.add('Name is a required field.');
+      errorMsgs.add('Name is a required field');
     }
 
     answerOptionValues.forEach(function(row) {
