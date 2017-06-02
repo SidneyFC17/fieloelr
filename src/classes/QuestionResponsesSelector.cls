@@ -9,6 +9,7 @@ public with sharing class QuestionResponsesSelector extends SObjectSelector {
                 QuestionResponse__c.IsSubmitted__c,
                 QuestionResponse__c.NumberOfAttempt__c,
                 QuestionResponse__c.TextValue__c,
+                QuestionResponse__c.Key__c,
                 QuestionResponse__c.Question__c
             };
     }
@@ -32,7 +33,7 @@ public with sharing class QuestionResponsesSelector extends SObjectSelector {
     public List<QuestionResponse__c> selectByIdWithAnswers(Set<Id> questionResponseIds) {
     	return (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, AnswerOption__c, Name FROM Answers__r) ' +
+                  ', (SELECT Id, AnswerOption__c, TextValue__c, Name FROM Answers__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionResponseIds ' +
                   'ORDER BY {2}',
