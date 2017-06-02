@@ -55,13 +55,14 @@ public class ModuleResponses extends SObjectDomain {
         Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Id','Course__c','Course__r.SubscriptionMode__c'}).selectByIdHavingDependencies(moduleIds));
         Set<String> mrKeysRequired = new Set<String>();
         Set<String> csKeysRequired = new Set<String>();
-        Set<Id> modulesProcessedIds = new Set<Id>();
+        Set<String> modulesProcessedIds = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
-            if(!modulesProcessedIds.contains(moduleResponse.Module__c)){
+            String moduleResponseKey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+            if(!modulesProcessedIds.contains(moduleResponseKey)){
                 for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
                     mrKeysRequired.add(String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
                 }
-                modulesProcessedIds.add(moduleResponse.Module__c);
+                modulesProcessedIds.add(moduleResponseKey);
             }
 
             //checks manual courses to verify if the status was already created
