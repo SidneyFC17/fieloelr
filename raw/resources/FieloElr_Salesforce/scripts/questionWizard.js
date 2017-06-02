@@ -106,7 +106,7 @@
       if (item.FieloELR__AnswerOptionText__c === '' ||
         item.FieloELR__AnswerOptionText__c === null ||
         item.FieloELR__AnswerOptionText__c === undefined) {
-        item.error = 'The answer text is required';
+        item.error = 'The answer option text is required';
       }
     });
     return items;
