@@ -102,6 +102,13 @@
     if (itemContainer) {
       items = itemContainer.FieloAnswerOptions.get();
     }
+    [].forEach.call(items, function(item) {
+      if (item.FieloELR__AnswerOptionText__c === '' ||
+        item.FieloELR__AnswerOptionText__c === null ||
+        item.FieloELR__AnswerOptionText__c === undefined) {
+        item.error = 'The answer text is required';
+      }
+    });
     return items;
   };
 
@@ -387,13 +394,17 @@
   FieloQuestionWizard.prototype.saveOnly_ = function() {
     this.isSaveAndNew = false;
     this.save_();
-    $(this.form_).modal('dismiss');
+    if (!this.hasError_) {
+      $(this.form_).modal('dismiss');
+    }
   };
 
   FieloQuestionWizard.prototype.saveAndNew_ = function() {
     this.isSaveAndNew = true;
     this.save_();
-    $(this.form_).modal('dismiss');
+    if (!this.hasError_) {
+      $(this.form_).modal('dismiss');
+    }
   };
 
   /**
@@ -421,7 +432,7 @@
       [];
     var answerOptionNullFields = {};
 
-    var errorMsgs = [];
+    var errorMsgs = new Set();
     answerOptionValues.forEach(function(row) {
       if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
@@ -443,13 +454,15 @@
         }
       });
       if (row.error) {
-        errorMsgs.push(row.error);
+        errorMsgs.add(row.error);
       }
     });
     try {
-      if (errorMsgs.length > 0) {
-        this.throwMessage('error', errorMsgs);
+      if (errorMsgs.size > 0) {
+        this.hasError_ = true;
+        this.throwMessage('error', Array.from(errorMsgs));
       } else {
+        this.hasError_ = false;
         Visualforce.remoting.Manager.invokeAction(
           this.form_.getAttribute('data-save-controller'),
           questionValues,

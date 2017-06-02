@@ -72,6 +72,19 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>OrderFormula__c</fullName>
+        <externalId>false</externalId>
+        <formula>Order__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Order Formula</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Order__c</fullName>
         <externalId>false</externalId>
         <label>Order</label>
