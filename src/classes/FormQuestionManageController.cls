@@ -195,7 +195,8 @@ public with sharing class FormQuestionManageController {
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
 	    String query = 'SELECT ' + fields;
-	    query += ' FROM ' + objectName;
+      query += ' ,(SELECT Id, CorrectWeight__c, PenaltyPerAttempt__c, IncorrectWeight__c From Questions__r)';
+      query += ' FROM ' + objectName;
 	    query += ' WHERE ID = :recordId' ;
 	    query += ' LIMIT 1';
 	    List<sObject> result = Database.query(query);

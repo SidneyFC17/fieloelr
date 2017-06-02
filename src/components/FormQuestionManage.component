@@ -57,7 +57,7 @@
 				<c:Sections
             		formId="{!formId}-questionsection"
             		sObjectName="{!sRecentObjectName}"
-            		fieldset="{'Name':'FieloELR__ShuffleAnswerOptions__c','Type':'checkbox'},{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
+            		fieldset="{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
             		mode="{!mode}"
             		layout="{!layout}"/>
             	<article class="slds-card slds-m-around--medium">
