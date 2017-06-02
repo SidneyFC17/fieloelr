@@ -118,7 +118,6 @@
   };
 
   FieloQuestionManage.prototype.retrieve_ = function(source) {
-    console.log('retrieve_');
     // traigo los parameters del boton
     this.parameters_ = source.FieloButton.getParameters();
 
