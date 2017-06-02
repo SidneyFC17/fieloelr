@@ -208,7 +208,7 @@ public class ModuleResponses extends SObjectDomain {
         calculateCourseStatusProgress(approvedRecords, false);
     }
 
-    public static void setGradeAndApprovalFlag(List<ModuleResponse__c> records) {
+    public void setGradeAndApprovalFlag(List<ModuleResponse__c> records) {
         Map<Id,ModuleResponse__c> moduleResponsesMap = new Map<Id,ModuleResponse__c>(records);
         Set<Id> moduleIds = new Set<Id>();
         for(ModuleResponse__c moduleResponse: records) {
@@ -240,7 +240,7 @@ public class ModuleResponses extends SObjectDomain {
                     questionResponse.IsSubmitted__c = true;
                     uow.registerDirty(questionResponse);
                 }else{
-                    moduleResponsesMap.get(questionResponse.ModuleResponse__c).addError(mapErrors.get(qrId));
+                    addError(moduleResponsesMap.get(questionResponse.ModuleResponse__c),mapErrors.get(qrId));
                 }
             }
             QuestionResponses.validateAdminFields = false;
@@ -252,20 +252,22 @@ public class ModuleResponses extends SObjectDomain {
         Set<String> mrKeys = new Set<String>();
         List<ModuleResponse__c> approvedResponses = new List<ModuleResponse__c>();
         for (ModuleResponse__c moduleResponse: (List<ModuleResponse__c>)records) {
-            moduleResponse.GradeValue__c = 0.0;
-            questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
+            if(!hasError(moduleResponse.Id)){
+                moduleResponse.GradeValue__c = 0.0;
+                questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
 
-            for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
-                moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
-            }
+                for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
+                    moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
+                }
 
-            Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
-            moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / totalValue) * 100;
-            moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
+                Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
+                moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / totalValue) * 100;
+                moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
 
-            if(moduleResponse.IsApproved__c){
-                mrKeys.add(moduleResponse.Key__c);
-                approvedResponses.add(moduleResponse);
+                if(moduleResponse.IsApproved__c){
+                    mrKeys.add(moduleResponse.Key__c);
+                    approvedResponses.add(moduleResponse);
+                }
             }
         }
 
@@ -277,13 +279,15 @@ public class ModuleResponses extends SObjectDomain {
             }
 
             for(ModuleResponse__c moduleResponse : approvedResponses){
-                if(maxAppByKey.containsKey(moduleResponse.Key__c)){
-                    Decimal maxApprove = maxAppByKey.get(moduleResponse.Key__c);
-                    moduleResponse.NumberOfApprove__c = ++maxApprove;
-                    maxAppByKey.put(moduleResponse.Key__c, maxApprove);
-                }else{
-                    moduleResponse.NumberOfApprove__c = 1;
-                    maxAppByKey.put(moduleResponse.Key__c, 1);
+                if(!hasError(moduleResponse.Id)){
+                    if(maxAppByKey.containsKey(moduleResponse.Key__c)){
+                        Decimal maxApprove = maxAppByKey.get(moduleResponse.Key__c);
+                        moduleResponse.NumberOfApprove__c = ++maxApprove;
+                        maxAppByKey.put(moduleResponse.Key__c, maxApprove);
+                    }else{
+                        moduleResponse.NumberOfApprove__c = 1;
+                        maxAppByKey.put(moduleResponse.Key__c, 1);
+                    }
                 }
             }
         }
