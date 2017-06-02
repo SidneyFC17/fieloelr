@@ -111,7 +111,6 @@
   */
 
   FieloRecentReorder.prototype.sortable_ = function() {
-    console.log('sortable');
     // Si el contenedor es tabla fija el ancho
     if (this.container_.nodeName === 'TBODY') {
       var columns = this.container_.querySelectorAll('td, th');
@@ -121,7 +120,7 @@
       });
     }
     $(this.container_).sortable({
-      update: this.order_.bind(this),
+      update: this.order.bind(this),
       revert: true,
       cancel: '.ui-state-disabled'
     });
@@ -133,7 +132,6 @@
 
   FieloRecentReorder.prototype.disableSort = function() {
     // Si el contenedor es tabla fija el ancho
-    console.log('disableSort');
     var rows = $(this.element_).find('tr');
     [].forEach.call(rows, function(row) {
       $(row).addClass('ui-state-disabled');
@@ -145,7 +143,6 @@
   */
 
   FieloRecentReorder.prototype.enableSort = function() {
-    console.log('enableSort');
     // Si el contenedor es tabla fija el ancho
     var rows = $(this.element_).find('tr');
     [].forEach.call(rows, function(row) {
@@ -159,13 +156,16 @@
   * Setea el orden de los elementos
   */
 
-  FieloRecentReorder.prototype.order_ = function() {
+  FieloRecentReorder.prototype.order = function() {
     var items = this.container_.getElementsByClassName(this.CssClasses_.MODEL);
     var i = 1;
-
+    var field = null;
     [].forEach.call(items, function(elem) {
-      elem.querySelector(
-        '[data-field = "' + this.orderByField_ + '"]').innerHTML = i;
+      field = elem.querySelector(
+        '[data-field = "' + this.orderByField_ + '"]');
+      if (field) {
+        field.innerHTML = i;
+      }
       i++;
     }, this);
   };
@@ -182,7 +182,7 @@
         this.element_.getAttribute('data-order-by');
 
       this.sortable_();
-      this.order_();
+      this.order();
       this.saveBtn_ = this.element_
         .getElementsByClassName(this.CssClasses_.SAVE)[0];
       if (this.saveBtn_) {

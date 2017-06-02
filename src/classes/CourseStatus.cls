@@ -16,11 +16,75 @@ public class CourseStatus extends SObjectDomain {
         }
     }
 
-    public override void onValidate() {
-        //before insert
+    public override void onApplyDefaults() {
+        for(CourseStatus__c cStatus : (List<CourseStatus__c>)records){
+            cStatus.ApprovedModules__c = 0;
+            cStatus.Key__c = String.valueOf(cStatus.Course__c).subString(0,15) + String.valueOf(cStatus.Member__c).subString(0,15);
+        }
+    }
 
-        // Validate that course predecessor has a course status progress at 100%
+    public override void onValidate() {
+        //before insert        
+        validateExistingCourseStatus(records);
+
+        // Validate that course predecessor has a course status progress at 100 per cent
         validateCourseStatusPredesessorCompleted(records);    
+        
+        // The course status cannot be created if the subscription mode of the course is "Automatic"
+        // Can be skipped if Admin       
+        if(validateAdminFields) {
+            validateCourseStatusSubscriptionMode(records);
+        }      
+    }
+
+    public static void validateCourseStatusSubscriptionMode(List<CourseStatus__c> records){
+        Set<Id> courseIds = new Set<Id>();
+        Set<Id> courseAutomaticIds = new Set<Id>();
+        for (CourseStatus__c courseStatus : records){
+            courseIds.add(courseStatus.Course__c);
+        }
+        
+        // List of courses with subscription field
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id, SubscriptionMode__c'}).selectByIdBeingAutomatic(courseIds));        
+               
+        // Adding errors if those courses are in a course status
+        for (CourseStatus__c courseStatus : records){
+            if (coursesMap.containsKey(courseStatus.Course__c)){
+                courseStatus.addError(Label.ValidateCourseStatusErrorSubscriptionMode);
+            }
+        }
+        
+    }
+    
+    public static void validateExistingCourseStatus(List<CourseStatus__c> records){
+        // Courses to validate
+        Set<String> keys = new Set<String>();
+        for (CourseStatus__c courseStatus : records){
+            keys.add(courseStatus.Key__c);
+        }
+
+        Set<String> existingKeys = new Set<String>();
+        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(keys)){
+            existingKeys.add(cs.Key__c);
+        }
+
+        Map<String,CourseStatus__c> csByKey = new Map<String,CourseStatus__c>();
+        for (CourseStatus__c courseStatus : records){
+            //checks agains the database
+            if(existingKeys.contains(courseStatus.Key__c)){
+                //checks against the trigger list
+                if(csByKey.containsKey(courseStatus.Key__c)){
+                    csByKey.get(courseStatus.Key__c).addError('The Member is already registered in this Course.');
+                    csByKey.remove(courseStatus.Key__c);
+                }
+
+                courseStatus.addError('The Member is already registered in this Course.');
+                continue;
+            }else{
+                csByKey.put(courseStatus.Key__c, courseStatus);
+                existingKeys.add(courseStatus.Key__c);
+            }
+        }      
     }
 
     public static void validateCourseStatusPredesessorCompleted(List<CourseStatus__c> records){
@@ -32,79 +96,42 @@ public class CourseStatus extends SObjectDomain {
 
         // Receive courses with predecessor
         Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id'}).selectByIdHavingPredecessor(courseIds));
-        Set<Id> coursesProcessedIds = new Set<Id>();
-        Set<String> mrKeysRequired = new Set<String>();
-        Map<String,CourseStatus__c> newCourseStatusMap = new Map<String,CourseStatus__c>();
-
-        Set<Id> courseStatusIds = new Set<Id>();
-        Set<String> coursesNotCompletedKeys = new Set<String>();
-        Set<Id> coursesWithoutPredecessors = new Set<Id>();
-        // For new Course Status
-        for (CourseStatus__c courseStatus : records){ 
-            // Check if course Id has been processed before       
-            if(!coursesProcessedIds.contains(courseStatus.Course__c)){
-                for(CourseDependency__c cd : coursesMap.get(courseStatus.Course__c).PredecessorCourses__r){
-                   // Course ID of Predecessor +  Member ID of New Course Status                
-                   mrKeysRequired.add(String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15));                
-                   System.debug('Entro MR KEYS');
-                   System.debug('Entro course key: ' + String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15));
-                   System.debug('Entro course id predecessor: ' + cd.Predecessor__c);
-                   
-                   newCourseStatusMap.put(String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15), courseStatus);
-                }
-                // Check if the Course doesn not have a predecessor at all
-                if (coursesMap.get(courseStatus.Course__c).PredecessorCourses__r.isEmpty()) coursesWithoutPredecessors.add(courseStatus.Course__c);
-                coursesProcessedIds.add(courseStatus.Course__c);
-            }
-        }
+        Set<String> keysPredecessors = new Set<String>();   
         
-        System.debug('Entro MR KEYS esta vacio?: ' + mrKeysRequired.isEmpty());
-        if (coursesWithoutPredecessors.isEmpty()){
-            // Check if Course Status containing keys (CourseID+MemberID) have Progress__c != 100
-            List<CourseStatus__c> predecessorCoursesCompleted = new CourseStatusSelector(new Set<String>{'Id,Progress__c,Key__c,Course__c'}).selectByKey(mrKeysRequired);
-            System.debug('Entro predecessorCoursesCompleted esta vacio?: ' + predecessorCoursesCompleted.isEmpty());
+        // Iterate over new Course Status
+         for (CourseStatus__c courseStatus : records){             
+            for(CourseDependency__c cd : coursesMap.get(courseStatus.Course__c).PredecessorCourses__r){
+               // Course ID of Predecessor +  Member ID of New Course Status
+               String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);          
+               keysPredecessors.add(cskey);
+            }      
+         }               
+       
+         // Query to get all the course status of the predecessors 100 per cent
+         List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,Key__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
+         Set<String> keysPredecessorsCompleted = new Set<String>();
+
+         for(CourseStatus__c cs : predecessorCourses){
+            keysPredecessorsCompleted.add(cs.Key__c);
+         }
             
-            if (!predecessorCoursesCompleted.isEmpty()){
-               for(CourseStatus__c courseStatus : predecessorCoursesCompleted){
-                    if (courseStatus.Progress__c < 100 || courseStatus.Progress__c == null){
-                     courseStatusIds.add(courseStatus.Id);
-                     coursesNotCompletedKeys.add(courseStatus.Key__c);
-                     System.debug('Entro courseStatusIds+= ' + courseStatus.Id);
-                     System.debug('Entro != 100% ' + courseStatus.Key__c);                     
-                    }
-                    else newCourseStatusMap.remove(courseStatus.Key__c);
-                }   
-            }
-             
-
-            for (CourseStatus__c cs : records){
-                if (predecessorCoursesCompleted.isEmpty()){
-                    cs.addError('Predecessor Course must be completed before this one.');
+         //Adding errors
+         Set<String> keysPredecessorsError = new Set<String>();
+         for (CourseStatus__c courseStatus : records){             
+             for(CourseDependency__c cd : coursesMap.get(courseStatus.Course__c).PredecessorCourses__r){
+                String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
+                if(!keysPredecessorsCompleted.contains(cskey)){
+                    courseStatus.addError(Label.ValidateCourseStatusErrorPredecessorIncomplete);
+                    break;
                 }
-                else{
-                    for (String key : newCourseStatusMap.keySet()){
-                        if (cs.Id == newCourseStatusMap.get(key).Id){
-                         cs.addError('Course was not completed at 100 per cent.');
-                            }
-                    } 
-                }
-                              
-             }   
-        }
-        
+             }            
+         }        
     }
-
+  
     public override void onValidate(Map<Id,SObject> existingRecords) {
         //before update
     }
-
-    public override void onApplyDefaults() {
-        for(CourseStatus__c cStatus : (List<CourseStatus__c>)records){
-            cStatus.ApprovedModules__c = 0;
-            cStatus.Key__c = String.valueOf(cStatus.Course__c).subString(0,15) + String.valueOf(cStatus.Member__c).subString(0,15);
-        }
-    }
-        /////
+        
     public override void onBeforeDelete() {
             Set<Id> coursesIds = new Set<Id>();
             Set<Id> courseValidateIds = new Set<Id>();

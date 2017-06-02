@@ -1,4 +1,4 @@
-public with sharing class FormQuestionManageController {
+public with sharing class FormQuestionController {
 	/*****  Datos  *****/
   	public String csObjectName{get;set;}
     public String cFilter{get;set;}
@@ -149,26 +149,42 @@ public with sharing class FormQuestionManageController {
 
 	/*****  Metodos Remote para Save y Retrieve *****/
     @RemoteAction
-    public static RemoteActionResult save( sObject module, List<String> moduleNullFields, List<sObject> questions, Map<Id,List<String>> questionsNullFields){
+    public static RemoteActionResult save( FieloELR__Question__c question, List<String> questionNullFields, List<FieloELR__AnswerOption__c> answerOptions, Map<Id,List<String>> answerOptionsNullFields, List<Id> deletedIds){
 	    Savepoint sp;
 	    RemoteActionResult result = new RemoteActionResult();
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{FieloELR__Question__c.SObjectType, FieloELR__AnswerOption__c.SObjectType});
 
 	    try{
-            for( String f :moduleNullFields ) {
-                module.put(f, null );
+            sp = Database.setSavepoint();
+            for( String f :questionNullFields ) {
+                question.put(f, null );
             }
 
-            for( sObject question: questions) {
-                if(questionsNullFields.containsKey(question.Id)){
-                    for(String f: questionsNullFields.get(question.Id)){
-                        question.put(f, null);
+            if (question.Id == null) {
+                uow.registerNew(question);
+            } else {
+                uow.registerDirty(question);
+            }
+
+            for( FieloELR__AnswerOption__c answerOption: answerOptions) {
+                if(answerOptionsNullFields.containsKey(answerOption.Id)){
+                    for(String f: answerOptionsNullFields.get(answerOption.Id)){
+                        answerOption.put(f, null);
                     }
+                }
+                if(answerOption.Id == null){
+                    uow.registerNew(answerOption, AnswerOption__c.Question__c, question);
+                }else{
+                    uow.registerDirty(answerOption);
                 }
             }
 
-	        sp = Database.setSavepoint();
-	        update (FieloELR__Module__c) module;
-            update (List<FieloELR__Question__c>) questions;
+            if (!deletedIds.isEmpty()) {
+              uow.registerDeleted(new AnswerOptionsSelector().selectById(new Set<Id>(deletedIds)));
+            }
+
+            uow.commitWork();
+
 	        //TODO Crear Label DataSavedSuccessfully
 	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
 
@@ -195,8 +211,10 @@ public with sharing class FormQuestionManageController {
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
 	    String query = 'SELECT ' + fields;
-      query += ' ,(SELECT Id, CorrectWeight__c, PenaltyPerAttempt__c, IncorrectWeight__c From Questions__r)';
-      query += ' FROM ' + objectName;
+      if (objectName == 'FieloELR__Question__c') {
+        query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
+      }
+	    query += ' FROM ' + objectName;
 	    query += ' WHERE ID = :recordId' ;
 	    query += ' LIMIT 1';
 	    List<sObject> result = Database.query(query);

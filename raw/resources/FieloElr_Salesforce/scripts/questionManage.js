@@ -216,6 +216,24 @@
         }
       }, this);
 
+      // Global Question Setup
+      console.log(result.FieloELR__Questions__r);
+      if (result.FieloELR__Questions__r) {
+        if (result.FieloELR__Questions__r.length > 0) {
+          var questionSection =
+            this.element_
+              .getElementsByClassName(this.CssClasses_.SECTION_PANEL)[1];
+          var questionSectionfields =
+            $(questionSection).find('.' + this.CssClasses_.FORM_ELEMENT);
+
+          [].forEach.call(questionSectionfields, function(field) {
+            field.FieloFormElement.set('value',
+              result.FieloELR__Questions__r[0][
+                field.FieloFormElement.get('fieldName')]);
+          }, this);
+        }
+      }
+
       // 3 - Pisar con los parameters de source en edit y new
       this.setParameters_();
       this.endRetrieve();
@@ -272,6 +290,12 @@
     });
 
     questionValues.forEach(function(row) {
+      if (moduleValues.FieloELR__PenaltyMode__c === 'Negative Weight') {
+        row.FieloELR__PenaltyPerAttempt__c = 0;// eslint-disable-line camelcase
+      } else if (moduleValues.FieloELR__PenaltyMode__c === 'Percent Decrease') {
+        row.FieloELR__IncorrectWeight__c = 0;// eslint-disable-line camelcase
+      }
+
       [].forEach.call(Object.keys(row), function(field) {
         if (row[field] === '' ||
           row[field] === null) {

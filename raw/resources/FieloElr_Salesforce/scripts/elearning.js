@@ -234,6 +234,13 @@
           'fielosf-elearning')[0];
           _this.FieloELearning.disableModuleChange_();
         });
+
+      $('#FieloELR__Question__cFormWizard-multiplechoice').on(
+        'shown.aljs.modal', function() {
+          var _this = document.getElementsByClassName(
+          'fielosf-elearning')[0];
+          _this.FieloELearning.disableModuleChange_();
+        });
     }
   };
 

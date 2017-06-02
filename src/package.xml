@@ -9,18 +9,11 @@
 		<name>ApexTrigger</name>
 	</types>
 	<types>
-		<members>ELearningLandingPage</members>
-		<members>CourseView</members>
-		<members>ModuleView</members>
-		<members>CourseStatusView</members>
-		<members>ModuleResponseView</members>
+		<members>*</members>
 		<name>ApexPage</name>
 	</types>
 	<types>
-		<members>BackEndProgramSelector</members>
-		<members>FormReorder</members>
-		<members>FormModuleReorder</members>
-		<members>FormQuestionManage</members>
+		<members>*</members>
 		<name>ApexComponent</name>
 	</types>
 	<types>
@@ -45,6 +38,10 @@
 		<members>QuestionResponse__c</members>
 		<members>Question__c</members>
 		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>StaticResource</name>
 	</types>
 	<version>36.0</version>
 </Package>
