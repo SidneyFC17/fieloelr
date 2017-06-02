@@ -106,7 +106,7 @@
       if (item.FieloELR__AnswerOptionText__c === '' ||
         item.FieloELR__AnswerOptionText__c === null ||
         item.FieloELR__AnswerOptionText__c === undefined) {
-        item.error = 'The answer option text is required';
+        item.error = 'The Answer Option Text is a required field';
       }
     });
     return items;
@@ -157,7 +157,7 @@
         if (answerOptionObject.matches === null ||
           answerOptionObject.matches === undefined ||
           answerOptionObject.matches === '') {
-          sObject.error = 'Matches cannot be blank.';
+          sObject.error = 'Matches is a required field';
         }
         sObject.FieloELR__AnswerOptionText__c = // eslint-disable-line camelcase
           JSON.stringify(answerOptionObject);
@@ -436,6 +436,12 @@
       questionValues.Name === null ||
       questionValues.Name === undefined) {
       errorMsgs.add('Name is a required field');
+    }
+
+    if (questionValues.FieloELR__QuestionText__c === '' ||
+      questionValues.FieloELR__QuestionText__c === null ||
+      questionValues.FieloELR__QuestionText__c === undefined) {
+      errorMsgs.add('Question Text is a required field');
     }
 
     answerOptionValues.forEach(function(row) {
