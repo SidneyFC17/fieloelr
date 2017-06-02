@@ -431,8 +431,14 @@
       deletedIds :
       [];
     var answerOptionNullFields = {};
-
     var errorMsgs = new Set();
+
+    if (questionValues.Name === '' ||
+      questionValues.Name === null ||
+      questionValues.Name === undefined) {
+      errorMsgs.add('Name is a required field.');
+    }
+
     answerOptionValues.forEach(function(row) {
       if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
