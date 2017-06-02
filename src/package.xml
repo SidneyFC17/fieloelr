@@ -12,6 +12,8 @@
 		<members>ELearningLandingPage</members>
 		<members>CourseView</members>
 		<members>ModuleView</members>
+		<members>CourseStatusView</members>
+		<members>ModuleResponseView</members>
 		<name>ApexPage</name>
 	</types>
 	<types>
