@@ -107,4 +107,8 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
     }
+
+    public List<AggregateResult> selectByModuleGroupByModule(Set<Id> moduleIds) {
+        return [SELECT MAX(Order__c) order, Module__c FROM Question__c WHERE Module__c in : moduleIds GROUP BY Module__c];
+    }
 }

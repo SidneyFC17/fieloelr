@@ -24,11 +24,8 @@ public class CourseStatus extends SObjectDomain {
     }
 
     public override void onValidate() {
-        //before insert        
-        validateExistingCourseStatus(records);
-
         // Validate that course predecessor has a course status progress at 100 per cent
-        validateCourseStatusPredesessorCompleted(records);    
+        validatePredecessorAndSegments(records);    
         
         // The course status cannot be created if the subscription mode of the course is "Automatic"
         // Can be skipped if Admin       
@@ -55,39 +52,8 @@ public class CourseStatus extends SObjectDomain {
         }
         
     }
-    
-    public static void validateExistingCourseStatus(List<CourseStatus__c> records){
-        // Courses to validate
-        Set<String> keys = new Set<String>();
-        for (CourseStatus__c courseStatus : records){
-            keys.add(courseStatus.Key__c);
-        }
 
-        Set<String> existingKeys = new Set<String>();
-        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(keys)){
-            existingKeys.add(cs.Key__c);
-        }
-
-        Map<String,CourseStatus__c> csByKey = new Map<String,CourseStatus__c>();
-        for (CourseStatus__c courseStatus : records){
-            //checks agains the database
-            if(existingKeys.contains(courseStatus.Key__c)){
-                //checks against the trigger list
-                if(csByKey.containsKey(courseStatus.Key__c)){
-                    csByKey.get(courseStatus.Key__c).addError('The Member is already registered in this Course.');
-                    csByKey.remove(courseStatus.Key__c);
-                }
-
-                courseStatus.addError('The Member is already registered in this Course.');
-                continue;
-            }else{
-                csByKey.put(courseStatus.Key__c, courseStatus);
-                existingKeys.add(courseStatus.Key__c);
-            }
-        }      
-    }
-
-    public static void validateCourseStatusPredesessorCompleted(List<CourseStatus__c> records){
+    public static void validatePredecessorAndSegments(List<CourseStatus__c> records){
         // Courses to validate
         Set<Id> courseIds = new Set<Id>();
         for (CourseStatus__c courseStatus : records){
@@ -95,37 +61,60 @@ public class CourseStatus extends SObjectDomain {
         }
 
         // Receive courses with predecessor
-        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id'}).selectByIdHavingPredecessor(courseIds));
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id','Segment__c'}).selectByIdHavingPredecessor(courseIds));
         Set<String> keysPredecessors = new Set<String>();   
         
         // Iterate over new Course Status
-         for (CourseStatus__c courseStatus : records){             
-            for(CourseDependency__c cd : coursesMap.get(courseStatus.Course__c).PredecessorCourses__r){
+        Map<Id,Set<Id>> segmentsByMember = new Map<Id,Set<Id>>();
+        for (CourseStatus__c courseStatus : records){             
+            Course__c course = coursesMap.get(courseStatus.Course__c);
+            for(CourseDependency__c cd : course.PredecessorCourses__r){
                // Course ID of Predecessor +  Member ID of New Course Status
-               String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);          
+               String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
                keysPredecessors.add(cskey);
-            }      
-         }               
-       
-         // Query to get all the course status of the predecessors 100 per cent
-         List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,Key__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
-         Set<String> keysPredecessorsCompleted = new Set<String>();
+            }
 
-         for(CourseStatus__c cs : predecessorCourses){
+            if(course.Segment__c != null){
+                if(segmentsByMember.containsKey(courseStatus.Member__c)){
+                    segmentsByMember.get(courseStatus.Member__c).add(course.Segment__c);
+                }else{
+                    segmentsByMember.put(courseStatus.Member__c, new Set<Id>{course.Segment__c});
+                }
+            }
+        }               
+       
+        //evaluate segments
+        if(!segmentsByMember.isEmpty()){
+            FieloPLT.SegmentService.verifySegments(segmentsByMember);
+        }
+
+        // Query to get all the course status of the predecessors 100 per cent
+        List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,Key__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
+        Set<String> keysPredecessorsCompleted = new Set<String>();
+        for(CourseStatus__c cs : predecessorCourses){
             keysPredecessorsCompleted.add(cs.Key__c);
-         }
+        }
             
-         //Adding errors
-         Set<String> keysPredecessorsError = new Set<String>();
-         for (CourseStatus__c courseStatus : records){             
-             for(CourseDependency__c cd : coursesMap.get(courseStatus.Course__c).PredecessorCourses__r){
+        //Adding errors
+        Set<String> keysPredecessorsError = new Set<String>();
+        for (CourseStatus__c courseStatus : records){             
+            Course__c course = coursesMap.get(courseStatus.Course__c);
+            //validate segmentation
+            if(course.Segment__c != null && segmentsByMember.containsKey(courseStatus.Member__c)){
+                if(!segmentsByMember.get(courseStatus.Member__c).contains(course.Segment__c)){
+                    courseStatus.addError('The member does not apply to the course\'s segment');
+                }
+            }
+
+            //validate dependencies
+            for(CourseDependency__c cd : course.PredecessorCourses__r){
                 String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
                 if(!keysPredecessorsCompleted.contains(cskey)){
                     courseStatus.addError(Label.ValidateCourseStatusErrorPredecessorIncomplete);
                     break;
                 }
-             }            
-         }        
+            }
+        }        
     }
   
     public override void onValidate(Map<Id,SObject> existingRecords) {
