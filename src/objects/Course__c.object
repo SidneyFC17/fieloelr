@@ -87,6 +87,35 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>HasDependencies__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has Dependencies</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>KeyDependencies__c</fullName>
+        <externalId>false</externalId>
+        <label>Key Dependencies</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Order__c</fullName>
+        <externalId>false</externalId>
+        <label>Order</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Program__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -202,9 +231,11 @@
         <fullName>CourseValidateModule</fullName>
         <active>true</active>
         <description>Course need at least one Active Module if is Active.</description>
-        <errorConditionFormula>AND(ISPICKVAL( Status__c , &quot;Active&quot;), OR(ISBLANK( ActiveModules__c ), ActiveModules__c &lt; 1))</errorConditionFormula>
+        <errorConditionFormula>NOT(ISNEW()) &amp;&amp;
+NOT(ISPICKVAL( PRIORVALUE(Status__c) , &quot;Active&quot;)) &amp;&amp;
+ISPICKVAL( Status__c , &quot;Active&quot;) &amp;&amp; ActiveModules__c &lt; 1</errorConditionFormula>
         <errorDisplayField>ActiveModules__c</errorDisplayField>
-        <errorMessage>If Course Status is active, Course should have an Active Module</errorMessage>
+        <errorMessage>To activate a course, it must have at least one active related module.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>SameProgramSegment</fullName>
@@ -218,7 +249,9 @@
         <fullName>StartDateEndDateGreaterToday</fullName>
         <active>true</active>
         <description>Start Date and End Date should be greater than Today date</description>
-        <errorConditionFormula>AND(NOT(StartDate__c &gt;=  TODAY()) || AND(NOT( EndDate__c &gt;=  TODAY())))</errorConditionFormula>
+        <errorConditionFormula>OR(ISNEW(), NOT(ISNEW()) &amp;&amp; (ISCHANGED(StartDate__c) || ISCHANGED(EndDate__c))) &amp;&amp; 
+
+AND(NOT(StartDate__c &gt;=  TODAY()) || AND(NOT( EndDate__c &gt;=  TODAY())))</errorConditionFormula>
         <errorDisplayField>StartDate__c</errorDisplayField>
         <errorMessage>Start Date and End Date must be greather or equals than today date</errorMessage>
     </validationRules>
@@ -226,7 +259,9 @@
         <fullName>StartDateNotGreaterThanEnd</fullName>
         <active>true</active>
         <description>Start Date cannot be greater than End Date</description>
-        <errorConditionFormula>AND(!ISNULL( StartDate__c ), !ISNULL( EndDate__c )) &amp;&amp;  StartDate__c  &gt;  EndDate__c</errorConditionFormula>
+        <errorConditionFormula>OR(ISNEW(), NOT(ISNEW()) &amp;&amp; (ISCHANGED(StartDate__c) || ISCHANGED(EndDate__c))) &amp;&amp;
+
+AND(!ISNULL( StartDate__c ), !ISNULL( EndDate__c )) &amp;&amp;  StartDate__c  &gt;  EndDate__c</errorConditionFormula>
         <errorDisplayField>StartDate__c</errorDisplayField>
         <errorMessage>Start Date cannot be greater than End Date</errorMessage>
     </validationRules>

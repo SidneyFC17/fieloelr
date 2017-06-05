@@ -46,7 +46,9 @@
     // COURSE VIEW PAGE
     COURSE_VIEW_PAGE: 'fielosf-course-view',
     // MODULE VIEW PAGE
-    MODULE_VIEW_PAGE: 'fielosf-module-view'
+    MODULE_VIEW_PAGE: 'fielosf-module-view',
+    // RECENT RECORDS
+    RECENT_RECORDS: 'fielosf-recent-records'
   };
 
     /**
@@ -240,6 +242,23 @@
           var _this = document.getElementsByClassName(
           'fielosf-elearning')[0];
           _this.FieloELearning.disableModuleChange_();
+        });
+
+      $('#FieloELR__Module__cFormReorder').on(
+        'shown.aljs.modal', function(event) {
+          var _this = document.getElementsByClassName(
+          'fielosf-elearning')[0];
+          var recent =
+            $(event.target)
+              .find('.' + _this.FieloELearning.CssClasses_.RECENT_RECORDS)[0];
+          var paginator =
+            recent.FieloRecentRecords.getPaginator();
+          if (paginator) {
+            if (paginator.FieloPaginator) {
+              paginator.FieloPaginator.setPage();
+              paginator.FieloPaginator.getRecords();
+            }
+          }
         });
     }
   };

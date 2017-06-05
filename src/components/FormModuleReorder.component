@@ -44,13 +44,17 @@
                 <h2 id="{!formId}headerModal" class="slds-text-heading--medium">{!heading}</h2>
             </div>
             <div class="slds-modal__content slds-p-around--medium">
-                <c:RecentRecords namespace="{!namespace}"
+                <c:RecentRecords 
+                    namespace="FieloELR"
+                    dataController="RecentRecordsController.getRecords"
                     sObjectName="{!sObjectName}"
                     title="{!$ObjectType[sObjectName].labelPlural}"
                     dataFilters="{!dataFilters}"
                     fieldset="{!fieldset}"
                     dataOrderBy="{!dataOrderBy}"
-                    show="false"
+                    show="true"
+                    async="false"
+                    recentId="modules-reorder-recent"
                 />
             </div>
             <div class="slds-modal__footer">

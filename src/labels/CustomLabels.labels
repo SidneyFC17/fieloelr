@@ -14,7 +14,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseEndDate</shortDescription>
-        <value>Can not edit Course because End Date Mode was modified.</value>
+        <value>Can not edit Course because End Date was modified.</value>
     </labels>
     <labels>
         <fullName>ValidateCourseStartDate</fullName>

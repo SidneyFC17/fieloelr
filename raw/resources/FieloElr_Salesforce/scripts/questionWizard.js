@@ -102,6 +102,13 @@
     if (itemContainer) {
       items = itemContainer.FieloAnswerOptions.get();
     }
+    [].forEach.call(items, function(item) {
+      if (item.FieloELR__AnswerOptionText__c === '' ||
+        item.FieloELR__AnswerOptionText__c === null ||
+        item.FieloELR__AnswerOptionText__c === undefined) {
+        item.error = 'Answer Option Text is a required field';
+      }
+    });
     return items;
   };
 
@@ -150,7 +157,7 @@
         if (answerOptionObject.matches === null ||
           answerOptionObject.matches === undefined ||
           answerOptionObject.matches === '') {
-          sObject.error = 'Matches cannot be blank.';
+          sObject.error = 'Matches is a required field';
         }
         sObject.FieloELR__AnswerOptionText__c = // eslint-disable-line camelcase
           JSON.stringify(answerOptionObject);
@@ -165,8 +172,7 @@
 
   FieloQuestionWizard.prototype.throwMessage = function(type, errorMsg) {
     var notify = fielo.util.notify.create();
-    notify.FieloNotify
-      .addMessages([errorMsg]);
+    notify.FieloNotify.addMessages(errorMsg);
     notify.FieloNotify.setTheme(type);
     notify.FieloNotify.show();
   };
@@ -387,13 +393,17 @@
   FieloQuestionWizard.prototype.saveOnly_ = function() {
     this.isSaveAndNew = false;
     this.save_();
-    $(this.form_).modal('dismiss');
+    if (!this.hasError_) {
+      $(this.form_).modal('dismiss');
+    }
   };
 
   FieloQuestionWizard.prototype.saveAndNew_ = function() {
     this.isSaveAndNew = true;
     this.save_();
-    $(this.form_).modal('dismiss');
+    if (!this.hasError_) {
+      $(this.form_).modal('dismiss');
+    }
   };
 
   /**
@@ -420,8 +430,20 @@
       deletedIds :
       [];
     var answerOptionNullFields = {};
+    var errorMsgs = new Set();
 
-    var errorMsgs = [];
+    if (questionValues.Name === '' ||
+      questionValues.Name === null ||
+      questionValues.Name === undefined) {
+      errorMsgs.add('Name is a required field');
+    }
+
+    if (questionValues.FieloELR__QuestionText__c === '' ||
+      questionValues.FieloELR__QuestionText__c === null ||
+      questionValues.FieloELR__QuestionText__c === undefined) {
+      errorMsgs.add('Question Text is a required field');
+    }
+
     answerOptionValues.forEach(function(row) {
       if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
@@ -443,13 +465,15 @@
         }
       });
       if (row.error) {
-        errorMsgs.push(row.error);
+        errorMsgs.add(row.error);
       }
     });
     try {
-      if (errorMsgs.length > 0) {
-        this.throwMessage('error', errorMsgs);
+      if (errorMsgs.size > 0) {
+        this.hasError_ = true;
+        this.throwMessage('error', Array.from(errorMsgs));
       } else {
+        this.hasError_ = false;
         Visualforce.remoting.Manager.invokeAction(
           this.form_.getAttribute('data-save-controller'),
           questionValues,
