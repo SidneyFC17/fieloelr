@@ -78,10 +78,12 @@ public class CourseDependencies extends SObjectDomain{
                     course.HasDependencies__c = true;
                 }
             } else if(Trigger.IsDelete) {
-                // Remove key
-                course.KeyDependencies__c = course.KeyDependencies__c.replace(predecessor + ',', '').replace(',' + predecessor, '').replace(predecessor, '');
+                if(!String.isBlank(course.KeyDependencies__c)){
+                    // Remove key
+                    course.KeyDependencies__c = course.KeyDependencies__c.replace(predecessor + ',', '').replace(',' + predecessor, '').replace(predecessor, '');
+                }
                 // If a course dependency is deleted and course has no more dependencies, the attribute must be updated
-                if(course.KeyDependencies__c.length() == 0 && course.HasDependencies__c) {
+                if(String.isBlank(course.KeyDependencies__c) && course.HasDependencies__c) {
                     course.HasDependencies__c = false;
                 }                
             }

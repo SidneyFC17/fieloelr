@@ -43,13 +43,13 @@
 		<members>*</members>
 		<name>StaticResource</name>
 	</types>
-	<!--<types>
+	<types>
 	    <members>*</members>
-	    <name>MatchingRule</name>
+	    <name>MatchingRules</name>
 	</types>
 	<types>
 	    <members>*</members>
-	    <name>DuplicateRule</name>
-	</types>-->
-	<version>39.0</version>
+	    <name>DuplicateRules</name>
+	</types>
+	<version>40.0</version>
 </Package>
