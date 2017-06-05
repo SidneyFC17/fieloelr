@@ -55,6 +55,7 @@
                     show="true"
                     async="false"
                     recentId="modules-reorder-recent"
+                    recordsPerPage="100"
                 />
             </div>
             <div class="slds-modal__footer">

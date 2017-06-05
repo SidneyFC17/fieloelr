@@ -78,6 +78,7 @@
 		                    fieldset="{!sRecentFieldset}"
 		                    dataOrderBy="{!dataOrderBy}"
 		                    show="false"
+                            recordsPerPage="100"
 		                />		          	
 			      	</div>
 			    </article>
