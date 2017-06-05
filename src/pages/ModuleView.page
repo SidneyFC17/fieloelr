@@ -118,6 +118,20 @@
             	</apex:panelGroup>
             </apex:repeat>
         </apex:panelGroup>
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__ModuleDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Question__c'}">
+	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
+	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
+	            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+	            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+	            fieldset="{!rel.FieloPLT__Fieldset__c}"
+	            buttons="{!rel.FieloPLT__Buttons__c}"
+	            tools="{!rel.FieloPLT__Tools__c}"
+	            actions="{!rel.FieloPLT__Actions__c}"
+	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+	            showPaginator="true"
+	            />
+        </apex:panelGroup>
     	</apex:repeat>
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionManage','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
