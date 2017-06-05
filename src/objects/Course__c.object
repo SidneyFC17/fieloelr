@@ -253,7 +253,7 @@ ISPICKVAL( Status__c , &quot;Active&quot;) &amp;&amp; ActiveModules__c &lt; 1</e
 
 AND(NOT(StartDate__c &gt;=  TODAY()) || AND(NOT( EndDate__c &gt;=  TODAY())))</errorConditionFormula>
         <errorDisplayField>StartDate__c</errorDisplayField>
-        <errorMessage>Start Date and End Date must be greather or equals than today date</errorMessage>
+        <errorMessage>Start Date and End Date must be equal or greater than today date.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>StartDateNotGreaterThanEnd</fullName>

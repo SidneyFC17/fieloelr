@@ -93,7 +93,7 @@
     </fields>
     <fields>
         <fullName>Course__c</fullName>
-        <deleteConstraint>Restrict</deleteConstraint>
+        <deleteConstraint>SetNull</deleteConstraint>
         <description>Course to which the module belongs.</description>
         <externalId>false</externalId>
         <inlineHelpText>Course to which the module belongs.</inlineHelpText>
