@@ -58,8 +58,8 @@ A question was created
    3. The system automatically updates the “Correct Weight” field with value = 1
    4. Back to step 7 of basic flow
  
-##### 6. “Correct Weight” field is negative (step 6 of basic flow)
-   1. The system verifies that the "Correct Weight" field is not greater than 0
+##### 6. “Correct Weight” field is negative and “Weighted Questions” of related module is “true” (step 6 of basic flow)
+   1. The system verifies that the "Correct Weight" field is negative
    2. The system does not save the question
    3. The system displays an error message
    4. End of flow
