@@ -128,13 +128,8 @@ public class QuestionResponses extends SObjectDomain {
     private static void validateModuleSubmitted(List<QuestionResponse__c> questionResponses){
         Set<Id> moduleResponseIds = new Set<Id>();
         for(QuestionResponse__c questionResp : questionResponses){
-            moduleResponseIds.add(questionResp.ModuleResponse__c);
-        }
-
-        Map<Id,ModuleResponse__c> submittedModuleResponsesMap = new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector(new Set<String>{'Id','IsSubmitted__c'}).selectByIdAndSubmitted(moduleResponseIds));
-        for(QuestionResponse__c questionResp : questionResponses){
-            if(submittedModuleResponsesMap.containsKey(questionResp.ModuleResponse__c) && submittedModuleResponsesMap.get(questionResp.ModuleResponse__c).IsSubmitted__c){
-                questionResp.addError('Cannot add question response to a module that was already submitted.');
+            if(questionResp.IsSubmitted__c){
+                questionResp.addError('Cannot delete question responses from a module that was already submitted.');
             }
         }
     }

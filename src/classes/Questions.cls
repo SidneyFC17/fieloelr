@@ -20,13 +20,42 @@ public class Questions extends SObjectDomain {
     public override void onApplyDefaults() {
     	// If both IncorrectWeight or PenaltyPerAttempt are null, replace them by 0 (zero)
     	checkNullValues(records);
+
+    	// If Order is null, calculate it automatically
+		Set<Id> moduleIds = new Set<Id>();
+		for(Question__c question : (List<Question__c>)records){
+			if(question.Order__c == null) {
+				moduleIds.add(question.Module__c);
+			}
+		}
+        
+        List<AggregateResult> aggResult = new QuestionsSelector().selectByModuleGroupByModule(moduleIds);
+        Map<String,Decimal> maxNumbByModule = new Map<String,Decimal>();
+        for(AggregateResult mr : aggResult){
+            maxNumbByModule.put((String)mr.get('FieloELR__Module__c'), (Decimal)mr.get('order'));
+        }
+        
+        for(Question__c question : (List<Question__c>)records){
+			if(question.Order__c == null) {
+	            if(maxNumbByModule.containsKey(question.Module__c)){
+	                Decimal maxOrder = maxNumbByModule.get(question.Module__c);
+	                question.Order__c = ++maxOrder;
+	                maxNumbByModule.put(question.Module__c, maxOrder);
+	            }else{
+	                question.Order__c = 1;
+	                maxNumbByModule.put(question.Module__c, 1);
+	            }
+	        }
+        }	    	
+    }
+
+    public override void onValidate(){
+    	// If the module is active, questions cannot be deleted, updated or added.
+    	checkModule(records);
     }
 
     public override void onBeforeInsert() {
-		// If the module is active, questions cannot be deleted, updated or added.
-    	checkModule(records);
-    	
-    	// Do some module related actions upon insert
+		// Do some module related actions upon insert
 		onInsertModuleRelatedActions(records);
 
 		// If the question is updated or inserted and the weigth is null or the question pool is != null then the weight will be 1 
@@ -41,10 +70,12 @@ public class Questions extends SObjectDomain {
     	}*/
     }
 
-    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
+    public override void onValidate(Map<Id,SObject> existingRecords){
 		// If the module is active, questions cannot be deleted, updated or added.																		
 		checkModule(records);
+    }
 
+    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
 		// If both IncorrectWeight or PenaltyPerAttempt are null, replace them by 0 (zero)
     	checkNullValues(records);
 
@@ -61,7 +92,6 @@ public class Questions extends SObjectDomain {
     		}
     	}*/
     }
-
 
 	public override void onBeforeDelete() {
 		if(validateAdminFields){
@@ -129,25 +159,20 @@ public class Questions extends SObjectDomain {
     //Module related actions on Insert
     private void onInsertModuleRelatedActions(List<Question__c> questions) {
 
-    	Set<Id> modules = new Set<Id>();
+    	Set<Id> moduleIds = new Set<Id>();
 	    for(Question__c question : questions) {
-			modules.add(question.Module__c);
+			moduleIds.add(question.Module__c);
 	    }
 
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(
-			new ModulesSelector(new Set<String> {'Id','WeightedQuestions__c'}).selectByIdWithQuestions(modules));
+			new ModulesSelector(new Set<String> {'Id','WeightedQuestions__c'}).selectById(moduleIds));
 
     	for (Question__c question: questions) {
     		// If Module.WeightedQuestions is false, CorrectWeight = 1
     		question.CorrectWeight__c = modulesMap.get(question.Module__c).WeightedQuestions__c ?
     			question.CorrectWeight__c :
     			1;
-
-    		// If Order is null, calculate it automatically
-    		if(question.Order__c == null) {
-    			question.Order__c = modulesMap.get(question.Module__c).Questions__r.size() + 1;
-    		}
-    	}	
+    	}
     }
 
     private void deleteRelatedAnswers(List<Question__c> questions) {

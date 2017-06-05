@@ -107,14 +107,15 @@
     <fields>
         <fullName>OrderFormula__c</fullName>
         <externalId>false</externalId>
-        <formula>mod( 
+        <formula>IF( Module__r.ShuffleQuestions__c ,
+mod( 
     (
        ( value(mid(text(NOW()),18,2)) + value(mid(text(NOW()),12,2)) ) *
        ( value(mid(text(NOW()),18,2)) + value(mid(text(NOW()),15,2)) ) 
     ) / Order__c
     , ( Order__c + 100 )
 
-)</formula>
+), Order__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Order Formula</label>
         <precision>18</precision>

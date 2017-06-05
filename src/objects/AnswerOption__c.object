@@ -74,7 +74,15 @@
     <fields>
         <fullName>OrderFormula__c</fullName>
         <externalId>false</externalId>
-        <formula>Order__c</formula>
+        <formula>IF( Question__r.ShuffleAnswerOptions__c ,
+mod( 
+    (
+       ( value(mid(text(NOW()),18,2)) + value(mid(text(NOW()),12,2)) ) *
+       ( value(mid(text(NOW()),18,2)) + value(mid(text(NOW()),15,2)) ) 
+    ) / Order__c
+    , ( Order__c + 100 )
+
+), Order__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Order Formula</label>
         <precision>18</precision>
@@ -126,9 +134,9 @@
     <validationRules>
         <fullName>AnswerTextRequired</fullName>
         <active>true</active>
-        <description>The Answer text is required.</description>
+        <description>The answer option text is required.</description>
         <errorConditionFormula>ISBLANK( AnswerOptionText__c )</errorConditionFormula>
         <errorDisplayField>AnswerOptionText__c</errorDisplayField>
-        <errorMessage>The answer text is required.</errorMessage>
+        <errorMessage>The answer option text is required.</errorMessage>
     </validationRules>
 </CustomObject>

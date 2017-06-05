@@ -83,7 +83,7 @@ public class ModuleResponses extends SObjectDomain {
 
         //verifies for each module response if the related modules where approved for the member
         Set<String> mrKeysWithError = new Set<String>();
-        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseStatus__c.SobjectType});
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseStatus__c.SobjectType}, true);
         Map<String,CourseStatus__c> newCourseStatusMap = new Map<String,CourseStatus__c>();
         List<ModuleResponse__c> mrWithNewCourseStatus = new List<ModuleResponse__c>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
@@ -127,9 +127,33 @@ public class ModuleResponses extends SObjectDomain {
         if(!mrWithNewCourseStatus.isEmpty()){
             CourseStatus.validateAdminFields = false;
             uow.commitWork();
+            SObjectUnitOfWork.DatabaseResult results = uow.getResults(CourseStatus__c.SObjectType);
+            
+            Map<String,List<String>> errorMsgByCoursest = new Map<String,List<String>>();
+            Integer i = 0;
+            for (Database.SaveResult sr : results.insertResults) {
+                if (!sr.isSuccess()) {
+                    // Operation failed, so get all errors                
+                    List<String> errorMsgs = new List<String>();
+                    for(Database.Error err : sr.getErrors()) {
+                        errorMsgs.add(err.getMessage());
+                    }
+                    CourseStatus__c cs = (CourseStatus__c)uow.m_newListByType.get('FieloELR__CourseStatus__c')[i];
+                    String csKey = String.valueOf(cs.Course__c).subString(0,15) + String.valueOf(cs.Member__c).subString(0,15);
+                    errorMsgByCoursest.put(csKey, errorMsgs);
+                }
+                i++;
+            }
+
             for(ModuleResponse__c mr : mrWithNewCourseStatus){
                 String cskey = String.valueOf(modulesMap.get(mr.Module__c).Course__c).subString(0,15) + String.valueOf(mr.Member__c).subString(0,15);
-                mr.CourseStatus__c = newCourseStatusMap.get(cskey).Id;
+                if(!errorMsgByCoursest.containsKey(cskey)){
+                    mr.CourseStatus__c = newCourseStatusMap.get(cskey).Id;
+                }else{
+                    for(String error : errorMsgByCoursest.get(cskey)){
+                        mr.addError(error);
+                    }
+                }
             }
         }
     }
