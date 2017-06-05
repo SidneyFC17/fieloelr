@@ -49,37 +49,41 @@ public class Courses extends SObjectDomain{
         // Check Courses before delete
         checkCoursesWithStatus(null, 'delete'); 
 
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseDependency__c.SObjectType, Module__c.SObjectType}, true);
+        
+        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
         // When the course is deleted, must delete course dependencies. 
-        deleteCourseDependencies();
-
+        deleteCourseDependencies(coursesMap, uow);
         // When the course is deleted, must delete related modules
-        deleteCourseModules();
+        deleteCourseModules(coursesMap, uow);
+
+        uow.commitWork();
+
+        Map<Id,SObject> deletedModules = uow.m_deletedMapByType.get('FieloELR__Module__c');
+        for (Database.DeleteResult dr : uow.getResults(Module__c.SObjectType).deleteResults) {
+            if (!dr.isSuccess()) {
+                // Operation failed, so get all errors                
+                for(Database.Error err : dr.getErrors()) {
+                    coursesMap.get(((Module__c)deletedModules.get(dr.getId())).Course__c).addError(err.getMessage());
+                }
+            }
+        }
     }
 
-    private void deleteCourseModules(){
-        // Map with NEW records       
-        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
-       
+    private void deleteCourseModules(Map<Id,Course__c> coursesMap, SObjectUnitOfWork uow){
         // Looks up for courses IDs contained in modules
-        List<Module__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id'}).selectByIdHavingCourses(coursesMap.KeySet());  
+        List<Module__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id','Course__c'}).selectByIdHavingCourses(coursesMap.KeySet());  
   
         // Delete related modules
-        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
-        uow.registerDeleted(modulesToDelete);      
-        uow.commitWork();
+        uow.registerDeleted(modulesToDelete);
     }
     
-    private void deleteCourseDependencies(){        
-        // Map with NEW records       
-        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
-       
+    private void deleteCourseDependencies(Map<Id,Course__c> coursesMap, SObjectUnitOfWork uow){        
         // Looks up for courses IDs contained in course dependencies and predecessors
         List<CourseDependency__c> dependenciesToDelete = new CourseDependenciesSelector(new Set<String>{'Course__c,Predecessor__c'}).selectDependenciesAndPredecessors(coursesMap.KeySet());
   
         // Delete related dependencies
-        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseDependency__c.SObjectType});
         uow.registerDeleted(dependenciesToDelete);      
-        uow.commitWork();
     }
         
     // If the course is active, has at least 1 related course status, 
