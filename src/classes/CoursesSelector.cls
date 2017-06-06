@@ -82,6 +82,32 @@ public with sharing class CoursesSelector extends SObjectSelector{
                     getOrderBy() } ));
     }
 
+    public List<Course__c> selectByIdHavingPredecessor(Set<Id> courseIds, Set<String> courseDependencyFields) {
+      return (List<Course__c>) Database.query(String.format('SELECT {0} ' +
+                   ', (SELECT {1} FROM PredecessorCourses__r) ' +
+                  'FROM {2} ' +
+                  'WHERE Id IN :courseIds ' +
+                  'ORDER BY {3}',
+                new List<String> {
+                    getFieldListString(),
+                    String.join(new List<String>(courseDependencyFields),','),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
+    public List<Course__c> selectByProgramHavingPredecessor(Id programIds, Set<String> courseDependencyFields) {
+      return (List<Course__c>) Database.query(String.format('SELECT {0} ' +
+                   ', (SELECT {1} FROM PredecessorCourses__r) ' +
+                  'FROM {2} ' +
+                  'WHERE Program__c IN :programIds ' +
+                  'ORDER BY {3}',
+                new List<String> {
+                    getFieldListString(),
+                    String.join(new List<String>(courseDependencyFields),','),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
     public List<Course__c> selectByIdHavingPredecessor(Set<Id> courseIds) {
       return (List<Course__c>) Database.query(String.format(
                'SELECT {0} ' +

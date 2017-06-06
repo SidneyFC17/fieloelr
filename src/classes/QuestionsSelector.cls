@@ -108,6 +108,19 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
+    public List<Question__c> selectByCoursesHavingPredecessor(Set<Id> moduleIds, Set<String> answerOptionFields) {
+      return (List<Question__c>) Database.query(String.format('SELECT {0} ' +
+                   ', (SELECT {1} FROM AnswerOptions__r) ' +
+                  'FROM {2} ' +
+                  'WHERE Module__c IN :moduleIds ' +
+                  'ORDER BY {3}',
+                new List<String> {
+                    getFieldListString(),
+                    String.join(new List<String>(answerOptionFields),','),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
     public List<AggregateResult> selectByModuleGroupByModule(Set<Id> moduleIds) {
         return [SELECT MAX(Order__c) order, Module__c FROM Question__c WHERE Module__c in : moduleIds GROUP BY Module__c];
     }
