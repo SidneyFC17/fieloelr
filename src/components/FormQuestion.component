@@ -55,6 +55,13 @@
 		            <fieldset>
 						<legend class="slds-form-element__legend slds-form-element__label">Type</legend>
 						<div class="slds-form-element__control">
+							<span class="slds-radio slds-hide slds-is-collapsed">
+								<input name="{!formId}-FieloELR__Type__c" type="radio" id="{!formId}-None" value="None" />
+									<label class="slds-radio__label" for="None">
+									<span class="slds-radio--faux"></span>
+									<span class="slds-form-element__label">None</span>
+								</label>
+							</span>
 							<apex:repeat value="{!mapPicklistOptions['FieloELR__Type__c']}" var="entry">
 							<span class="slds-radio">
 								<input name="{!formId}-FieloELR__Type__c" type="radio" id="{!formId}-{!entry.id}" value="{!entry.id}" />

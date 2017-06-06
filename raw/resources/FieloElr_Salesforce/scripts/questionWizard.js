@@ -523,11 +523,11 @@
           break;
       }
       this.questionType_.FieloFormElement.clear();
-      this.questionType_.FieloFormElement.set('value', '');
+      this.questionType_.FieloFormElement.set('value', 'None');
     }
     if (this.formIdSufix_ === 'error' ||
         this.formIdSufix_ === '') {
-      this.throwMessage('error', 'Must choose a question type.');
+      this.throwMessage('error', ['Must choose a question type.']);
     } else if (!$(this.form_).is(':visible')) {
       $(this.element_)
         .find('.' + this.CssClasses_.NEXT + '-' + this.formIdSufix_)[0]
@@ -964,11 +964,11 @@
       if (hash) {
         console.log(hash);
         var button =
-          $('[data-action="' + hash.replace('#','') + '"]')[0];
+          $('[data-action="' + hash.replace('#', '') + '"]')[0];
         console.log(button);
         if (button) {
           window.location.href =
-            window.location.href.replace(hash,'#');
+            window.location.href.replace(hash, '#');
           button.click();
         }
       }
