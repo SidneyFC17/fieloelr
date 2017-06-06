@@ -864,9 +864,7 @@
     } else {
       notify.FieloNotify.setTheme('success');
       window.location.href = this.getNewURL();
-      if (!this.isSaveAndNew) {
-        location.reload();
-      }
+      location.reload();
     }
     fielo.util.spinner.FieloSpinner.hide();
     notify.FieloNotify.show();
@@ -874,16 +872,14 @@
 
   FieloQuestionWizard.prototype.getNewURL = function() {
     var url = window.location.href;
-    var separator = (url.indexOf('?') === -1) ? '?' : '&';
-    var newParam = separator + 'newQuestion=true';
-    var newUrl = url.replace(newParam, '');
     if (this.isSaveAndNew) {
-      if (newUrl.substr(-1) === '#') {
-        newUrl = newUrl.substr(0, newUrl.length - 1);
+      if (url.substr(-1) === '#') {
+        url += this.formId_;
+      } else {
+        url += '#' + this.formId_;
       }
-      newUrl += newParam;
     }
-    return newUrl;
+    return url;
   };
 
   FieloQuestionWizard.prototype.hideButtons_ = function() {
@@ -964,9 +960,17 @@
         'FieloELR__CorrectWeight__c',
         'FieloELR__PenaltyPerAttempt__c');
 
-      if (this.getUrlParameter('newQuestion') === 'true') {
-        $('[data-action="' + this.formId_ + '"]')[0]
-          .click();
+      var hash = window.location.hash;
+      if (hash) {
+        console.log(hash);
+        var button =
+          $('[data-action="' + hash.replace('#','') + '"]')[0];
+        console.log(button);
+        if (button) {
+          window.location.href =
+            window.location.href.replace(hash,'#');
+          button.click();
+        }
       }
     }
   };
