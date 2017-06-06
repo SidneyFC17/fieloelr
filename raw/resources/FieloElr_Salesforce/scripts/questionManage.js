@@ -217,7 +217,6 @@
       }, this);
 
       // Global Question Setup
-      console.log(result.FieloELR__Questions__r);
       if (result.FieloELR__Questions__r) {
         if (result.FieloELR__Questions__r.length > 0) {
           var questionSection =
@@ -276,8 +275,6 @@
     // fielo.util.spinner.FieloSpinner.show();
     var moduleValues = this.getModule_();
     var questionValues = this.getQuestions_();
-    console.log(moduleValues);
-    console.log(questionValues);
 
     var moduleNullFields = [];
     var questionNullFields = {};
@@ -325,7 +322,8 @@
   };
 
   FieloQuestionManage.prototype.getFields_ = function() {
-    var moduleFields = $($('.' + this.CssClasses_.SECTION_PANEL)[0])
+    var moduleFields = $($(this.element_)
+      .find('.' + this.CssClasses_.SECTION_PANEL)[0])
       .find('.' + this.CssClasses_.FORM_ELEMENT);
 
     if (this.moduleFields_ === null || this.moduleFields_ === undefined) {
@@ -348,12 +346,21 @@
     var shuffleQuestions =
       this.elements_.FieloELR__ShuffleQuestions__c
         .FieloFormElement.get('value');
+    var questionPool =
+      this.elements_.FieloELR__QuestionPool__c
+        .FieloFormElement.get('value');
     var incorrectWeight =
-      $($('.' + this.CssClasses_.SECTION_PANEL)[1])
+      $($(this.element_).find('.' + this.CssClasses_.SECTION_PANEL)[1])
         .find('[data-field-name="FieloELR__IncorrectWeight__c"]');
     var penaltyPerAttempt =
-      $($('.' + this.CssClasses_.SECTION_PANEL)[1])
+      $($(this.element_).find('.' + this.CssClasses_.SECTION_PANEL)[1])
         .find('[data-field-name="FieloELR__PenaltyPerAttempt__c"]');
+    var shuffleQuestionsDiv =
+      $($(this.element_).find('.' + this.CssClasses_.SECTION_PANEL)[0])
+        .find('[data-field-name="FieloELR__ShuffleQuestions__c"]')[0];
+    var weightedQuestionsDiv =
+      $($(this.element_).find('.' + this.CssClasses_.SECTION_PANEL)[0])
+        .find('[data-field-name="FieloELR__WeightedQuestions__c"]')[0];
 
     if (shuffleQuestions) {
       this.removeInputs('FieloELR__Order__c');
@@ -410,6 +417,39 @@
       this.removeInputs('FieloELR__CorrectWeight__c');
       this.removeInputs('FieloELR__PenaltyPerAttempt__c');
       this.removeInputs('FieloELR__IncorrectWeight__c');
+    }
+    if (questionPool === null ||
+      questionPool === undefined ||
+      questionPool === '') {
+      if ($(shuffleQuestionsDiv).hasClass('disabled')) {
+        $(shuffleQuestionsDiv).removeClass('disabled');
+        shuffleQuestionsDiv.FieloFormElement.set('value', false);
+      }
+      if ($(weightedQuestionsDiv).hasClass('disabled')) {
+        $(weightedQuestionsDiv).removeClass('disabled');
+        weightedQuestionsDiv.FieloFormElement.set('value', false);
+        this.changeForm();
+      }
+    } else if (questionPool > 0.0) {
+      if (!$(shuffleQuestionsDiv).hasClass('disabled')) {
+        $(shuffleQuestionsDiv).addClass('disabled');
+        shuffleQuestionsDiv.FieloFormElement.set('value', true);
+      }
+      if (!$(weightedQuestionsDiv).hasClass('disabled')) {
+        $(weightedQuestionsDiv).addClass('disabled');
+        weightedQuestionsDiv.FieloFormElement.set('value', false);
+        this.changeForm();
+      }
+    } else {
+      if ($(shuffleQuestionsDiv).hasClass('disabled')) {
+        $(shuffleQuestionsDiv).removeClass('disabled');
+        shuffleQuestionsDiv.FieloFormElement.set('value', false);
+      }
+      if ($(weightedQuestionsDiv).hasClass('disabled')) {
+        $(weightedQuestionsDiv).removeClass('disabled');
+        weightedQuestionsDiv.FieloFormElement.set('value', false);
+        this.changeForm();
+      }
     }
   };
 
@@ -613,16 +653,18 @@
         this.reorderObject.disableReorder = true;
       }
 
-      $($('.' + this.CssClasses_.SECTION_PANEL)[0])
+      $($(this.element_)
+        .find('.' + this.CssClasses_.SECTION_PANEL)[1])
+          .find('h3')[0].innerHTML = 'Global Question Setup';
+      // $($(this.element_).find('.' + this.CssClasses_.SECTION_PANEL)[0])
+        // .prepend($(globalSetupHeader).clone(true));
+      $($(this.element_).find('.' + this.CssClasses_.SECTION_PANEL)[0])
         .find('h3')[0].innerHTML = 'Module Setup';
-      $($('.' + this.CssClasses_.SECTION_PANEL)[1])
-        .find('h3')[0].innerHTML = 'Global Question Setup';
+
       $('#' + this.element_.id + '-section-Id')
         .toggle(false);
-      // $('#' + this.element_.id + '-questionsection-Id')
-      // .toggle(false);
-      // $($('.' + this.CssClasses_.SECTION_PANEL)[1])
-      // .find('h3').toggle(false);
+      $('#' + this.element_.id + '-questionsection-Id')
+        .toggle(false);
 
       $('#' + this.element_.id)
         .find('[data-field-name="FieloELR__IncorrectWeight__c"]')
@@ -640,7 +682,8 @@
 
       [].forEach.call(Object.keys(this.elements_), function(field) {
         if (field === 'FieloELR__WeightedQuestions__c' ||
-            field === 'FieloELR__ShuffleQuestions__c') {
+            field === 'FieloELR__ShuffleQuestions__c' ||
+            field === 'FieloELR__QuestionPool__c') {
           this.elements_[field].addEventListener('change',
             this.changeForm.bind(this));
           componentHandler.upgradeElement(this.elements_[field]);

@@ -43,5 +43,9 @@
 		<members>*</members>
 		<name>StaticResource</name>
 	</types>
+	<types>
+		<members>*</members>
+		<name>MatchingRules</name>
+	</types>
 	<version>36.0</version>
 </Package>

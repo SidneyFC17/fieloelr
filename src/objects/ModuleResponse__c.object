@@ -201,7 +201,7 @@
     </validationRules>
     <validationRules>
         <fullName>CourseStatusRequired</fullName>
-        <active>true</active>
+        <active>false</active>
         <description>The lookup to Course Status must be required.</description>
         <errorConditionFormula>ISBLANK( CourseStatus__c )</errorConditionFormula>
         <errorDisplayField>CourseStatus__c</errorDisplayField>

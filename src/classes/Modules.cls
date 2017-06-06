@@ -103,28 +103,48 @@ public class Modules extends SObjectDomain {
     public override void onAfterUpdate(Map<Id,SObject> existingRecords){
     	List<Module__c> activatedModules = new List<Module__c>();
     	List<Module__c> inactivatedModules = new List<Module__c>();
-		List<Module__c> modulesWithChangedWeigth = new List<Module__c>();
+		Set<Module__c> modulesToChangeQuestions = new Set<Module__c>();
+
+		Set<Id> modulesToChangeCorrectWeight = new Set<Id>();
+		Set<Id> modulesToChangeIncorrectWeight = new Set<Id>();
+		Set<Id> modulesToChangePenaltyPerAttempt = new Set<Id>();
+
+    	Module__c oldModule;		
 
 		for(Module__c module : (List<Module__c>)records) {
+
+			oldModule = (Module__c)(existingRecords.get(module.Id));
+
 			// Select only modules that are being activated
-			if(!(((Module__c)(existingRecords.get(module.Id))).IsActive__c) && module.IsActive__c) {
+			if(!(oldModule.IsActive__c) && module.IsActive__c) {
 				activatedModules.add(module);
 			}
 			// Select only modules that are being inactivated
-			if(((Module__c)(existingRecords.get(module.Id))).IsActive__c && !(module.IsActive__c)) {
+			if(oldModule.IsActive__c && !(module.IsActive__c)) {
 				inactivatedModules.add(module);
 			}	
-			// Select only modules whose question pool is changed from null to != null or weighted questions is set to false
-			if((((Module__c)(existingRecords.get(module.Id))).QuestionPool__c == null && module.QuestionPool__c != null) || 
-			   (((Module__c)(existingRecords.get(module.Id))).WeightedQuestions__c && !(module.WeightedQuestions__c))) {
-				modulesWithChangedWeigth.add(module);
+			// Select modules whose question pool is changed from null to != null or weighted questions is set to false
+			if((oldModule.QuestionPool__c == null && module.QuestionPool__c != null) || 
+			   (oldModule.WeightedQuestions__c && !(module.WeightedQuestions__c))) {
+				modulesToChangeQuestions.add(module);
+				modulesToChangeCorrectWeight.add(module.Id);
 			}				
+			// Select modules whose Penalty mode is changed from "Negative weight" to "Percent decrease" or "None"
+			if((oldModule.PenaltyMode__c == 'Negative Weight' && (module.PenaltyMode__c == 'Percent Decrease' || module.PenaltyMode__c == 'None'))) {
+				modulesToChangeQuestions.add(module);
+				modulesToChangeIncorrectWeight.add(module.Id);
+			}	
+			// Select modules whose Penalty mode is changed from "Percent decrease" to "Negative weight" or "None"
+			if((oldModule.PenaltyMode__c == 'Percent Decrease' && (module.PenaltyMode__c == 'Negative Weight' || module.PenaltyMode__c == 'None'))) {
+				modulesToChangeQuestions.add(module);
+				modulesToChangePenaltyPerAttempt.add(module.Id);
+			}			
 		}
 
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, Question__c.SObjectType});
 		updateCourses(activatedModules, inactivatedModules, uow);
 		//If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
-		updateQuestions(modulesWithChangedWeigth, uow);
+		updateQuestions(new List<Module__c>(modulesToChangeQuestions), modulesToChangeCorrectWeight, modulesToChangeIncorrectWeight, modulesToChangePenaltyPerAttempt, uow);
 		uow.commitWork();
     }
 
@@ -171,15 +191,28 @@ public class Modules extends SObjectDomain {
 		Courses.validateAdminFields = false;
     }
 
-    private void updateQuestions(List<Module__c> modulesWithChangedWeigth, SObjectUnitOfWork uow) {
+    private void updateQuestions(List<Module__c> modulesToChangeQuestions, Set<Id> modulesToChangeCorrectWeight, Set<Id> modulesToChangeIncorrectWeight, 
+    								Set<Id> modulesToChangePenaltyPerAttempt, SObjectUnitOfWork uow) {
 	    
-	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(modulesWithChangedWeigth);
+	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(modulesToChangeQuestions);
 
-	    for(Question__c question : new QuestionsSelector(new Set<String> {'Id'}).selectByModule(modulesMap.keySet())) {
-	        question.CorrectWeight__c = 1;
+	    for(Question__c question : new QuestionsSelector(new Set<String> {'Id','Module__c'}).selectByModule(modulesMap.keySet())) {
+	    	// If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. 
+	        if(modulesToChangeCorrectWeight.contains(question.Module__c)) {
+		        question.CorrectWeight__c = 1;
+	        }
+	        // If the Penalty mode is changed from "Incorrect weight" to "Percent decrease" or "None" then will update the related questions with Incorrect weight to 0.
+	        if(modulesToChangeIncorrectWeight.contains(question.Module__c)) {
+				question.IncorrectWeight__c = 0;
+			}
+			// If the Penalty mode is changed from "Percent decrease" to "Negative weight" or "None" then will update the related questions with Penalty per Attempt to 0.
+			if(modulesToChangePenaltyPerAttempt.contains(question.Module__c)) {
+				question.PenaltyPerAttempt__c = 0;
+			}
+
 	    	uow.registerDirty(question);
 	    }	
-	}    
+	}  
 
 	public override void onBeforeDelete() {
 

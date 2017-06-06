@@ -21,7 +21,7 @@
     <apex:attribute name="sections" type="String" default="" description="Form Fields" />
     <apex:attribute name="dataOrderBy" type="String" default="FieloELR__Order__c" description="Form Fields" />
     <apex:attribute name="dataFilters" type="String" description=""/>
-    <apex:attribute name="layout" type="String" default="inline" description="" assignTo="{!cLayout}"/>
+    <apex:attribute name="layout" type="String" default="compound" description="" assignTo="{!cLayout}"/>
 
     <div id="{!formId}" 
         role="dialog" 
@@ -59,7 +59,7 @@
             		sObjectName="{!sRecentObjectName}"
             		fieldset="{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
             		mode="{!mode}"
-            		layout="{!layout}"/>
+            		layout="inline"/>
             	<article class="slds-card slds-m-around--medium">
 				    <div class="slds-card__header slds-grid">
 				      <header class="slds-media slds-media--center slds-has-flexi-truncate">
