@@ -114,8 +114,8 @@
     <validationRules>
         <fullName>ModulesSameCourse</fullName>
         <active>true</active>
-        <description>When a Module dependency is created/updated, both courses must belong to the same course.</description>
+        <description>When a Module dependency is created/updated, both modules must belong to the same course.</description>
         <errorConditionFormula>Predecessor__r.Course__c   &lt;&gt;   Module__r.Course__c</errorConditionFormula>
-        <errorMessage>Both programs must belong to the same course.</errorMessage>
+        <errorMessage>Both modules must belong to the same course.</errorMessage>
     </validationRules>
 </CustomObject>
