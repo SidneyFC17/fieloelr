@@ -525,10 +525,6 @@
       this.questionType_.FieloFormElement.clear();
       this.questionType_.FieloFormElement.set('value', '');
     }
-    console.log('this.questionType_');
-    console.log(this.questionType_);
-    console.log('this.formIdSufix_');
-    console.log(this.formIdSufix_);
     if (this.formIdSufix_ === 'error' ||
         this.formIdSufix_ === '') {
       this.throwMessage('error', 'Must choose a question type.');

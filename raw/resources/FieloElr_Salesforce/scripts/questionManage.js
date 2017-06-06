@@ -275,8 +275,6 @@
     // fielo.util.spinner.FieloSpinner.show();
     var moduleValues = this.getModule_();
     var questionValues = this.getQuestions_();
-    console.log(moduleValues);
-    console.log(questionValues);
 
     var moduleNullFields = [];
     var questionNullFields = {};
@@ -363,8 +361,6 @@
     var weightedQuestionsDiv =
       $($(this.element_).find('.' + this.CssClasses_.SECTION_PANEL)[0])
         .find('[data-field-name="FieloELR__WeightedQuestions__c"]')[0];
-    console.log('questionPool:');
-    console.log(questionPool);
 
     if (shuffleQuestions) {
       this.removeInputs('FieloELR__Order__c');
