@@ -62,7 +62,7 @@ public class Questions extends SObjectDomain {
     	updateWeights(records);
 
 	    // If the type is "Fill in the blanks", must validate {} and []
-    	validateFormat(records);
+    	//validateFormat(records);
 
     	//If the MetadataAnswer field is set, convert it to plain text.
     	/*for(Question__c record: (List<Question__c>) records) {
@@ -83,7 +83,7 @@ public class Questions extends SObjectDomain {
     	updateWeights(records);
 
 	    // If the type is "Fill in the blanks", must validate {} and []
-    	validateFormat(records);
+    	//validateFormat(records);
 
     	//If the MetadataAnswer field is set, convert it to plain text.
     	/*for(Question__c record: (List<Question__c>) records) {
@@ -139,7 +139,7 @@ public class Questions extends SObjectDomain {
 		// If the module is active, questions cannot be deleted, updated or added.																		
 	    for(Question__c question : questions) {
 	    	if(modulesMap.containsKey(question.Module__c)) {
-	        	question.addError('Active modules cannot have changes in their set of questions.');             
+	        	question.addError(Label.ValidateQuestionActiveModulesQuestions);             
 	    	}
 	    }
     }
@@ -193,12 +193,12 @@ public class Questions extends SObjectDomain {
     }
 
     // If the type is "Fill in the blanks", must validate {} and []
-    private void validateFormat(List<Question__c> questions) {
+    /*private void validateFormat(List<Question__c> questions) {
     	String questionText;
     	for(Question__c question : questions) {
 	    	if(question.Type__c == 'Fill in the Blanks') {
 	    		// Validate format
-	    		questionText = question.QuestionText__c;
+	    		//questionText = question.QuestionText__c;
 
 				String regex = '(?<=\\{\\!)(.*?)(?=\\})';
 				Pattern regexPattern = Pattern.compile(regex);
