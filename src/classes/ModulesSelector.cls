@@ -109,7 +109,20 @@ public with sharing class ModulesSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-     public List<Module__c> selectByIdHavingCourses(Set<Id> recordIds) {
+    public List<Module__c> selectByCoursesHavingPredecessor(Set<Id> courseIds, Set<String> moduleDependencyFields) {
+      return (List<Module__c>) Database.query(String.format('SELECT {0} ' +
+                   ', (SELECT {1} FROM PredecessorModules__r) ' +
+                  'FROM {2} ' +
+                  'WHERE Course__c IN :courseIds ' +
+                  'ORDER BY {3}',
+                new List<String> {
+                    getFieldListString(),
+                    String.join(new List<String>(moduleDependencyFields),','),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
+    public List<Module__c> selectByIdHavingCourses(Set<Id> recordIds) {
       return (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +               
                   'FROM {1} ' +
