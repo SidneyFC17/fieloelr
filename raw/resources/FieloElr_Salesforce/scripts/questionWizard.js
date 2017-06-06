@@ -830,6 +830,7 @@
     if (shuffleQuestions) {
       this.hideFormField_('FieloELR__Order__c');
     }
+    this.changeForm();
   };
 
   FieloQuestionWizard.prototype.hideFormField_ = function() {
