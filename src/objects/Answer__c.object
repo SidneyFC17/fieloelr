@@ -109,11 +109,11 @@
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
-        <fullName>AnswerResponseCannotBeEdited</fullName>
+        <fullName>AnswerCannotBeEdited</fullName>
         <active>true</active>
-        <description>An answer response cannot be edited.</description>
+        <description>An answer cannot be edited.</description>
         <errorConditionFormula>NOT( ISNEW() )</errorConditionFormula>
-        <errorMessage>An answer response cannot be edited.</errorMessage>
+        <errorMessage>An answer cannot be edited.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>ValidateAnswerLookup</fullName>
