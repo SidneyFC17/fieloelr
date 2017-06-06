@@ -28,6 +28,15 @@
 			retrieveController="ModuleViewController.retrieve"
 			record="{!record}"
 		/>
+		<!-- STANDARD Detail  -->
+		<apex:panelGroup rendered="{!hasDetail}">
+			<c:Detail formId="{!objectName}Detail"
+			  heading="{!record['Name']}"
+			  sObjectName="{!objectName}"
+			  fieldset="{!detailSettings.FieloPLT__Sections__c}"
+			  record="{!record}"
+			/>
+		</apex:panelGroup>
 
 		<apex:repeat value="{!relatedSettings}" var="rel">
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__Question__c'}">
@@ -67,7 +76,7 @@
         		formId="FieloELR__Question__cFormManage"
 				heading="Manage {!$ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 				sObjectName="{!objectName}"
-				fieldset="{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__PenaltyMode__c','Type':'picklist'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'}"
+				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'picklist'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
 				sRecentFieldset="{!rel.FieloPLT__Fieldset__c}"
 				dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
 				sRecentObjectName="{!rel.FieloPLT__TargetObject__c}"

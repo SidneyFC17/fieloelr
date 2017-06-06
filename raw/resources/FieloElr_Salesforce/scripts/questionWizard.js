@@ -497,21 +497,25 @@
       .find('[data-field-name="FieloELR__Type__c"]')[0];
     this.formIdSufix_ = '';
     if (this.questionType_) {
-      this.formIdSufix_ = 'multiplechoice';
       switch (this.questionType_.FieloFormElement.get('value')) {
         case 'Multiple Choice':
+          this.formIdSufix_ = 'multiplechoice';
           this.initMultipleChoiceForm();
           break;
         case 'Single Choice':
+          this.formIdSufix_ = 'multiplechoice';
           this.initSingleChoiceForm();
           break;
         case 'Short Answer':
+          this.formIdSufix_ = 'multiplechoice';
           this.initShortAnswerForm();
           break;
         case 'Statement':
+          this.formIdSufix_ = 'multiplechoice';
           this.initStatementForm();
           break;
         case 'Matching Options':
+          this.formIdSufix_ = 'multiplechoice';
           this.initMatchingForm();
           break;
         default:
@@ -519,6 +523,7 @@
           break;
       }
       this.questionType_.FieloFormElement.clear();
+      this.questionType_.FieloFormElement.set('value', '');
     }
     if (this.formIdSufix_ === 'error' ||
         this.formIdSufix_ === '') {
