@@ -30,6 +30,16 @@
 			record="{!record}"
 		/>
 
+		<!-- STANDARD Detail  -->
+		<apex:panelGroup rendered="{!hasDetail}">
+			<c:Detail formId="{!objectName}Detail"
+			  heading="{!record['Name']}"
+			  sObjectName="{!objectName}"
+			  fieldset="{!detailSettings.FieloPLT__Sections__c}"
+			  record="{!record}"
+			/>
+		</apex:panelGroup>
+
 		<apex:repeat value="{!relatedSettings}" var="rel">
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__Module__c'}">
           <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
@@ -101,7 +111,7 @@
             	</apex:panelGroup>
             </apex:repeat>
         </apex:panelGroup>
-        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__CourseDependency__c'}">
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__CourseDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Module__c'}">
 	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
 	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
