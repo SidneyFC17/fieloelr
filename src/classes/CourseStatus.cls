@@ -56,17 +56,33 @@ public class CourseStatus extends SObjectDomain {
     public static void validatePredecessorAndSegments(List<CourseStatus__c> records){
         // Courses to validate
         Set<Id> courseIds = new Set<Id>();
+        Set<Id> memberIds = new Set<Id>();
         for (CourseStatus__c courseStatus : records){
             courseIds.add(courseStatus.Course__c);
+            memberIds.add(courseStatus.Member__c);
         }
 
+        // Receive members
+        Map<Id,FieloPLT__Member__c> membersMap = 
+                    new Map<Id,FieloPLT__Member__c>(new MembersSelector(new Set<String>{'Id','Name','FieloPLT__Program__c'}).selectById(memberIds));
+
         // Receive courses with predecessor
-        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id','Segment__c'}).selectByIdHavingPredecessor(courseIds));
+        Map<Id,Course__c> coursesMap = 
+                    new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id','Name','Program__c','Segment__c'}).selectByIdHavingPredecessor(courseIds));
         Set<String> keysPredecessors = new Set<String>();   
+
+        List<CourseStatus__c> selectedRecords = new List<CourseStatus__c>();
+        for (CourseStatus__c courseStatus : records){
+            if(membersMap.get(courseStatus.Member__c).FieloPLT__Program__c != coursesMap.get(courseStatus.Course__c).Program__c) {
+                courseStatus.addError('The member should belong to the course\'s program.');
+            } else {
+                selectedRecords.add(courseStatus);
+            }
+        }
         
         // Iterate over new Course Status
         Map<Id,Set<Id>> segmentsByMember = new Map<Id,Set<Id>>();
-        for (CourseStatus__c courseStatus : records){             
+        for (CourseStatus__c courseStatus : selectedRecords){             
             Course__c course = coursesMap.get(courseStatus.Course__c);
             for(CourseDependency__c cd : course.PredecessorCourses__r){
                // Course ID of Predecessor +  Member ID of New Course Status
@@ -97,7 +113,7 @@ public class CourseStatus extends SObjectDomain {
             
         //Adding errors
         Set<String> keysPredecessorsError = new Set<String>();
-        for (CourseStatus__c courseStatus : records){             
+        for (CourseStatus__c courseStatus : selectedRecords){             
             Course__c course = coursesMap.get(courseStatus.Course__c);
             //validate segmentation
             if(course.Segment__c != null && segmentsByMember.containsKey(courseStatus.Member__c)){
@@ -119,6 +135,13 @@ public class CourseStatus extends SObjectDomain {
   
     public override void onValidate(Map<Id,SObject> existingRecords) {
         //before update
+        if(validateAdminFields){
+            for(CourseStatus__c courseStatus : (List<CourseStatus__c>)records){
+                if(courseStatus.ApprovedModules__c != ((CourseStatus__c)(existingRecords.get(courseStatus.Id))).ApprovedModules__c) {
+                    courseStatus.ApprovedModules__c = ((CourseStatus__c)(existingRecords.get(courseStatus.Id))).ApprovedModules__c;
+                }
+            }
+        }        
     }
         
     public override void onBeforeDelete() {
