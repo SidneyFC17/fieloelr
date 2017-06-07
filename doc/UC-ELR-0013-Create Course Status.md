@@ -51,41 +51,41 @@ A course status was created
    3. The system displays an error message
    4. End of flow
  
-##### 4. The course status is created by the system when the Subscription Mode is Automatic (step 1 of basic flow)
+##### 5. The course status is created by the system when the Subscription Mode is Automatic (step 1 of basic flow)
    1. The field values for the course status are filled by the system when the module response is being created
    2. Back to step 3 of basic flow 
  
-##### 5. The member does not belong to any segment of the course (step 6 of basic flow)
+##### 6. The member does not belong to any segment of the course (step 6 of basic flow)
    1. The system verifies that the member does not belong to any of the course segments
    2. The  system does not create the course status
    3. The system displays an error message
    4. End of flow
  
-##### 6. The member does not belong to the same program of the course (step 7 of basic flow)
+##### 7. The member does not belong to the same program of the course (step 7 of basic flow)
    1. The system verifies that the member does not belong to the same program of the course
    2. The  system does not create the course status
    3. The system displays an error message
    4. End of flow
  
-##### 7. The member has not completed the predecessors courses (step 8 of basic flow)
+##### 8. The member has not completed the predecessors courses (step 8 of basic flow)
    1. The system verifies that the member has not completed the predecessors courses
    2. The  system does not create the course status
    3. The system displays an error message
    4. End of flow
  
-##### 8. There is already a course status created for the member in the course (step 9 of basic flow)
+##### 9. There is already a course status created for the member in the course (step 9 of basic flow)
    1. The system verifies that there is already a course status created for the member in the course
    2. The  system does not create the course status
    3. The system displays an error message
    4. End of flow
  
-##### 9. Delete course status (step 12 of basic flow)
+##### 10. Delete course status (step 12 of basic flow)
    1. The administrator presses de Delete button
    2. The system deletes the course status
    4. The system deletes all the related module responses, question responses and answers
    5. End of flow 
  
-##### 10. Edit course status (step 12 of basic flow)
+##### 11. Edit course status (step 12 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes
    3. The system does not update the course status
