@@ -72,6 +72,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>MatchingText__c</fullName>
+        <externalId>false</externalId>
+        <label>Matching Text</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>OrderFormula__c</fullName>
         <externalId>false</externalId>
         <formula>IF( Question__r.ShuffleAnswerOptions__c ,
