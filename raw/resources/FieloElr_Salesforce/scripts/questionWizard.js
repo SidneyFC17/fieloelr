@@ -77,10 +77,6 @@
       sObject[field.FieloFormElement.get('fieldName')] =
         field.FieloFormElement.get('value');
     }, this);
-    if (this.questionType_) {
-      sObject.FieloELR__Type__c =// eslint-disable-line camelcase
-        this.questionType_.FieloFormElement.get('value');
-    }
 
     return sObject;
   };
@@ -110,64 +106,6 @@
       }
     });
     return items;
-  };
-
-  FieloQuestionWizard.prototype.getMatchingAnswerOptions_ = function() {
-    var items =
-      $(this.form_)
-        .find('.' + this.CssClasses_.ANSWER_OPTIONS_ITEM);
-    var sObjectList = [];
-    var fields = null;
-    var fieldName = null;
-    var sObject = null;
-    var answerOptions = null;
-    var answerOptionObject = null;
-    [].forEach.call(items, function(item) {
-      answerOptions = [];
-      sObject = {};
-      // Input Fields
-      fields = item.getElementsByClassName(
-        this.CssClasses_.FORM_ELEMENT);
-      [].forEach.call(fields, function(field) {
-        var sObjectValue = field.FieloFormElement.get('value');
-        fieldName = field.getAttribute(this.CssClasses_.DATA_FIELD_NAME);
-        if (fieldName === 'FieloELR__AnswerOptionText__c') {
-          answerOptions.push(sObjectValue);
-        } else {
-          sObject[fieldName] = sObjectValue;
-        }
-      }, this);
-
-      // Output Fields
-      fields = item.getElementsByClassName(this
-          .CssClasses_.OUTPUT_ELEMENT);
-      [].forEach.call(fields, function(field) {
-        var sObjectValue = field.innerHTML;
-        fieldName = field.getAttribute(this.CssClasses_.DATA_FIELD_TABLE);
-        sObject[fieldName] = sObjectValue;
-      }, this);
-
-      sObject.FieloELR__IsCorrect__c = true; // eslint-disable-line camelcase
-
-      // Matching Special Treatment
-      if (answerOptions.length > 0) {
-        answerOptionObject = {};
-        answerOptionObject.option = answerOptions[0];
-        answerOptionObject.matches = answerOptions[1];
-        if (answerOptionObject.matches === null ||
-          answerOptionObject.matches === undefined ||
-          answerOptionObject.matches === '') {
-          sObject.error = 'Matches is a required field';
-        }
-        sObject.FieloELR__AnswerOptionText__c = // eslint-disable-line camelcase
-          JSON.stringify(answerOptionObject);
-      }
-      if (item.getAttribute('data-record-id') !== '') {
-        sObject.Id = item.getAttribute('data-record-id');
-      }
-      sObjectList.push(sObject);
-    }, this);
-    return sObjectList;
   };
 
   FieloQuestionWizard.prototype.throwMessage = function(type, errorMsg) {
@@ -334,21 +272,7 @@
             $(answerItem)
               .find('[data-field-name="' + fieldName + '"]')[0];
           if (field) {
-            if (fieldName === 'FieloELR__AnswerOptionText__c' &&
-                this.result.FieloELR__Type__c === 'Matching Options') {
-              var answerOptionObject =
-                JSON.parse(this.unencodeHTML(answer[fieldName]));
-              field =
-                $(answerItem)
-                  .find('[data-field-name="' + fieldName + '"]')[0];
-              field.FieloFormElement.set('value', answerOptionObject.option);
-              field =
-                $(answerItem)
-                  .find('[data-field-name="' + fieldName + '"]')[1];
-              field.FieloFormElement.set('value', answerOptionObject.matches);
-            } else {
-              field.FieloFormElement.set('value', answer[fieldName]);
-            }
+            field.FieloFormElement.set('value', answer[fieldName]);
           }
           if (!field) {
             field =
@@ -421,10 +345,7 @@
       }
     });
 
-    var answerOptionValues =
-      questionValues.FieloELR__Type__c === 'Matching Options' ?
-        this.getMatchingAnswerOptions_() :
-          this.getAnswerOptions_();
+    var answerOptionValues = this.getAnswerOptions_();
     var deletedIds = this.getDeletedAnswerIds_();
     deletedIds = deletedIds ?
       deletedIds :
@@ -447,6 +368,13 @@
     answerOptionValues.forEach(function(row) {
       if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
+      }
+      if (questionValues.FieloELR__Type__c === 'Matching Options') {
+        if (row.FieloELR__MatchingText__c === '' ||
+          row.FieloELR__MatchingText__c === undefined ||
+          row.FieloELR__MatchingText__c === null) {
+          row.error = 'Matching Text is required field';
+        }
       }
       [].forEach.call(Object.keys(row), function(field) {
         if (row[field] === '' ||
@@ -558,22 +486,21 @@
     $($($(this.form_)
       .find('[data-field-name="FieloELR__AnswerOptionText__c"]')[0])
         .find('input')[0]).prop('disabled', false);
-    $($(this.form_)
-      .find('[data-field-name="FieloELR__Type__c"]')[0])
-        .toggle(false);
+    var typeField = $(this.form_)
+      .find('[data-field-name="FieloELR__Type__c"]')[0];
+    if (typeField) {
+      $(typeField).toggle(false);
+      if (typeField.FieloFormElement) {
+        typeField.FieloFormElement.set('value',
+          this.questionType_.FieloFormElement.get('value')
+        );
+      }
+    }
     $($(this.form_)
       .find('.slds-button--new-answer')[0])
         .toggle(true);
-    var answerTextFieldLabel = $(this.form_)
-      .find('[title="Answer Option Text"]')[0];
-    answerTextFieldLabel.innerHTML =
-      answerTextFieldLabel.getAttribute('title');
-    answerTextFieldLabel = $(this.form_)
-      .find('[title="Matches"]')[0];
-    if (answerTextFieldLabel) {
-      this.removeColumn('Matches');
-    }
     this.toggleRemoveButton(true);
+    this.hideColumn('FieloELR__MatchingText__c');
   };
 
   FieloQuestionWizard.prototype.initSingleChoiceForm = function() {
@@ -607,38 +534,7 @@
   FieloQuestionWizard.prototype.initMatchingForm = function() {
     this.initMultipleChoiceForm();
     this.hideColumn('FieloELR__IsCorrect__c');
-    var answerTextField = $(this.form_)
-      .find('[data-field-name="FieloELR__AnswerOptionText__c"]')[0];
-    var index = $(answerTextField).closest('td').index();
-    var headerRow = $(answerTextField)
-      .closest('table')
-      .find('thead')
-        .find('tr')[0];
-    var column = headerRow.cells[index];
-    var lastColumn = headerRow.cells[headerRow.cells.length - 1];
-    $($(column).clone(true)[0]).insertBefore(lastColumn);
-    var rows = $(this.form_)
-      .find('.slds-table tr');
-    rows = $(rows).not(rows[0]);
-
-    [].forEach.call(rows, function(row) {
-      $($($(answerTextField)
-          .closest('td')[0])
-            .clone(true)[0])
-              .insertBefore(
-                row.cells[row.cells.length - 1]);
-    });
-
-    var option = $(headerRow)
-      .find('[title="Answer Option Text"]')[0];
-    var matches = $(headerRow)
-      .find('[title="Answer Option Text"]')[1];
-    option.innerHTML = 'Option';
-    matches.innerHTML = 'Matches';
-    matches.setAttribute('title', 'Matches');
-
-    this.newAnswer();
-    this.deleteAnswer(0);
+    this.showColumn('FieloELR__MatchingText__c');
   };
 
   FieloQuestionWizard.prototype.radioChoice = function(source) {
