@@ -39,17 +39,13 @@ public class AnswerOptions extends SObjectDomain {
 
 			// If the module is active, answers cannot be deleted, updated or added.																		
 	    	if(questionsMap.get(answerOption.Question__c).Module__r.IsActive__c) {
-	        	answerOption.addError('Active modules cannot have changes in their set of answer options.');             
+	        	answerOption.addError(Label.ValidateAnswerActiveModules);           
 	    	}
 
     		// If the question type is "Matching Options", the format for Answer Text must be validated as {"xx":"yy"}
-  			if(validateFormat && questionsMap.get(answerOption.Question__c).Type__c == 'Matching Options') {
-				try {
-					// If the question type is Matching, the Answer text must be in the format {"string1":"string2"}
-				    Map<String, String> deserializedAnswer = (Map<String,String>)JSON.deserializeStrict(answerOption.AnswerOptionText__c,Map<String,String>.class);
-				    System.debug(deserializedAnswer.size() == 1);	    
-				} catch(Exception e) {
-		        	answerOption.addError('Answer Option is in the wrong format. It should be {"abc":"xyz"}.');             
+  			if(validateFormat && questionsMap.get(answerOption.Question__c).Type__c == 'Matching Options') {   
+				if(String.isBlank(answerOption.MatchingText__c)) {
+		        	answerOption.addError(Label.ValidateMatchingText);             
 				}
 	    	}
 
