@@ -834,7 +834,7 @@
     if (this.element_) {
       this.element_.getElementsByClassName(this.CssClasses_.NEXT)[0]
         .addEventListener('click', this.next_.bind(this));
-      this.reorderObject = 
+      this.reorderObject =
         $('.' + this.CssClasses_.ANSWER_OPTIONS)[0]
           .FieloRecentReorder;
       this.formId_ =

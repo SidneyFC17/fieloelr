@@ -77,7 +77,7 @@
         		formId="FieloELR__Question__cFormManage"
 				heading="Manage {!$ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 				sObjectName="{!objectName}"
-				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'picklist'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
+				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'radio'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
 				sRecentFieldset="{!rel.FieloPLT__Fieldset__c}"
 				dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
 				sRecentObjectName="{!rel.FieloPLT__TargetObject__c}"
