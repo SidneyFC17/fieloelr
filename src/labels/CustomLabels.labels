@@ -3340,12 +3340,12 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Active modules cannot have changes in their set of answer options.</value>
     </labels>
     <labels>
-        <fullName>ValidateMatchingText</fullName>
+        <fullName>ValidateAnswerFormat</fullName>
         <categories>TriggerAnswerOptions</categories>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>ValidateMatchingText</shortDescription>
-        <value>Matching Text is mandatory in answer options for questions of the type Matching Options.</value>
+        <shortDescription>ValidateAnswerFormat</shortDescription>
+        <value>Answer Option is in the wrong format. It should be {&quot;abc&quot;:&quot;xyz&quot;}.</value>
     </labels>
     <labels>
         <fullName>ValidateAnswerQuestionResponses</fullName>
@@ -3418,6 +3418,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>true</protected>
         <shortDescription>ValidateCourseStatusErrorSubscriptionMode</shortDescription>
         <value>The course status cannot be created if the subscription mode of the course is &quot;Automatic&quot;</value>
+    </labels>
+    <labels>
+        <fullName>ValidateMatchingText</fullName>
+        <categories>TriggerAnswerOptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateMatchingText</shortDescription>
+        <value>Matching Text is mandatory in answer options for questions of the type Matching Options.</value>
     </labels>
     <labels>
         <fullName>ValidateModuleActive</fullName>
@@ -3505,7 +3513,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateQuestionResponseDelete</shortDescription>
-        <value>Cannot delete a question response that was already submitted.</value>
+        <value>Cannot delete question responses from a module that was already submitted.</value>
     </labels>
     <labels>
         <fullName>ValidateQuestionResponseSubmit</fullName>

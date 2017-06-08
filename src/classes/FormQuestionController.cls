@@ -153,7 +153,7 @@ public with sharing class FormQuestionController {
 	    Savepoint sp;
 	    RemoteActionResult result = new RemoteActionResult();
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{FieloELR__Question__c.SObjectType, FieloELR__AnswerOption__c.SObjectType});
-
+        System.debug(question);
 	    try{
             sp = Database.setSavepoint();
             for( String f :questionNullFields ) {
@@ -212,7 +212,7 @@ public with sharing class FormQuestionController {
     public static sObject retrieve( String objectName, String recordId, String fields ){
 	    String query = 'SELECT ' + fields;
       if (objectName == 'FieloELR__Question__c') {
-        query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
+        query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__MatchingText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
       }
 	    query += ' FROM ' + objectName;
 	    query += ' WHERE ID = :recordId' ;

@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'lightning/styles/salesforce-lightning-design-system-vf.min.css')}"></link>
     <link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'fielo/styles/core.css')}"></link>
     <link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'styles/core.css')}"></link>
+    <link rel="stylesheet" href="{!URLFOR($Resource.FieloElr_Salesforce, 'styles/core.css')}"></link>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 <body>

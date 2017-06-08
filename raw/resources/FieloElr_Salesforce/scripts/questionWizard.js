@@ -98,13 +98,6 @@
     if (itemContainer) {
       items = itemContainer.FieloAnswerOptions.get();
     }
-    [].forEach.call(items, function(item) {
-      if (item.FieloELR__AnswerOptionText__c === '' ||
-        item.FieloELR__AnswerOptionText__c === null ||
-        item.FieloELR__AnswerOptionText__c === undefined) {
-        item.error = 'Answer Option Text is a required field';
-      }
-    });
     return items;
   };
 
@@ -338,13 +331,6 @@
     var questionValues = this.getQuestion_();
     var questionNullFields = [];
 
-    [].forEach.call(Object.keys(questionValues), function(field) {
-      if (questionValues[field] === '' ||
-          questionValues[field] === null) {
-        questionNullFields.push(field);
-      }
-    });
-
     var answerOptionValues = this.getAnswerOptions_();
     var deletedIds = this.getDeletedAnswerIds_();
     deletedIds = deletedIds ?
@@ -356,7 +342,11 @@
     if (questionValues.Name === '' ||
       questionValues.Name === null ||
       questionValues.Name === undefined) {
-      errorMsgs.add('Name is a required field');
+      questionValues.Name =
+        questionValues.FieloELR__QuestionText__c
+          .substring(0,
+            questionValues.FieloELR__QuestionText__c.length > 20 ?
+            20 : questionValues.FieloELR__QuestionText__c.length - 1);
     }
 
     if (questionValues.FieloELR__QuestionText__c === '' ||
@@ -375,6 +365,10 @@
           row.FieloELR__MatchingText__c === null) {
           row.error = 'Matching Text is required field';
         }
+      } else if (row.FieloELR__AnswerOptionText__c === '' ||
+        row.FieloELR__AnswerOptionText__c === null ||
+        row.FieloELR__AnswerOptionText__c === undefined) {
+        row.error = 'Answer Option Text is a required field';
       }
       [].forEach.call(Object.keys(row), function(field) {
         if (row[field] === '' ||
@@ -396,12 +390,21 @@
         errorMsgs.add(row.error);
       }
     });
+
+    [].forEach.call(Object.keys(questionValues), function(field) {
+      if (questionValues[field] === '' ||
+          questionValues[field] === null) {
+        questionNullFields.push(field);
+      }
+    });
+
     try {
       if (errorMsgs.size > 0) {
         this.hasError_ = true;
         this.throwMessage('error', Array.from(errorMsgs));
       } else {
         this.hasError_ = false;
+        console.log(questionValues);
         Visualforce.remoting.Manager.invokeAction(
           this.form_.getAttribute('data-save-controller'),
           questionValues,
@@ -466,12 +469,12 @@
   FieloQuestionWizard.prototype.initMultipleChoiceForm = function() {
     this.form_ = $('#' + this.formId_ + '-' + this.formIdSufix_)[0];
     var answerOptions = $(this.form_)
-      .find('.fielosf-answer-options')[0];
+      .find('.' + this.CssClasses_.ANSWER_OPTIONS)[0];
     if (answerOptions) {
       answerOptions.FieloAnswerOptions.clear();
     }
     var fields = $(this.form_)
-      .find('.slds-form-element');
+      .find('.' + this.CssClasses_.FORM_ELEMENT);
     [].forEach.call(fields, function(field) {
       if (field.FieloFormElement) {
         field.FieloFormElement.clear();
@@ -501,6 +504,7 @@
         .toggle(true);
     this.toggleRemoveButton(true);
     this.hideColumn('FieloELR__MatchingText__c');
+    this.hideColumn('FieloELR__Order__c');
   };
 
   FieloQuestionWizard.prototype.initSingleChoiceForm = function() {
@@ -600,9 +604,9 @@
         .find('[data-field-name="FieloELR__ShuffleAnswerOptions__c"]')[0]
           .FieloFormElement.get('value');
     if (shuffleAnswerOptions) {
-      this.hideColumn('FieloELR__Order__c');
+      this.reorderObject.disableSort();
     } else {
-      this.showColumn('FieloELR__Order__c');
+      this.reorderObject.enableSort();
     }
   };
 
@@ -680,9 +684,6 @@
         .find('thead')
           .find('tr')[0].cells[index];
       $(column).toggle(true);
-    }
-    if (fieldName === 'FieloELR__Order__c') {
-      this.reorderObject.enableSort();
     }
   };
 
@@ -831,8 +832,9 @@
     if (this.element_) {
       this.element_.getElementsByClassName(this.CssClasses_.NEXT)[0]
         .addEventListener('click', this.next_.bind(this));
-      this.reorderObject = $('.' + this.CssClasses_.REORDER)[0]
-        .FieloRecentReorder;
+      this.reorderObject = 
+        $('.' + this.CssClasses_.ANSWER_OPTIONS)[0]
+          .FieloRecentReorder;
       this.formId_ =
         this.element_.getAttribute('form-id');
       if (this.reorderObject) {
