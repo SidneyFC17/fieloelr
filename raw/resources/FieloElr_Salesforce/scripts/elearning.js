@@ -48,7 +48,9 @@
     // MODULE VIEW PAGE
     MODULE_VIEW_PAGE: 'fielosf-module-view',
     // RECENT RECORDS
-    RECENT_RECORDS: 'fielosf-recent-records'
+    RECENT_RECORDS: 'fielosf-recent-records',
+    // RECENT REORDER
+    RECENT_REORDER: 'fielosf-recent-reorder'
   };
 
     /**
@@ -161,6 +163,18 @@
     }
   };
 
+  FieloELearning.prototype.reorderRenderRecords_ = function(records) {
+    var recent =
+      $('.' + this.CssClasses_.RECENT_RECORDS)[0]
+        .FieloRecentRecords;
+    recent.renderRecords_(records);
+    var recentReorder =
+      $('.' + this.CssClasses_.RECENT_REORDER)[0]
+        .FieloRecentReorder;
+    recentReorder.removeGrips();
+    recentReorder.addGrips();
+  };
+
   FieloELearning.prototype.programChangeProxy_ = function(value) {
     var _this = document.getElementsByClassName(
       'fielosf-elearning')[0].FieloELearning;
@@ -247,7 +261,7 @@
       $('#FieloELR__Module__cFormReorder').on(
         'shown.aljs.modal', function(event) {
           var _this = document.getElementsByClassName(
-          'fielosf-elearning')[0];
+            'fielosf-elearning')[0];
           var recent =
             $(event.target)
               .find('.' + _this.FieloELearning.CssClasses_.RECENT_RECORDS)[0];
@@ -257,6 +271,9 @@
             if (paginator.FieloPaginator) {
               paginator.FieloPaginator.setPage();
               paginator.FieloPaginator.getRecords();
+              paginator.FieloPaginator.callback =
+                _this.FieloELearning
+                  .reorderRenderRecords_.bind(_this.FieloELearning);
             }
           }
         });

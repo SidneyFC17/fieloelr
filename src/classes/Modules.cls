@@ -247,7 +247,7 @@ public class Modules extends SObjectDomain {
 	    																		
 	    for(Module__c module : modulesWithQuestion) {
 	        if(module.Questions__r.isEmpty()){
-	        	modulesMap.get(module.Id).addError('Cannot activate a module without any question.');        
+	        	modulesMap.get(module.Id).addError(Label.ValidateModuleActive);        
 	        }        
 	    }
     }
@@ -262,7 +262,7 @@ public class Modules extends SObjectDomain {
 	    for(Module__c module : modulesWithResponse) {
 	        if(!module.ModuleResponses__r.isEmpty()){
 	        	//modulesMap.get(module.Id).addError('Cannot delete or inactivate a module with response.');    
-	        	addError(modulesMap.get(module.Id), 'An active module with module responses cannot be deleted, inactivated or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.');    
+	        	addError(modulesMap.get(module.Id), Label.ValidateModuleActiveResponses);    
 	        }        
 	    }
     }
@@ -291,10 +291,10 @@ public class Modules extends SObjectDomain {
 	    for(Question__c question : questionsWithCorrectAnswer) {
 	        if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options' || question.Type__c == 'Short Answer') && question.AnswerOptions__r.isEmpty()) {
     		// Question types "statement", "single choice","multiple choice", "Matching" and "Short Answer" must have at least one answer option.
-				modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without any answer option. Question: ' + question.Name);    
+				modulesMap.get(question.Module__c).addError(Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveQuestionAnswer +' '+ question.Name);    
         	} else if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.AnswerOptions__r[0].IsCorrect__c != true)) {
 				// Question types "statement" and "single choice" must have a correct answer option.
-				modulesMap.get(question.Module__c).addError('Cannot activate a module with questions of the type ' + question.Type__c + ' without a correct answer option. Question: ' + question.Name);
+				modulesMap.get(question.Module__c).addError(Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveAnswer +' '+ question.Name);
 	        } 
 	    }
     }

@@ -363,9 +363,9 @@
         .find('[data-field-name="FieloELR__WeightedQuestions__c"]')[0];
 
     if (shuffleQuestions) {
-      this.removeInputs('FieloELR__Order__c');
+      this.reorderObject.disableSort();
     } else {
-      this.showColumn('FieloELR__Order__c');
+      this.reorderObject.enableSort();
     }
     if (penaltyMode === 'None') {
       incorrectWeight.toggle(false);
@@ -557,9 +557,6 @@
       }
     }, this);
     this.hideColumn(fieldName);
-    if (fieldName === 'FieloELR__Order__c') {
-      this.reorderObject.disableSort();
-    }
   };
 
   FieloQuestionManage.prototype.hideColumn = function(fieldName) {
@@ -614,9 +611,6 @@
           .find('tr')[0].cells[index];
       $(column).toggle(true);
     }
-    if (fieldName === 'FieloELR__Order__c') {
-      this.reorderObject.enableSort();
-    }
   };
 
   FieloQuestionManage.prototype.initField = function(element) {
@@ -647,8 +641,7 @@
         null;
       this.element_.getElementsByClassName(this.CssClasses_.SAVE)[0]
         .addEventListener('click', this.save_.bind(this));
-      this.reorderObject = $('.' + this.CssClasses_.REORDER)[0]
-        .FieloRecentReorder;
+      this.reorderObject = this.element_.FieloRecentReorder;
       if (this.reorderObject) {
         this.reorderObject.disableReorder = true;
       }
@@ -679,6 +672,8 @@
       this.getFields_();
 
       this.initModels();
+
+      this.hideColumn('FieloELR__Order__c');
 
       [].forEach.call(Object.keys(this.elements_), function(field) {
         if (field === 'FieloELR__WeightedQuestions__c' ||

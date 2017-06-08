@@ -64,7 +64,7 @@
         <label>Course Status</label>
         <referenceTo>CourseStatus__c</referenceTo>
         <relationshipLabel>Modules Responses</relationshipLabel>
-        <relationshipName>Modules_Responses</relationshipName>
+        <relationshipName>ModuleResponses</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>

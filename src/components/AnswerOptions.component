@@ -26,6 +26,8 @@
 		          <thead>
 		            <tr class="slds-text-title--caps">
 		              <apex:repeat value="{!sections}" var="s">
+		              	<th scope="col" style="width: 10px;">
+		              	</th>
 		              	<apex:repeat value="{!s.fields}" var="f">
 			              <th scope="col">
 			              	<div class="slds-truncate" title="{!$ObjectType[sObjectName].Fields[f.Name].label}">{!$ObjectType[sObjectName].Fields[f.Name].label}</div>
@@ -39,6 +41,8 @@
 		          <tbody class="fielosf-answer-options__container fielosf-recent-records__container">
 		           	<tr class="slds-hint-parent fielosf-recent-records__model fielosf-recent-records__row fielosf-answer-options__item">
 	                <apex:repeat value="{!sections}" var="s">
+	                	<td scope="row" style="width: 10px;">
+	                	</td>
 	                  <apex:repeat value="{!s.fields}" var="f">
 	                    <td scope="row" class="{!f.ClassName}">
 							<apex:panelGroup rendered="{!f.Name = 'FieloELR__Order__c'}">
