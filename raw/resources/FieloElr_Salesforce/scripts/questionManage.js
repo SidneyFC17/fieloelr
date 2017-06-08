@@ -291,6 +291,9 @@
         row.FieloELR__PenaltyPerAttempt__c = 0;// eslint-disable-line camelcase
       } else if (moduleValues.FieloELR__PenaltyMode__c === 'Percent Decrease') {
         row.FieloELR__IncorrectWeight__c = 0;// eslint-disable-line camelcase
+      } else if (moduleValues.FieloELR__PenaltyMode__c === 'None') {
+        row.FieloELR__PenaltyPerAttempt__c = 0;// eslint-disable-line camelcase
+        row.FieloELR__IncorrectWeight__c = 0;// eslint-disable-line camelcase
       }
 
       [].forEach.call(Object.keys(row), function(field) {
