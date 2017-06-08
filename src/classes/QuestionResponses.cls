@@ -183,41 +183,32 @@ public class QuestionResponses extends SObjectDomain {
                 }/*else if (question.Type__c == 'Fill in the Blanks') {
                     questionResponse.IsCorrect__c = question.AnswerText__c == questionResponse.TextValue__c;
                 }*/else if (question.Type__c == 'Matching Options') {
+
                     questionResponse.IsCorrect__c = true;
                     List<Answer__c> answers = existingQuestionResponses.get(questionResponse.Id).answers__r;
-                    Map<String, String> answerOptionText = new Map<String, String>();
-                    Map<String, String> answerText = new Map<String, String>();
-                    Set<Id> correctAnswerIds = new Set<Id>();
+                    Map<Id,AnswerOption__c> correctAnswerIds = new Map<Id,AnswerOption__c>();
+                    //verifies if the number of answers are the same as the correct answer options
                     if (answers.size() == questionsMap.get(questionResponse.Question__c).AnswerOptions__r.size()) {
-                        correctAnswerIds = (new Map<Id,AnswerOption__c>(questionsMap.get(questionResponse.Question__c).AnswerOptions__r)).keySet();
-                        for (AnswerOption__c answerOption: questionsMap.get(questionResponse.Question__c).AnswerOptions__r) {
-                            try{
-                                answerOptionText = (Map<String,String>) JSON.deserialize(answerOption.AnswerOptionText__c, Map<String,String>.class);
-                                for(Answer__c answer: answers) {
-                                    answerText = (Map<String,String>) JSON.deserialize(answer.FieloELR__TextValue__c, Map<String,String>.class);
-                                    if (answerOptionText.get('option') == answerText.get('option')) {
-                                        if (answerOptionText.get('matches') != answerText.get('matches')) {
-                                            questionResponse.IsCorrect__c = false;
-                                            break;
-                                        }
-                                        correctAnswerIds.remove(answerOption.Id);
-                                    }
-                                }
-                            } catch(Exception e) {
+                        correctAnswerIds = new Map<Id,AnswerOption__c>(questionsMap.get(questionResponse.Question__c).AnswerOptions__r);
+
+                        //loop the answers and verify that all of them are related to correct answer options
+                        for(Answer__c answer : existingQuestionResponses.get(questionResponse.Id).answers__r) {
+                            if (!correctAnswerIds.containsKey(answer.AnswerOption__c)) {
+                                questionResponse.IsCorrect__c = false;
+                                break;
+                            //If answer corresponds to a correct answer option, verifies if the match is correct
+                            } else if(answer.TextValue__c != correctAnswerIds.get(answer.AnswerOption__c).MatchingText__c) {
                                 questionResponse.IsCorrect__c = false;
                                 break;
                             }
-                        }
+                        }                      
                     } else {
-                        questionResponse.IsCorrect__c = false;
-                    }
-                    if (!correctAnswerIds.isEmpty()) {
                         questionResponse.IsCorrect__c = false;
                     }
                 }
 
                 if(questionResponse.IsCorrect__c && correctKeys.contains(questionResponse.Key__c)){
-                    mapErrors.put(questionResponse.Id, 'This question was already answered correct.');
+                    mapErrors.put(questionResponse.Id, 'This question was already answered correctly.');
                     //questionResponse.addError('This question was already answered correct.');
                 }else{
                     if(questionResponse.IsCorrect__c){

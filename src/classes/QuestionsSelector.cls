@@ -32,7 +32,7 @@ public with sharing class QuestionsSelector extends SObjectSelector {
     public List<Question__c> selectByIdWithCorrectAnswers(Set<Id> questionIds) {
         return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, Name, AnswerOptionText__c FROM AnswerOptions__r WHERE IsCorrect__c = true) ' +
+                  ', (SELECT Id, Name, AnswerOptionText__c, MatchingText__c FROM AnswerOptions__r WHERE IsCorrect__c = true) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionIds ' +
                   'ORDER BY {2}',
