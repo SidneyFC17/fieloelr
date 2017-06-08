@@ -145,24 +145,51 @@ public class CourseStatus extends SObjectDomain {
     }
         
     public override void onBeforeDelete() {
-            Set<Id> coursesIds = new Set<Id>();
-            Set<Id> courseValidateIds = new Set<Id>();
-            
-            for(CourseStatus__c cs : (List<CourseStatus__c>)records){
-                coursesIds.add(cs.Course__c);
-            }
+        /*
+        Set<Id> coursesIds = new Set<Id>();
+        Set<Id> courseValidateIds = new Set<Id>();
+        
+        for(CourseStatus__c cs : (List<CourseStatus__c>)records){
+            coursesIds.add(cs.Course__c);
+        }
 
-            List<ModuleResponse__c> modulesList = new List<ModuleResponse__c>(new ModuleResponsesSelector(new Set<String>{'Id','Module__r.Course__c'}).selectModuleResponseIds(coursesIds));
-            
-            for(ModuleResponse__c mr : modulesList){
-                courseValidateIds.add(mr.Module__r.Course__c); 
+        List<ModuleResponse__c> modulesList = new List<ModuleResponse__c>(new ModuleResponsesSelector(new Set<String>{'Id','Module__r.Course__c'}).selectModuleResponseIds(coursesIds));
+        
+        for(ModuleResponse__c mr : modulesList){
+            courseValidateIds.add(mr.Module__r.Course__c); 
+        }
+        
+        for(CourseStatus__c cs : (List<CourseStatus__c>)records){
+            if(courseValidateIds.contains(cs.Course__c)){
+                cs.addError('You cannot delete a course status if you have a related module response for any of the related modules  to the course');
             }
-            
-            for(CourseStatus__c cs : (List<CourseStatus__c>)records){
-                if(courseValidateIds.contains(cs.Course__c)){
-                    cs.addError('You cannot delete a course status if you have a related module response  for any of the related modules  to the course');
+        }
+        */
+
+        SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType}, true);
+        
+        Map<Id,CourseStatus__c> courseStatusMap = new Map<Id, CourseStatus__c>((List<CourseStatus__c>)records);
+        // When the course status is deleted, must delete related module responses
+        deleteCourseStatusModuleResponses(courseStatusMap, uow);
+
+        uow.commitWork();
+
+        Map<Id,SObject> deletedModuleResponses = uow.m_deletedMapByType.get('FieloELR__ModuleResponse__c');
+        for (Database.DeleteResult dr : uow.getResults(ModuleResponse__c.SObjectType).deleteResults) {
+            if (!dr.isSuccess()) {
+                // Operation failed, so get all errors                
+                for(Database.Error err : dr.getErrors()) {
+                    courseStatusMap.get(((ModuleResponse__c)deletedModuleResponses.get(dr.getId())).CourseStatus__c).addError(err.getMessage());
                 }
             }
+        }        
+    }
 
-        }
+    private void deleteCourseStatusModuleResponses(Map<Id,CourseStatus__c> courseStatusMap, SObjectUnitOfWork uow){
+        // Looks up for course status IDs contained in module responses
+        List<ModuleResponse__c> moduleResponsesToDelete = new ModuleResponsesSelector(new Set<String>{'Id','CourseStatus__c'}).selectByIdHavingCourseStatus(courseStatusMap.KeySet());  
+  
+        // Delete related modules
+        uow.registerDeleted(moduleResponsesToDelete);
+    }
 }
