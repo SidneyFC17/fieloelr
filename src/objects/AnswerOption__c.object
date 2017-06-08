@@ -143,7 +143,7 @@ mod(
         <fullName>AnswerTextRequired</fullName>
         <active>true</active>
         <description>The answer option text is required.</description>
-        <errorConditionFormula>ISBLANK( AnswerOptionText__c )</errorConditionFormula>
+        <errorConditionFormula>AND( TEXT(Question__r.Type__c) &lt;&gt; &apos;Matching Options&apos;, ISBLANK( AnswerOptionText__c ))</errorConditionFormula>
         <errorDisplayField>AnswerOptionText__c</errorDisplayField>
         <errorMessage>The answer option text is required.</errorMessage>
     </validationRules>

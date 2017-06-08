@@ -25,7 +25,9 @@
    * @private
    */
   FieloRecentReorder.prototype.Constant_ = {
-    SAVE_CONTROLLER: 'FieloELR.LevelReorderController.reorder'
+    SAVE_CONTROLLER: 'FieloELR.LevelReorderController.reorder',
+    UI_DISABLED: 'ui-state-disabled',
+    UI_HANDLE: 'ui-sortable-handle'
   };
 
   /**
@@ -40,7 +42,9 @@
     FIELD: 'fielosf-output',
     MODEL: 'fielosf-recent-records__model',
     SAVE: 'slds-form__save',
-    CANCEL: 'slds-form__cancel'
+    CANCEL: 'slds-form__cancel',
+    GRIPS: 'fielosf-draggable__grip',
+    CURSOR: 'fielosf-draggable__cursor'
   };
   /**
   * Get
@@ -119,6 +123,7 @@
         cell.width(cell.width());
       });
     }
+    this.addGrips();
     $(this.container_).sortable({
       update: this.order.bind(this),
       revert: true,
@@ -134,8 +139,14 @@
     // Si el contenedor es tabla fija el ancho
     var rows = $(this.element_).find('tr');
     [].forEach.call(rows, function(row) {
-      $(row).addClass('ui-state-disabled');
-    });
+      if (!$(row).hasClass(this.Constant_.UI_DISABLED)) {
+        $(row).addClass(this.Constant_.UI_DISABLED);
+      }
+      if ($(row).hasClass(this.Constant_.UI_HANDLE)) {
+        $(row).removeClass(this.Constant_.UI_HANDLE);
+      }
+    }, this);
+    this.removeGrips();
   };
 
   /**
@@ -146,10 +157,54 @@
     // Si el contenedor es tabla fija el ancho
     var rows = $(this.element_).find('tr');
     [].forEach.call(rows, function(row) {
-      if ($(row).hasClass('ui-state-disabled')) {
-        $(row).removeClass('ui-state-disabled');
+      if ($(row).hasClass(this.Constant_.UI_DISABLED)) {
+        $(row).removeClass(this.Constant_.UI_DISABLED);
       }
-    });
+      if (!$(row).hasClass(this.Constant_.UI_HANDLE)) {
+        $(row).addClass(this.Constant_.UI_HANDLE);
+      }
+    }, this);
+    this.addGrips();
+  };
+
+  /**
+  * Add grips to rows
+  */
+
+  FieloRecentReorder.prototype.addGrips = function() {
+    if (!this.hasGrips) {
+      this.hasGrips = true;
+      var rows = $(this.element_).find('tr');
+      rows = $(rows).not(rows[0]);
+      [].forEach.call(rows, function(row) {
+        if (!$(row).hasClass(this.CssClasses_.GRIPS)) {
+          $(row).addClass(this.CssClasses_.GRIPS);
+        }
+        if (!$(row).hasClass(this.CssClasses_.CURSOR)) {
+          $(row).addClass(this.CssClasses_.CURSOR);
+        }
+      }, this);
+    }
+  };
+
+  /**
+  * Add grips to rows
+  */
+
+  FieloRecentReorder.prototype.removeGrips = function() {
+    if (this.hasGrips) {
+      this.hasGrips = false;
+      var rows = $(this.element_).find('tr');
+      rows = $(rows).not(rows[0]);
+      [].forEach.call(rows, function(row) {
+        if ($(row).hasClass(this.CssClasses_.GRIPS)) {
+          $(row).removeClass(this.CssClasses_.GRIPS);
+        }
+        if ($(row).hasClass(this.CssClasses_.CURSOR)) {
+          $(row).removeClass(this.CssClasses_.CURSOR);
+        }
+      }, this);
+    }
   };
 
   /**
