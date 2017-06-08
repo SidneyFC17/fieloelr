@@ -55,7 +55,7 @@ public class QuestionResponses extends SObjectDomain {
         if(validateAdminFields){
             for(QuestionResponse__c questionResp : (List<QuestionResponse__c>)records){
                 if(((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsSubmitted__c){
-                    questionResp.addError('Cannot modify a question response already submitted.');
+                    questionResp.addError(Label.ValidateQuestionResponse);
                 }
 
                 if(questionResp.IsCorrect__c != ((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsCorrect__c){
@@ -91,7 +91,7 @@ public class QuestionResponses extends SObjectDomain {
 
         for(QuestionResponse__c questionResp : submittedRecords){
             if(existingSubmittedResponses.contains(questionResp.Key__c)){
-                questionResp.addError('The question cannot be submitted because was already answered correct.');
+                questionResp.addError(Label.ValidateQuestionResponseSubmit);
             }
         }
     }
@@ -129,7 +129,7 @@ public class QuestionResponses extends SObjectDomain {
         Set<Id> moduleResponseIds = new Set<Id>();
         for(QuestionResponse__c questionResp : questionResponses){
             if(questionResp.IsSubmitted__c){
-                questionResp.addError('Cannot delete question responses from a module that was already submitted.');
+                questionResp.addError(Label.ValidateQuestionResponseDelete);
             }
         }
     }

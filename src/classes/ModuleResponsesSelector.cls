@@ -102,6 +102,18 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                     getSObjectName() } ));
     }
 
+    public List<ModuleResponse__c> selectByIdHavingCourseStatus(Set<Id> recordIds) {
+      return (List<ModuleResponse__c>) Database.query(String.format(
+                'SELECT {0} ' +               
+                  'FROM {1} ' +
+                  'WHERE CourseStatus__c IN :recordIds' ,
+                 
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+    
     public List<AggregateResult> selectByKeyGroupByKey(Set<String> keys) {
         return [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : keys GROUP BY Key__c];
     }

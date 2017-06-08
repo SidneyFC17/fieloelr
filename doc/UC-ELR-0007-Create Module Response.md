@@ -84,7 +84,7 @@ A module response was created
  
 ##### 10. The related course subscription mode is automatic and the course status does not exist (step 10 of basic flow)
    1. The system verifies that the related course subscription mode is automatic and the related course status does not exists
-   2. The system automatically creates the related course status
+   2. The system calls the Use Case [*Create Course Status*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0013-Create%20Course%20Status.md)
    3. Back to step 11 of basic flow
  
 ##### 11. The administrator sets the “IsApproved” field to “true” (step 12 of basic flow)

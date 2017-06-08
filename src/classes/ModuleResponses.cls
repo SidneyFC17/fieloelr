@@ -90,7 +90,7 @@ public class ModuleResponses extends SObjectDomain {
             String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
 
             if(mrKeysWithError.contains(moduleResponse.Key__c)){
-                moduleResponse.addError('The member didn\'t approve the dependent Modules');
+                moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
                 continue;
             }
             
@@ -98,7 +98,7 @@ public class ModuleResponses extends SObjectDomain {
             for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
                 String dependentKey = String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
                 if(!approvedMRKeys.contains(dependentKey)){
-                    moduleResponse.addError('The member didn\'t approve the dependent Modules');
+                    moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
                     mrKeysWithError.add(moduleResponse.Key__c);
                     errorDependency = true;
                     break;
@@ -112,7 +112,7 @@ public class ModuleResponses extends SObjectDomain {
                 moduleResponse.CourseStatus__c = existingCSMap.get(cskey).Id;
             }else{
                 if(modulesMap.get(moduleResponse.Module__c).Course__r.SubscriptionMode__c == 'Manual'){
-                    moduleResponse.addError('The member is not registered in the related course.');
+                    moduleResponse.addError(Label.ValidateModuleResponseRegisteredMember);
                 }else{
                     if(!newCourseStatusMap.containsKey(cskey)){
                         CourseStatus__c cs = new CourseStatus__c(Course__c = modulesMap.get(moduleResponse.Module__c).Course__c, Member__c = moduleResponse.Member__c);
@@ -162,7 +162,7 @@ public class ModuleResponses extends SObjectDomain {
         if(validateAdminFields){
             for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
                 if(((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsSubmitted__c){
-                    moduleResponse.addError('Cannot modify a moduleResponse that was already submitted.');
+                    moduleResponse.addError(Label.ValidateModuleResponseSubmitted);
                 }
                 if(moduleResponse.IsApproved__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c){
                     moduleResponse.IsApproved__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c;
