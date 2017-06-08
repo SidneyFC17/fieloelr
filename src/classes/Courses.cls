@@ -33,8 +33,11 @@ public class Courses extends SObjectDomain{
 
     public override void onValidate(Map<Id,SObject> existingRecords) {
         //before update
-        if(validateAdminFields){
-            for(Course__c course : (List<Course__c>)records){
+        for(Course__c course : (List<Course__c>)records){
+            if(String.isBlank(course.SubscriptionMode__c)){
+                course.SubscriptionMode__c = 'Manual';
+            }        
+            if(validateAdminFields){
                 if(course.ActiveModules__c != ((Course__c)(existingRecords.get(course.Id))).ActiveModules__c) {
                     course.ActiveModules__c = ((Course__c)(existingRecords.get(course.Id))).ActiveModules__c;
                 }
