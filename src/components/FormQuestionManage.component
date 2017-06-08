@@ -54,8 +54,7 @@
             		fieldset="{!fieldset}"
             		mode="update"
             		layout="{!layout}"/>
-				<c:Sections
-            		formId="{!formId}-questionsection"
+				<c:Sections formId="{!formId}-questionsection"
             		sObjectName="{!sRecentObjectName}"
             		fieldset="{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
             		mode="{!mode}"
@@ -85,7 +84,7 @@
             </div>
             <div class="slds-modal__footer">
                 <a data-aljs-dismiss="modal" class="slds-button slds-button--neutral fielosf-question-manage__cancel">{!$Label.Cancel}</a>
-                <a data-aljs-dismiss="modal" class="slds-button slds-button--brand fielosf-question-manage__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
+                <a class="slds-button slds-button--brand fielosf-question-manage__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
             </div>          
         </div>
     </div>
