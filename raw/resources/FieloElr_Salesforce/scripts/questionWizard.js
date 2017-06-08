@@ -542,9 +542,11 @@
   };
 
   FieloQuestionWizard.prototype.radioChoice = function(source) {
-    if (this.questionType_.FieloFormElement.get('value') ===
+    var typeField = $(this.form_)
+      .find('[data-field-name="FieloELR__Type__c"]')[0];
+    if (typeField.FieloFormElement.get('value') ===
         'Single Choice' ||
-        this.questionType_.FieloFormElement.get('value') ===
+        typeField.FieloFormElement.get('value') ===
         'Statement') {
       var isCorrectFields = $(this.form_)
         .find('table')
