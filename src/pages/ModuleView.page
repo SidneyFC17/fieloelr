@@ -77,7 +77,7 @@
         		formId="FieloELR__Question__cFormManage"
 				heading="Manage {!$ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 				sObjectName="{!objectName}"
-				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'picklist'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
+				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'radio'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
 				sRecentFieldset="{!rel.FieloPLT__Fieldset__c}"
 				dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
 				sRecentObjectName="{!rel.FieloPLT__TargetObject__c}"
@@ -97,7 +97,9 @@
         </apex:panelGroup>
 
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__ModuleDependency__c'}">
-          <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+          <c:RelatedList namespace="FieloELR" 
+          	relatedId="FieloELR__ModuleDependency__cRelatedList"
+          	heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
             icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
             sObjectName="{!rel.FieloPLT__TargetObject__c}"
             dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
@@ -128,7 +130,22 @@
             	</apex:panelGroup>
             </apex:repeat>
         </apex:panelGroup>
-        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__ModuleDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Question__c'}">
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__ModuleResponse__c'}">
+	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
+	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
+	            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+	            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+	            fieldset="{!rel.FieloPLT__Fieldset__c}"
+	            buttons="{!rel.FieloPLT__Buttons__c}"
+	            tools="{!rel.FieloPLT__Tools__c}"
+	            actions="{!rel.FieloPLT__Actions__c}"
+	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+	            showPaginator="true"
+	            nameField="FieloELR__Member__r.Name"
+	            />
+        </apex:panelGroup>
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__ModuleDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Question__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__ModuleResponse__c'}">
 	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
 	            sObjectName="{!rel.FieloPLT__TargetObject__c}"

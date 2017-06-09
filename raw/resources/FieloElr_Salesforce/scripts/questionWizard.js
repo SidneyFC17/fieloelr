@@ -29,7 +29,8 @@
     SAVE_CONTROLLER: 'FieloELR.LevelReorderController.reorder',
     DATA_CONTROLLER: 'data-controller-element',
     DATA_UPGRADED: 'data-upgraded',
-    FORM_ID: 'FieloELR__Question__cFormWizard'
+    FORM_ID: 'FieloELR__Question__cFormWizard',
+    FORM_ID_SUFIX: 'multiplechoice'
   };
 
   /**
@@ -497,6 +498,10 @@
         typeField.FieloFormElement.set('value',
           this.questionType_.FieloFormElement.get('value')
         );
+        this.formLabel.innerHTML = this.formLabelText;
+        this.formLabel.innerHTML =
+          this.formLabel.innerHTML + ': ' +
+            typeField.FieloFormElement.get('value');
       }
     }
     $($(this.form_)
@@ -834,11 +839,15 @@
     if (this.element_) {
       this.element_.getElementsByClassName(this.CssClasses_.NEXT)[0]
         .addEventListener('click', this.next_.bind(this));
-      this.reorderObject = 
+      this.reorderObject =
         $('.' + this.CssClasses_.ANSWER_OPTIONS)[0]
           .FieloRecentReorder;
       this.formId_ =
         this.element_.getAttribute('form-id');
+      this.formLabel =
+        $('#' + this.formId_ + '-' + this.Constant_.FORM_ID_SUFIX +
+          '-headerModal')[0];
+      this.formLabelText = this.formLabel.innerHTML;
       if (this.reorderObject) {
         this.reorderObject.disableReorder = true;
       }

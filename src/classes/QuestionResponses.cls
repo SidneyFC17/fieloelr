@@ -226,7 +226,7 @@ public class QuestionResponses extends SObjectDomain {
                         penaltyMode == 'Percent Decrease' ?
                                 isCorrectInt * (questionWeight * Math.pow((1 - penaltyPerQuestion / 100),questionRespAttempts-1)) :
                                 penaltyMode == 'Negative Weight' ?
-                                    (isCorrectInt * questionWeight + (isCorrectInt - 1) * incorrectWeight) :
+                                    (isCorrectInt * questionWeight + (1 - isCorrectInt) * incorrectWeight) :
                                     isCorrectInt * questionWeight;
                 }
             }

@@ -681,13 +681,9 @@
       [].forEach.call(Object.keys(this.elements_), function(field) {
         if (field === 'FieloELR__WeightedQuestions__c' ||
             field === 'FieloELR__ShuffleQuestions__c' ||
-            field === 'FieloELR__QuestionPool__c') {
+            field === 'FieloELR__QuestionPool__c' ||
+            field === 'FieloELR__PenaltyMode__c') {
           this.elements_[field].addEventListener('change',
-            this.changeForm.bind(this));
-          componentHandler.upgradeElement(this.elements_[field]);
-        }
-        if (field === 'FieloELR__PenaltyMode__c') {
-          this.elements_[field].addEventListener('pointerleave',
             this.changeForm.bind(this));
           componentHandler.upgradeElement(this.elements_[field]);
         }

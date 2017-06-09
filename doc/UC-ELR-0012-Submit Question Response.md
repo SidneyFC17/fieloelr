@@ -46,8 +46,8 @@ The partial grade value was calculated
    
 ###### *Note 1*
 ###### The partial grade is calculated by the following formula:
-######          CW x (1 - IW (%)) ⌃ (AN - 1)
+######          CW x (1 - PA (%)) ⌃ (AN - 1)
 ###### where: 	CW = Correct Weight
-###### IW = Incorrect Weight
+###### PA = Penalty per Attempt
 ###### AN = Attempt Number
 
