@@ -154,7 +154,11 @@ public with sharing class CourseService {
 
 	public static ModuleResponse__c submitModuleResponse (ModuleResponse__c moduleResponse, List<QuestionResponseWrapper> questionWrappers){
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{ModuleResponse__c.SObjectType, QuestionResponse__c.SObjectType, Answer__c.SObjectType});
-		uow.registerNew(moduleResponse);
+		if(moduleResponse.Id != null){
+			uow.registerNew(moduleResponse);
+		}else{
+			uow.registerDirty(moduleResponse);
+		}
 		for(QuestionResponseWrapper qw : questionWrappers){
 			uow.registerNew(qw.questionResponse, QuestionResponse__c.ModuleResponse__c, moduleResponse);
 			for(Answer__c answer : qw.answers){
@@ -320,6 +324,7 @@ public with sharing class CourseService {
 			}
 		}
 
+		system.debug(queryCourses);
 		return Database.query(queryCourses);
 	}
 
@@ -335,7 +340,6 @@ public with sharing class CourseService {
 			return '';
 		}
 
-		String whereCondition = '';
 		Map<String,String> operatorsMap = new Map<String,String>{'eq'=>'=','gt'=>'>'};
 		Set<String> andoroperators = new Set<String>{'and','or'};
 		Set<String> nonQuotedTypes = new Set<String>{'DOUBLE','DATETIME','DATE','CURRENCY','INTEGER','BOOLEAN','PERCENT','TIME'};
@@ -345,8 +349,8 @@ public with sharing class CourseService {
 			throw new FieloPLT.FieloException('And_Or Operator for the first condition must be blank.');
 		}
 
-		whereCondition = '(' + whereCondition;
-
+		String whereCondition = '(';
+		Integer position = 0;
 		for(FilterWrapper filter : filterWrappers){
 			if(String.isBlank(filter.field) || !fieldsTypeMap.containsKey(filter.field)){
 				throw new FieloPLT.FieloException('Field ' + filter.field + ' not found in object.');
@@ -358,6 +362,10 @@ public with sharing class CourseService {
 
 			if(!String.isBlank(filter.andOrOperator) && !andoroperators.contains(filter.andOrOperator)){
 				throw new FieloPLT.FieloException('And_Or Operator ' + filter.andOrOperator + ' not found.');
+			}
+
+			if(position != 0 && String.isBlank(filter.andOrOperator)){
+				throw new FieloPLT.FieloException('And_Or Operator must be null only for the first condition.');
 			}
 
 			//whereCondition = '(' + whereCondition;
@@ -373,9 +381,10 @@ public with sharing class CourseService {
                 whereCondition += filter.field + ' = \'' + filter.value + '\'';
             }
             //whereCondition += ')';
+            position++;
 		}
 
-		whereCondition = ')';
+		whereCondition += ')';
 		return whereCondition;
 	}
 

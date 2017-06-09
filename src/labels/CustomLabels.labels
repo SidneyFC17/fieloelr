@@ -3361,7 +3361,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseEndDate</shortDescription>
-        <value>Can not edit Course because End Date was modified.</value>
+        <value>Cannot edit the End Date of an active Course already associated to a member.</value>
     </labels>
     <labels>
         <fullName>ValidateCourseErrorDelete</fullName>
@@ -3369,7 +3369,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseErrorDelete</shortDescription>
-        <value>Can not delete Course because it is Active.</value>
+        <value>Cannot delete an active Course with already associated to a member.</value>
     </labels>
     <labels>
         <fullName>ValidateCourseErrorSegment</fullName>
@@ -3377,7 +3377,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseErrorSegment</shortDescription>
-        <value>Can not edit Course because Segment was modified.</value>
+        <value>Cannot edit the Segment of an active Course already associated to a member.</value>
     </labels>
     <labels>
         <fullName>ValidateCourseErrorSubscriptionMode</fullName>
@@ -3385,7 +3385,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseErrorSubscriptionMode</shortDescription>
-        <value>Can not edit Course because Subscription Mode was modified.</value>
+        <value>Cannot edit the Subscription Mode of an active Course already associated to a member.</value>
     </labels>
     <labels>
         <fullName>ValidateCourseStartDate</fullName>
@@ -3393,7 +3393,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseStartDate</shortDescription>
-        <value>Can not edit Course because Start Date was modified.</value>
+        <value>Cannot edit the Start Date of an active Course already associated to a member.</value>
     </labels>
     <labels>
         <fullName>ValidateCourseStatus</fullName>
@@ -3401,7 +3401,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseStatus</shortDescription>
-        <value>Can not edit Course because Course Status was modified.</value>
+        <value>Cannot edit the Status of an active Course already associated to a member.</value>
     </labels>
     <labels>
         <fullName>ValidateCourseStatusErrorPredecessorIncomplete</fullName>
