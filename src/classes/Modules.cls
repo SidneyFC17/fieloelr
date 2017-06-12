@@ -71,8 +71,9 @@ public class Modules extends SObjectDomain {
 					Check if any of these fields were modified:   
 					IsActive / Attempts Allowed / Approval Grade / Penalty Mode
 					Question Pool / Attempts Allowed per question / Weighted questions
-				*/    
-				if(!(module.IsActive__c) || 
+				*/ 
+				//
+				if(!(module.IsActive__c) ||   
 						oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
 						oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
 						oldModule.PenaltyMode__c != module.PenaltyMode__c || 
@@ -231,7 +232,8 @@ public class Modules extends SObjectDomain {
      	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType, Question__c.SObjectType});
      	deleteModuleDependencies(uow);
      	deleteQuestions(uow);
-     	updateCourses(null, activeModules, uow);
+     	if(!Courses.isDelete)
+     		updateCourses(null, activeModules, uow);
      	Courses.validateAdminFields = false;
      	Questions.validateAdminFields = false;
      	uow.commitWork();
