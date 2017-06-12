@@ -1,4 +1,5 @@
-public with sharing class CourseService {
+global with sharing class CourseService {
+	
 	public static List<Course__c> getCourses(Set<String> fields, Set<String> status, Id programId, Integer quantity, Integer offset, String orderBy) {   
 		String query = 'SELECT ' + String.join(new List<String>(fields), ',') + ' FROM Course__c ';
 		// WHERE CONDITION 
@@ -27,241 +28,7 @@ public with sharing class CourseService {
 		return Database.query(query);
 	}
 
-	public class ModuleWrapper{
-		public Module__c module {get; set;}
-		public List<Question__c> questions {get; set;}
-	}
-
-	//Take module
-	//TODO random the matching
-	public static ModuleWrapper getModule(Id moduleId, Set<String> fieldsModule, Set<String> fieldsModuleDependency, Set<String> fieldsQuestion, Set<String> fieldsAnswerOption) {   
-		ModuleWrapper moduleWrapper = new ModuleWrapper();
-		
-		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
-		fieldsModuleClone.add('QuestionPool__c');
-		String moduleQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleClone), ',');
-		if(fieldsModuleDependency != null){
-			moduleQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleDependency), ',') + ' FROM PredecessorModules__r) ';
-		}
-		moduleQuery += ' FROM Module__c WHERE Id =: moduleId ';
-		moduleWrapper.module = Database.query(moduleQuery);
-
-		if(fieldsQuestion != null){
-			Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
-			fieldsQuestionClone.add('Type__c');
-			String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
-			if(fieldsAnswerOption != null){
-				questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
-			}
-			questionQuery += ' FROM Question__c WHERE Module__c =: moduleId ORDER BY OrderFormula__c';
-			
-			if(moduleWrapper.module.QuestionPool__c != null){
-				questionQuery += ' LIMIT ' + moduleWrapper.module.QuestionPool__c;
-			}
-
-			moduleWrapper.questions = Database.query(questionQuery);
-
-			if(fieldsAnswerOption != null){
-				for(Question__c q : moduleWrapper.questions){
-					if(q.Type__c == 'Matching'){
-						List<String> matchesOptions = new List<String>();
-						for(AnswerOption__c ao : q.AnswerOptions__r){
-							matchesOptions.add(ao.MatchingText__c);
-						}
-
-						for(AnswerOption__c ao : q.AnswerOptions__r){
-							Integer randomPosition = Math.floor(Math.random() * matchesOptions.size()).intValue();
-							ao.MatchingText__c = matchesOptions[randomPosition];
-							matchesOptions.remove(randomPosition);
-						}
-					}
-				}
-			}
-		}
-
-		return moduleWrapper;
-	}
-
-	public static List<Question__c> getQuestions(Id moduleId,
-									  Set<Id> excludedQuestionIds,
-									  Set<String> fieldsQuestion,
-									  Set<String> fieldsAnswerOption,
-									  Integer quantity,
-									  Integer offset) {
-		String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestion), ',');
-		if(fieldsAnswerOption != null){
-			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
-		}
-		questionQuery += ' FROM Question__c WHERE Module__c =: moduleId';
-		if(excludedQuestionIds != null){
-			questionQuery += ' AND Id NOT in : excludedQuestionIds';
-		}
-		questionQuery += ' ORDER BY OrderFormula__c';
-		
-		Module__c module = [SELECT QuestionPool__c FROM Module__c WHERE Id =: moduleId];
-
-		if(module.QuestionPool__c != null){
-			if(quantity != null && quantity < module.QuestionPool__c){
-				questionQuery += ' LIMIT ' + quantity;
-			}else{
-				questionQuery += ' LIMIT ' + module.QuestionPool__c;
-			}
-		}else{
-			if(quantity != null){
-				questionQuery += ' LIMIT ' + quantity;
-			}
-		}
-
-		if(offset != null){
-			questionQuery += ' OFFSET ' + offset;
-		}
-
-		return Database.query(questionQuery);
-	}
-
-	public static QuestionResponse__c submitQuestion (QuestionResponse__c questionResponse, List<Answer__c> answers){
-		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType, Answer__c.SObjectType});
-		uow.registerNew(questionResponse);
-		for(Answer__c answer : answers){
-			uow.registerNew(answer, Answer__c.QuestionResponse__c, questionResponse);
-		}
-
-		SavePoint sp = Database.setSavePoint();
-		try{
-			uow.commitWork();
-		}catch(Exception e){
-			Database.rollback(sp);
-			throw e;
-		}
-
-		uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType});
-		questionResponse.IsSubmitted__c = true;
-		uow.registerDirty(questionResponse);
-		try{
-			uow.commitWork();
-		}catch(Exception e){
-			Database.rollback(sp);
-			throw e;
-		}
-
-		return [SELECT Id, Name, ModuleResponse__c, Question__c, IsSubmitted__c, IsCorrect__c FROM QuestionResponse__c WHERE Id =: questionResponse.Id];
-	}
-
-	public class QuestionResponseWrapper{
-		public QuestionResponse__c questionResponse {get; set;}
-		public List<Answer__c> answers {get; set;}
-	}
-
-	public static ModuleResponse__c submitModuleResponse (ModuleResponse__c moduleResponse, List<QuestionResponseWrapper> questionWrappers){
-		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{ModuleResponse__c.SObjectType, QuestionResponse__c.SObjectType, Answer__c.SObjectType});
-		if(moduleResponse.Id != null){
-			uow.registerNew(moduleResponse);
-		}else{
-			uow.registerDirty(moduleResponse);
-		}
-		for(QuestionResponseWrapper qw : questionWrappers){
-			uow.registerNew(qw.questionResponse, QuestionResponse__c.ModuleResponse__c, moduleResponse);
-			for(Answer__c answer : qw.answers){
-				uow.registerNew(answer, Answer__c.QuestionResponse__c, qw.questionResponse);
-			}
-		}
-
-		SavePoint sp = Database.setSavePoint();
-		try{
-			uow.commitWork();
-		}catch(Exception e){
-			Database.rollback(sp);
-			throw e;
-		}
-
-		uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{ModuleResponse__c.SObjectType});
-		moduleResponse.IsSubmitted__c = true;
-		uow.registerDirty(moduleResponse);
-		try{
-			uow.commitWork();
-		}catch(Exception e){
-			Database.rollback(sp);
-			throw e;
-		}
-
-		return [SELECT Id, Name, Member__c, Module__c, IsSubmitted__c, IsApproved__c, GradePercent__c FROM ModuleResponse__c WHERE Id =: moduleResponse.Id];
-	}
-
-	public class ModuleResponseWrapper{
-		public ModuleResponse__c moduleResponse {get; set;}
-		public List<QuestionWrapper> questions {get; set;}
-
-		public ModuleResponseWrapper(ModuleResponse__c moduleResponse){
-			this.moduleResponse = moduleResponse;
-			this.questions = new List<QuestionWrapper>();
-		}
-	}
-	
-	public class QuestionWrapper{
-		public Question__c question;
-		public List<QuestionResponse__c> questionResponses;
-
-		public QuestionWrapper(Question__c question, List<QuestionResponse__c> questionResponses){
-			this.question = question;
-			this.questionResponses = questionResponses;
-		}
-	}
-
-	public static ModuleResponseWrapper getModuleResponse(Id moduleResponseId,
-									  Set<String> fieldsModuleResponse,
-									  Set<String> fieldsQuestion,
-									  Set<String> fieldsQuestionResponse,
-									  Set<String> fieldsAnswerOption,
-									  Set<String> fieldsAnswer) {
-
-		//sacar module id
-
-		//query de question con answer options
-
-		//query de question responses con answer
-
-
-		//query moduleresponse con module
-		
-		String moduleResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',');
-		moduleResponseQuery += ' FROM ModuleResponse__c WHERE Id =: moduleResponseId ';
-		ModuleResponseWrapper moduleResponseWrapper = new ModuleResponseWrapper(Database.query(moduleResponseQuery));
-
-		if(fieldsQuestionResponse != null){
-			Set<String> fieldsQuestionResponseClone = new Set<String>(fieldsQuestionResponse);
-			fieldsQuestionResponseClone.add('Question__c');
-			String questionResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionResponseClone), ',');
-			if(fieldsAnswer != null){
-				questionResponseQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswer), ',') + ' FROM Answers__r)';
-			}
-			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId';
-			List<QuestionResponse__c> questionResponses = Database.query(questionResponseQuery);
-
-			Map<Id,List<QuestionResponse__c>> responsesByQuestion = new Map<Id,List<QuestionResponse__c>>();
-			for(QuestionResponse__c qr : questionResponses){
-				if(responsesByQuestion.containsKey(qr.Question__c)){
-					responsesByQuestion.get(qr.Question__c).add(qr);
-				}else{
-					responsesByQuestion.put(qr.Question__c, new List<QuestionResponse__c>{qr});
-				}
-			}
-			
-			String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestion), ',');
-			if(fieldsAnswerOption != null){
-				questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r)';
-			}
-			Set<Id> questionIds = responsesByQuestion.keySet();
-			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
-			
-			for(Question__c question : Database.query(questionQuery)){
-				moduleResponseWrapper.questions.add(new QuestionWrapper(question, responsesByQuestion.get(question.Id)));
-			}
-		}
-
-		return moduleResponseWrapper;
-	}
-
-	public static List<Course__c> getCourses(Set<String> fieldsCourse, 
+	global static List<Course__c> getCourses(Set<String> fieldsCourse, 
 											Set<String> fieldsCourseDependency,
 											Set<String> fieldsModule,
 											Set<Id> courseIds, 
@@ -396,7 +163,7 @@ public with sharing class CourseService {
 	}
 
 	//active courses
-	public static List<CourseStatus__c> getCourseStatus(Set<String> fieldsCourseStatus,
+	global static List<CourseStatus__c> getCourseStatus(Set<String> fieldsCourseStatus,
 											Set<String> fieldsModuleResponse, 
 											Set<Id> courseIds, 
 											Id memberId, 
@@ -426,44 +193,44 @@ public with sharing class CourseService {
 		return Database.query(queryCourseStatus);
 	}
 
-	public class CourseWrapper{
-		public Course__c course;
-		public CourseStatus__c courseStatus;
-		public Boolean allowedForSegment;
-		public Boolean allowedForDependency;
-		public List<ModuleRowWrapper> modules;
+	global class CourseWrapper{
+		global Course__c course {get; private set;}
+		global CourseStatus__c courseStatus {get; private set;}
+		global Boolean allowedForSegment {get; private set;}
+		global Boolean allowedForDependency {get; private set;}
+		global List<ModuleWrapper> modules {get; private set;}
 
 		public CourseWrapper(Course__c course, CourseStatus__c courseStatus){
 			this.course = course;
-			this.modules = new List<ModuleRowWrapper>();
+			this.modules = new List<ModuleWrapper>();
 			this.allowedForSegment = true;
 			this.allowedForSegment = allowedForDependency;
 			this.courseStatus = courseStatus;
 		}
 	}
 
-	public class ModuleRowWrapper{
-		public Module__c module;
-		public Boolean allowedForDependency;
-		public Integer numberOfAttempts;
-		public Integer average;
-		public List<ModuleResponse__c> moduleResponses;
-		public List<ModuleDependency__c> dependencies;
+	global class ModuleWrapper{
+		global Module__c module {get; private set;}
+		global Boolean allowedForDependency {get; private set;}
+		global Integer numberOfAttempts {get; private set;}
+		//public Integer average;
+		global List<ModuleResponse__c> moduleResponses {get; private set;}
+		global List<ModuleDependency__c> dependencies {get; private set;}
 
-		public ModuleRowWrapper(Module__c module, List<ModuleResponse__c> moduleResponses){
+		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses){
 			this(module);
 			this.moduleResponses = moduleResponses;
 			this.numberOfAttempts = this.moduleResponses.size();
 		}
 
-		public ModuleRowWrapper(Module__c module){
+		public ModuleWrapper(Module__c module){
 			this.module = module;
 			this.allowedForDependency = true;
 		}
 	}
 
 	//active courses
-	public static List<CourseWrapper> getCoursesMap(Set<String> fieldsCourse, 
+	global static List<CourseWrapper> getCoursesMap(Set<String> fieldsCourse, 
 											Set<String> fieldsCourseStatus,
 											Set<String> fieldsCourseDependency,
 											Set<String> fieldsModule,
@@ -544,7 +311,7 @@ public with sharing class CourseService {
 
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
-					ModuleRowWrapper mw = cs != null ? new ModuleRowWrapper(module, cs.ModuleResponses__r) : new ModuleRowWrapper(module);
+					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, cs.ModuleResponses__r) : new ModuleWrapper(module);
 					if(!filterByDependecies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					}
@@ -560,7 +327,7 @@ public with sharing class CourseService {
 		return courseWrappers;
 	}
 
-	public static Set<String> getCDStringKeys(List<Course__c> courses, Id memberId){
+	private static Set<String> getCDStringKeys(List<Course__c> courses, Id memberId){
 		String cdQuery = 'SELECT Course__c, Predecessor__c FROM CourseDependency__c WHERE Predecessor__c in (SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId AND Progress__c = 100';
 		if(courses != null){
 			cdQuery += ' AND Course__c in : courses) AND Course__c in : courses';
@@ -585,7 +352,7 @@ public with sharing class CourseService {
 		return cdStringKeys;
 	}
 
-	public static Set<String> getMDStringKeys(List<Module__c> modules, Id memberId){
+	private static Set<String> getMDStringKeys(List<Module__c> modules, Id memberId){
 		String mdQuery = 'SELECT Module__c, Predecessor__c FROM ModuleDependency__c WHERE Predecessor__c in (SELECT Module__c FROM ModuleResponse__c WHERE Member__c =: memberId AND IsApproved__c = true AND Module__c in : modules) AND Module__c in : modules';
 		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
 		for(ModuleDependency__c md : Database.query(mdQuery)){
@@ -604,6 +371,23 @@ public with sharing class CourseService {
 		}
 		return mdStringKeys;
 	}
+
+	public static void setCourseStatus(Set<Id> courseIds, String newStatus) {
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{Course__c.SObjectType});
+		Course__c course;
+		for(Id courseId : courseIds) {
+			course = new Course__c(Id = courseId, Status__c = newStatus);
+			uow.registerDirty(course);
+		}
+		SavePoint sp = Database.setSavePoint();
+		try{
+			uow.commitWork();
+		}catch(Exception e){
+			Database.rollback(sp);
+			throw e;
+		}
+	}
+		
 	//active courses
 	/*public static List<CourseWrapper> getCourses(Set<String> fieldsCourse, 
 											Set<String> fieldsCourseStatus,
@@ -732,7 +516,7 @@ public with sharing class CourseService {
 
 				if(modulesByCourse.containsKey(c.Id)){
 					for(Module__c module : modulesByCourse.get(c.Id)){
-						ModuleRowWrapper mw = new ModuleRowWrapper(module);
+						ModuleWrapper mw = new ModuleWrapper(module);
 						if(!filterByDependecies){
 							if(module.HasDependencies__c){
 								mw.enabled = mdStringKeys.contains(module.KeyDependencies__c);
@@ -748,7 +532,7 @@ public with sharing class CourseService {
 				CourseWrapper cw = new CourseWrapper(c);
 				if(modulesByCourse.containsKey(c.Id)){
 					for(Module__c module : modulesByCourse.get(c.Id)){
-						cw.modules.add(new ModuleRowWrapper(module));
+						cw.modules.add(new ModuleWrapper(module));
 					}
 				}
 				courseWrappers.add(cw);
