@@ -74,7 +74,7 @@ public class CourseStatus extends SObjectDomain {
         List<CourseStatus__c> selectedRecords = new List<CourseStatus__c>();
         for (CourseStatus__c courseStatus : records){
             if(membersMap.get(courseStatus.Member__c).FieloPLT__Program__c != coursesMap.get(courseStatus.Course__c).Program__c) {
-                courseStatus.addError('The member should belong to the course\'s program.');
+                courseStatus.addError(Label.MemberShouldBelongToCourseProgram);
             } else {
                 selectedRecords.add(courseStatus);
             }
@@ -118,7 +118,7 @@ public class CourseStatus extends SObjectDomain {
             //validate segmentation
             if(course.Segment__c != null && segmentsByMember.containsKey(courseStatus.Member__c)){
                 if(!segmentsByMember.get(courseStatus.Member__c).contains(course.Segment__c)){
-                    courseStatus.addError('The member does not apply to the course\'s segment');
+                    courseStatus.addError(Label.MemberDoesntApplyToCourseSegment);
                 }
             }
 

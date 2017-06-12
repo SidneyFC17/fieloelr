@@ -55,12 +55,12 @@ public with sharing class CourseViewController extends PageSettingsController {
         }
 
         String standardTools = '';
-        PageReference exportPage = Page.FieloPLT__XMLExport;
+        PageReference exportPage = Page.JSONExport;
 		exportPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
 		exportPage.getParameters().put( 'courseId', recordId );
-		exportPage.getParameters().put( 'type', 'course' );
+		exportPage.getParameters().put( 'type', 'courses' );
 
-		/*
+		
 		buttonList = new List<Map<String,Object>>();
 		buttonList.add(new Map<String,Object>{
             'Label' => 'Export',
@@ -68,11 +68,11 @@ public with sharing class CourseViewController extends PageSettingsController {
             'Action' => exportPage.getUrl()
         });
 
-		toolsString = JSON.serialize(buttonList);
-        toolsString = toolsString.substring(1,toolsString.length()-1);
-		*/
+		standardTools = JSON.serialize(buttonList);
+        standardTools = standardTools.substring(1,standardTools.length()-1);
+		
 
-		initPageSettings(objectName, record, buttonString, '', '');
+		initPageSettings(objectName, record, buttonString, standardTools, '');
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 
@@ -159,7 +159,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         	}
         	upsert record;
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
     		if(sp != null){
@@ -188,7 +188,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         	upsert (Module__c) record;
 
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DMLException e){
     		if(sp != null){
@@ -218,7 +218,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         	upsert (CourseDependency__c) record;
 
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + ((CourseDependency__c)record).Course__c;
     	}catch(DMLException e){
     		if(sp != null){
@@ -292,7 +292,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			Course__c record = new Course__c ( Id = recordId, Status__c = 'Active');
 			update record;
 			
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'The Course has been activated') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseActivated) );
 
 			result.redirectURL = '/' + recordId;
 
@@ -311,7 +311,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			Course__c record = new Course__c ( Id = recordId, Status__c = 'Inactive');
 			update record;
 			
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'The Course has been inactivated') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseInactivated) );
 
 			result.redirectURL = '/' + recordId;
 

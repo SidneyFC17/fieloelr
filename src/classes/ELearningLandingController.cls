@@ -21,12 +21,12 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
             String standardTools  = '';
             String standardButtons = '';
 
-            PageReference exportPage = Page.FieloPLT__XMLExport;
+            PageReference exportPage = Page.JSONExport;
             exportPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
-            exportPage.getParameters().put( 'type', 'elearning' );
-            PageReference importPage = Page.FieloPLT__XMLImport;
+            exportPage.getParameters().put( 'type', 'courses' );
+            PageReference importPage = Page.JSONImport;
             importPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
-            importPage.getParameters().put( 'type', 'elearning' );
+            importPage.getParameters().put( 'type', 'courses' );
 
             standardTools = '{"Label": "Export", "Type": "Link", "Action": "' + exportPage.getUrl() + '" }';
             standardTools += ',{"Label": "Import", "Type": "Link", "Action": "' + importPage.getUrl() + '" }';
@@ -140,7 +140,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
             
             //TODO Crear Label DataSavedSuccessfully
             if ( record.Id != null ) {
-                result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Course was created successfully') );
+                result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseCreated) );
                 result.redirectURL = '/' + record.Id;
             }
         }catch(DmlException e){

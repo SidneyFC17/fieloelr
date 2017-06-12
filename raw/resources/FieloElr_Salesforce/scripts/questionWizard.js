@@ -29,7 +29,6 @@
     SAVE_CONTROLLER: 'FieloELR.LevelReorderController.reorder',
     DATA_CONTROLLER: 'data-controller-element',
     DATA_UPGRADED: 'data-upgraded',
-    FORM_ID: 'FieloELR__Question__cFormWizard',
     FORM_ID_SUFIX: 'multiplechoice'
   };
 
@@ -157,7 +156,7 @@
     fielo.util.spinner.FieloSpinner.show();
     this.result = result;
     // Set form type
-    $('#' + this.Constant_.FORM_ID)
+    $('#' + this.formId_)
       .find('[data-field-name="FieloELR__Type__c"]')[0]
         .FieloFormElement.set('value',
           result.FieloELR__Type__c);
@@ -353,23 +352,24 @@
     if (questionValues.FieloELR__QuestionText__c === '' ||
       questionValues.FieloELR__QuestionText__c === null ||
       questionValues.FieloELR__QuestionText__c === undefined) {
-      errorMsgs.add('Question Text is a required field');
+      errorMsgs.add(BackEndJSSettings.LABELS.QuestionTextRequired);
     }
 
     answerOptionValues.forEach(function(row) {
-      if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
+      if (questionValues.FieloELR__Type__c === 'Short Answer' ||
+        questionValues.FieloELR__Type__c === 'Matching Options') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
       }
       if (questionValues.FieloELR__Type__c === 'Matching Options') {
         if (row.FieloELR__MatchingText__c === '' ||
           row.FieloELR__MatchingText__c === undefined ||
           row.FieloELR__MatchingText__c === null) {
-          row.error = 'Matching Text is required field';
+          row.error = BackEndJSSettings.LABELS.MatchingTextRequired;
         }
       } else if (row.FieloELR__AnswerOptionText__c === '' ||
         row.FieloELR__AnswerOptionText__c === null ||
         row.FieloELR__AnswerOptionText__c === undefined) {
-        row.error = 'Answer Option Text is a required field';
+        row.error = BackEndJSSettings.LABELS.AnswerOptionTextRequired;
       }
       [].forEach.call(Object.keys(row), function(field) {
         if (row[field] === '' ||
@@ -425,7 +425,7 @@
   };
 
   FieloQuestionWizard.prototype.next_ = function() {
-    this.questionType_ = $('#' + this.Constant_.FORM_ID)
+    this.questionType_ = $('#' + this.formId_)
       .find('[data-field-name="FieloELR__Type__c"]')[0];
     this.formIdSufix_ = '';
     if (this.questionType_) {
@@ -459,7 +459,7 @@
     }
     if (this.formIdSufix_ === 'error' ||
         this.formIdSufix_ === '') {
-      this.throwMessage('error', ['Must choose a question type.']);
+      this.throwMessage('error', [BackEndJSSettings.LABELS.ChooseQuestionType]);
     } else if (!$(this.form_).is(':visible')) {
       $(this.element_)
         .find('.' + this.CssClasses_.NEXT + '-' + this.formIdSufix_)[0]

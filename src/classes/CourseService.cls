@@ -371,6 +371,23 @@ global with sharing class CourseService {
 		}
 		return mdStringKeys;
 	}
+
+	public static void setCourseStatus(Set<Id> courseIds, String newStatus) {
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{Course__c.SObjectType});
+		Course__c course;
+		for(Id courseId : courseIds) {
+			course = new Course__c(Id = courseId, Status__c = newStatus);
+			uow.registerDirty(course);
+		}
+		SavePoint sp = Database.setSavePoint();
+		try{
+			uow.commitWork();
+		}catch(Exception e){
+			Database.rollback(sp);
+			throw e;
+		}
+	}
+		
 	//active courses
 	/*public static List<CourseWrapper> getCourses(Set<String> fieldsCourse, 
 											Set<String> fieldsCourseStatus,
