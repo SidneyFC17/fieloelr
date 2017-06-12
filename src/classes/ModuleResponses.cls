@@ -285,7 +285,7 @@ public class ModuleResponses extends SObjectDomain {
                 }
 
                 Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
-                moduleResponse.GradePercent__c = (moduleResponse.GradeValue__c / totalValue) * 100;
+                moduleResponse.GradePercent__c = ((moduleResponse.GradeValue__c / totalValue) * 100).setScale(2);
                 moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
 
                 if(moduleResponse.IsApproved__c){
