@@ -33,9 +33,9 @@
 			heading="{!$ObjectType[objectName].label} Wizard"
 			sObjectName="{!objectName}"
 			fieldset="{'Name':'FieloELR__Type__c','Type':'radio'}"
+			questionSection="{!editSettings.FieloPLT__Sections__c}"
 			record="{!record}"
 			dataFilters="{'Module__c':'{!Question__c.Module__c}'}"
-			sRecentObjectName ="FieloELR__AnswerOption__c"
 			dataOrderBy="FieloELR__Order__c"
     	/>
 		<!-- STANDARD Detail  -->

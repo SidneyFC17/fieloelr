@@ -21,12 +21,12 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
             String standardTools  = '';
             String standardButtons = '';
 
-            PageReference exportPage = Page.FieloPLT__XMLExport;
+            PageReference exportPage = Page.JSONExport;
             exportPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
-            exportPage.getParameters().put( 'type', 'elearning' );
-            PageReference importPage = Page.FieloPLT__XMLImport;
+            exportPage.getParameters().put( 'type', 'courses' );
+            PageReference importPage = Page.JSONImport;
             importPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
-            importPage.getParameters().put( 'type', 'elearning' );
+            importPage.getParameters().put( 'type', 'courses' );
 
             standardTools = '{"Label": "Export", "Type": "Link", "Action": "' + exportPage.getUrl() + '" }';
             standardTools += ',{"Label": "Import", "Type": "Link", "Action": "' + importPage.getUrl() + '" }';

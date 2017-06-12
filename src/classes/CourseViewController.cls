@@ -55,12 +55,12 @@ public with sharing class CourseViewController extends PageSettingsController {
         }
 
         String standardTools = '';
-        PageReference exportPage = Page.FieloPLT__XMLExport;
+        PageReference exportPage = Page.JSONExport;
 		exportPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
 		exportPage.getParameters().put( 'courseId', recordId );
-		exportPage.getParameters().put( 'type', 'course' );
+		exportPage.getParameters().put( 'type', 'courses' );
 
-		/*
+		
 		buttonList = new List<Map<String,Object>>();
 		buttonList.add(new Map<String,Object>{
             'Label' => 'Export',
@@ -68,11 +68,11 @@ public with sharing class CourseViewController extends PageSettingsController {
             'Action' => exportPage.getUrl()
         });
 
-		toolsString = JSON.serialize(buttonList);
-        toolsString = toolsString.substring(1,toolsString.length()-1);
-		*/
+		standardTools = JSON.serialize(buttonList);
+        standardTools = standardTools.substring(1,standardTools.length()-1);
+		
 
-		initPageSettings(objectName, record, buttonString, '', '');
+		initPageSettings(objectName, record, buttonString, standardTools, '');
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 

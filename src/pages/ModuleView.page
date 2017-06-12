@@ -56,22 +56,20 @@
             />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
             	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Question__c' && relForm.FieloPLT__Type__c = 'Edit'}">
-	            	<c:Form namespace="FieloELR" formId="FieloELR__Question__cForm"
-					heading="{!$Label.fieloelr__edit} {!$ObjectType.Question__c.label}"
-					sObjectName="{!relForm.FieloPLT__Object__c}"
-					fieldset="{!relForm.FieloPLT__Sections__c}"
-					saveController="ModuleViewController.saveQuestion"
-					/>
-            	</apex:panelGroup>
-            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Question__c' && relForm.FieloPLT__Type__c = 'New'}">
-	            	<c:Form namespace="FieloELR" formId="FieloELR__Question__cFormNew"
-					heading="{!$Label.fieloelr__new} {!$ObjectType.Question__c.label}"
-					sObjectName="{!relForm.FieloPLT__Object__c}"
-					fieldset="{!relForm.FieloPLT__Sections__c}"
-					saveController="ModuleViewController.saveQuestion"
-					/>
+            	<c:FormQuestion
+	        		namespace="FieloELR"
+	        		formId="FieloELR__Question__cForm"
+					heading="{!$ObjectType[rel.FieloPLT__TargetObject__c].label} Wizard"
+					sObjectName="{!rel.FieloPLT__TargetObject__c}"
+					fieldset="{'Name':'FieloELR__Type__c','Type':'radio'}"
+					questionSection="{!relForm.FieloPLT__Sections__c}"
+					record="{!record}"
+					dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+					dataOrderBy="FieloELR__Order__c"
+	        	/>
             	</apex:panelGroup>
             </apex:repeat>
+            
             <c:FormQuestionManage
         		namespace="FieloELR" 
         		formId="FieloELR__Question__cFormManage"
@@ -82,17 +80,6 @@
 				dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
 				sRecentObjectName="{!rel.FieloPLT__TargetObject__c}"
 				record="{!record}"
-        	/>
-        	<c:FormQuestion
-        		namespace="FieloELR" 
-        		formId="FieloELR__Question__cFormWizard"
-				heading="{!$ObjectType[rel.FieloPLT__TargetObject__c].label} Wizard"
-				sObjectName="{!rel.FieloPLT__TargetObject__c}"
-				fieldset="{'Name':'FieloELR__Type__c','Type':'radio'}"
-				record="{!record}"
-				dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
-				sRecentObjectName ="FieloELR__AnswerOption__c"
-				dataOrderBy="FieloELR__Order__c"
         	/>
         </apex:panelGroup>
 
