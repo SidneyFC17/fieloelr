@@ -86,7 +86,7 @@
 	   	<div id="{!formId}-multiplechoice" 
 	        role="dialog" 
 	        tabindex="-1" 
-	        aria-labelledby="{!formId}headerModal"
+	        aria-labelledby="{!formId}-multiplechoice-headerModal"
 	        class="slds-hide slds-modal slds-modal--large slds-fade-in-open slds-form {!className}"
 	        data-save-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!saveController}"
 	        data-retrieve-controller="{!IF(ISBLANK(namespace),'',namespace + '.')}{!retrieveController}"
@@ -105,7 +105,7 @@
 	                    </svg>
 	                    <span class="slds-assistive-text">Close</span>
 	                </button>
-	                <h2 id="{!formId}headerModal" class="slds-text-heading--medium">{!heading}</h2>
+	                <h2 id="{!formId}-multiplechoice-headerModal" class="slds-text-heading--medium">{!heading}</h2>
 	            </div>
 	            <div class="slds-modal__content slds-p-around--medium slds-align slds-align_absolute-center">
 		            <c:Sections

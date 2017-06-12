@@ -50,7 +50,9 @@
     // RECENT RECORDS
     RECENT_RECORDS: 'fielosf-recent-records',
     // RECENT REORDER
-    RECENT_REORDER: 'fielosf-recent-reorder'
+    RECENT_REORDER: 'fielosf-recent-reorder',
+    // RELATED MODEL
+    RELATED_MODEL: 'fielosf-related-records__model'
   };
 
     /**
@@ -160,6 +162,29 @@
         this.CssClasses_.MODULE_VIEW_PAGE)[0] !== undefined) {
       $('[data-field-name="FieloELR__Module__c"]')
       .addClass('disabled');
+    }
+  };
+
+  FieloELearning.prototype.hideRelatedColumn = function(element, fieldName) {
+    var items = $(element)
+      .find('.' + this.CssClasses_.RELATED_MODEL);
+    var currentField = null;
+
+    [].forEach.call(items, function(item) {
+      currentField = $(item)
+        .find('[data-field="' + fieldName + '"]')[0];
+      if (currentField) {
+        $(currentField).toggle(false);
+        $(currentField).parent().toggle(false);
+      }
+    }, this);
+
+    if (currentField) {
+      var index = $(currentField).parent().index();
+      var column = $(currentField).closest('table')
+        .find('thead')
+          .find('tr')[0].cells[index];
+      $(column).toggle(false);
     }
   };
 
@@ -277,6 +302,16 @@
             }
           }
         });
+      var courseDependencyRelated =
+        $('#FieloELR__CourseDependency__cRelatedList')[0];
+      if (courseDependencyRelated) {
+        this.hideRelatedColumn(courseDependencyRelated, 'Name');
+      }
+      var moduleDependencyRelated =
+        $('#FieloELR__ModuleDependency__cRelatedList')[0];
+      if (moduleDependencyRelated) {
+        this.hideRelatedColumn(moduleDependencyRelated, 'Name');
+      }
     }
   };
 
