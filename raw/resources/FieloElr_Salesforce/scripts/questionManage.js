@@ -296,6 +296,12 @@
         row.FieloELR__IncorrectWeight__c = 0;// eslint-disable-line camelcase
       }
 
+      if (
+        moduleValues
+        .FieloELR__AttemptsAllowedPerQuestion__c === 'Unlimited') { // eslint-disable-line camelcase
+        moduleValues.FieloELR__AttemptsAllowedPerQuestion__c = ''; // eslint-disable-line camelcase
+      }
+
       [].forEach.call(Object.keys(row), function(field) {
         if (row[field] === '' ||
           row[field] === null) {
@@ -672,6 +678,8 @@
         .find('[data-field-name="FieloELR__CorrectWeight__c"]')
           .toggle(false);
 
+      this.swapAttemptsAllowedPerQuestion();
+
       this.getFields_();
 
       this.initModels();
@@ -704,6 +712,28 @@
         this.questionFields_.delete(fieldName);
       }
     }
+  };
+
+  FieloQuestionManage.prototype.swapAttemptsAllowedPerQuestion = function() {
+    var fields = $(this.element_)
+      .find('[data-field-name="FieloELR__AttemptsAllowedPerQuestion__c"]');
+    var activeField = null;
+    var hidenField = null;
+    [].forEach.call(fields, function(field) {
+      if ($(field).hasClass('slds-hide')) {
+        hidenField = field;
+      } else {
+        activeField = field;
+      }
+    });
+    $(hidenField).insertBefore(activeField);
+    if ($(hidenField).hasClass('slds-hide')) {
+      $(hidenField).removeClass('slds-hide');
+    }
+    if ($(hidenField).hasClass('slds-is-collapsed')) {
+      $(hidenField).removeClass('slds-is-collapsed');
+    }
+    $(activeField).remove();
   };
 
   FieloQuestionManage.prototype.initModels = function() {

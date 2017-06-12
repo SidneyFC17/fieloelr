@@ -186,7 +186,7 @@ public with sharing class FormQuestionController {
             uow.commitWork();
 
 	        //TODO Crear Label DataSavedSuccessfully
-	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 
 	    } catch(DmlException e) {
 	    // Agrega las Validation Rules asociadas al Campo

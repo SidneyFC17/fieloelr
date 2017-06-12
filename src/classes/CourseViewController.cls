@@ -159,7 +159,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         	}
         	upsert record;
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
     		if(sp != null){
@@ -188,7 +188,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         	upsert (Module__c) record;
 
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DMLException e){
     		if(sp != null){
@@ -218,7 +218,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         	upsert (CourseDependency__c) record;
 
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + ((CourseDependency__c)record).Course__c;
     	}catch(DMLException e){
     		if(sp != null){
@@ -292,7 +292,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			Course__c record = new Course__c ( Id = recordId, Status__c = 'Active');
 			update record;
 			
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'The Course has been activated') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseActivated) );
 
 			result.redirectURL = '/' + recordId;
 
@@ -311,7 +311,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			Course__c record = new Course__c ( Id = recordId, Status__c = 'Inactive');
 			update record;
 			
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'The Course has been inactivated') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseInactivated) );
 
 			result.redirectURL = '/' + recordId;
 
