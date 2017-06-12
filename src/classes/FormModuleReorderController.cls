@@ -144,7 +144,7 @@ public with sharing class FormModuleReorderController {
 	        sp = Database.setSavepoint();
 	        update records;
 	        //TODO Crear Label DataSavedSuccessfully
-	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 
 	    } catch(DmlException e) {
 	    // Agrega las Validation Rules asociadas al Campo
@@ -165,19 +165,4 @@ public with sharing class FormModuleReorderController {
 	    }
 	    return result;
    }
-
-    /*
-	@RemoteAction
-  	public static sObject retrieve( String objectName, String recordId, String fields ){
-	    String query = 'SELECT ' + fields;
-	    query += ' FROM ' + objectName;
-	    query += ' WHERE ID = :recordId' ;
-	    query += ' LIMIT 1';
-	    List<sObject> result = Database.query(query);
-	    if ( result.size() > 0 ) {
-      		return result.get(0);
-    	}
-    	return null;
-  	}
-  	*/
 }

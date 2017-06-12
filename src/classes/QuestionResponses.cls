@@ -208,7 +208,7 @@ public class QuestionResponses extends SObjectDomain {
                 }
 
                 if(questionResponse.IsCorrect__c && correctKeys.contains(questionResponse.Key__c)){
-                    mapErrors.put(questionResponse.Id, 'This question was already answered correctly.');
+                    mapErrors.put(questionResponse.Id, Label.QuestionAlreadyAnsweredCorrectly);
                     //questionResponse.addError('This question was already answered correct.');
                 }else{
                     if(questionResponse.IsCorrect__c){
