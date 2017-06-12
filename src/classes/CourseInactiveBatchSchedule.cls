@@ -5,7 +5,7 @@ public class CourseInactiveBatchSchedule implements Database.Batchable<sobject>,
     }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
-        Datetime timeNow = DateTime.now();
+        Date timeNow = Date.today();
         return Database.getQueryLocator('Select Id From Course__c where EndDate__c <> null And EndDate__c <=: timeNow');
     }
 
