@@ -141,7 +141,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			}
         	upsert record;
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
@@ -165,7 +165,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			}
         	upsert (Question__c) record;
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
     		result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
@@ -189,7 +189,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			}
         	upsert (ModuleDependency__c) record;
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + ((ModuleDependency__c)record).Module__c;
     	}catch(DmlException e){
     		if(sp != null){
@@ -222,7 +222,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			Module__c record = new Module__c ( Id = recordId, IsActive__c = true);
 			update record;
 			
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'The Module has been activated') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.ModuleActivated) );
 
 			result.redirectURL = '/' + recordId;
 
@@ -241,7 +241,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			Module__c record = new Module__c ( Id = recordId, IsActive__c = false);
 			update record;
 			
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'The Module has been inactivated') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.ModuleInactivated) );
 
 			result.redirectURL = '/' + recordId;
 

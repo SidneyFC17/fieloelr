@@ -77,7 +77,7 @@
         		formId="FieloELR__Question__cFormManage"
 				heading="Manage {!$ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 				sObjectName="{!objectName}"
-				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'radio'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'input'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
+				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'radio'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'picklist'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
 				sRecentFieldset="{!rel.FieloPLT__Fieldset__c}"
 				dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
 				sRecentObjectName="{!rel.FieloPLT__TargetObject__c}"
@@ -163,6 +163,18 @@
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionManage','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
 	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
+	<script>
+		if(typeof BackEndJSSettings == 'undefined') {
+			var BackEndJSSettings = {};
+		}
+		if(typeof BackEndJSSettings.LABELS == 'undefined') {
+		 	BackEndJSSettings.LABELS = {};
+		}
+		BackEndJSSettings.LABELS.ChooseQuestionType = '{!$Label.fieloelr__ChooseQuestionType}';
+		BackEndJSSettings.LABELS.QuestionTextRequired = '{!$Label.fieloelr__QuestionTextRequired}';
+		BackEndJSSettings.LABELS.MatchingTextRequired = '{!$Label.fieloelr__MatchingTextRequired}';
+		BackEndJSSettings.LABELS.AnswerOptionTextRequired = '{!$Label.fieloelr__AnswerOptionTextRequired}';
+	</script>
 </body>
 </html>
 </apex:page>

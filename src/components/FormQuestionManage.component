@@ -59,6 +59,14 @@
             		fieldset="{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'}"
             		mode="{!mode}"
             		layout="inline"/>
+                <!-- This Field will override the FieloELR__AttemptsAllowedPerQuestion__c from the first section -->
+                <c:Picklist 
+                    formid="{!formId}-section"
+                    describe="{!$ObjectType[sObjectName].Fields['FieloELR__AttemptsAllowedPerQuestion__c']}"
+                    mode="{!mode}"
+                    picklistEntries="{!mapPicklistOptions['FieloELR__AttemptsAllowedPerQuestion__c']}"
+                    emptyString="Unlimited"
+                    className="slds-hide slds-is-collapsed"/>
             	<article class="slds-card slds-m-around--medium">
 				    <div class="slds-card__header slds-grid">
 				      <header class="slds-media slds-media--center slds-has-flexi-truncate">

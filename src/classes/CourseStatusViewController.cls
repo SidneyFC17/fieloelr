@@ -90,7 +90,7 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			}
         	upsert record;
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
     		if(sp != null){
@@ -119,7 +119,7 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
         	upsert (ModuleResponse__c) record;
 
 			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DMLException e){
     		if(sp != null){

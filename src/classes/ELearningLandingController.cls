@@ -140,7 +140,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
             
             //TODO Crear Label DataSavedSuccessfully
             if ( record.Id != null ) {
-                result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Course was created successfully') );
+                result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseCreated) );
                 result.redirectURL = '/' + record.Id;
             }
         }catch(DmlException e){
