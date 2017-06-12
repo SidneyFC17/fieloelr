@@ -108,7 +108,7 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-    public List<Question__c> selectByCoursesHavingPredecessor(Set<Id> moduleIds, Set<String> answerOptionFields) {
+    public List<Question__c> selectByModuleHavingAnswerOptions(Set<Id> moduleIds, Set<String> answerOptionFields) {
       return (List<Question__c>) Database.query(String.format('SELECT {0} ' +
                    ', (SELECT {1} FROM AnswerOptions__r) ' +
                   'FROM {2} ' +
