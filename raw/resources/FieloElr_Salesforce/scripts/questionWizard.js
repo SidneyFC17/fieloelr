@@ -29,7 +29,6 @@
     SAVE_CONTROLLER: 'FieloELR.LevelReorderController.reorder',
     DATA_CONTROLLER: 'data-controller-element',
     DATA_UPGRADED: 'data-upgraded',
-    FORM_ID: 'FieloELR__Question__cFormWizard',
     FORM_ID_SUFIX: 'multiplechoice'
   };
 
@@ -157,7 +156,7 @@
     fielo.util.spinner.FieloSpinner.show();
     this.result = result;
     // Set form type
-    $('#' + this.Constant_.FORM_ID)
+    $('#' + this.formId_)
       .find('[data-field-name="FieloELR__Type__c"]')[0]
         .FieloFormElement.set('value',
           result.FieloELR__Type__c);
@@ -357,9 +356,17 @@
     }
 
     answerOptionValues.forEach(function(row) {
-      if (questionValues.FieloELR__Type__c === 'Short Answer' ||
-        questionValues.FieloELR__Type__c === 'Matching Options') {// eslint-disable-line camelcase
+      if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
+      }
+      if (questionValues.FieloELR__Type__c === 'Matching Options') {// eslint-disable-line camelcase
+        if (row.FieloELR__AnswerOptionText__c === '' ||
+          row.FieloELR__AnswerOptionText__c === null ||
+          row.FieloELR__AnswerOptionText__c === undefined) {
+          row.FieloELR__IsCorrect__c = false;// eslint-disable-line camelcase
+        } else {
+          row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
+        }
       }
       if (questionValues.FieloELR__Type__c === 'Matching Options') {
         if (row.FieloELR__MatchingText__c === '' ||
@@ -426,7 +433,7 @@
   };
 
   FieloQuestionWizard.prototype.next_ = function() {
-    this.questionType_ = $('#' + this.Constant_.FORM_ID)
+    this.questionType_ = $('#' + this.formId_)
       .find('[data-field-name="FieloELR__Type__c"]')[0];
     this.formIdSufix_ = '';
     if (this.questionType_) {

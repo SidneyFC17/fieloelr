@@ -95,11 +95,11 @@ public with sharing class CoursesSelector extends SObjectSelector{
                     getOrderBy() } ));
     }
 
-    public List<Course__c> selectByProgramHavingPredecessor(Id programIds, Set<String> courseDependencyFields) {
+    public List<Course__c> selectByProgramHavingPredecessor(Id programId, Set<String> courseDependencyFields) {
       return (List<Course__c>) Database.query(String.format('SELECT {0} ' +
                    ', (SELECT {1} FROM PredecessorCourses__r) ' +
                   'FROM {2} ' +
-                  'WHERE Program__c IN :programIds ' +
+                  'WHERE Program__c =: programId ' +
                   'ORDER BY {3}',
                 new List<String> {
                     getFieldListString(),
