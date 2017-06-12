@@ -10,6 +10,12 @@ public class CourseDependencies extends SObjectDomain{
         }
     }
 
+    public override void onApplyDefaults(){
+        for(CourseDependency__c courseDependency : (List<CourseDependency__c>)records){
+            courseDependency.Key__c = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
+        }
+    }
+
     public override void onValidate() {
         //before insert
     }
@@ -23,17 +29,10 @@ public class CourseDependencies extends SObjectDomain{
     }
     public override void onBeforeInsert() {
 
-        for(CourseDependency__c courseDependency : (List<CourseDependency__c>)records){
-            courseDependency.Key__C = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
-
-        }
     }
+
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
 
-        for(CourseDependency__c courseDependency : (List<CourseDependency__c>)records){
-            courseDependency.Key__C = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
-
-        }
     }
 
     public override void onAfterInsert() {
