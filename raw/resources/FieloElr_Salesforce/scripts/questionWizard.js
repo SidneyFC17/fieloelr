@@ -357,7 +357,8 @@
     }
 
     answerOptionValues.forEach(function(row) {
-      if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
+      if (questionValues.FieloELR__Type__c === 'Short Answer' ||
+        questionValues.FieloELR__Type__c === 'Matching Options') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
       }
       if (questionValues.FieloELR__Type__c === 'Matching Options') {
