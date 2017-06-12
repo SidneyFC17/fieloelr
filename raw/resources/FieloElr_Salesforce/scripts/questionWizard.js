@@ -363,6 +363,8 @@
         if (row.FieloELR__AnswerOptionText__c === '' ||
           row.FieloELR__AnswerOptionText__c === null ||
           row.FieloELR__AnswerOptionText__c === undefined) {
+          row.FieloELR__IsCorrect__c = false;// eslint-disable-line camelcase
+        } else {
           row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
         }
       }
