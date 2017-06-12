@@ -356,9 +356,15 @@
     }
 
     answerOptionValues.forEach(function(row) {
-      if (questionValues.FieloELR__Type__c === 'Short Answer' ||
-        questionValues.FieloELR__Type__c === 'Matching Options') {// eslint-disable-line camelcase
+      if (questionValues.FieloELR__Type__c === 'Short Answer') {// eslint-disable-line camelcase
         row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
+      }
+      if (questionValues.FieloELR__Type__c === 'Matching Options') {// eslint-disable-line camelcase
+        if (row.FieloELR__AnswerOptionText__c === '' ||
+          row.FieloELR__AnswerOptionText__c === null ||
+          row.FieloELR__AnswerOptionText__c === undefined) {
+          row.FieloELR__IsCorrect__c = true;// eslint-disable-line camelcase
+        }
       }
       if (questionValues.FieloELR__Type__c === 'Matching Options') {
         if (row.FieloELR__MatchingText__c === '' ||
