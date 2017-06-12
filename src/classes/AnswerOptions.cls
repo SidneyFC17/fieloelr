@@ -11,21 +11,20 @@ public class AnswerOptions extends SObjectDomain {
     }
 
     public override void onBeforeInsert() {
-    	validateAnswers(records, true);
+    	validateAnswerOptions(records, true);
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
-		validateAnswers(records, true);
+		validateAnswerOptions(records, true);
     }
 
 
 	public override void onBeforeDelete() {
-     	validateAnswers(records, false);
+     	validateAnswerOptions(records, false);
     }
 
-
 	// General validations for a list of answers
-    private void validateAnswers(List<AnswerOption__c> answerOptions, Boolean validateFormat) {
+    private void validateAnswerOptions(List<AnswerOption__c> answerOptions, Boolean validateFormat) {
 		
 	    Set<Id> questions = new Set<Id>();
 	    for(AnswerOption__c answerOption : answerOptions) {
@@ -47,6 +46,11 @@ public class AnswerOptions extends SObjectDomain {
 				if(String.isBlank(answerOption.MatchingText__c)) {
 		        	answerOption.addError(Label.ValidateMatchingText);             
 				}
+  				if (!String.isBlank(answerOption.AnswerOptionText__c)) {
+					answerOption.IsCorrect__c = true;
+				} else {
+					answerOption.IsCorrect__c = false;
+				}				
 	    	}
 
 	    	// If Order__c field is null, calculate it automatically
