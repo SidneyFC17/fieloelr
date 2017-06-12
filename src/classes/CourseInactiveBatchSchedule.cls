@@ -5,20 +5,17 @@ public class CourseInactiveBatchSchedule implements Database.Batchable<sobject>,
     }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
-        return Database.getQueryLocator('Select Id From Course__c where EndDate__c <= ' + DateTime.now().format('yyyy-MM-dd'));
+        Datetime timeNow = DateTime.now();
+        return Database.getQueryLocator('Select Id From Course__c where EndDate__c <> null And EndDate__c <=: timeNow');
     }
 
     public void execute(Database.BatchableContext BC, List<sobject> scope) {
 
-        Set<Id> courseIds = new Set<Id>();
-        for(Sobject o : scope) {
-        	courseIds.add(((Course__c)o).Id);
-        }
+	    Map<Id,Course__c> coursesMap = new Map<Id,Course__c>((List<Course__c>)scope);
 
-        if(!courseIds.isEmpty()){
-			CourseService.setCourseStatus(courseIds, 'Inactive');
+        if(!coursesMap.isEmpty()) {
+			CourseService.setCourseStatus(coursesMap.keySet(), 'Inactive');
         }    	
-
 
     }
 

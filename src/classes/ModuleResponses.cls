@@ -394,7 +394,9 @@ public class ModuleResponses extends SObjectDomain {
             }
         }
 
-        //CourseStatus.validateAdminFields = false;
+        Boolean validateAdminFields = CourseStatus.validateAdminFields;
+        CourseStatus.validateAdminFields = false;
         uow.commitWork();
+        CourseStatus.validateAdminFields = validateAdminFields;        
     }
 }
