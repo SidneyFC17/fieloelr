@@ -11,9 +11,8 @@
 	<!-- Sections y Elementos -->
     <apex:attribute name="mode" description="new, update, view" type="String" />
     <apex:attribute name="sObjectName" type="String" default="" description="" assignTo="{!csObjectName}" />
-    <apex:attribute name="sRecentObjectName" type="String" default="" description=""/>
-    <apex:attribute name="sRecentFieldset" type="String" default="" description=""/>
     <apex:attribute name="fieldset" type="String" default="" description="Form Fields" assignTo="{!cFieldset}"/>
+    <apex:attribute name="questionSection" type="String" default="" description="Form Fields"/>
     <apex:attribute name="record" type="SObject" description="" assignTo="{!recordObject}"/>
     <apex:attribute name="redirect" description="Redirects after save" type="Boolean" default="true" />
     <apex:attribute name="saveConfirm" description="Confirmation before save" type="String" default="false" />
@@ -111,7 +110,7 @@
 		            <c:Sections
 	            		formId="{!formId}-multiplechoice-section"
 	            		sObjectName="{!sObjectName}"
-	            		fieldset="{'Name':'Information','Rows':[[{'Name':'FieloELR__Module__c','Type':'lookup'},{'Name':'Name','Type':'input'},{'Name':'FieloELR__ShuffleAnswerOptions__c','Type':'checkbox'},{'Name':'FieloELR__CorrectWeight__c','Type':'input'},{'Name':'FieloELR__IncorrectWeight__c','Type':'input'},{'Name':'FieloELR__PenaltyPerAttempt__c','Type':'input'},{'Name':'FieloELR__Type__c','Type':'input'}],[{'Name':'FieloELR__QuestionText__c','Type':'input'}]]}"
+	            		fieldset="{!questionSection}"
 	            		mode="{!mode}"
 	            		layout="compound"
 	            	/>
