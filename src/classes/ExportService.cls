@@ -357,7 +357,8 @@ public class ExportService{
             Map<Id,List<Relation>> pendingRelations = new Map<Id,List<Relation>>();
 
             Map<String,FieloPLT__Segment__c> segmentsByName = new Map<String,FieloPLT__Segment__c>();
-            Map<String,List<Relation>> courseNameRelations = new Map<String,List<Relation>>();
+            Map<String,Course__c> coursesByName = new Map<String,Course__c>();
+            //Map<String,List<Relation>> courseNameRelations = new Map<String,List<Relation>>();
 
             Set<Id> originalMultiSegmentIds = new Set<Id>();
 
@@ -370,22 +371,26 @@ public class ExportService{
                         segmentsByName.put(segment.Name, segment);
                     }
 
+                    for(Course__c course : [SELECT Name, Id FROM Course__c WHERE Program__c =: program.Id]){
+                        coursesByName.put(course.Name, course);
+                    }
+
                     do{
                         if ( parser.getCurrentToken() == JSONToken.FIELD_NAME )  {
                             String tokenText = parser.getCurrentName();
                             if ( tokenText == 'courses' ) {
-                                parseCourses( parser, uow, program, courseFieldsMap, courseDependencyFieldsMap, moduleFieldsMap, moduleDependencyFieldsMap, questionFieldsMap, answerOptionFieldsMap, mapReferences, pendingRelations, segmentsByName, courseNameRelations, originalMultiSegmentIds, multiSegmentRelations);
+                                parseCourses( parser, uow, program, courseFieldsMap, courseDependencyFieldsMap, moduleFieldsMap, moduleDependencyFieldsMap, questionFieldsMap, answerOptionFieldsMap, mapReferences, pendingRelations, segmentsByName, coursesByName, originalMultiSegmentIds, multiSegmentRelations);
                             }
                         }
                     }while ( parser.nextToken() != null);
 
-                    if(!courseNameRelations.isEmpty()){
+                    /*if(!courseNameRelations.isEmpty()){
                         for(Course__c course : [SELECT Name, Id FROM Course__c WHERE Name in : courseNameRelations.keySet() AND Program__c =: program.Id]){
                             for(Relation r : courseNameRelations.get(course.Name)){
                                 r.record.put(r.relationField, course.Id);
                             }
                         }
-                    }
+                    }*/
                 }
             }
             return uow;
@@ -394,7 +399,7 @@ public class ExportService{
         }*/
     }
 
-    private static void parseCourses( JSONParser parser, SObjectUnitOfWork uow, FieloPLT__Program__c program, Map<String, Schema.DescribeFieldResult> courseFieldsMap, Map<String, Schema.DescribeFieldResult> courseDependencyFieldsMap, Map<String, Schema.DescribeFieldResult> moduleFieldsMap, Map<String, Schema.DescribeFieldResult> moduleDependencyFieldsMap, Map<String, Schema.DescribeFieldResult> questionFieldsMap, Map<String, Schema.DescribeFieldResult> answerOptionsFieldsMap, Map<Id,SObject> mapReferences, Map<Id,List<Relation>> pendingRelations, Map<String,FieloPLT__Segment__c> segmentsByName, Map<String,List<Relation>> courseNameRelations, Set<Id> originalMultiSegmentIds, List<MultiSegmentRelation> multiSegmentRelations) {
+    private static void parseCourses( JSONParser parser, SObjectUnitOfWork uow, FieloPLT__Program__c program, Map<String, Schema.DescribeFieldResult> courseFieldsMap, Map<String, Schema.DescribeFieldResult> courseDependencyFieldsMap, Map<String, Schema.DescribeFieldResult> moduleFieldsMap, Map<String, Schema.DescribeFieldResult> moduleDependencyFieldsMap, Map<String, Schema.DescribeFieldResult> questionFieldsMap, Map<String, Schema.DescribeFieldResult> answerOptionsFieldsMap, Map<Id,SObject> mapReferences, Map<Id,List<Relation>> pendingRelations, Map<String,FieloPLT__Segment__c> segmentsByName, Map<String,Course__c> coursesByName, Set<Id> originalMultiSegmentIds, List<MultiSegmentRelation> multiSegmentRelations) {
         if ( parser.nextToken() == JSONToken.START_ARRAY) {
             // Loop por cada Course
             while ( parser.nextToken()!== JSONToken.END_ARRAY &&  parser.getCurrentToken() != null ) {
@@ -407,7 +412,7 @@ public class ExportService{
                         if(tokenText == 'reference'){
                             resolveReference(currentCourse, parser, uow, mapReferences, pendingRelations);
                         }else if(tokenText == 'predecessors'){
-                            parseCourseDependencies ( parser, uow, currentCourse, courseDependencyFieldsMap, mapReferences, pendingRelations, courseNameRelations);
+                            parseCourseDependencies ( parser, uow, currentCourse, courseDependencyFieldsMap, mapReferences, pendingRelations, coursesByName);
                         }else if(tokenText == 'modules'){
                             parseModules ( parser, uow, currentCourse, moduleFieldsMap, moduleDependencyFieldsMap, questionFieldsMap, answerOptionsFieldsMap, mapReferences, pendingRelations);
                         }else if ( tokenText == 'segmentName' ) {
@@ -465,24 +470,32 @@ public class ExportService{
         }
     }
 
-	private static void parseCourseDependencies( JSONParser parser, SObjectUnitOfWork uow, Course__c currentCourse, Map<String, Schema.DescribeFieldResult> courseDependencyFieldsMap, Map<Id,SObject> mapReferences, Map<Id,List<Relation>> pendingRelations, Map<String,List<Relation>> courseNameRelations) {
+	private static void parseCourseDependencies( JSONParser parser, SObjectUnitOfWork uow, Course__c currentCourse, Map<String, Schema.DescribeFieldResult> courseDependencyFieldsMap, Map<Id,SObject> mapReferences, Map<Id,List<Relation>> pendingRelations, Map<String,Course__c> coursesByName) {
         if ( parser.nextToken() == JSONToken.START_ARRAY) {
             // Loop por cada Page
             while ( parser.nextToken()!== JSONToken.END_ARRAY &&  parser.getCurrentToken() != null ) {
                 if ( parser.getCurrentToken() == JSONToken.START_OBJECT) {
                     CourseDependency__c currentCourseDependency = new CourseDependency__c();
 
+                    Boolean predecessorFound = false;
                     while(parser.nextToken() !== JSONToken.END_OBJECT && parser.getCurrentToken() != null){
                         String tokenText = parser.getCurrentName();
                         if(tokenText == 'courseReference'){
                         	setFieldReference( currentCourseDependency, parser, uow, CourseDependency__c.Predecessor__c, mapReferences, pendingRelations);
+                            predecessorFound = true;
                         }else if(tokenText == 'courseName'){
-                        	setReferenceName( currentCourseDependency, parser, CourseDependency__c.Predecessor__c, courseNameRelations);
+                        	//setReferenceName( currentCourseDependency, parser, CourseDependency__c.Predecessor__c, coursesByNameRelations);
+                            if ( parser.nextToken() != null ) {
+                                if ( coursesByName.containsKey( parser.getText() ) ) {
+                                    currentCourseDependency.Predecessor__c = coursesByName.get( parser.getText() ).Id;
+                                    predecessorFound = true;
+                                }
+                            }
                         }else if(courseDependencyFieldsMap.containsKey( tokenText)){
                             setFieldValue( (SObject)currentCourseDependency, parser, tokenText, courseDependencyFieldsMap.get( tokenText ).getSoapType() );
                         }
                     }
-                    if(currentCourse != null){
+                    if(predecessorFound){
                         uow.registerNew(currentCourseDependency, CourseDependency__c.Course__c, currentCourse);
                     }
                 }

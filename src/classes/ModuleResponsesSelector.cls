@@ -53,6 +53,7 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                     'Question__c, ' +
                     'PartialGradeValue__c, ' +
                     'TextValue__c, ' +
+                    'Key__c, ' +
                     'Name FROM QuestionResponses__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :moduleResponseIds ' +

@@ -1,6 +1,7 @@
 public class Courses extends SObjectDomain{
     
     public static Boolean validateAdminFields = true;
+    public static Boolean isDelete = false;
 
     public Courses(List<Course__c> records) {
         super(records);
@@ -49,6 +50,8 @@ public class Courses extends SObjectDomain{
    } 
 
     public override void onBeforeDelete() {
+        isDelete = true;
+
         // Check Courses before delete
         checkCoursesWithStatus(null, 'delete'); 
 
@@ -101,7 +104,7 @@ public class Courses extends SObjectDomain{
             if(!course.CoursesStatus__r.isEmpty()){
                 if (course.Status__c == 'Active'){
                     if (event == 'update'){                        
-                         // Check OLD records (existingRecords) to see if any of these fields were modified       
+                        // Check OLD records (existingRecords) to see if any of these fields were modified       
                         if( (((Course__c)(existingRecords.get(course.Id))).SubscriptionMode__c) != coursesMap.get(course.Id).SubscriptionMode__c ){
                             coursesMap.get(course.Id).addError(Label.ValidateCourseErrorSubscriptionMode);
                         }              
@@ -114,9 +117,9 @@ public class Courses extends SObjectDomain{
                         if( (((Course__c)(existingRecords.get(course.Id))).EndDate__c) != coursesMap.get(course.Id).EndDate__c ) {
                             coursesMap.get(course.Id).addError(Label.ValidateCourseEndDate);
                         }
-                       if( (((Course__c)(existingRecords.get(course.Id))).Status__c) != coursesMap.get(course.Id).Status__c ) {
+                        /*if( (((Course__c)(existingRecords.get(course.Id))).Status__c) != coursesMap.get(course.Id).Status__c ) {
                             coursesMap.get(course.Id).addError(Label.ValidateCourseStatus);
-                        }         
+                        } */        
                     }else if (event == 'delete'){
                         coursesMap.get(course.Id).addError(Label.ValidateCourseErrorDelete);
                     }                                                                        

@@ -68,10 +68,12 @@ public class ModuleDependencies extends SObjectDomain {
                     module.HasDependencies__c = true;
                 }
             } else if(Trigger.IsDelete) {
-                // Remove key
-                module.KeyDependencies__c = module.KeyDependencies__c.replace(predecessor + ',', '').replace(',' + predecessor, '').replace(predecessor, '');
+                if(!String.isBlank(module.KeyDependencies__c)){
+                    // Remove key
+                    module.KeyDependencies__c = module.KeyDependencies__c.replace(predecessor + ',', '').replace(',' + predecessor, '').replace(predecessor, '');
+                }
                 // If a module dependency is deleted and module has no more dependencies, the attribute must be updated
-                if(module.KeyDependencies__c.length() == 0 && module.HasDependencies__c) {
+                if(String.isBlank(module.KeyDependencies__c)) {
                     module.HasDependencies__c = false;
                 }                
             }
