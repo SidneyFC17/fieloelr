@@ -47,5 +47,9 @@
 		<members>*</members>
 		<name>MatchingRules</name>
 	</types>
+	<types>
+		<members>*</members>
+		<name>DuplicateRule</name>
+	</types>
 	<version>36.0</version>
 </Package>
