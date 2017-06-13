@@ -1,0 +1,167 @@
+<apex:page tabStyle="Courses__tab" sidebar="false" standardController="Module__c" extensions="ModuleViewController" docType="html-5.0">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+	<script src="https://use.fontawesome.com/21ab711331.js"></script>
+    <link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'lightning/styles/salesforce-lightning-design-system-vf.min.css')}"></link>
+    <link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'fielo/styles/core.css')}"></link>
+    <link rel="stylesheet" href="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'styles/core.css')}"></link>
+    <link rel="stylesheet" href="{!URLFOR($Resource.FieloElr_Salesforce, 'styles/core.css')}"></link>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+<body>
+	<div class="fielosf fielosf-elearning fielosf-module-view">
+		<!-- STANDARD Header  -->
+		<c:BackendHeaderRecord firstHeading="{!$ObjectType[objectName].labelPlural}"
+			secondHeading="{!record['name']}"
+			icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/{!viewSettings.FieloPLT__Icon__c}"
+			helpUrl="http://documentation.fielo.com/docs/promotion"
+			sObjectName="{!objectName}"
+			record="{!record}"
+			fieldset="{!viewSettings.FieloPLT__Fieldset__c}"
+			buttons="{!MID(viewSettings.FieloPLT__Buttons__c,2,LEN(viewSettings.FieloPLT__Buttons__c)-1)}"
+			tools="{!MID(viewSettings.FieloPLT__Tools__c,2,LEN(viewSettings.FieloPLT__Tools__c)-1)}"
+		/>
+		<c:Form namespace="FieloELR" formId="FieloELR__Module__cForm"
+			heading="{!$Label.fieloelr__edit} {!record['Name']}"
+			sObjectName="{!objectName}"
+			fieldset="{!editSettings.FieloPLT__Sections__c}"
+			saveController="ModuleViewController.save"
+			retrieveController="ModuleViewController.retrieve"
+			record="{!record}"
+		/>
+		<!-- STANDARD Detail  -->
+		<apex:panelGroup rendered="{!hasDetail}">
+			<c:Detail formId="{!objectName}Detail"
+			  heading="{!record['Name']}"
+			  sObjectName="{!objectName}"
+			  fieldset="{!detailSettings.FieloPLT__Sections__c}"
+			  record="{!record}"
+			/>
+		</apex:panelGroup>
+
+		<apex:repeat value="{!relatedSettings}" var="rel">
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__Question__c'}">
+          <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
+            sObjectName="{!rel.FieloPLT__TargetObject__c}"
+            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+            fieldset="{!rel.FieloPLT__Fieldset__c}"
+            buttons="{!rel.FieloPLT__Buttons__c}"
+            tools="{!rel.FieloPLT__Tools__c}"
+            actions="{!rel.FieloPLT__Actions__c}"
+            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            showPaginator="true"
+            dataController="ModuleViewController.getRecords"
+            />
+            <apex:repeat value="{!relatedFormsSettings}" var="relForm">
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Question__c' && relForm.FieloPLT__Type__c = 'Edit'}">
+            	<c:FormQuestion
+	        		namespace="FieloELR"
+	        		formId="FieloELR__Question__cForm"
+					heading="{!$ObjectType[rel.FieloPLT__TargetObject__c].label} Wizard"
+					sObjectName="{!rel.FieloPLT__TargetObject__c}"
+					fieldset="{'Name':'FieloELR__Type__c','Type':'radio'}"
+					questionSection="{!relForm.FieloPLT__Sections__c}"
+					record="{!record}"
+					dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+					dataOrderBy="FieloELR__Order__c"
+	        	/>
+            	</apex:panelGroup>
+            </apex:repeat>
+            
+            <c:FormQuestionManage
+        		namespace="FieloELR" 
+        		formId="FieloELR__Question__cFormManage"
+				heading="Manage {!$ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+				sObjectName="{!objectName}"
+				fieldset="{'Name':'Module Setup','Rows':[[{'Name':'FieloELR__PenaltyMode__c','Type':'radio'},{'Name':'FieloELR__AttemptsAllowedPerQuestion__c','Type':'picklist'},{'Name':'FieloELR__QuestionPool__c','Type':'input'}],[{'Name':'FieloELR__ShuffleQuestions__c','Type':'checkbox'},{'Name':'FieloELR__WeightedQuestions__c','Type':'checkbox'}]]}"
+				sRecentFieldset="{!rel.FieloPLT__Fieldset__c}"
+				dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+				sRecentObjectName="{!rel.FieloPLT__TargetObject__c}"
+				record="{!record}"
+        	/>
+        </apex:panelGroup>
+
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__ModuleDependency__c'}">
+          <c:RelatedList namespace="FieloELR" 
+          	relatedId="FieloELR__ModuleDependency__cRelatedList"
+          	heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
+            sObjectName="{!rel.FieloPLT__TargetObject__c}"
+            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+            fieldset="{!rel.FieloPLT__Fieldset__c}"
+            buttons="{!rel.FieloPLT__Buttons__c}"
+            tools="{!rel.FieloPLT__Tools__c}"
+            actions="{!rel.FieloPLT__Actions__c}"
+            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            showPaginator="true"
+            />
+            <apex:repeat value="{!relatedFormsSettings}" var="relForm">
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__ModuleDependency__c' && relForm.FieloPLT__Type__c = 'Edit'}">
+					<c:Form namespace="FieloELR" formId="FieloELR__ModuleDependency__cForm"
+					heading="{!$Label.fieloelr__edit} {!$ObjectType.ModuleDependency__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="ModuleViewController.saveModuleDependency"
+					/>
+            	</apex:panelGroup>
+            	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__ModuleDependency__c' && relForm.FieloPLT__Type__c = 'New'}">
+					<c:Form namespace="FieloELR" formId="FieloELR__ModuleDependency__cFormNew"
+					heading="{!$Label.fieloelr__new} {!$ObjectType.ModuleDependency__c.label}"
+					sObjectName="{!relForm.FieloPLT__Object__c}"
+					fieldset="{!relForm.FieloPLT__Sections__c}"
+					saveController="ModuleViewController.saveModuleDependency"
+					/>
+            	</apex:panelGroup>
+            </apex:repeat>
+        </apex:panelGroup>
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__ModuleResponse__c'}">
+	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
+	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
+	            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+	            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+	            fieldset="{!rel.FieloPLT__Fieldset__c}"
+	            buttons="{!rel.FieloPLT__Buttons__c}"
+	            tools="{!rel.FieloPLT__Tools__c}"
+	            actions="{!rel.FieloPLT__Actions__c}"
+	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+	            showPaginator="true"
+	            nameField="FieloELR__Member__r.Name"
+	            />
+        </apex:panelGroup>
+        <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__ModuleDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Question__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__ModuleResponse__c'}">
+	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
+	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
+	            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Module__c.Id}'}"
+	            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+	            fieldset="{!rel.FieloPLT__Fieldset__c}"
+	            buttons="{!rel.FieloPLT__Buttons__c}"
+	            tools="{!rel.FieloPLT__Tools__c}"
+	            actions="{!rel.FieloPLT__Actions__c}"
+	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+	            showPaginator="true"
+	            />
+        </apex:panelGroup>
+    	</apex:repeat>
+	</div>
+	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionManage','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
+	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
+	<script>
+		if(typeof BackEndJSSettings == 'undefined') {
+			var BackEndJSSettings = {};
+		}
+		if(typeof BackEndJSSettings.LABELS == 'undefined') {
+		 	BackEndJSSettings.LABELS = {};
+		}
+		BackEndJSSettings.LABELS.ChooseQuestionType = '{!$Label.fieloelr__ChooseQuestionType}';
+		BackEndJSSettings.LABELS.QuestionTextRequired = '{!$Label.fieloelr__QuestionTextRequired}';
+		BackEndJSSettings.LABELS.MatchingTextRequired = '{!$Label.fieloelr__MatchingTextRequired}';
+		BackEndJSSettings.LABELS.AnswerOptionTextRequired = '{!$Label.fieloelr__AnswerOptionTextRequired}';
+	</script>
+</body>
+</html>
+</apex:page>

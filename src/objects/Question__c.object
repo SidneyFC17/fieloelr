@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>QuestionView</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>CorrectAnswerOptions__c</fullName>
+        <externalId>false</externalId>
+        <label>Correct Answer Options</label>
+        <summaryFilterItems>
+            <field>AnswerOption__c.IsCorrect__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </summaryFilterItems>
+        <summaryForeignKey>AnswerOption__c.Question__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>CorrectWeight__c</fullName>
+        <externalId>false</externalId>
+        <label>Correct Weight</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IncorrectWeight__c</fullName>
+        <externalId>false</externalId>
+        <label>Incorrect Weight</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Module__c</fullName>
+        <externalId>false</externalId>
+        <label>Module</label>
+        <referenceTo>Module__c</referenceTo>
+        <relationshipLabel>Questions</relationshipLabel>
+        <relationshipName>Questions</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>OrderFormula__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Module__r.ShuffleQuestions__c ,
+mod( 
+    (
+       ( value(mid(text(NOW()),18,2)) + value(mid(text(NOW()),12,2)) ) *
+       ( value(mid(text(NOW()),18,2)) + value(mid(text(NOW()),15,2)) ) 
+    ) / Order__c
+    , ( Order__c + 100 )
+
+), Order__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Order Formula</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Order__c</fullName>
+        <externalId>false</externalId>
+        <label>Order</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PenaltyPerAttempt__c</fullName>
+        <externalId>false</externalId>
+        <label>Penalty per Attempt</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>QuestionText__c</fullName>
+        <externalId>false</externalId>
+        <label>Question Text</label>
+        <length>1000</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ShuffleAnswerOptions__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Shuffle Answer Options</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>TotalAnswerOptions__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Answer Options</label>
+        <summaryForeignKey>AnswerOption__c.Question__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Multiple Choice</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Single Choice</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Short Answer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Statement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Matching Options</fullName>
+                <default>false</default>
+            </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
+            <sorted>false</sorted>
+        </picklist>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <gender>Feminine</gender>
+    <label>Question</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Question Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Questions</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>CorrectWeightRange</fullName>
+        <active>true</active>
+        <description>The Correct Weight must be greater than 0.</description>
+        <errorConditionFormula>CorrectWeight__c  &lt;= 0</errorConditionFormula>
+        <errorDisplayField>CorrectWeight__c</errorDisplayField>
+        <errorMessage>The correct weight must be a positive number.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>CorrectWeightWhenWeightedQuestions</fullName>
+        <active>true</active>
+        <description>When Module uses Weighted Questions, the field Correct Weight cannot be null.</description>
+        <errorConditionFormula>AND( ISNULL( CorrectWeight__c ) , Module__r.WeightedQuestions__c)</errorConditionFormula>
+        <errorDisplayField>CorrectWeight__c</errorDisplayField>
+        <errorMessage>A value for correct weight must be specified when the corresponding module uses weighted questions.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>LimitOfAnswers</fullName>
+        <active>true</active>
+        <description>If the question type is &quot;Statement&quot; no more than two answers can be created.</description>
+        <errorConditionFormula>AND( TEXT(Type__c)  = &apos;Statement&apos;,  TotalAnswerOptions__c &gt; 2)</errorConditionFormula>
+        <errorMessage>For &quot;Statement&quot; questions, no more than two answers can be created.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>LimitOfCorrectAnswers</fullName>
+        <active>true</active>
+        <description>If the question type is &quot;Single choice&quot; or &quot;Statement&quot; only one answer can be marked as &quot;IsCorrect&quot;.</description>
+        <errorConditionFormula>AND( OR( TEXT(Type__c)  = &apos;Single Choice&apos;, TEXT(Type__c)   = &apos;Statement&apos; ) , CorrectAnswerOptions__c &gt; 1)</errorConditionFormula>
+        <errorMessage>For &quot;Single Choice&quot; and &quot;Statement&quot; questions, only one answer can be marked as correct.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>PenaltyPerAttemptRange</fullName>
+        <active>true</active>
+        <description>Penalty per attempt must have a value  between 0 and 100.</description>
+        <errorConditionFormula>OR( PenaltyPerAttempt__c &lt;0, PenaltyPerAttempt__c &gt; 1)</errorConditionFormula>
+        <errorMessage>The penalty per attempt must have a value  between 0 and 100.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>QuestionTextRequired</fullName>
+        <active>true</active>
+        <description>Question text is required.</description>
+        <errorConditionFormula>ISBLANK( QuestionText__c )</errorConditionFormula>
+        <errorDisplayField>QuestionText__c</errorDisplayField>
+        <errorMessage>The question text is required.</errorMessage>
+    </validationRules>
+</CustomObject>

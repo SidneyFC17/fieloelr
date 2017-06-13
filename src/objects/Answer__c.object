@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>false</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AnswerOption__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Answer Option</label>
+        <referenceTo>AnswerOption__c</referenceTo>
+        <relationshipName>Answers</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Key__c</fullName>
+        <externalId>false</externalId>
+        <label>Key</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuestionResponse__c</fullName>
+        <externalId>false</externalId>
+        <label>Question Response</label>
+        <referenceTo>QuestionResponse__c</referenceTo>
+        <relationshipLabel>Answers</relationshipLabel>
+        <relationshipName>Answers</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>TextValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Text Value</label>
+        <length>1000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <gender>Feminine</gender>
+    <label>Answer</label>
+    <nameField>
+        <displayFormat>A-{00000000}</displayFormat>
+        <label>Answer Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Answers</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>AnswerCannotBeEdited</fullName>
+        <active>true</active>
+        <description>An answer cannot be edited.</description>
+        <errorConditionFormula>NOT( ISNEW() )</errorConditionFormula>
+        <errorMessage>An answer cannot be edited.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ValidateAnswerLookup</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(NOT(ISBLANK( AnswerOption__c )),  AnswerOption__r.Question__c !=  QuestionResponse__r.Question__c )</errorConditionFormula>
+        <errorMessage>The answer must belong to the same question.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ValidateAnswerRequired</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(NOT(ISPICKVAL(QuestionResponse__r.Question__r.Type__c, &apos;Matching Options&apos;)), ISBLANK( AnswerOption__c ))</errorConditionFormula>
+        <errorDisplayField>AnswerOption__c</errorDisplayField>
+        <errorMessage>The answer is required.</errorMessage>
+    </validationRules>
+</CustomObject>
