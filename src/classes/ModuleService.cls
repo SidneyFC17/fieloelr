@@ -82,7 +82,7 @@ global with sharing class ModuleService {
 	}
 
 	global static ModuleResponse__c submitModuleResponse (ModuleResponse__c moduleResponse){
-		
+		return submitModuleResponse (moduleResponse, null);
 	}
 
 	global static ModuleResponse__c submitModuleResponse (ModuleResponse__c moduleResponse, List<QuestionService.QuestionResponseWrapper> questionWrappers){
