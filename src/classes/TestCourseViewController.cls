@@ -363,4 +363,24 @@ public class TestCourseViewController
 			new List<String>()
 		);
 	}
+
+	private static testmethod void testTemporal(){
+		CourseService.testTemporalTriggers();
+		CourseService.testTemporal();
+		CourseService.testTemporal2();
+		CourseService.testTemporal3();
+		CourseService.testTemporal4();
+		CourseService.testTemporal5();
+		CourseService.testTemporal6();
+		CourseService.testTemporal7();
+		CourseService.testTemporal8();
+		CourseService.testTemporal9();
+		CourseService.testTemporal10();
+		CourseService.testTemporal11();
+		CourseService.testTemporal12();
+		CourseService.testTemporal13();
+		CourseService.testTemporal14();
+		CourseService.testTemporal15();
+		CourseService.testTemporal16();
+	}
 }

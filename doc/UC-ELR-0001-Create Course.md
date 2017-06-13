@@ -168,18 +168,17 @@ A course is created
    2. The administrator sets the status of the course to “Inactive” 
    3. The administrator presses the Save button
    4. The system verifies that the course has no related course status
-   5. The system verifies that all other validations succeed
-   6. The system updates the course
-   7. The system displays the course detail page
-   8. End of flow
+   5. The system updates the course
+   6. The system displays the course detail page
+   7. End of flow
  
 ##### 17. Inactivate an active course with related course statuses (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the status of the course to “Inactive” 
    3. The administrator presses the Save button
    4. The system verifies that the course has related course status
-   5. The system does not update the module
-   6. The system displays an error message
+   5. The system updates the course
+   6. The system displays the course detail page
    7. End of flow
  
 ##### 18. Edit an inactive course (step 9 of basic flow)
