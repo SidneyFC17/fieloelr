@@ -3,10 +3,10 @@
     <apiVersion>36.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>ELearningLandingPage</label>
+    <label>CourseLanding</label>
     <packageVersions>
         <majorNumber>2</majorNumber>
-        <minorNumber>19</minorNumber>
+        <minorNumber>22</minorNumber>
         <namespace>FieloPLT</namespace>
     </packageVersions>
     <packageVersions>

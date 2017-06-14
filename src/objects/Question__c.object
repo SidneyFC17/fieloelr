@@ -141,7 +141,7 @@ mod(
     <fields>
         <fullName>PenaltyPerAttempt__c</fullName>
         <externalId>false</externalId>
-        <label>Penalty per Attempt</label>
+        <label>Penalty per Attempt %</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -208,11 +208,6 @@ mod(
     </fields>
     <gender>Feminine</gender>
     <label>Question</label>
-    <listViews>
-        <fullName>All</fullName>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-    </listViews>
     <nameField>
         <label>Question Name</label>
         <type>Text</type>
