@@ -1,4 +1,4 @@
-<apex:page tabStyle="Courses__tab" docType="html-5.0" sidebar="false" controller="ELearningLandingController">
+<apex:page tabStyle="Course__c" docType="html-5.0" sidebar="false" controller="CourseLandingController">
 	<!--  action="{!verifyProgram}" -->
 <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <head>
@@ -51,7 +51,7 @@
               fieldset="{!landingCourse.FieloPLT__Fieldset__c}"
               show="true"
               async="true"
-              dataController="ELearningLandingController.getCourses"
+              dataController="CourseLandingController.getCourses"
               dataBinding="fielosf-elearning-landing--binding"
               dataFilters="{'Program__c':'{!currentProgram.Id}', 'viewName':'{!currentView}'}"
             />
