@@ -46,6 +46,9 @@ public class QuestionResponses extends SObjectDomain {
     }
 
     public override void onValidate(){
+
+        //Check if the number of question responses is bigger than the Question Pool
+
         if(validateAdminFields){
             validateModuleSubmitted(records);
         }
@@ -209,6 +212,7 @@ public class QuestionResponses extends SObjectDomain {
 
                 if(questionResponse.IsCorrect__c && correctKeys.contains(questionResponse.Key__c)){
                     mapErrors.put(questionResponse.Id, Label.QuestionAlreadyAnsweredCorrectly);
+                    //questionResponse.addError('This question was already answered correct.');
                 }else{
                     if(questionResponse.IsCorrect__c){
                         correctKeys.add(questionResponse.Key__c);                        
