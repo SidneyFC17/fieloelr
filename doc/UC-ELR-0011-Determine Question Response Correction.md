@@ -63,12 +63,14 @@ The question correction was determined
  
 ##### 8. The related question is from type “Matching Options” and all the answers are correct (step 1 of basic flow)
    1. The system verifies that the related question is from type “Matching Options”
-   2. The system verifies that all the “Text Value” fields in the “Answer” match one of the “Answer text” field in answer option 
-   3. The system sets the “IsCorrect” field to “true”
-   4. End of flow
+   2. The system verifies that all the answer options that had the “IsCorrect” field set as true have a related answer
+   3. The system verifies that, for each answer option having the “IsCorrect” as “true”, its “Matching Text” matches the “Text Value” of the related answer
+   4. The system sets the Question “IsCorrect” field to “true”
+   5. End of flow
  
 ##### 9. The related question is from type “Matching Options” and not all the answers are correct (step 1 of basic flow)
    1. The system verifies that the related question is from type “Matching Options”
-   2. The system verifies that at least one of the “Text Value” fields in the “Answer” don’t match the “Answer text” field in the answer option
-   3. The system sets the “IsCorrect” field to “false”
-   4. End of flow
+   2. The system verifies that all the answer options that had the “IsCorrect” field set as true have a related answer
+   3. The system verifies that, for at least one answer option having the “IsCorrect” as “true”, its “Matching Text” does not matche the “Text Value” of the related answer
+   4. The system sets the “IsCorrect” field to “false”
+   5. End of flow
