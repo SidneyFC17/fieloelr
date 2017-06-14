@@ -67,6 +67,12 @@ public with sharing class CourseViewController extends PageSettingsController {
             'Type' => 'Link', //Remote
             'Action' => exportPage.getUrl()
         });
+        buttonList.add(new Map<String,Object>{
+            'Label' => 'Save as Model',
+            'Type' => 'Modal',
+            'Action' => 'formModel',
+            'Parameters' => '{ "cloneId": "' + recordId + '"}'
+        });
 
 		standardTools = JSON.serialize(buttonList);
         standardTools = standardTools.substring(1,standardTools.length()-1);

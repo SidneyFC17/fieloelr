@@ -100,8 +100,8 @@ global with sharing class QuestionService {
 			throw e;
 		}
 
-		questionResponseWrapper.questionResponse = [SELECT Id, Name, ModuleResponse__c, NumberOfAttempt__c, Question__r.Module__r.QuestionPool__c, Question__c, IsSubmitted__c, IsCorrect__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
-		return !questionResponseWrapper.questionResponse.IsCorrect__c && questionResponseWrapper.questionResponse.NumberOfAttempt__c != questionResponseWrapper.questionResponse.Question__r.Module__r.QuestionPool__c;
+		//questionResponseWrapper.questionResponse = [SELECT Id, Name, ModuleResponse__c, NumberOfAttempt__c, Question__r.Module__r.QuestionPool__c, Question__c, IsSubmitted__c, IsCorrect__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
+		return questionResponseWrapper.questionResponse.IsCorrect__c || questionResponseWrapper.questionResponse.NumberOfAttempt__c >= questionResponseWrapper.questionResponse.Question__r.Module__r.QuestionPool__c;
 	}
 	
 }
