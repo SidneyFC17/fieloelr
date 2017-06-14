@@ -8,5 +8,5 @@
     <tab>FieloPLT__Redemption__c</tab>
     <tab>FieloPLT__Libraries</tab>
     <tab>FieloPLT__Programs</tab>
-    <tab>Courses</tab>
+    <tab>FieloELR__Course__c</tab>
 </CustomApplication>
