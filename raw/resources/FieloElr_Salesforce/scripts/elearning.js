@@ -62,7 +62,7 @@
    */
   FieloELearning.prototype.Constant_ = {
     COURSES: 'courses-panel',
-    LANDING_SEGMENT_CONTROLLER: 'FieloELR.ELearningLandingController.getSegments', // eslint-disable-line max-len
+    LANDING_SEGMENT_CONTROLLER: 'FieloELR.CourseLandingController.getSegments', // eslint-disable-line max-len
     VIEW_SEGMENT_CONTROLLER: 'FieloELR.CourseViewController.getSegments'
   };
 

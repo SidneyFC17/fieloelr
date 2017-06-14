@@ -67,7 +67,7 @@ public class ExportService{
             courses = new CoursesSelector(coursefieldsSet).selectByProgramHavingPredecessor(program.Id, courseDependencyFieldsSet);
             coursesMap = new Map<Id,Course__c>(courses);
         }else if(!courseIds.isEmpty()){
-            courses = new CoursesSelector(coursefieldsSet).selectByIdHavingPredecessor(new Set<Id>(courseIds));
+            courses = new CoursesSelector(coursefieldsSet).selectByIdHavingPredecessor(new Set<Id>(courseIds), courseDependencyFieldsSet);
             coursesMap = new Map<Id,Course__c>(courses);
         }
 
