@@ -16,7 +16,11 @@
     this.element_ = element;
 
     // Initialize instance.
-    this.init();
+    if (this) {
+      if (typeof this.init === 'function') {
+        this.init();
+      }
+    }
   };
   window.FieloProgramSelectorELR = FieloProgramSelectorELR;
 
@@ -86,7 +90,6 @@
    */
   FieloProgramSelectorELR.prototype.init = function() {
     if (this.element_) {
-      console.log('Program Selector enabled.');
       componentHandler.upgradeElement(this.element_);
       window.FieloProgramSelectorELR = this.onChange.bind(this);
       this.field_ = 'Program__c';
