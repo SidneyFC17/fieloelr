@@ -518,6 +518,7 @@
     this.toggleRemoveButton(true);
     this.hideColumn('FieloELR__MatchingText__c');
     this.hideColumn('FieloELR__Order__c');
+    this.showFormField_('FieloELR__ShuffleAnswerOptions__c');
   };
 
   FieloQuestionWizard.prototype.initSingleChoiceForm = function() {
@@ -528,6 +529,14 @@
   FieloQuestionWizard.prototype.initShortAnswerForm = function() {
     this.initMultipleChoiceForm();
     this.hideColumn('FieloELR__IsCorrect__c');
+    this.hideFormField_('FieloELR__ShuffleAnswerOptions__c');
+    this.disableSort();
+  };
+
+  FieloQuestionWizard.prototype.disableSort = function() {
+    if (this.reorderObject) {
+      this.reorderObject.disableSort();
+    }
   };
 
   FieloQuestionWizard.prototype.initStatementForm = function() {
@@ -546,6 +555,8 @@
       fields[1].FieloFormElement.set('value', 'False');
       $($(fields[1]).find('input')[0]).prop('disabled', true);
     }
+    this.hideFormField_('FieloELR__ShuffleAnswerOptions__c');
+    this.disableSort();
   };
 
   FieloQuestionWizard.prototype.initMatchingForm = function() {
@@ -614,14 +625,25 @@
   };
 
   FieloQuestionWizard.prototype.changeForm = function() {
-    var shuffleAnswerOptions =
+    var questionType_ =
       $(this.form_)
-        .find('[data-field-name="FieloELR__ShuffleAnswerOptions__c"]')[0]
+        .find('[data-field-name="FieloELR__Type__c"]')[0]
           .FieloFormElement.get('value');
-    if (shuffleAnswerOptions) {
-      this.reorderObject.disableSort();
-    } else {
-      this.reorderObject.enableSort();
+    switch (questionType_) {
+      case 'Statement':
+      case 'Short Answer':
+        this.reorderObject.disableSort();
+        break;
+      default:
+        var shuffleAnswerOptions =
+          $(this.form_)
+            .find('[data-field-name="FieloELR__ShuffleAnswerOptions__c"]')[0]
+              .FieloFormElement.get('value');
+        if (shuffleAnswerOptions) {
+          this.reorderObject.disableSort();
+        } else {
+          this.reorderObject.enableSort();
+        }
     }
   };
 
@@ -751,6 +773,16 @@
           .find('[data-field-name="' + fieldName + '"]')[0];
       if (field) {
         $(field).toggle(false);
+      }
+    }, this);
+  };
+
+  FieloQuestionWizard.prototype.showFormField_ = function() {
+    [].forEach.call(arguments, function(fieldName) {
+      var field = $(this.form_)
+          .find('[data-field-name="' + fieldName + '"]')[0];
+      if (field) {
+        $(field).toggle(true);
       }
     }, this);
   };
