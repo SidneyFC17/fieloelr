@@ -32,8 +32,9 @@ A question was created
    12. The administrator fills the required fields
    13. The administrator presses the Save button 
    14. The system calls the Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md)
-   15. The system displays the Module view backend page with all its defined related lists
-   16. End of flow
+   15. The system calls the Use Case [*Create Answer Option*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0006-Create%20Answer%20Option.md)
+   16. The system displays the Module view backend page with all its defined related lists
+   17. End of flow
  
 ### Alternative flows
  
@@ -55,8 +56,9 @@ A question was created
    9. The administrator fills the required fields
    10. The administrator presses the Save button 
    11. The system calls the Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md)
-   12. The system displays the Module view backend page with all its defined related lists
-   13. End of flow
+   12. The system calls the Use Case [*Create Answer Option*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0006-Create%20Answer%20Option.md)
+   13. The system displays the Module view backend page with all its defined related lists
+   14. End of flow
  
 ##### 2. Question is from type “Short Answer” (step 4 of basic flow)
    1. The administrator selects the “Short Answer” type of Question
@@ -75,8 +77,9 @@ A question was created
    9. The administrator fills the required fields
    10. The administrator presses the Save button 
    11. The system calls the Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md)
-   12. The system displays the Module view backend page with all its defined related lists
-   13. End of flow
+   12. The system calls the Use Case [*Create Answer Option*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0006-Create%20Answer%20Option.md)
+   13. The system displays the Module view backend page with all its defined related lists
+   14. End of flow
  
 ##### 3. Question is from type “Statement” (step 4 of basic flow)
    1. The administrator selects the “Statement” type of Question
@@ -93,8 +96,9 @@ A question was created
    8. The administrator fills the required fields
    9. The administrator presses the Save button 
    10. The system calls the Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md)
-   11. The system displays the Module view backend page with all its defined related lists
-   12. End of flow
+   11. The system calls the Use Case [*Create Answer Option*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0006-Create%20Answer%20Option.md)
+   12. The system displays the Module view backend page with all its defined related lists
+   13. End of flow
  
 ##### 4. Question is from type “Matching Options” (step 4 of basic flow)
    1. The administrator selects the “Matching Options” type of Question
@@ -114,8 +118,9 @@ A question was created
    9. The administrator fills the required fields
    10. The administrator presses the Save button 
    11. The system calls the Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md)
-   12. The system displays the Module view backend page with all its defined related lists
-   13. End of flow
+   12. The system calls the Use Case [*Create Answer Option*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0006-Create%20Answer%20Option.md)
+   13. The system displays the Module view backend page with all its defined related lists
+   14. End of flow
  
 ##### 5. The administrator does not select any type of question (step 4 of basic flow)
    1. The administrator does not select  any type of question
@@ -129,8 +134,9 @@ A question was created
    2. The administrator presses the Save button 
    3. The system automatically fills the Question Name field with the 20 first characters of the Question Text
    4. The system calls the Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md)
-   5. The system displays the Module view backend page with all its defined related lists
-   6. End of flow
+   5. The system calls the Use Case [*Create Answer Option*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0006-Create%20Answer%20Option.md)
+   6. The system displays the Module view backend page with all its defined related lists
+   7. End of flow
  
 ##### 7. The administrator presses the New button (step 9 of basic flow)
    1. The administrator presses the New button in the Answer Options area
@@ -140,5 +146,6 @@ A question was created
 ##### 8. The administrator presses the Save and new button (step 13 of basic flow)
    1. The administrator presses the Save and new button
    2. The system calls the Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md)
-   3. The system automatically opens the Question Wizard first page
-   4. End of flow
+   3. The system calls the Use Case [*Create Answer Option*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0006-Create%20Answer%20Option.md)
+   4. The system automatically opens the Question Wizard first page
+   5. End of flow
