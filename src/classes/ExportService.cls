@@ -67,7 +67,7 @@ public class ExportService{
             courses = new CoursesSelector(coursefieldsSet).selectByProgramHavingPredecessor(program.Id, courseDependencyFieldsSet);
             coursesMap = new Map<Id,Course__c>(courses);
         }else if(!courseIds.isEmpty()){
-            courses = new CoursesSelector(coursefieldsSet).selectByIdHavingPredecessor(new Set<Id>(courseIds));
+            courses = new CoursesSelector(coursefieldsSet).selectByIdHavingPredecessor(new Set<Id>(courseIds), courseDependencyFieldsSet);
             coursesMap = new Map<Id,Course__c>(courses);
         }
 
@@ -438,20 +438,27 @@ public class ExportService{
         if ( parser.nextToken() == JSONToken.START_ARRAY) {
             List<FieloPLT__Segment__c> relatedSegments = new List<FieloPLT__Segment__c>();
             Set<Id> originalSegmentIdsPerRecord = new Set<Id>();
+            Boolean segmentsFound = true;
             while ( parser.nextToken()!== JSONToken.END_ARRAY &&  parser.getCurrentToken() != null ) {
                 if ( parser.getCurrentToken() == JSONToken.START_OBJECT) {
                     while(parser.nextToken() !== JSONToken.END_OBJECT && parser.getCurrentToken() != null){
                         String tokenText = parser.getCurrentName();
                         if ( tokenText == 'segmentName' ) {
                             if ( parser.nextToken() != null ) {
-                                relatedSegments.add(segmentsByName.get(parser.getText()));
+                                if(segmentsByName.containsKey(parser.getText())){
+                                    relatedSegments.add(segmentsByName.get(parser.getText()));
+                                }else{
+                                    segmentsFound = false;
+                                }
                             }
                         }
                     }
                 }
             }
-            multiSegmentRelations.add(new MultiSegmentRelation(currentCourse, relatedSegments, originalSegmentIdsPerRecord, segmentRelation));
-            originalMultiSegmentIds.addAll(originalSegmentIdsPerRecord);
+            if(segmentsFound){
+                multiSegmentRelations.add(new MultiSegmentRelation(currentCourse, relatedSegments, originalSegmentIdsPerRecord, segmentRelation));
+                originalMultiSegmentIds.addAll(originalSegmentIdsPerRecord);
+            }
         }
     }
 

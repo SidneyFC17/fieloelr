@@ -1,5 +1,5 @@
 @isTest
-private class TestELearningLandingController
+private class TestCourseLandingController
 {
 	@testSetup 
 	static void pageSettingsSetup() {
@@ -61,9 +61,9 @@ private class TestELearningLandingController
 			new List<FieloELR__Course__c>{course}
 		);
         
-        ELearningLandingController controller = new ELearningLandingController();
+        CourseLandingController controller = new CourseLandingController();
 
-        List<SelectOption> views = ELearningLandingController.getStatusViews();        
+        List<SelectOption> views = CourseLandingController.getStatusViews();        
 	}
 
 	@isTest
@@ -100,7 +100,7 @@ private class TestELearningLandingController
 		String fields = String.join( new List<String>(Schema.describeSObjects(
 			new String[]{'FieloELR__Course__c'})[0].fields.getMap().keySet()) ,',');
 
-		List<FieloELR__Course__c> courses = ELearningLandingController.getCourses(
+		List<FieloELR__Course__c> courses = CourseLandingController.getCourses(
 			'FieloELR__Course__c',
 			fields,
 			null,
@@ -139,13 +139,13 @@ private class TestELearningLandingController
 			, Program__c = programs[0].Id
 		);
 
-		RemoteActionResult result = ELearningLandingController.createCourseWithoutSegments(
+		/*RemoteActionResult result = CourseLandingController.createCourseWithoutSegments(
 			course,
 			new List<String>{
 				'FieloELR__StartDate__c',
 				'FieloELR__EndDate__c'
 			}
-		);
+		);*/
 	}
 
 	@isTest
@@ -177,7 +177,7 @@ private class TestELearningLandingController
 			, Program__c = programs[0].Id
 		);
 
-		RemoteActionResult result = ELearningLandingController.createCourseWithSegments(
+		/*RemoteActionResult result = CourseLandingController.createCourseWithSegments(
 			course,
 			new List<String>{
 				'FieloELR__StartDate__c',
@@ -187,7 +187,7 @@ private class TestELearningLandingController
 				segments[0].Id,
 				segments[1].Id
 			}
-		);
+		);*/
 	}
 
 	@isTest
@@ -211,6 +211,6 @@ private class TestELearningLandingController
 
 		insert segments;
 
-		segments = ELearningLandingController.getSegments(programs[0].Id);
+		segments = CourseLandingController.getSegments(programs[0].Id);
 	}
 }

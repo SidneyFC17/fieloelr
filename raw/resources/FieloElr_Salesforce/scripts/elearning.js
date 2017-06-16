@@ -62,7 +62,7 @@
    */
   FieloELearning.prototype.Constant_ = {
     COURSES: 'courses-panel',
-    LANDING_SEGMENT_CONTROLLER: 'FieloELR.ELearningLandingController.getSegments', // eslint-disable-line max-len
+    LANDING_SEGMENT_CONTROLLER: 'FieloELR.CourseLandingController.getSegments', // eslint-disable-line max-len
     VIEW_SEGMENT_CONTROLLER: 'FieloELR.CourseViewController.getSegments'
   };
 
@@ -200,6 +200,22 @@
     recentReorder.addGrips();
   };
 
+  FieloELearning.prototype.decodeEntities = function(encodedString) {
+    var textArea = document.createElement('textarea');
+    textArea.innerHTML = encodedString;
+    return textArea.value;
+  };
+
+  FieloELearning.prototype.fixJSON = function() {
+    var JSONField =
+      $('#formModel').find('[data-field-name="FieloPLT__JSON__c"]')[0];
+    if (JSONField) {
+      JSONField.FieloFormElement.set('value',
+        this.decodeEntities(JSONField.FieloFormElement.get('value'))
+      );
+    }
+  };
+
   FieloELearning.prototype.programChangeProxy_ = function(value) {
     var _this = document.getElementsByClassName(
       'fielosf-elearning')[0].FieloELearning;
@@ -318,6 +334,12 @@
         $('#FieloELR__ModuleDependency__cRelatedList')[0];
       if (moduleDependencyRelated) {
         this.hideRelatedColumn(moduleDependencyRelated, 'Name');
+      }
+
+      var saveAsModelForm =
+        $('#formModel')[0];
+      if (saveAsModelForm) {
+        saveAsModelForm.FieloForm.endRetrieve = this.fixJSON.bind(this);
       }
     }
   };

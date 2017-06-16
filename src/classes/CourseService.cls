@@ -1,5 +1,41 @@
 global with sharing class CourseService {
 	
+	public static void createFromModel( Course__c record, Id modelId ){
+        if ( !String.isBlank(modelId ) ) {
+            SavePoint sp;
+            try {            
+                FieloPLT__Model__c selectModel = [SELECT Id, FieloPLT__Icon__c, Name, FieloPLT__Description__c, FieloPLT__JSON__c, FieloPLT__Type__c, FieloPLT__Category__c FROM FieloPLT__Model__c WHERE FieloPLT__Type__c = 'Course' AND ID = :modelId ];
+                List<ExportService.MultiSegmentRelation> multiSegmentRelations = new List<ExportService.MultiSegmentRelation>();
+                SObjectUnitOfWork uow = ExportService.importData( selectModel.FieloPLT__JSON__c, multiSegmentRelations);
+
+            // Si no vienen promotions da un error, sino le setea el name a la primera
+                if ( uow.m_newListByType.containsKey('FieloELR__Course__c') ) {
+                    List<Course__c> courses = (List<Course__c>) uow.m_newListByType.get('FieloELR__Course__c');
+                    if ( courses.size() > 0 ) {
+                        courses.get(0).Name = record.Name ;
+                        courses.get(0).StartDate__c = record.StartDate__c ;
+                        courses.get(0).EndDate__c = record.EndDate__c ;
+                        courses.get(0).Segment__c = record.Segment__c ;
+
+                        ExportService.saveData(uow, multiSegmentRelations);
+                    } else {
+                        throw new FieloPLT.FieloException (label.FieloPLT.ModelEmpty);
+                    }
+                } else {
+                    throw new FieloPLT.FieloException (label.FieloPLT.ModelEmpty);
+                }
+
+            } catch (Exception e ) {
+                if(sp != null) {
+                    Database.rollback(sp);
+                }
+                throw new FieloPLT.FieloException (e.getMessage() );
+            }
+        } else {
+            throw new FieloPLT.FieloException (label.FieloPLT.ModelMustBeChosen);            
+        }
+    }
+
 	public static List<Course__c> getCourses(Set<String> fields, Set<String> status, Id programId, Integer quantity, Integer offset, String orderBy) {   
 		String query = 'SELECT ' + String.join(new List<String>(fields), ',') + ' FROM Course__c ';
 		// WHERE CONDITION 
@@ -34,7 +70,7 @@ global with sharing class CourseService {
 											Set<Id> courseIds, 
 											Id programId, 
 											Id memberId, 
-												Boolean filterByDependecies, 
+												Boolean filterByDependencies, 
 												Boolean filterBySegments, 
 												Boolean filterByNotTaken, 
 											Integer quantity, 
@@ -70,7 +106,7 @@ global with sharing class CourseService {
 				queryCourses += ' AND Id NOT in (SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId) ';
 			}
 
-			if(filterByDependecies){
+			if(filterByDependencies){
 				Set<String> cdStringKeys = getCDStringKeys(null, memberId);
 				queryCourses += ' AND (HasDependencies__c = false OR (HasDependencies__c = true AND KeyDependencies__c in : cdStringKeys))';
 			}
@@ -239,7 +275,7 @@ global with sharing class CourseService {
 											Set<Id> courseIds, 
 											Id programId, 
 											Id memberId, 
-												Boolean filterByDependecies, 
+												Boolean filterByDependencies, 
 												Boolean filterBySegments, 
 											Integer quantity, 
 											Integer offset, 
@@ -253,7 +289,7 @@ global with sharing class CourseService {
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
 		fieldsModuleClone.add('HasDependencies__c');
 		fieldsModuleClone.add('KeyDependencies__c');
-		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependecies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
+		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatusClone = new Set<String>(fieldsCourseStatus);
 		fieldsCourseStatusClone.add('Course__c');
@@ -270,7 +306,7 @@ global with sharing class CourseService {
 		Set<String> cdStringKeys;
 		Set<String> mdStringKeys;
 		Map<Id,List<ModuleDependency__c>> dependenciesByModule;
-		if((fieldsModule != null && fieldsModuleDependency != null) || !filterByDependecies){
+		if((fieldsModule != null && fieldsModuleDependency != null) || !filterByDependencies){
 			List<Module__c> modules = new List<Module__c>();
 			for(Course__c c : courses){
 				modules.addAll(c.Modules__r);
@@ -291,7 +327,7 @@ global with sharing class CourseService {
 				}
 			}
 
-			if(!filterByDependecies){
+			if(!filterByDependencies){
 				cdStringKeys = getCDStringKeys(courses, memberId);
 				cdStringKeys = getMDStringKeys(modules, memberId);
 			}
@@ -305,14 +341,14 @@ global with sharing class CourseService {
 				cw.allowedForSegment = segmentIds.contains(c.Segment__c);
 			}
 
-			if(!filterByDependecies && c.HasDependencies__c){
+			if(!filterByDependencies && c.HasDependencies__c){
 				cw.allowedForDependency = cdStringKeys.contains(c.KeyDependencies__c);
 			}
 
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
 					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, cs.ModuleResponses__r) : new ModuleWrapper(module);
-					if(!filterByDependecies && module.HasDependencies__c){
+					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					}
 					if(dependenciesByModule != null){
@@ -399,7 +435,7 @@ global with sharing class CourseService {
 											Id programId, 
 											Id memberId, 
 												Boolean myCourses,
-												Boolean filterByDependecies, 
+												Boolean filterByDependencies, 
 												Boolean filterBySegments, 
 												Boolean filterByNotTake, 
 											Integer quantity, 
@@ -440,7 +476,7 @@ global with sharing class CourseService {
 				queryCourses += 'AND Id NOT in (SELECT Course__c FROM CourseStatus__c WHERE Progress__c = 100 AND Member__c =: memberId) ';
 			}
 
-			if(filterByDependecies){
+			if(filterByDependencies){
 				Set<String> cdStringKeys = getCDStringKeys(null, memberId);
 				queryCourses += 'AND (HasDependencies__c = false OR (HasDependencies__c = true AND KeyDependencies__c in : cdStringKeys))';
 			}
@@ -494,7 +530,7 @@ global with sharing class CourseService {
 
 			Set<String> cdStringKeys;
 			Set<String> mdStringKeys;
-			if(!filterByDependecies){				
+			if(!filterByDependencies){				
 				cdStringKeys = getCDStringKeys(courses, memberId);
 				cdStringKeys = getMDStringKeys(modules, memberId);
 			}
@@ -507,7 +543,7 @@ global with sharing class CourseService {
 						cw.enabled = segmentIds.contains(c.Segment__c);
 					}
 
-					if(cw.enabled && !filterByDependecies){
+					if(cw.enabled && !filterByDependencies){
 						if(c.HasDependencies__c){
 							cw.enabled = cdStringKeys.contains(c.KeyDependencies__c);
 						}
@@ -517,7 +553,7 @@ global with sharing class CourseService {
 				if(modulesByCourse.containsKey(c.Id)){
 					for(Module__c module : modulesByCourse.get(c.Id)){
 						ModuleWrapper mw = new ModuleWrapper(module);
-						if(!filterByDependecies){
+						if(!filterByDependencies){
 							if(module.HasDependencies__c){
 								mw.enabled = mdStringKeys.contains(module.KeyDependencies__c);
 							}

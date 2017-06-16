@@ -67,6 +67,12 @@ public with sharing class CourseViewController extends PageSettingsController {
             'Type' => 'Link', //Remote
             'Action' => exportPage.getUrl()
         });
+        buttonList.add(new Map<String,Object>{
+            'Label' => 'Save as Model',
+            'Type' => 'Modal',
+            'Action' => 'formModel',
+            'Parameters' => '{ "cloneId": "' + recordId + '"}'
+        });
 
 		standardTools = JSON.serialize(buttonList);
         standardTools = standardTools.substring(1,standardTools.length()-1);
@@ -76,27 +82,31 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 
-		for(FieloPLT__PageSettings__c settings:relatedSettings) {
-			if(settings.FieloPLT__TargetObject__c == 'FieloELR__Module__c') {
-				// if( (new ModulesSelector().selectByIdHavingCourses(new Set<Id>{record.Id})).size() > 1 ) {
-					settings.FieloPLT__Buttons__c = '{"Label":"Reorder","Type":"Modal","Action":"FieloELR__Module__cFormReorder"}' +
-					(settings.FieloPLT__Buttons__c != '' && settings.FieloPLT__Buttons__c != null ?
-						',' + settings.FieloPLT__Buttons__c :
-						'');	
-				// }
+		if (relatedSettings != null) {
+			for(FieloPLT__PageSettings__c settings:relatedSettings) {
+				if(settings.FieloPLT__TargetObject__c == 'FieloELR__Module__c') {
+					// if( (new ModulesSelector().selectByIdHavingCourses(new Set<Id>{record.Id})).size() > 1 ) {
+						settings.FieloPLT__Buttons__c = '{"Label":"Reorder","Type":"Modal","Action":"FieloELR__Module__cFormReorder"}' +
+						(settings.FieloPLT__Buttons__c != '' && settings.FieloPLT__Buttons__c != null ?
+							',' + settings.FieloPLT__Buttons__c :
+							'');	
+					// }
+				}
 			}
 		}
 
-		for(FieloPLT__PageSettings__c settings:relatedFormsSettings) {
-			if(settings.FieloPLT__Object__c == 'FieloELR__CourseDependency__c') {
-				settings.FieloPLT__Sections__c = getSectionsWithCourseWhereCondition(
-					settings.FieloPLT__Sections__c,
-					record.Program__c,
-					record.Id
-				);
+		if (relatedFormsSettings != null) {
+			for(FieloPLT__PageSettings__c settings:relatedFormsSettings) {
+				if(settings.FieloPLT__Object__c == 'FieloELR__CourseDependency__c') {
+					settings.FieloPLT__Sections__c = getSectionsWithCourseWhereCondition(
+						settings.FieloPLT__Sections__c,
+						record.Program__c,
+						record.Id
+					);
+				}
 			}
 		}
-
+		
 		if ( fieldList.size() > 0  ) {
 			for(String fieldName:fieldList) {
 				fields.add(fieldName);

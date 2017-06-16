@@ -1,7 +1,7 @@
 /**
 * @description Class to Control the Incentives Landing Page.
 */
-public with sharing class ELearningLandingController extends PageSettingsSetController {
+public with sharing class CourseLandingController extends PageSettingsSetController {
 
 	public String currentView {get;set;}
     public FieloPLT__PageSettings__c newCourse {get;set;}
@@ -16,7 +16,7 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
         return currentProgram;
     }set;}
 
-	public ELearningLandingController() {
+	public CourseLandingController() {
 		if( currentProgram != null ){
             String standardTools  = '';
             String standardButtons = '';
@@ -60,17 +60,20 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
 
     public static String getSectionsWithSegmentWhereCondition(String sectionsString){
         
-        saveController = 'ELearningLandingController.createCourseWithoutSegments';
+        //saveController = 'CourseLandingController.createCourseWithoutSegments';
+        saveController = 'CourseLandingController.createCourse';
+        secondaryParameters = 'modelId,FieloELR__Segment__c';
 
-        List<Section> sections = (List<Section>) JSON.deserialize( sectionsString, List<ELearningLandingController.Section>.class );
+
+        List<Section> sections = (List<Section>) JSON.deserialize( sectionsString, List<CourseLandingController.Section>.class );
         for ( Section s :sections ) {
           for ( List<FormField> r :s.rows ) {
             for ( FormField f :r ) {
               if(f.Name != null) {
                 if(f.Name == 'FieloELR__Segment__c') {
                     f.WhereCondition = ' FieloPLT__Program__c IN ( //, /' + ProgramService.getActiveProgram().Id + '/ ) AND RecordType.Name <> /Metasegment/ ';
-                    secondaryParameters = 'FieloELR__Segment__c';
-                    saveController = 'ELearningLandingController.createCourseWithSegments';
+                    //secondaryParameters = 'FieloELR__Segment__c';
+                    //saveController = 'CourseLandingController.createCourseWithSegments';
                 }
               }
             }
@@ -108,16 +111,16 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
         Create Courses Method with 3 parameters
         in the case that segments are not used.
     */
-    @RemoteAction
+    /*@RemoteAction
     public static RemoteActionResult createCourseWithoutSegments(sObject objectRecord, List<String> nullFields) {
-        return createCourseWithSegments(objectRecord,nullFields,new List<String>());
-    }
+        return createCourse(objectRecord,nullFields,new List<String>());
+    }*/
 
     /*
         Create Courses Method
     */
     @RemoteAction
-    public static RemoteActionResult createCourseWithSegments(sObject objectRecord, List<String> nullFields, List<String> segments) {
+    public static RemoteActionResult createCourse(sObject objectRecord, List<String> nullFields, String modelId, List<String> segments) {
         Savepoint sp;
         RemoteActionResult result = new RemoteActionResult();
 
@@ -136,8 +139,17 @@ public with sharing class ELearningLandingController extends PageSettingsSetCont
             }
             //TODO Change to ELR Create API
 
-            insert record;
-            
+            if ( String.isBlank( modelId )  ) {
+	            if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
+	                insert record;
+	            }else{
+	                throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+	            }
+	        } else {
+	            CourseService.createFromModel( record, modelId );
+	        }
+
+
             //TODO Crear Label DataSavedSuccessfully
             if ( record.Id != null ) {
                 result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseCreated) );

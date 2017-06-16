@@ -1,4 +1,4 @@
-<apex:page tabStyle="Courses__tab" sidebar="false" standardController="ModuleResponse__c" extensions="ModuleResponseViewController" docType="html-5.0">
+<apex:page tabStyle="Course__c" sidebar="false" standardController="ModuleResponse__c" extensions="ModuleResponseViewController" docType="html-5.0">
 <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <head>
 	<script src="https://use.fontawesome.com/21ab711331.js"></script>

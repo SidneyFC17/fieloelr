@@ -126,11 +126,6 @@ mod(
     </fields>
     <gender>Feminine</gender>
     <label>Answer Option</label>
-    <listViews>
-        <fullName>All</fullName>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-    </listViews>
     <nameField>
         <displayFormat>AO-{00000000}</displayFormat>
         <label>Answer Option Name</label>

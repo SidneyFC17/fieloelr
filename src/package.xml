@@ -22,11 +22,16 @@
 	</types>
 	<types>
 		<members>*</members>
+		<name>CustomApplication</name>
+	</types>
+	<types>
+		<members>*</members>
 		<name>CustomLabels</name>
 	</types>
 	<types>
 		<members>FieloPLT__Tracker__c</members>
 		<members>FieloPLT__Transaction__c</members>
+		<members>FieloPLT__Model__c</members>
 		<members>Answer__c</members>
 		<members>AnswerOption__c</members>
 		<members>CourseDependency__c</members>
