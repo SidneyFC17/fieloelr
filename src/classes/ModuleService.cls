@@ -19,7 +19,7 @@ global with sharing class ModuleService {
 	}
 
 	//Take module
-	global static ModuleWrapper takeModule(Id moduleId, Id memberId, Set<String> fieldsModule, Set<String> fieldsModuleDependency, Set<String> fieldsQuestion, Set<String> fieldsAnswerOption) {
+	global static ModuleWrapper takeModule(Id moduleId, Id memberId, Set<String> fieldsModule, Set<String> fieldsQuestion, Set<String> fieldsAnswerOption) {
 		//insert module response
 
 		//query module
@@ -36,9 +36,6 @@ global with sharing class ModuleService {
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
 		fieldsModuleClone.add('QuestionPool__c');
 		String moduleQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleClone), ',');
-		if(fieldsModuleDependency != null){
-			moduleQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleDependency), ',') + ' FROM PredecessorModules__r) ';
-		}
 		moduleQuery += ' FROM Module__c WHERE Id =: moduleId ';
 		Module__c module = Database.query(moduleQuery);
 
