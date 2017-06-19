@@ -313,6 +313,15 @@
       });
     });
 
+    [].forEach.call(questionValues, function(question) {
+      if (question.id === 'r[\'id\']') {
+        var index = questionValues.indexOf(question);
+        if (index > -1) {
+          questionValues.splice(index, 1);
+        }
+      }
+    }, this);
+
     try {
       Visualforce.remoting.Manager.invokeAction(
         this.element_.getAttribute('data-save-controller'),
