@@ -147,6 +147,21 @@ public with sharing class FormQuestionController {
     	return mapPicklistOptions;
   	} set;}
 
+    public FieloPLT__PageSettings__c getPageSettings(String pageSetingsName) {
+        String query = 'SELECT ';
+        query += String.join(new List<String>(Schema.describeSObjects(
+            new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet()), ',');
+        query += ' FROM FieloPLT__PageSettings__c';
+        query += ' WHERE Name = :pageSetingsName' ;
+        query += ' LIMIT 1';
+        List<sObject> result = Database.query(query);
+        return (FieloPLT__PageSettings__c) result.get(0);
+    }
+
+    public FieloPLT__PageSettings__c answerOptionsPS {get{
+        return getPageSettings('Question (Question Wizard) > Related > Answer Option');
+    }set;}
+
 	/*****  Metodos Remote para Save y Retrieve *****/
     @RemoteAction
     public static RemoteActionResult save( FieloELR__Question__c question, List<String> questionNullFields, List<FieloELR__AnswerOption__c> answerOptions, Map<Id,List<String>> answerOptionsNullFields, List<Id> deletedIds){
