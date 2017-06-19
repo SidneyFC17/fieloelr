@@ -45,9 +45,53 @@ public class QuestionResponses extends SObjectDomain {
         }
     }
 
-    public override void onValidate(){
+    public override void onValidate() {
 
-        //Check if the number of question responses is bigger than the Question Pool
+        Set<Id> moduleResponseIds = new Set<Id>();
+        for(QuestionResponse__c questionResponse : (List<QuestionResponse__c>)records){
+            moduleResponseIds.add(questionResponse.ModuleResponse__c);
+        }        
+        Map<Id,ModuleResponse__c> moduleResponsesMap = 
+            new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector().selectByIdWithQuestionPool(moduleResponseIds));
+
+        //Builds map with remaining questions by question response to check if the number of question responses is bigger than the Question Pool
+        List<AggregateResult> aggResult = new QuestionResponsesSelector().selectByModuleResponseGroupByModuleResponse(moduleResponseIds);
+        Map<Id,Set<Id>> existingQuestionsMap = new Map<Id,Set<Id>>();
+        Map<Id,Decimal> questionPoolsMap = new Map<Id,Decimal>();
+        Id moduleResponseId;
+        Id questionId;
+        for(AggregateResult mr : aggResult) {
+            moduleResponseId = (Id)mr.get('ModuleResponse');
+            questionId = (Id)mr.get('Question');
+            //Populates map with questions per question response (only those with Question Pool)
+            if(existingQuestionsMap.containsKey(moduleResponseId)) {
+                existingQuestionsMap.get(moduleResponseId).add(questionId);
+            } else {
+                existingQuestionsMap.put(moduleResponseId, new Set<Id> {questionId});
+                questionPoolsMap.put(moduleResponseId, (Decimal)mr.get('QuestionPool'));            
+            }
+        }
+     
+        Decimal remainingQuestions;
+        Set<Id> questions;
+        for(QuestionResponse__c questionResponse : (List<QuestionResponse__c>)records) {
+            moduleResponseId = questionResponse.ModuleResponse__c;
+            questionId = questionResponse.Question__c;
+            if(existingQuestionsMap.containsKey(questionResponse.ModuleResponse__c)) {
+                questions = existingQuestionsMap.get(questionResponse.ModuleResponse__c);
+                // Only adds if the current question is not yet part of the set for that module response
+                if (!questions.contains(questionId)) {
+                    questions.add(questionId);
+                    existingQuestionsMap.put(questionResponse.ModuleResponse__c, questions);                    
+                }
+                if (questions.size() > questionPoolsMap.get(moduleResponseId)) {
+                    questionResponse.addError(Label.QuestionsGreaterThanQuestionPool);
+                }                
+            } else if(moduleResponsesMap.containsKey(questionResponse.ModuleResponse__c)) {
+                existingQuestionsMap.put(moduleResponseId, new Set<Id> {questionId});
+                questionPoolsMap.put(moduleResponseId, moduleResponsesMap.get(moduleResponseId).Module__r.QuestionPool__c);            
+            }
+        }        
 
         if(validateAdminFields){
             validateModuleSubmitted(records);

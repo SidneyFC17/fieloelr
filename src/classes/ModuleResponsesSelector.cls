@@ -115,6 +115,19 @@ public with sharing class ModuleResponsesSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
     
+    public List<ModuleResponse__c> selectByIdWithQuestionPool(Set<Id> moduleResponseIds) {
+      return (List<ModuleResponse__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', Module__r.QuestionPool__c ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :moduleResponseIds AND Module__r.QuestionPool__c != null' ,
+                 
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }   
+        
     public List<AggregateResult> selectByKeyGroupByKey(Set<String> keys) {
         return [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : keys GROUP BY Key__c];
     }

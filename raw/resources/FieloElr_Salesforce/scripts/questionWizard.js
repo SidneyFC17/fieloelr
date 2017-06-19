@@ -550,9 +550,11 @@
     var fields = $(this.form_)
       .find('[data-field-name="FieloELR__AnswerOptionText__c"]');
     if (fields) {
-      fields[0].FieloFormElement.set('value', 'True');
+      fields[0].FieloFormElement.set('value',
+        BackEndJSSettings.LABELS.True);
       $($(fields[0]).find('input')[0]).prop('disabled', true);
-      fields[1].FieloFormElement.set('value', 'False');
+      fields[1].FieloFormElement.set('value',
+        BackEndJSSettings.LABELS.False);
       $($(fields[1]).find('input')[0]).prop('disabled', true);
     }
     this.hideFormField_('FieloELR__ShuffleAnswerOptions__c');

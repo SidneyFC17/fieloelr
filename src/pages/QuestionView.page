@@ -66,6 +66,20 @@
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
 	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
+	<script>
+		if(typeof BackEndJSSettings == 'undefined') {
+			var BackEndJSSettings = {};
+		}
+		if(typeof BackEndJSSettings.LABELS == 'undefined') {
+		 	BackEndJSSettings.LABELS = {};
+		}
+		BackEndJSSettings.LABELS.ChooseQuestionType = '{!$Label.fieloelr__ChooseQuestionType}';
+		BackEndJSSettings.LABELS.QuestionTextRequired = '{!$Label.fieloelr__QuestionTextRequired}';
+		BackEndJSSettings.LABELS.MatchingTextRequired = '{!$Label.fieloelr__MatchingTextRequired}';
+		BackEndJSSettings.LABELS.AnswerOptionTextRequired = '{!$Label.fieloelr__AnswerOptionTextRequired}';
+		BackEndJSSettings.LABELS.True = '{!$Label.fieloelr__True}';
+		BackEndJSSettings.LABELS.False = '{!$Label.fieloelr__False}';
+	</script>
 </body>
 </html>
 </apex:page>
