@@ -68,10 +68,12 @@ public with sharing class QuestionResponsesSelector extends SObjectSelector {
     }
 
     public List<AggregateResult> selectByModuleResponseGroupByModuleResponse(Set<Id> moduleResponseIds) {
-        return [SELECT ModuleResponse__c, MAX(ModuleResponse__r.Module__r.QuestionPool__c) QuestionPool, 
-                COUNT(Question__c) Questions 
+        return [SELECT ModuleResponse__r.Id ModuleResponse, Question__r.Id Question, 
+                    MAX(ModuleResponse__r.Module__r.QuestionPool__c) QuestionPool
                 FROM QuestionResponse__c 
                 WHERE ModuleResponse__c in : moduleResponseIds 
-                GROUP BY ModuleResponse__c];
+                GROUP BY ModuleResponse__r.Id, Question__r.Id
+                HAVING MAX(ModuleResponse__r.Module__r.QuestionPool__c) != null 
+                ORDER BY ModuleResponse__r.Id, Question__r.Id];
     }    
 }
