@@ -107,8 +107,7 @@
 	                <h2 id="{!formId}-multiplechoice-headerModal" class="slds-text-heading--medium">{!heading}</h2>
 	            </div>
 	            <div class="slds-modal__content slds-p-around--medium slds-align slds-align_absolute-center">
-		            <c:Sections
-	            		formId="{!formId}-multiplechoice-section"
+		            <c:Sections formId="{!formId}-multiplechoice-section"
 	            		sObjectName="{!sObjectName}"
 	            		fieldset="{!questionSection}"
 	            		mode="{!mode}"
@@ -117,7 +116,7 @@
 	            	<c:AnswerOptions formid="{!formId}-multiplechoice-answers" 
 						buttons="{'Name':'New', 'Type':'Link', 'CssClass': 'slds-button--new-answer','Label':'New','Action':'#'}"
 						sObjectName="FieloELR__AnswerOption__c"
-						fieldset="{'Name':'Answer Options','fields':[{'Name':'FieloELR__AnswerOptionText__c', 'Type':'input'},{'Name':'FieloELR__MatchingText__c', 'Type':'input'},{'Name':'FieloELR__IsCorrect__c', 'Type':'checkbox'},{'Name':'FieloELR__Order__c', 'Type': 'input'}]}"
+						fieldset="{!answerOptionsPS.FieloPLT__Fieldset__c}"
 					/>
 	            </div>
 	            <div class="slds-modal__footer">
