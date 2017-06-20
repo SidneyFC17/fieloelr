@@ -221,6 +221,10 @@
       'fielosf-elearning')[0].FieloELearning;
     _this.activeForm_ = $(this.element_).closest('.slds-form')[0].FieloForm;
     if (value && value.id !== _this.memberId_) {
+      _this.activeForm_.parameters_.FieloELR__Program__c =// eslint-disable-line camelcase
+        $(_this.activeForm_.element_)
+          .find('[data-field-name="FieloELR__Program__c"]')[0]
+            .FieloFormElement.get('value');
       _this.memberId_ = value.id;
       _this.getSegments();
     }
