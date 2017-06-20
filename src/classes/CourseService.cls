@@ -25,11 +25,16 @@ global with sharing class CourseService {
                     throw new FieloPLT.FieloException (label.FieloPLT.ModelEmpty);
                 }
 
+            } catch (DmlException e ) {
+                if(sp != null) {
+                    Database.rollback(sp);
+                }
+                throw new FieloPLT.FieloException (e.getDmlMessage(0));
             } catch (Exception e ) {
                 if(sp != null) {
                     Database.rollback(sp);
                 }
-                throw new FieloPLT.FieloException (e.getMessage() );
+                throw new FieloPLT.FieloException (e.getMessage());
             }
         } else {
             throw new FieloPLT.FieloException (label.FieloPLT.ModelMustBeChosen);            
@@ -249,6 +254,7 @@ global with sharing class CourseService {
 		global Module__c module {get; private set;}
 		global Boolean allowedForDependency {get; private set;}
 		global Integer numberOfAttempts {get; private set;}
+		global Boolean isApproved {get; private set;}
 		//public Integer average;
 		global List<ModuleResponse__c> moduleResponses {get; private set;}
 		global List<ModuleDependency__c> dependencies {get; private set;}
@@ -257,22 +263,29 @@ global with sharing class CourseService {
 			this(module);
 			this.moduleResponses = moduleResponses;
 			this.numberOfAttempts = this.moduleResponses.size();
+			if(this.numberOfAttempts > 0){
+				for(ModuleResponse__c mr : this.moduleResponses){
+					if(mr.IsApproved__c){
+						this.isApproved = true;
+						break;
+					}
+				}
+			}
 		}
 
 		public ModuleWrapper(Module__c module){
 			this.module = module;
 			this.allowedForDependency = true;
+			this.isApproved = false;
 		}
 	}
 
 	//active courses
 	global static List<CourseWrapper> getCoursesMap(Set<String> fieldsCourse, 
-											Set<String> fieldsCourseStatus,
 											Set<String> fieldsCourseDependency,
 											Set<String> fieldsModule,
-											Set<String> fieldsModuleResponse, 
 											Set<String> fieldsModuleDependency,
-											Set<Id> courseIds, 
+											Set<Id> courseIds,
 											Id programId, 
 											Id memberId, 
 												Boolean filterByDependencies, 
@@ -291,9 +304,9 @@ global with sharing class CourseService {
 		fieldsModuleClone.add('KeyDependencies__c');
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
-		Set<String> fieldsCourseStatusClone = new Set<String>(fieldsCourseStatus);
-		fieldsCourseStatusClone.add('Course__c');
-		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatusClone, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
+		Set<String> fieldsCourseStatus = new Set<String>{'Course__c','Progress__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'Grade__c','IsApproved__c','NumberOfAttempt__c'};
+		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}
 
