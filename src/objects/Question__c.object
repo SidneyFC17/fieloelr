@@ -201,10 +201,6 @@ mod(
                 <fullName>Matching Options</fullName>
                 <default>false</default>
             </picklistValues>
-            <picklistValues>
-                <fullName>Fill in the Blanks</fullName>
-                <default>false</default>
-            </picklistValues>
             <restrictedPicklist>true</restrictedPicklist>
             <sorted>false</sorted>
         </picklist>
