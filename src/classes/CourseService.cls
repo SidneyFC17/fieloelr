@@ -277,12 +277,10 @@ global with sharing class CourseService {
 
 	//active courses
 	global static List<CourseWrapper> getCoursesMap(Set<String> fieldsCourse, 
-											Set<String> fieldsCourseStatus,
 											Set<String> fieldsCourseDependency,
 											Set<String> fieldsModule,
-											Set<String> fieldsModuleResponse, 
 											Set<String> fieldsModuleDependency,
-											Set<Id> courseIds, 
+											Set<Id> courseIds,
 											Id programId, 
 											Id memberId, 
 												Boolean filterByDependencies, 
@@ -301,9 +299,9 @@ global with sharing class CourseService {
 		fieldsModuleClone.add('KeyDependencies__c');
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
-		Set<String> fieldsCourseStatusClone = new Set<String>(fieldsCourseStatus);
-		fieldsCourseStatusClone.add('Course__c');
-		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatusClone, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
+		Set<String> fieldsCourseStatus = new Set<String>{'Course__c','Progress__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'Grade__c','IsApproved__c','NumberOfAttempt__c'};
+		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}
 
