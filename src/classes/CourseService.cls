@@ -25,11 +25,16 @@ global with sharing class CourseService {
                     throw new FieloPLT.FieloException (label.FieloPLT.ModelEmpty);
                 }
 
+            } catch (DmlException e ) {
+                if(sp != null) {
+                    Database.rollback(sp);
+                }
+                throw new FieloPLT.FieloException (e.getDmlMessage(0));
             } catch (Exception e ) {
                 if(sp != null) {
                     Database.rollback(sp);
                 }
-                throw new FieloPLT.FieloException (e.getMessage() );
+                throw new FieloPLT.FieloException (e.getMessage());
             }
         } else {
             throw new FieloPLT.FieloException (label.FieloPLT.ModelMustBeChosen);            
