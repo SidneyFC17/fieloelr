@@ -1,6 +1,6 @@
 global with sharing class CourseService {
 	
-	public static void createFromModel( Course__c record, Id modelId ){
+	public static void createFromModel( Course__c record, Id modelId){
         if ( !String.isBlank(modelId ) ) {
             SavePoint sp;
             try {            
@@ -8,16 +8,17 @@ global with sharing class CourseService {
                 List<ExportService.MultiSegmentRelation> multiSegmentRelations = new List<ExportService.MultiSegmentRelation>();
                 SObjectUnitOfWork uow = ExportService.importData( selectModel.FieloPLT__JSON__c, multiSegmentRelations);
 
-            // Si no vienen promotions da un error, sino le setea el name a la primera
+            	// Si no vienen promotions da un error, sino le setea el name a la primera
                 if ( uow.m_newListByType.containsKey('FieloELR__Course__c') ) {
                     List<Course__c> courses = (List<Course__c>) uow.m_newListByType.get('FieloELR__Course__c');
                     if ( courses.size() > 0 ) {
-                        courses.get(0).Name = record.Name ;
-                        courses.get(0).StartDate__c = record.StartDate__c ;
-                        courses.get(0).EndDate__c = record.EndDate__c ;
-                        courses.get(0).Segment__c = record.Segment__c ;
+                        for(String fieldName: record.getPopulatedFieldsAsMap().keySet()) {
+                        	if (fieldName != 'Id') {
+                        		courses.get(0).put(fieldName, record.get(fieldName));
+                        	}
+						}
 
-                        ExportService.saveData(uow, multiSegmentRelations);
+                        ExportService.saveData(uow, null);
                     } else {
                         throw new FieloPLT.FieloException (label.FieloPLT.ModelEmpty);
                     }
@@ -34,7 +35,7 @@ global with sharing class CourseService {
                 if(sp != null) {
                     Database.rollback(sp);
                 }
-                throw new FieloPLT.FieloException (e.getMessage());
+                throw new FieloPLT.FieloException (e.getMessage() );
             }
         } else {
             throw new FieloPLT.FieloException (label.FieloPLT.ModelMustBeChosen);            
