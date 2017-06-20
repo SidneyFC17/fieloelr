@@ -49,6 +49,14 @@
         <value>Data was saved successfully</value>
     </labels>
     <labels>
+        <fullName>False</fullName>
+        <categories>questionWizard.js</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>False</shortDescription>
+        <value>False</value>
+    </labels>
+    <labels>
         <fullName>MatchingTextRequired</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
@@ -105,12 +113,28 @@
         <value>This question was already answered correctly</value>
     </labels>
     <labels>
+        <fullName>QuestionsGreaterThanQuestionPool</fullName>
+        <categories>QuestionResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>QuestionAlreadyAnsweredCorrectly</shortDescription>
+        <value>Number of questions reponded is greater than the question pool for this module</value>
+    </labels>
+    <labels>
         <fullName>QuestionTextRequired</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>QuestionTextRequired</shortDescription>
         <value>Question Text is a required field</value>
+    </labels>
+    <labels>
+        <fullName>True</fullName>
+        <categories>questionWizard.js</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>True</shortDescription>
+        <value>True</value>
     </labels>
     <labels>
         <fullName>ValidateAnswerActiveModules</fullName>

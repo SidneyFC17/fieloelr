@@ -25,7 +25,6 @@
    * @private
    */
   FieloRecentReorder.prototype.Constant_ = {
-    SAVE_CONTROLLER: 'FieloELR.LevelReorderController.reorder',
     UI_DISABLED: 'ui-state-disabled',
     UI_HANDLE: 'ui-sortable-handle'
   };
@@ -127,7 +126,7 @@
     $(this.container_).sortable({
       update: this.order.bind(this),
       revert: true,
-      cancel: '.ui-state-disabled'
+      cancel: '.' + this.Constant_.UI_DISABLED
     });
   };
 

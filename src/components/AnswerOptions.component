@@ -28,11 +28,13 @@
 		              <apex:repeat value="{!sections}" var="s">
 		              	<th scope="col" style="width: 10px;">
 		              	</th>
-		              	<apex:repeat value="{!s.fields}" var="f">
-			              <th scope="col">
-			              	<div class="slds-truncate" title="{!$ObjectType[sObjectName].Fields[f.Name].label}">{!$ObjectType[sObjectName].Fields[f.Name].label}</div>
-			              </th>
-			            </apex:repeat>
+		              	<apex:repeat value="{!s.rows}" var="r">
+			              	<apex:repeat value="{!r}" var="f">
+				              <th scope="col">
+				              	<div class="slds-truncate" title="{!$ObjectType[sObjectName].Fields[f.Name].label}">{!$ObjectType[sObjectName].Fields[f.Name].label}</div>
+				              </th>
+				            </apex:repeat>
+				        </apex:repeat>
 		              </apex:repeat>
 		              <th class="slds-cell-shrink" scope="col"></th>
 		            </tr>
@@ -43,26 +45,27 @@
 	                <apex:repeat value="{!sections}" var="s">
 	                	<td scope="row" style="width: 10px;">
 	                	</td>
-	                  <apex:repeat value="{!s.fields}" var="f">
-	                    <td scope="row" class="{!f.ClassName}">
-							<apex:panelGroup rendered="{!f.Name = 'FieloELR__Order__c'}">
-								<c:OutputField cssClass="slds-truncate" type="{!f.type}" field="{!f.Name}"/>
-							</apex:panelGroup>                    
-	                    	<apex:panelGroup rendered="{!f.Name != 'FieloELR__Order__c'}">
-		                      <c:InputField 
-		                        onchange="f.onchange" 
-		                        value="{!f.Value}"
-		                        type="{!f.Type}"
-		                        showLabel="false"
-		                        toggle="true"
-		                        fieldname="{!f.Name}"
-		                        formid="{!formId}"
-		                        describe="{!$ObjectType[sObjectName].Fields[f.Name]}"
-		                        mode="new"
-		                        sObjectName="{!sObjectName}"
-		                        />
-		                    </apex:panelGroup>
-	                    </td>
+	                  <apex:repeat value="{!s.rows}" var="r">
+				          <apex:repeat value="{!r}" var="f">
+		                    <td scope="row" class="{!f.ClassName}">
+								<apex:panelGroup rendered="{!f.Name = 'FieloELR__Order__c'}">
+									<c:OutputField cssClass="slds-truncate" type="{!f.type}" field="{!f.Name}"/>
+								</apex:panelGroup>                    
+		                    	<apex:panelGroup rendered="{!f.Name != 'FieloELR__Order__c'}">
+			                      <c:InputField onchange="f.onchange" 
+			                        value="{!f.Value}"
+			                        type="{!f.Type}"
+			                        showLabel="false"
+			                        toggle="true"
+			                        fieldname="{!f.Name}"
+			                        formid="{!formId}"
+			                        describe="{!$ObjectType[sObjectName].Fields[f.Name]}"
+			                        mode="new"
+			                        sObjectName="{!sObjectName}"
+			                        />
+			                    </apex:panelGroup>
+		                    </td>
+		                  </apex:repeat>  
 	                  </apex:repeat>
 	                </apex:repeat>
 		    			<td role="gridcell" class="slds-cell-shrink" data-label="Actions">
