@@ -404,8 +404,7 @@ public class ExportService{
             // Loop por cada Course
             while ( parser.nextToken()!== JSONToken.END_ARRAY &&  parser.getCurrentToken() != null ) {
                 if ( parser.getCurrentToken() == JSONToken.START_OBJECT) {
-                    Course__c currentCourse = new Course__c();
-                    uow.registerRelationship(currentCourse, Course__c.Program__c, program);
+                    Course__c currentCourse = new Course__c(Program__c=program.Id);
 
                     while(parser.nextToken() !== JSONToken.END_OBJECT && parser.getCurrentToken() != null){
                         String tokenText = parser.getCurrentName();
