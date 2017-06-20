@@ -17,6 +17,14 @@
         <value>Must choose a question type</value>
     </labels>
     <labels>
+        <fullName>Clone</fullName>
+        <categories>CourseView.page</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Clone</shortDescription>
+        <value>Clone</value>
+    </labels>
+    <labels>
         <fullName>CourseActivated</fullName>
         <categories>CourseViewController.cls</categories>
         <language>en_US</language>
