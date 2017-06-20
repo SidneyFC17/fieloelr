@@ -142,6 +142,7 @@
       "FieloPLT__Type__c" : "Edit"
     }, {
       "Name" : "Course > View",
+      "FieloPLT__Buttons__c" : "{\"Label\":\"Clone\",\"Type\":\"Modal\",\"Action\":\"FieloELR__Course__cFormClone\"}",
       "FieloPLT__Fieldset__c" : "{\"Name\":\"Name\"}, {\"Name\":\"FieloELR__Program__r.Name\"}, {\"Name\":\"FieloELR__Status__c\"}, {\"Name\":\"FieloELR__Segment__r.Name\"}, {\"Name\":\"FieloELR__StartDate__c\"}, {\"Name\":\"FieloELR__EndDate__c\"}",
       "FieloPLT__Object__c" : "FieloELR__Course__c",
       "FieloPLT__Order__c" : 1,
