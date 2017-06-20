@@ -249,6 +249,7 @@ global with sharing class CourseService {
 		global Module__c module {get; private set;}
 		global Boolean allowedForDependency {get; private set;}
 		global Integer numberOfAttempts {get; private set;}
+		global Boolean isApproved {get; private set;}
 		//public Integer average;
 		global List<ModuleResponse__c> moduleResponses {get; private set;}
 		global List<ModuleDependency__c> dependencies {get; private set;}
@@ -257,11 +258,20 @@ global with sharing class CourseService {
 			this(module);
 			this.moduleResponses = moduleResponses;
 			this.numberOfAttempts = this.moduleResponses.size();
+			if(this.numberOfAttempts > 0){
+				for(ModuleResponse__c mr : this.moduleResponses){
+					if(mr.IsApproved__c){
+						this.isApproved = true;
+						break;
+					}
+				}
+			}
 		}
 
 		public ModuleWrapper(Module__c module){
 			this.module = module;
 			this.allowedForDependency = true;
+			this.isApproved = false;
 		}
 	}
 
