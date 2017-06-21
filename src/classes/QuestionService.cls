@@ -39,17 +39,17 @@ global with sharing class QuestionService {
 
 	global class QuestionResponseWrapper{
 		public QuestionResponse__c questionResponse {get; set;}
+		public Question__c question {get; set;}
 		public List<Answer__c> answers {get; private set;}
-		private String questionType;
-
+		
 		global QuestionResponseWrapper(Id moduleResponseId, Question__c question){
-			questionResponse = new QuestionResponse__c(ModuleResponse__c = moduleResponseId, Question__c = question.Id);
-			answers = new List<Answer__c>();
-			questionType = question.Type__c;
+			this.question = question;
+			this.questionResponse = new QuestionResponse__c(ModuleResponse__c = moduleResponseId, Question__c = question.Id, NumberOfAttempt__c = null);
+			this.answers = new List<Answer__c>();
 		}
 
 		global void setShortAnswer(String answer){
-			if(questionType != 'Short Answer'){
+			if(question.Type__c == 'Short Answer'){
 				questionResponse.TextValue__c = answer;
 			}else{
 				throw new FieloPLT.FieloException('This method is only for Short Answer questions.');
@@ -57,7 +57,7 @@ global with sharing class QuestionService {
 		}
 
 		global void setAnswer(AnswerOption__c answerOption){
-			if(questionType != 'Single Choice' && questionType != 'Statement'){
+			if(question.Type__c == 'Single Choice' || question.Type__c == 'Statement'){
 				answers.add(new Answer__c(AnswerOption__c = answerOption.Id));
 			}else{
 				throw new FieloPLT.FieloException('This method is only for Single Choice or Statement questions.');
@@ -65,7 +65,7 @@ global with sharing class QuestionService {
 		}
 
 		global void setAnswers(List<AnswerOption__c> answerOptions){
-			if(questionType != 'Multiple Choice' && questionType != 'Matching Options'){
+			if(question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options'){
 				for(AnswerOption__c answerOption : answerOptions){
 					answers.add(new Answer__c(AnswerOption__c = answerOption.Id));
 				}
@@ -157,17 +157,20 @@ global with sharing class QuestionService {
 		}
 
 		uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType});
-		questionResponseWrapper.questionResponse.IsSubmitted__c = true;
-		uow.registerDirty(questionResponseWrapper.questionResponse);
+		QuestionResponse__c qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.QuestionPool__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
+		qResponseQuery.IsSubmitted__c = true;
+		uow.registerDirty(qResponseQuery);
 		try{
+			QuestionResponses.validateAdminFields = false;
 			uow.commitWork();
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;
 		}
 
-		QuestionResponseResult qrResult = new QuestionResponseResult(questionResponseWrapper.questionResponse.Question__r, questionResponseWrapper.questionResponse, questionResponseWrapper.answers);
-		qrResult.setRepeatQuestion(questionResponseWrapper.questionResponse.IsCorrect__c || questionResponseWrapper.questionResponse.NumberOfAttempt__c >= questionResponseWrapper.questionResponse.Question__r.Module__r.QuestionPool__c);
+		system.debug(qResponseQuery.NumberOfAttempt__c);
+		QuestionResponseResult qrResult = new QuestionResponseResult(questionResponseWrapper.question, qResponseQuery, questionResponseWrapper.answers);
+		qrResult.setRepeatQuestion(qResponseQuery.IsCorrect__c || qResponseQuery.NumberOfAttempt__c >= qResponseQuery.Question__r.Module__r.QuestionPool__c);
 		return qrResult;
 	}
 	

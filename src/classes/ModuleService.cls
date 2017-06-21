@@ -30,9 +30,11 @@ global with sharing class ModuleService {
 		Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
 		fieldsQuestionClone.add('Type__c');
 		String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
-		if(fieldsAnswerOption != null){
-			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
-		}
+
+		Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
+		fieldsAnswerOptionClone.add('IsCorrect__c');
+		questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOptionClone), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
+
 		questionQuery += ' FROM Question__c WHERE Module__c =: moduleId ORDER BY OrderFormula__c';
 		
 		if(module.QuestionPool__c != null){
@@ -66,7 +68,7 @@ global with sharing class ModuleService {
 	}
 
 	global static ModuleResponse__c submitModuleResponse (ModuleResponse__c moduleResponse, List<QuestionService.QuestionResponseWrapper> questionWrappers){
-		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{ModuleResponse__c.SObjectType, QuestionResponse__c.SObjectType, Answer__c.SObjectType});
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType, Answer__c.SObjectType, ModuleResponse__c.SObjectType});
 		if(questionWrappers != null){
 			for(QuestionService.QuestionResponseWrapper qw : questionWrappers){
 				uow.registerNew(qw.questionResponse, QuestionResponse__c.ModuleResponse__c, moduleResponse);
@@ -112,9 +114,9 @@ global with sharing class ModuleService {
 		ModuleResponseResult moduleResponseWrapper = new ModuleResponseResult(Database.query(moduleResponseQuery));
 
 		if(fieldsQuestion != null){
-			Set<String> fieldsQuestionResponse = new Set<String>{'Question__c','TextValue__c','IsApproved__c','PartialGrade__c'};
+			Set<String> fieldsQuestionResponse = new Set<String>{'Question__c','TextValue__c','IsCorrect__c','PartialGradeValue__c'};
 			String questionResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionResponse), ',');
-			Set<String> fieldsAnswer = new Set<String>{'AnswerOption__c','TextValue__c','MatchingOption__c'};
+			Set<String> fieldsAnswer = new Set<String>{'AnswerOption__c','TextValue__c'};
 			questionResponseQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswer), ',') + ' FROM Answers__r)';
 			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId ORDER BY NumberOfAttempt__c';
 			List<QuestionResponse__c> questionResponses = Database.query(questionResponseQuery);
@@ -128,7 +130,12 @@ global with sharing class ModuleService {
 				}
 			}
 			
-			String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestion), ',');
+			Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
+			fieldsQuestionClone.add('Type__c');
+			String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
+			
+			Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
+			fieldsAnswerOption.add('IsCorrect__c');
 			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r)';
 			Set<Id> questionIds = responsesByQuestion.keySet();
 			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
