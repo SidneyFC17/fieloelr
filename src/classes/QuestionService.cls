@@ -75,7 +75,73 @@ global with sharing class QuestionService {
 		}
 	}
 
-	global static Boolean submitQuestion (QuestionResponseWrapper questionResponseWrapper){
+	global class QuestionResponseResult{
+		global Question__c question {get; private set;}
+		global Integer numberOfAttempts {get; private set;}
+		global QuestionResponse__c questionResponse {get; private set;}
+		global List<AnswerWrapper> answerWrappers {get; private set;}
+		global Boolean canRepeatQuestion {get; private set;}
+
+		public QuestionResponseResult(Question__c question, List<QuestionResponse__c> questionResponses){
+			this.question = question;
+			this.numberOfAttempts = questionResponses.size();
+			this.questionResponse = this.numberOfAttempts > 0 ? questionResponses.get(this.numberOfAttempts - 1) : null;
+			setAnswerWrappers(this.questionResponse.Answers__r);
+		}
+
+		public QuestionResponseResult(Question__c question, QuestionResponse__c questionResponse, List<Answer__c> answers){
+			this.question = question;
+			this.numberOfAttempts = questionResponse.NumberOfAttempt__c.intValue();
+			this.questionResponse = questionResponse;
+			setAnswerWrappers(answers);	
+		}
+
+		public void setRepeatQuestion(Boolean canRepeatQuestion){
+			this.canRepeatQuestion = canRepeatQuestion;
+		}
+
+		private void setAnswerWrappers(List<Answer__c> answers){
+			if(question.Type__c != 'Short Answer'){
+				Map<Id,Answer__c> answersByOption = new Map<Id,Answer__c>();
+				if(questionResponse != null){
+					for(Answer__c answer : answers){
+						answersByOption.put(answer.AnswerOption__c, answer);
+					}
+				}
+
+				this.answerWrappers = new List<AnswerWrapper>();
+				for(AnswerOption__c answerOption : question.AnswerOptions__r){
+					answerWrappers.add(new AnswerWrapper(answerOption, answersByOption.get(answerOption.Id), question.Type__c));
+				}
+			}
+		}
+	}
+
+	global class AnswerWrapper{
+		global AnswerOption__c answerOption {get; private set;}
+		global String answerStatus {get; private set;}
+		
+		public AnswerWrapper(AnswerOption__c answerOption, Answer__c answer, String questionType){
+			this.answerOption = answerOption;
+			if(questionType != 'Matching Options'){
+				if(answer != null){
+					this.answerStatus = answerOption.IsCorrect__c ? 'Correct' : 'Incorrect';
+				}else{
+					this.answerStatus = answerOption.IsCorrect__c ? 'Incorrect' : 'Neutral';
+				}
+			}else{
+				if(answer != null){
+					this.answerStatus = answerOption.IsCorrect__c ? 'Correct' : 'Incorrect';
+					this.answerOption.MatchingText__c = answer.TextValue__c;
+				}else{
+					this.answerStatus = answerOption.IsCorrect__c ? 'Incorrect' : 'Neutral';
+					this.answerOption.MatchingText__c = null;
+				}
+			}
+		}
+	}
+
+	global static QuestionResponseResult submitQuestion (QuestionResponseWrapper questionResponseWrapper){
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType, Answer__c.SObjectType});
 		uow.registerNew(questionResponseWrapper.questionResponse);
 		for(Answer__c answer : questionResponseWrapper.answers){
@@ -100,8 +166,9 @@ global with sharing class QuestionService {
 			throw e;
 		}
 
-		//questionResponseWrapper.questionResponse = [SELECT Id, Name, ModuleResponse__c, NumberOfAttempt__c, Question__r.Module__r.QuestionPool__c, Question__c, IsSubmitted__c, IsCorrect__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
-		return questionResponseWrapper.questionResponse.IsCorrect__c || questionResponseWrapper.questionResponse.NumberOfAttempt__c >= questionResponseWrapper.questionResponse.Question__r.Module__r.QuestionPool__c;
+		QuestionResponseResult qrResult = new QuestionResponseResult(questionResponseWrapper.questionResponse.Question__r, questionResponseWrapper.questionResponse, questionResponseWrapper.answers);
+		qrResult.setRepeatQuestion(questionResponseWrapper.questionResponse.IsCorrect__c || questionResponseWrapper.questionResponse.NumberOfAttempt__c >= questionResponseWrapper.questionResponse.Question__r.Module__r.QuestionPool__c);
+		return qrResult;
 	}
 	
 }
