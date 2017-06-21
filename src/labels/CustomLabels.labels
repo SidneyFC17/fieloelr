@@ -158,7 +158,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateAnswerFormat</shortDescription>
-        <value>Answer Option is in the wrong format. It should be {""""abc"""":""""xyz""""}.</value>
+        <value>Answer Option is in the wrong format. It should be {""abc"":""xyz""}.</value>
     </labels>
     <labels>
         <fullName>ValidateAnswerQuestionResponses</fullName>
@@ -230,7 +230,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseStatusErrorSubscriptionMode</shortDescription>
-        <value>The course status cannot be created if the subscription mode of the course is """"Automatic""""</value>
+        <value>The course status cannot be created if the subscription mode of the course is ""Automatic""</value>
     </labels>
     <labels>
         <fullName>ValidateMatchingText</fullName>
