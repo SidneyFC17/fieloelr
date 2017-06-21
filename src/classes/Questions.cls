@@ -134,11 +134,12 @@ public class Questions extends SObjectDomain {
 			modules.add(question.Module__c);
 	    }
 
-		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id'}).selectByIdActive(modules));
+		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id','IsActive__c'}).selectByIdHavingModuleResponses(modules));
 
 		// If the module is active, questions cannot be deleted, updated or added.																		
 	    for(Question__c question : questions) {
 	    	if(modulesMap.containsKey(question.Module__c)) {
+	    		if (modulesMap.get(question.Module__c).IsActive__c || !modulesMap.get(question.Module__c).ModuleResponses__r.isEmpty())
 	        	question.addError(Label.ValidateQuestionActiveModulesQuestions);             
 	    	}
 	    }
