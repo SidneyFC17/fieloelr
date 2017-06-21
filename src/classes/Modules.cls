@@ -259,12 +259,13 @@ public class Modules extends SObjectDomain {
 		
 	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(modules);
 
-	    List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingModuleResponses(modulesMap.KeySet()); 
+	    List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String> {'Id', 'IsActive__c'}).selectByIdActiveHavingModuleResponses(modulesMap.KeySet()); 
 	    																		
 	    for(Module__c module : modulesWithResponse) {
 	        if(!module.ModuleResponses__r.isEmpty()){
-	        	//modulesMap.get(module.Id).addError('Cannot delete or inactivate a module with response.');    
-	        	addError(modulesMap.get(module.Id), Label.ValidateModuleActiveResponses);    
+	        	if ( modulesMap.get(module.Id).IsActive__c == true && module.IsActive__c == true) {
+	        		addError(modulesMap.get(module.Id), Label.ValidateModuleActiveResponses);    
+	        	}
 	        }        
 	    }
     }

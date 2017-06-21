@@ -278,7 +278,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateModuleActiveResponses</shortDescription>
-        <value>An active module with module responses cannot be deleted, inactivated or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
+        <value>An active module with module responses cannot be deleted or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
     </labels>
     <labels>
         <fullName>ValidateModuleResponseMemberApproved</fullName>
@@ -310,7 +310,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateQuestionActiveModulesQuestions</shortDescription>
-        <value>Active modules cannot have changes in their set of questions.</value>
+        <value>Active modules or modules with module responses cannot have changes in their set of questions.</value>
     </labels>
     <labels>
         <fullName>ValidateQuestionResponse</fullName>
