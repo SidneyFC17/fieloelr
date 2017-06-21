@@ -81,6 +81,14 @@ public class Modules extends SObjectDomain {
 						oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
 						oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
 					activeModules.add(module);
+				}else {
+					if (module.IsActive__c) {
+						for (String fieldName: module.getPopulatedFieldsAsMap().keySet()) {
+							if( oldModule.get(fieldName) != module.get(fieldName)) {
+								activeModules.add(module);
+							}
+						}
+					}
 				}
 			}	
 		}
@@ -89,7 +97,7 @@ public class Modules extends SObjectDomain {
    		checkQuestions(activatedModules);
 
 	    // If the Module is active, has at least 1 related Module response, and any of the following fields was modified the Module cannot be edited or deleted 
-		checkModuleResponses(activeModules);
+		checkModule(activeModules);
 
    		// When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
    		checkAnswers(activatedModules);
@@ -227,7 +235,7 @@ public class Modules extends SObjectDomain {
 		}
 
 		// An active module with related module responses cannot be deleted.
-     	checkModuleResponses(activeModules);
+     	checkModule(activeModules);
 
      	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType, Question__c.SObjectType});
      	deleteModuleDependencies(uow);
@@ -255,7 +263,7 @@ public class Modules extends SObjectDomain {
     }
 
     // If the Module is active, has at least 1 related Module response, and any of the following fields (see error message) was modified the Module cannot be edited or deleted 
-    private void checkModuleResponses(List<Module__c> modules) {
+    private void checkModule(List<Module__c> modules) {
 		
 	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(modules);
 
@@ -264,9 +272,12 @@ public class Modules extends SObjectDomain {
 	    for(Module__c module : modulesWithResponse) {
 	        if(!module.ModuleResponses__r.isEmpty()){
 	        	if ( modulesMap.get(module.Id).IsActive__c == true && module.IsActive__c == true) {
-	        		addError(modulesMap.get(module.Id), Label.ValidateModuleActiveResponses);    
+	        		addError(modulesMap.get(module.Id), Label.ValidateModuleActiveResponses);
 	        	}
-	        }        
+
+	        } else if ( modulesMap.get(module.Id).IsActive__c == true && module.IsActive__c == true) {
+	        	addError(modulesMap.get(module.Id), Label.ActiveModuleCannotBeEdited);
+	        }
 	    }
     }
 
