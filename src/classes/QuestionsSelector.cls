@@ -83,19 +83,6 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-     public List<Question__c> selectByModuleWithExceptions(Set<Id> moduleIds, Set<Id> moduleExecptionIds) {
-      return (List<Question__c>) Database.query(String.format(
-                'SELECT {0} ' +
-                  'FROM {1} ' +
-                  'WHERE (Module__c IN :moduleIds) ' +
-                  '  AND (Module__c NOT IN :moduleExecptionIds) ' +
-                  'ORDER BY {2}',
-                new List<String> {
-                    getFieldListString(),
-                    getSObjectName(),
-                    getOrderBy() } ));
-    }
-    
      public List<Question__c> selectByModule(Set<Id> moduleIds) {
       return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +

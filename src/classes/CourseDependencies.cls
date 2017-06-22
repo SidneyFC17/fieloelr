@@ -16,34 +16,17 @@ public class CourseDependencies extends SObjectDomain{
         }
     }
 
-    public override void onValidate() {
-        //before insert
-    }
-
-    public override void onValidate(Map<Id,SObject> existingRecords) {
-        //before update
-    }
-
-    public override void onBeforeDelete() {
-
-    }
-    public override void onBeforeInsert() {
-
-    }
-
-    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
-
-    }
-
     public override void onAfterInsert() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
         updateCourses(records, uow);
+        Courses.validateAdminFields = false;
         uow.commitWork();
     }
 
     public override void onAfterDelete() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
         updateCourses(records, uow);
+        Courses.validateAdminFields = false;
         uow.commitWork();
     }  
 
