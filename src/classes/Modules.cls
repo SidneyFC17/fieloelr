@@ -65,31 +65,35 @@ public class Modules extends SObjectDomain {
 			if(!(oldModule.IsActive__c) && module.IsActive__c) {
 				activatedModules.add(module);
 			}
-			// Select only modules that are active to check for some modifications
-			if(oldModule.IsActive__c) {
-				/* 
-					Check if any of these fields were modified:   
-					IsActive / Attempts Allowed / Approval Grade / Penalty Mode
-					Question Pool / Attempts Allowed per question / Weighted questions
-				*/ 
-				//
-				if(!(module.IsActive__c) ||   
-						oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
-						oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
-						oldModule.PenaltyMode__c != module.PenaltyMode__c || 
-						oldModule.QuestionPool__c != module.QuestionPool__c || 
-						oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
-						oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
-					activeModules.add(module);
+			// When Active, no field can be edited
+			if(oldModule.IsActive__c && module.IsActive__c) {
+				for (String fieldName: module.getPopulatedFieldsAsMap().keySet()) {
+					if( oldModule.get(fieldName) != module.get(fieldName)) {
+						activeModules.add(module);
+					}
 				}
-			}	
+			}
+			/* 
+				Check if any of these fields were modified:
+				IsActive / Attempts Allowed / Approval Grade / Penalty Mode
+				Question Pool / Attempts Allowed per question / Weighted questions
+			*/
+			if(!oldModule.IsActive__c && !module.IsActive__c ||   
+				oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
+				oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
+				oldModule.PenaltyMode__c != module.PenaltyMode__c || 
+				oldModule.QuestionPool__c != module.QuestionPool__c || 
+				oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
+				oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
+				activeModules.add(module);
+			}
 		}
 
 		// When the module is changed to active, must validate that has at least one question.
    		checkQuestions(activatedModules);
 
 	    // If the Module is active, has at least 1 related Module response, and any of the following fields was modified the Module cannot be edited or deleted 
-		checkModuleResponses(activeModules);
+		checkModule(activeModules);
 
    		// When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
    		checkAnswers(activatedModules);
@@ -227,7 +231,7 @@ public class Modules extends SObjectDomain {
 		}
 
 		// An active module with related module responses cannot be deleted.
-     	checkModuleResponses(activeModules);
+     	checkModule(activeModules);
 
      	SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, ModuleDependency__c.SObjectType, Question__c.SObjectType});
      	deleteModuleDependencies(uow);
@@ -255,18 +259,39 @@ public class Modules extends SObjectDomain {
     }
 
     // If the Module is active, has at least 1 related Module response, and any of the following fields (see error message) was modified the Module cannot be edited or deleted 
-    private void checkModuleResponses(List<Module__c> modules) {
+    private void checkModule(List<Module__c> modules) {
 		
 	    Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(modules);
 
-	    List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String> {'Id', 'IsActive__c'}).selectByIdActiveHavingModuleResponses(modulesMap.KeySet()); 
-	    																		
+	    Set<String> readOnlyFields = new Set<String>{
+	    	'id',
+	    	'attemptsallowed__c',
+	    	'approvalgrade__c',
+	    	'penaltymode__c',
+	    	'questionpool__c',
+	    	'attemptsallowedperquestion__c',
+	    	'weightedquestions__c',
+	    	'isactive__c'
+	   	};
+
+	   	List<Module__c> modulesWithResponse = new ModulesSelector(readOnlyFields).selectByIdHavingModuleResponses(modulesMap.KeySet()); 
+
 	    for(Module__c module : modulesWithResponse) {
-	        if(!module.ModuleResponses__r.isEmpty()){
-	        	if ( modulesMap.get(module.Id).IsActive__c == true && module.IsActive__c == true) {
-	        		addError(modulesMap.get(module.Id), Label.ValidateModuleActiveResponses);    
+	        if ( modulesMap.get(module.Id).IsActive__c == true && module.IsActive__c == true) {
+	        	addError(modulesMap.get(module.Id), Label.ActiveModuleCannotBeEdited);
+	        } else if ( modulesMap.get(module.Id).IsActive__c == false && module.IsActive__c == false) {
+	        	if (!module.ModuleResponses__r.isEmpty()) {
+	        		for(String fieldName: modulesMap.get(module.Id).getPopulatedFieldsAsMap().keySet()) {
+	        			system.debug(fieldName.toLowerCase().replace('fieloelr__',''));
+		        		if (readOnlyFields.contains(fieldName.toLowerCase().replace('fieloelr__',''))) {
+		        			if(module.get(fieldName) != modulesMap.get(module.Id).get(fieldName)){
+		        				addError(modulesMap.get(module.Id), Label.ValidateModuleEditableFields);
+		        				break;
+		        			}
+		        		}
+					}
 	        	}
-	        }        
+	        }
 	    }
     }
 

@@ -103,26 +103,17 @@ public class Courses extends SObjectDomain{
         for (Course__c course : coursesWithStatus){
             if(!course.CoursesStatus__r.isEmpty()){
                 if (course.Status__c == 'Active'){
-                    if (event == 'update'){                        
-                        // Check OLD records (existingRecords) to see if any of these fields were modified       
-                        if( (((Course__c)(existingRecords.get(course.Id))).SubscriptionMode__c) != coursesMap.get(course.Id).SubscriptionMode__c ){
-                            coursesMap.get(course.Id).addError(Label.ValidateCourseErrorSubscriptionMode);
-                        }              
-                        if( (((Course__c)(existingRecords.get(course.Id))).Segment__c) != coursesMap.get(course.Id).Segment__c ) {
-                            coursesMap.get(course.Id).addError(Label.ValidateCourseErrorSegment);
-                        }                  
-                        if( (((Course__c)(existingRecords.get(course.Id))).StartDate__c) != coursesMap.get(course.Id).StartDate__c ) {
-                            coursesMap.get(course.Id).addError(Label.ValidateCourseStartDate);
-                        }                       
-                        if( (((Course__c)(existingRecords.get(course.Id))).EndDate__c) != coursesMap.get(course.Id).EndDate__c ) {
-                            coursesMap.get(course.Id).addError(Label.ValidateCourseEndDate);
-                        }
-                        /*if( (((Course__c)(existingRecords.get(course.Id))).Status__c) != coursesMap.get(course.Id).Status__c ) {
-                            coursesMap.get(course.Id).addError(Label.ValidateCourseStatus);
-                        } */        
-                    }else if (event == 'delete'){
+                    if (event == 'delete'){
                         coursesMap.get(course.Id).addError(Label.ValidateCourseErrorDelete);
                     }                                                                        
+                }
+            }
+            if (event == 'update'){                        
+                // The only update possible is for the Status
+                if( (((Course__c)(existingRecords.get(course.Id))).Status__c) == coursesMap.get(course.Id).Status__c ) {
+                    if (coursesMap.get(course.Id).Status__c == 'Active') {
+                        coursesMap.get(course.Id).addError(Label.ActiveCourseCannotBeEdited);
+                    }
                 }
             }
         }

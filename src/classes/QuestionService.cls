@@ -39,17 +39,17 @@ global with sharing class QuestionService {
 
 	global class QuestionResponseWrapper{
 		public QuestionResponse__c questionResponse {get; set;}
+		public Question__c question {get; set;}
 		public List<Answer__c> answers {get; private set;}
-		private String questionType;
-
+		
 		global QuestionResponseWrapper(Id moduleResponseId, Question__c question){
-			questionResponse = new QuestionResponse__c(ModuleResponse__c = moduleResponseId, Question__c = question.Id);
-			answers = new List<Answer__c>();
-			questionType = question.Type__c;
+			this.question = question;
+			this.questionResponse = new QuestionResponse__c(ModuleResponse__c = moduleResponseId, Question__c = question.Id, NumberOfAttempt__c = null);
+			this.answers = new List<Answer__c>();
 		}
 
 		global void setShortAnswer(String answer){
-			if(questionType != 'Short Answer'){
+			if(question.Type__c == 'Short Answer'){
 				questionResponse.TextValue__c = answer;
 			}else{
 				throw new FieloPLT.FieloException('This method is only for Short Answer questions.');
@@ -57,7 +57,7 @@ global with sharing class QuestionService {
 		}
 
 		global void setAnswer(AnswerOption__c answerOption){
-			if(questionType != 'Single Choice' && questionType != 'Statement'){
+			if(question.Type__c == 'Single Choice' || question.Type__c == 'Statement'){
 				answers.add(new Answer__c(AnswerOption__c = answerOption.Id));
 			}else{
 				throw new FieloPLT.FieloException('This method is only for Single Choice or Statement questions.');
@@ -65,7 +65,7 @@ global with sharing class QuestionService {
 		}
 
 		global void setAnswers(List<AnswerOption__c> answerOptions){
-			if(questionType != 'Multiple Choice' && questionType != 'Matching Options'){
+			if(question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options'){
 				for(AnswerOption__c answerOption : answerOptions){
 					answers.add(new Answer__c(AnswerOption__c = answerOption.Id));
 				}
@@ -75,7 +75,73 @@ global with sharing class QuestionService {
 		}
 	}
 
-	global static Boolean submitQuestion (QuestionResponseWrapper questionResponseWrapper){
+	global class QuestionResponseResult{
+		global Question__c question {get; private set;}
+		global Integer numberOfAttempts {get; private set;}
+		global QuestionResponse__c questionResponse {get; private set;}
+		global List<AnswerWrapper> answerWrappers {get; private set;}
+		global Boolean canRepeatQuestion {get; private set;}
+
+		public QuestionResponseResult(Question__c question, List<QuestionResponse__c> questionResponses){
+			this.question = question;
+			this.numberOfAttempts = questionResponses.size();
+			this.questionResponse = this.numberOfAttempts > 0 ? questionResponses.get(this.numberOfAttempts - 1) : null;
+			setAnswerWrappers(this.questionResponse.Answers__r);
+		}
+
+		public QuestionResponseResult(Question__c question, QuestionResponse__c questionResponse, List<Answer__c> answers){
+			this.question = question;
+			this.numberOfAttempts = questionResponse.NumberOfAttempt__c.intValue();
+			this.questionResponse = questionResponse;
+			setAnswerWrappers(answers);	
+		}
+
+		public void setRepeatQuestion(Boolean canRepeatQuestion){
+			this.canRepeatQuestion = canRepeatQuestion;
+		}
+
+		private void setAnswerWrappers(List<Answer__c> answers){
+			if(question.Type__c != 'Short Answer'){
+				Map<Id,Answer__c> answersByOption = new Map<Id,Answer__c>();
+				if(questionResponse != null){
+					for(Answer__c answer : answers){
+						answersByOption.put(answer.AnswerOption__c, answer);
+					}
+				}
+
+				this.answerWrappers = new List<AnswerWrapper>();
+				for(AnswerOption__c answerOption : question.AnswerOptions__r){
+					answerWrappers.add(new AnswerWrapper(answerOption, answersByOption.get(answerOption.Id), question.Type__c));
+				}
+			}
+		}
+	}
+
+	global class AnswerWrapper{
+		global AnswerOption__c answerOption {get; private set;}
+		global String answerStatus {get; private set;}
+		
+		public AnswerWrapper(AnswerOption__c answerOption, Answer__c answer, String questionType){
+			this.answerOption = answerOption;
+			if(questionType != 'Matching Options'){
+				if(answer != null){
+					this.answerStatus = answerOption.IsCorrect__c ? 'Correct' : 'Incorrect';
+				}else{
+					this.answerStatus = answerOption.IsCorrect__c ? 'Incorrect' : 'Neutral';
+				}
+			}else{
+				if(answer != null){
+					this.answerStatus = answerOption.IsCorrect__c ? 'Correct' : 'Incorrect';
+					this.answerOption.MatchingText__c = answer.TextValue__c;
+				}else{
+					this.answerStatus = answerOption.IsCorrect__c ? 'Incorrect' : 'Neutral';
+					this.answerOption.MatchingText__c = null;
+				}
+			}
+		}
+	}
+
+	global static QuestionResponseResult submitQuestion (QuestionResponseWrapper questionResponseWrapper){
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType, Answer__c.SObjectType});
 		uow.registerNew(questionResponseWrapper.questionResponse);
 		for(Answer__c answer : questionResponseWrapper.answers){
@@ -91,17 +157,21 @@ global with sharing class QuestionService {
 		}
 
 		uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType});
-		questionResponseWrapper.questionResponse.IsSubmitted__c = true;
-		uow.registerDirty(questionResponseWrapper.questionResponse);
+		QuestionResponse__c qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.QuestionPool__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
+		qResponseQuery.IsSubmitted__c = true;
+		uow.registerDirty(qResponseQuery);
 		try{
+			QuestionResponses.validateAdminFields = false;
 			uow.commitWork();
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;
 		}
 
-		//questionResponseWrapper.questionResponse = [SELECT Id, Name, ModuleResponse__c, NumberOfAttempt__c, Question__r.Module__r.QuestionPool__c, Question__c, IsSubmitted__c, IsCorrect__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
-		return questionResponseWrapper.questionResponse.IsCorrect__c || questionResponseWrapper.questionResponse.NumberOfAttempt__c >= questionResponseWrapper.questionResponse.Question__r.Module__r.QuestionPool__c;
+		system.debug(qResponseQuery.NumberOfAttempt__c);
+		QuestionResponseResult qrResult = new QuestionResponseResult(questionResponseWrapper.question, qResponseQuery, questionResponseWrapper.answers);
+		qrResult.setRepeatQuestion(qResponseQuery.IsCorrect__c || qResponseQuery.NumberOfAttempt__c >= qResponseQuery.Question__r.Module__r.QuestionPool__c);
+		return qrResult;
 	}
 	
 }
