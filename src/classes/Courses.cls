@@ -28,32 +28,34 @@ public class Courses extends SObjectDomain{
         }
     }
 
-    public override void onValidate() {
-        //before insert
-    }
-
     public override void onValidate(Map<Id,SObject> existingRecords) {
-        //before update
-        for(Course__c course : (List<Course__c>)records){
-            if(String.isBlank(course.SubscriptionMode__c)){
-                course.SubscriptionMode__c = 'Manual';
-            }        
-            if(validateAdminFields){
-                if(course.ActiveModules__c != ((Course__c)(existingRecords.get(course.Id))).ActiveModules__c) {
-                    course.ActiveModules__c = ((Course__c)(existingRecords.get(course.Id))).ActiveModules__c;
+        if(validateAdminFields){
+            //before update
+            List<Course__c> updatedCourses = new List<Course__c>();
+            for(Course__c course : (List<Course__c>)records){
+                Course__c oldCourse = (Course__c)existingRecords.get(course.Id);
+                if(course.ActiveModules__c != oldCourse.ActiveModules__c) {
+                    course.ActiveModules__c = oldCourse.ActiveModules__c;
+                }
+
+                // When Active, no field can be edited
+                if(oldCourse.Status__c == 'Active' && course.Status__c == 'Active') {
+                    addError(course, Label.ActiveCourseCannotBeEdited);
+                }else{
+                    updatedCourses.add(course);
                 }
             }
+            // Check Courses before update 
+            checkCoursesWithStatus(updatedCourses); 
         }
 
-        // Check Courses before update 
-        checkCoursesWithStatus(existingRecords, 'update'); 
    } 
 
     public override void onBeforeDelete() {
         isDelete = true;
 
         // Check Courses before delete
-        checkCoursesWithStatus(null, 'delete'); 
+        checkCoursesWithStatus((List<Course__c>)records); 
 
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseDependency__c.SObjectType, Module__c.SObjectType}, true);
         
@@ -77,14 +79,18 @@ public class Courses extends SObjectDomain{
     }
 
     private void deleteCourseModules(Map<Id,Course__c> coursesMap, SObjectUnitOfWork uow){
+        Set<Id> courseIds = coursesMap.KeySet();
+        courseIds.removeAll(new List<Id>(RecordErrors));
         // Looks up for courses IDs contained in modules
-        List<Module__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id','Course__c'}).selectByIdHavingCourses(coursesMap.KeySet());  
+        List<Module__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id','Course__c'}).selectByIdHavingCourses(courseIds);  
   
         // Delete related modules
         uow.registerDeleted(modulesToDelete);
     }
     
     private void deleteCourseDependencies(Map<Id,Course__c> coursesMap, SObjectUnitOfWork uow){        
+        Set<Id> courseIds = coursesMap.KeySet();
+        courseIds.removeAll(new List<Id>(RecordErrors));
         // Looks up for courses IDs contained in course dependencies and predecessors
         List<CourseDependency__c> dependenciesToDelete = new CourseDependenciesSelector(new Set<String>{'Course__c,Predecessor__c'}).selectDependenciesAndPredecessors(coursesMap.KeySet());
   
@@ -94,35 +100,16 @@ public class Courses extends SObjectDomain{
         
     // If the course is active, has at least 1 related course status, 
     // and any of the following fields was modified the Course cannot be edited or deleted.
-    private void checkCoursesWithStatus(Map<Id,SObject> existingRecords, String event){
+    private void checkCoursesWithStatus(List<Course__c> courses){
         // Map with NEW records       
-        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>((List<Course__c>)records);
+        Map<Id,Course__c> coursesMap = new Map<Id, Course__c>(courses);
         // Course has at least 1 related Course Status
         List<Course__c> coursesWithStatus = new CoursesSelector(new Set<String>{'Id,Status__c,SubscriptionMode__c,Segment__c,StartDate__c,EndDate__c'}).selectByIdHavingCourseStatus(coursesMap.KeySet());
 
         for (Course__c course : coursesWithStatus){
             if(!course.CoursesStatus__r.isEmpty()){
-                if (course.Status__c == 'Active'){
-                    if (event == 'delete'){
-                        coursesMap.get(course.Id).addError(Label.ValidateCourseErrorDelete);
-                    }                                                                        
-                }
-            }
-            if (event == 'update'){                        
-                // The only update possible is for the Status
-                if( (((Course__c)(existingRecords.get(course.Id))).Status__c) == coursesMap.get(course.Id).Status__c ) {
-                    if (coursesMap.get(course.Id).Status__c == 'Active') {
-                        coursesMap.get(course.Id).addError(Label.ActiveCourseCannotBeEdited);
-                    }
-                }
+                coursesMap.get(course.Id).addError(Label.ActiveCourseCannotBeEdited);
             }
         }
     }
-   
-    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) { 
-        
-    }  
-
-    public override void onBeforeInsert() {
-    }   
 }
