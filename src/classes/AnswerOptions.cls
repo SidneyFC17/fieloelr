@@ -20,7 +20,9 @@ public class AnswerOptions extends SObjectDomain {
 
 
 	public override void onBeforeDelete() {
-     	validateAnswerOptions(records, false);
+     	if(!Questions.isDelete){
+     		validateAnswerOptions(records, false);
+     	}
     }
 
 	// General validations for a list of answers

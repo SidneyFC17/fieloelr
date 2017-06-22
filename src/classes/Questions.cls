@@ -1,6 +1,7 @@
 public class Questions extends SObjectDomain {
 
 	public static Boolean validateAdminFields = true;
+	public static Boolean isDelete = true;
 
 	public Questions(List<Question__c> records) {
         super(records);
@@ -94,19 +95,15 @@ public class Questions extends SObjectDomain {
     }
 
 	public override void onBeforeDelete() {
-		if(validateAdminFields){
+		isDelete = true;
+		if(validateAdminFields && !Modules.isDelete){
 			// If the module is active, questions cannot be deleted, updated or added.																		
 	    	checkModule(records);
 	    }
     }
 
-	public override void onAfterInsert() {
-    }
-
-	public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
-	}
-
     public override void onAfterDelete() {
+    	isDelete = true;
     	// Delete related answers upon question delete
     	deleteRelatedAnswers(records);
     }
