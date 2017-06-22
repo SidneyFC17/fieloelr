@@ -31,14 +31,14 @@ public class AnswerOptions extends SObjectDomain {
 			questions.add(answerOption.Question__c);
 	    }
 
-		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(
-			new QuestionsSelector(new Set<String> {'Id', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithAnswers(questions));
+		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithAnswersAndQuestionResponses(questions));
 
 	    for(AnswerOption__c answerOption : answerOptions) {
 
 			// If the module is active, answers cannot be deleted, updated or added.																		
 	    	if(questionsMap.get(answerOption.Question__c).Module__r.IsActive__c) {
-	        	answerOption.addError(Label.ValidateAnswerActiveModules);           
+	        	answerOption.addError(Label.ValidateAnswerActiveModules);
+	        	continue;
 	    	}
 
     		// If the question type is "Matching Options", the format for Answer Text must be validated as {"xx":"yy"}
@@ -56,6 +56,12 @@ public class AnswerOptions extends SObjectDomain {
 	    	// If Order__c field is null, calculate it automatically
     		if( Trigger.isInsert && answerOption.Order__c == null) {
     			answerOption.Order__c = questionsMap.get(answerOption.Question__c).AnswerOptions__r.size() + 1;
+    		}
+
+    		if( !questionsMap.get(answerOption.Question__c).QuestionsResponses__r.isEmpty()){
+    			if(Trigger.isDelete || Trigger.isInsert) {
+    				answerOption.addError(Label.ValidateAnswerActiveModules);
+    			}
     		}
 	    }
     }
