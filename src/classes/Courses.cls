@@ -31,7 +31,6 @@ public class Courses extends SObjectDomain{
     public override void onValidate(Map<Id,SObject> existingRecords) {
         if(validateAdminFields){
             //before update
-            List<Course__c> updatedCourses = new List<Course__c>();
             for(Course__c course : (List<Course__c>)records){
                 Course__c oldCourse = (Course__c)existingRecords.get(course.Id);
                 if(course.ActiveModules__c != oldCourse.ActiveModules__c) {
@@ -41,12 +40,8 @@ public class Courses extends SObjectDomain{
                 // When Active, no field can be edited
                 if(oldCourse.Status__c == 'Active' && course.Status__c == 'Active') {
                     addError(course, Label.ActiveCourseCannotBeEdited);
-                }else{
-                    updatedCourses.add(course);
                 }
             }
-            // Check Courses before update 
-            checkCoursesWithStatus(updatedCourses); 
         }
 
    } 
