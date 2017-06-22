@@ -111,7 +111,7 @@ public class Courses extends SObjectDomain{
             if (event == 'update'){                        
                 // The only update possible is for the Status
                 if( (((Course__c)(existingRecords.get(course.Id))).Status__c) == coursesMap.get(course.Id).Status__c ) {
-                    if (coursesMap.get(course.Id).Status__c != 'Inactive') {
+                    if (coursesMap.get(course.Id).Status__c == 'Active') {
                         coursesMap.get(course.Id).addError(Label.ActiveCourseCannotBeEdited);
                     }
                 }

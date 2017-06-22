@@ -203,7 +203,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         	}
 
         	String courseJSON = ExportService.exportCourses(new List<Id>{record.Id});
-        	SObjectUnitOfWork uow = ExportService.importData(courseJSON);
+        	SObjectUnitOfWork uow = ExportService.importData(courseJSON, new List<ExportService.MultiSegmentRelation>());
 
         	record.put('Id',null);
 
@@ -215,6 +215,7 @@ public with sharing class CourseViewController extends PageSettingsController {
                     		courses.get(0).put(fieldName, record.get(fieldName));
                     	}
 					}
+					courses.get(0).Status__c = 'Draft';
 
                     ExportService.saveData(uow, null);
                 } else {
