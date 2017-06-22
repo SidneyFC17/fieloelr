@@ -29,12 +29,14 @@ public class ModuleDependencies extends SObjectDomain {
     public override void onAfterInsert() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
         updateModules(records, uow);
+        Modules.validateAdminFields = false;
         uow.commitWork();
     }
 
     public override void onAfterDelete() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
         updateModules(records, uow);
+        Modules.validateAdminFields = false;
         uow.commitWork();
     }  
 

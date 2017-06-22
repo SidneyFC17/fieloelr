@@ -48,50 +48,49 @@ public class Modules extends SObjectDomain {
 		}
     }    
 
-    public override void onValidate() {
-    }
-
     public override void onValidate(Map<Id,SObject> existingRecords) {
 
-   		List<Module__c> activatedModules = new List<Module__c>();
-    	List<Module__c> activeModules = new List<Module__c>();
-    	Module__c oldModule;
+    	if(validateAdminFields){
+	   		List<Module__c> activatedModules = new List<Module__c>();
+	    	List<Module__c> updatedModules = new List<Module__c>();
+	    	Module__c oldModule;
 
-		for(Module__c module : (List<Module__c>)records) {
+			for(Module__c module : (List<Module__c>)records) {
 
-			oldModule = (Module__c)(existingRecords.get(module.Id));
+				oldModule = (Module__c)(existingRecords.get(module.Id));
 
-			// Select only modules that are being activated
-			if(!(oldModule.IsActive__c) && module.IsActive__c) {
-				activatedModules.add(module);
+				// Select only modules that are being activated
+				if(!(oldModule.IsActive__c) && module.IsActive__c) {
+					activatedModules.add(module);
+				}
+				// When Active, no field can be edited
+				if(oldModule.IsActive__c && module.IsActive__c) {
+					addError(module, Label.ActiveModuleCannotBeEdited);
+				}
+				/* 
+					Check if any of these fields were modified:
+					IsActive / Attempts Allowed / Approval Grade / Penalty Mode
+					Question Pool / Attempts Allowed per question / Weighted questions
+				*/
+				else if(oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
+					oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
+					oldModule.PenaltyMode__c != module.PenaltyMode__c || 
+					oldModule.QuestionPool__c != module.QuestionPool__c || 
+					oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
+					oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
+					updatedModules.add(module);
+				}
 			}
-			// When Active, no field can be edited
-			if(oldModule.IsActive__c && module.IsActive__c) {
-				addError(module, Label.ActiveModuleCannotBeEdited);
-			}
-			/* 
-				Check if any of these fields were modified:
-				IsActive / Attempts Allowed / Approval Grade / Penalty Mode
-				Question Pool / Attempts Allowed per question / Weighted questions
-			*/
-			else if(oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
-				oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
-				oldModule.PenaltyMode__c != module.PenaltyMode__c || 
-				oldModule.QuestionPool__c != module.QuestionPool__c || 
-				oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
-				oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
-				activeModules.add(module);
-			}
-		}
 
-		// When the module is changed to active, must validate that has at least one question.
-   		checkQuestions(activatedModules);
+			// When the module is changed to active, must validate that has at least one question.
+	   		checkQuestions(activatedModules);
 
-	    // If the Module is active, has at least 1 related Module response, and any of the following fields was modified the Module cannot be edited or deleted 
-		checkModule(activeModules);
+		    // If the Module is active, has at least 1 related Module response, and any of the following fields was modified the Module cannot be edited or deleted 
+			checkModule(updatedModules);
 
-   		// When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
-   		checkAnswers(activatedModules);
+	   		// When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
+	   		checkAnswers(activatedModules);
+	   	}
     }
 
     public override void onBeforeInsert() {
@@ -267,13 +266,17 @@ public class Modules extends SObjectDomain {
 
     private void deleteModuleDependencies(SObjectUnitOfWork uow) {
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
-    	List<ModuleDependency__c> moduleDependencies = new ModuleDependenciesSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
+    	Set<Id> moduleIds = modulesMap.KeySet();
+        moduleIds.removeAll(new List<Id>(RecordErrors));
+    	List<ModuleDependency__c> moduleDependencies = new ModuleDependenciesSelector(new Set<String> {'Id'}).selectByModule(moduleIds);
     	uow.registerDeleted(moduleDependencies);
     }
 
     private void deleteQuestions(SObjectUnitOfWork uow) {
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>((List<Module__c>)records);
-    	List<Question__c> questions = new QuestionsSelector(new Set<String> {'Id'}).selectByModuleWithExceptions(modulesMap.KeySet(), RecordErrors);
+		Set<Id> moduleIds = modulesMap.KeySet();
+        moduleIds.removeAll(new List<Id>(RecordErrors));
+    	List<Question__c> questions = new QuestionsSelector(new Set<String> {'Id'}).selectByModule(moduleIds);
     	uow.registerDeleted(questions);
     }
 
@@ -289,10 +292,10 @@ public class Modules extends SObjectDomain {
 	    for(Question__c question : questionsWithCorrectAnswer) {
 	        if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options' || question.Type__c == 'Short Answer') && question.AnswerOptions__r.isEmpty()) {
     		// Question types "statement", "single choice","multiple choice", "Matching" and "Short Answer" must have at least one answer option.
-				modulesMap.get(question.Module__c).addError(Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveQuestionAnswer +' '+ question.Name);    
+				addError(modulesMap.get(question.Module__c),Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveQuestionAnswer +' '+ question.Name);    
         	} else if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.AnswerOptions__r[0].IsCorrect__c != true)) {
 				// Question types "statement" and "single choice" must have a correct answer option.
-				modulesMap.get(question.Module__c).addError(Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveAnswer +' '+ question.Name);
+				addError(modulesMap.get(question.Module__c),Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveAnswer +' '+ question.Name);
 	        } 
 	    }
     }

@@ -26,12 +26,11 @@ public with sharing class ModuleDependenciesSelector extends SObjectSelector {
         return (List<ModuleDependency__c>) selectSObjectsById(moduleDependencyIds);
     }
 
-    public List<ModuleDependency__c> selectByModuleWithExceptions(Set<Id> moduleIds, Set<Id> moduleExceptionIds) {
+    public List<ModuleDependency__c> selectByModule(Set<Id> moduleIds) {
         return (List<ModuleDependency__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE (Module__c IN :moduleIds OR Predecessor__c IN :moduleIds) ' +
-                  '  AND (Module__c NOT IN :moduleExceptionIds AND Predecessor__c NOT IN :moduleExceptionIds) ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
