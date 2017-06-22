@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>ActiveCourseCannotBeEdited</fullName>
+        <categories>Courses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ActiveCourseCannotBeEdited</shortDescription>
+        <value>Active courses cannot be edited.</value>
+    </labels>
+    <labels>
+        <fullName>ActiveModuleCannotBeEdited</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ActiveModuleCannotBeEdited</shortDescription>
+        <value>Active modules cannot be edited.</value>
+    </labels>
+    <labels>
+        <fullName>ActiveModuleQuestionNotEditable</fullName>
+        <categories>Questions.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ActiveModuleQuestionNotEditable</shortDescription>
+        <value>Questions with active modules cannot be edited.</value>
+    </labels>
+    <labels>
         <fullName>AnswerOptionTextRequired</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
@@ -281,6 +305,14 @@
         <value>An active module with module responses cannot be deleted or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
     </labels>
     <labels>
+        <fullName>ValidateModuleEditableFields</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateModuleEditableFields</shortDescription>
+        <value>An module with module responses cannot be deleted or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
+    </labels>
+    <labels>
         <fullName>ValidateModuleResponseMemberApproved</fullName>
         <categories>TriggerModuleResponses</categories>
         <language>en_US</language>
@@ -335,5 +367,5 @@
         <protected>true</protected>
         <shortDescription>ValidateQuestionResponseSubmit</shortDescription>
         <value>The question cannot be submitted because was already answered correct.</value>
-    </labels>
+    </labels>F
 </CustomLabels>
