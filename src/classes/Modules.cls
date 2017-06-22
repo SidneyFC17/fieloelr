@@ -78,13 +78,13 @@ public class Modules extends SObjectDomain {
 				IsActive / Attempts Allowed / Approval Grade / Penalty Mode
 				Question Pool / Attempts Allowed per question / Weighted questions
 			*/
-			if(!oldModule.IsActive__c && !module.IsActive__c ||   
+			else if( !oldModule.IsActive__c && !module.IsActive__c &&(   
 				oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
 				oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
 				oldModule.PenaltyMode__c != module.PenaltyMode__c || 
 				oldModule.QuestionPool__c != module.QuestionPool__c || 
 				oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
-				oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
+				oldModule.WeightedQuestions__c != module.WeightedQuestions__c)) {
 				activeModules.add(module);
 			}
 		}
