@@ -1,6 +1,7 @@
 public class Modules extends SObjectDomain {
 
 	public static Boolean validateAdminFields = true;
+	public static Boolean isDelete = false;
 
 	public Modules(List<Module__c> records) {
         super(records);
@@ -91,12 +92,6 @@ public class Modules extends SObjectDomain {
 	   		// When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
 	   		checkAnswers(activatedModules);
 	   	}
-    }
-
-    public override void onBeforeInsert() {
-    }
-
-    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
     }
 
     public override void onAfterUpdate(Map<Id,SObject> existingRecords){
@@ -214,6 +209,7 @@ public class Modules extends SObjectDomain {
 	}  
 
 	public override void onBeforeDelete() {
+		isDelete = true;
 
    		List<Module__c> activeModules = new List<Module__c>();
 
