@@ -53,13 +53,21 @@ A course is created
    2. The administrator sets the status of the course to “Active”
    3. The administrator presses the Save button
    4. The system verifies that there is no active related modules
-   5. The system does not update the module
+   5. The system does not update the course
    6. The system displays an error message 
    7. End of flow
- 
-##### 5. Edit a draft course (step 9 of basic flow)
+   
+##### 5. Edit the program of a course (step 9 of basic flow)
    1. The administrator presses the Edit button
-   2. The administrator makes the desired changes (except change the status)
+   2. The administrator changes the program of the course
+   3. The administrator presses the Save button
+   4. The system does not update the course
+   5. The system displays an error message
+   6. End of flow
+ 
+##### 6. Edit a draft course (step 9 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator makes the desired changes (except the status and program change)
    3. The administrator presses the Save button
    4. The system verifies that the status of the course is “Draft”
    5. The system verifies that all other validations succeed
@@ -67,88 +75,24 @@ A course is created
    7. The system displays the course detail page
    8. End of flow
  
-##### 6. Edit an active course with no related course statuses (step 9 of basic flow)
+##### 7. Edit an active course (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except change the status)
    3. The administrator presses the Save button
    4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has no related course status
-   6. The system verifies that all other validations succeed
-   7. The system updates the course
-   8. The system displays the course detail page
-   9. End of flow
+   5. The system does not update the course
+   6. The system displays an error message
+   7. End of flow
  
-##### 7. Edit the name of an active course with related course statuses (step 9 of basic flow)
+ ##### 8. Inactivate an active course (step 9 of basic flow)
    1. The administrator presses the Edit button
-   2. The administrator changes the “Course Name” 
+   2. The administrator sets the status of the course to “Inactive” 
    3. The administrator presses the Save button
-   4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has related course status
-   6. The system updates the course
-   7. The system displays the course detail page
-   8. End of flow
+   4. The system saves the course
+   5. The system displays the course detail page
+   6. End of flow
  
-##### 8. Edit the description of an active course with related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the course “Description”
-   3. The administrator presses the Save button
-   4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has related course status
-   6. The system updates the course
-   7. The system displays the course detail page
-   8. End of flow
- 
-##### 9. Edit the subscription mode of an active course with related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the “Subscription Mode”
-   3. The administrator presses the Save button
-   4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has related course status
-   6. The system does not update the module
-   7. The system displays an error message
-   8. End of flow
- 
-##### 10. Edit the program of an active course with related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the “Program”
-   3. The administrator presses the Save button
-   4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has related course status
-   6. The system does not update the module
-   7. The system displays an error message
-   8. End of flow
- 
-##### 11. Edit the segment of an active course with related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the “Segment”
-   3. The administrator presses the Save button
-   4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has related course status
-   6. The system does not update the module
-   7. The system displays an error message
-   8. End of flow
- 
-##### 12. Edit the start date of an active course with related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the “Start Date”
-   3. The administrator presses the Save button
-   4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has related course status
-   6. The system does not update the module
-   7. The system displays an error message
-   8. End of flow
- 
-##### 13. Edit  the end date of an active course with related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the “End Date”
-   3. The administrator presses the Save button
-   4. The system verifies that the status of the course is “Active”
-   5. The system verifies that the course has related course status
-   6. The system does not update the module
-   7. The system displays an error message
-   8. End of flow
- 
-##### 14. Delete an active course with no related course statuses (step 9 of basic flow)
+##### 9. Delete an active course with no related course statuses (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the course has no related course status
    3. The system deletes the course
@@ -156,32 +100,14 @@ A course is created
    5. The system deletes the related course modules
    6. End of flow
  
-##### 15. Delete an active course with related course statuses (step 9 of basic flow)
+##### 10. Delete an active course with related course statuses (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the course has related course status
    3. The system does not delete the module
    4. The system displays an error message
    5. End of flow
  
-##### 16. Inactivate an active course with no related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator sets the status of the course to “Inactive” 
-   3. The administrator presses the Save button
-   4. The system verifies that the course has no related course status
-   5. The system updates the course
-   6. The system displays the course detail page
-   7. End of flow
- 
-##### 17. Inactivate an active course with related course statuses (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator sets the status of the course to “Inactive” 
-   3. The administrator presses the Save button
-   4. The system verifies that the course has related course status
-   5. The system updates the course
-   6. The system displays the course detail page
-   7. End of flow
- 
-##### 18. Edit an inactive course (step 9 of basic flow)
+##### 11. Edit an inactive course (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except change the status)
    3. The administrator presses the Save button
@@ -191,19 +117,19 @@ A course is created
    7. The system displays the course detail page
    8. End of flow
  
-#### 19. The start date is earlier than the current date (step 5 of basic flow)
+##### 12. The start date is earlier than the current date (step 5 of basic flow)
    1. The system verifies that “Start Date” is earlier than the current date
    2. The system does not create the course
    3. The system displays an error message
    4. End of flow
  
-##### 20. The end date is earlier than the current date (step 5 of basic flow)
+##### 13. The end date is earlier than the current date (step 5 of basic flow)
    1. The system verifies that “End Date” is earlier than the current date
    2. The system does not create the course
    3. The system displays an error message
    4. End of flow
  
-##### 21. The start date is later than the end date (step 5 of basic flow)
+##### 14. The start date is later than the end date (step 5 of basic flow)
    1. The system verifies that the “Start Date” is later than the “End Date”
    2. The system does not create the course
    3. The system displays an error message
