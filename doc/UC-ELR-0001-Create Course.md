@@ -100,7 +100,7 @@ A course is created
    6. The system displays an error message
    7. End of flow
    
-##### 11 Edit an inactive course (step 9 of basic flow)
+##### 11. Edit an inactive course (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the status and program change)
    3. The administrator presses the Save button
