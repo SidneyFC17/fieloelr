@@ -188,8 +188,6 @@ A module was created
    5. The system displays the module detail page
    6. End of flow
 
-
-
 ##### 20. Edit the attempts allowed of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Attempts Allowed” field
@@ -360,42 +358,66 @@ A module was created
    4. The system deletes all related questions and answers
    5. End of flow
 
-##### 37. Delete an active module without related module responses (step 11 of basic flow)
+##### 37. Delete an active module without related module responses and that has the related course not in status "Active" (step 11 of basic flow)
    1. The administrator presses the Delete button of an active module
    2. The system verifies that the module has no related module responses
-   3. The system deletes the module
-   4. The system deletes the related module dependencies
-   5. The system deletes all related questions and answers
-   6. The system updates the “ActiveModules” field in the related course
-   7. End of flow
+   3. The system verifies that the related course is in status "Inactive"
+   4. The system deletes the module
+   5. The system deletes the related module dependencies
+   6. The system deletes all related questions and answers
+   7. The system updates the “ActiveModules” field in the related course
+   8. End of flow
 
-##### 38. Delete an active module that has related module responses (step 11 of basic flow)
+##### 38. Delete an active module that has related module responses and that has the related course in status "Active" (step 11 of basic flow)
    1. The administrator presses the Delete button of an active module
    2. The system verifies that the module has related module responses
-   3. The system does not delete the module
-   4. The system displays an error message
-   5. End of flow
+   3. The system verifies that the related course is in status "Inactive"
+   4. The system does not delete the module
+   5. The system displays an error message
+   6. End of flow
+   
+#### 39. Delete an active module that has related module responses and that has the related course not in status "Active" (step 11 of basic flow)
+   1. The administrator presses the Delete button of an active module
+   2. The system verifies that the module has no related module responses
+   3. The system verifies that the related course is in status "Inactive"
+   4. The system deletes the module
+   5. The system deletes the related module dependencies
+   6. The system deletes all related questions and answers
+   7. The system updates the “ActiveModules” field in the related course
+   8. End of flow
 
-##### 39. Inactivate a module without related module responses (step 11 of basic flow)
+##### 40. Inactivate a module without related module responses and that has the related course not in status "Active" (step 11 of basic flow)
    1. The administrator presses the Edit button of an active module
    2. The administrator changes the “IsActive” field from “true” to “false”
    3. The administrator presses the Save button
    4. The system verifies that the module has no related module responses
-   5   The system updates the module
-   6. The system updates the “ActiveModules” field in the related course
-   7. The system displays the module detail page
-   8. End of flow
+   5. The system verifies that the related course is not in status "Active"
+   6. The system updates the module
+   7. The system updates the “ActiveModules” field in the related course
+   8. The system displays the module detail page
+   9. End of flow
 
-##### 40. Inactivate a module that has related module responses (step 11 of basic flow)
+##### 41. Inactivate a module that has related module responses and that has the related course in status "Inactive" (step 11 of basic flow)
    1. The administrator presses the Edit button of an active module
    2. The administrator changes the “IsActive” field from “true” to “false”
    3. The administrator presses the Save button
    4. The system verifies that the module has related module responses
+   5. The system verifies that the related course is in status "Inactive"
+   6. The system updates the module
+   7. The system updates the “ActiveModules” field in the related course
+   8. The system displays the module detail page
+   9. End of flow
+   
+##### 42. Inactivate a module that has the related course in status "Active" (step 11 of basic flow)
+   1. The administrator presses the Edit button of an active module
+   2. The administrator changes the “IsActive” field from “true” to “false”
+   3. The administrator presses the Save button
+   4. The system verifies that the related course is in status "Active"
    5. The system does not update the module
    6. The system displays an error message
    7. End of flow
 
-##### 41. Change the course of the module (step 11 of basic flow)
+##### 43. Change the course of the module (step 11 of basic flow)
    1. The administrator presses the Edit button of a module that can be edited
    2. The administrator changes the related course
    3. The administrator presses the Save button
