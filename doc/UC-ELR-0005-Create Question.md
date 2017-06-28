@@ -17,16 +17,17 @@ A question was created
 1. The system receives the field values for the question
 2. The administrator presses the Save button
 3. The system verifies that the related module is not active
-4. The system verifies that the Question Text field is not null
-5. The system verifies that the Order field is not null
-6. The system verifies that the “Correct Weight” field equals to 1
-7. The system verifies that the “Incorrect Weight” field equals to 0
-8. The system verifies that the “Penalty per Attempt” field is between 0 and 100
-9. The system verifies that the “Type” is “Single Choice” 
-10. The system sets the “IsActive” field to “false”
-11. The system saves the question
-12. The system displays the question detail page with the options to Edit or Delete
-13. End of flow
+4. The system verifies that the related module does not have module responses
+5. The system verifies that the Question Text field is not null
+6. The system verifies that the Order field is not null
+7. The system verifies that the “Correct Weight” field is equal or greater than 0
+8. The system verifies that the “Incorrect Weight” field is not null
+9. The system verifies that the “Penalty per Attempt” field is between 0 and 100
+10. The system verifies that the “Type” is “Single Choice” 
+11. The system sets the “IsActive” field to “false”
+12. The system saves the question
+13. The system displays the question detail page with the options to Edit or Delete
+14. End of flow
  
 ### Alternative flows
  
