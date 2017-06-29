@@ -18,16 +18,19 @@ A module response was created
    3. The system verifies that the “Module” lookup field is not null
    4. The system verifies that the related module is active
    5. The system verifies that “Member” field is not null
-   6. The system verifies that the member is approved in the predecessors modules
-   7. The system verifies that the date of the response in within the period of the course
-   8. The system automatically completes the “Number of Attempts” field
-   9. The system verifies that the “Number of Attempts” is less than the “Attempts Allowed” of the related module
-   10. The system verifies that the related course subscription mode is manual and the related course status already exists for the member   
-   11. The system automatically fills in the “Course Status” field with the existing course status
-   12. The system verifies that “IsApproved” field is set to “false”
-   13. The system saves the module response
-   14. The system displays the module response detail page with the options to Edit or Delete
-   15. End of flow
+   6. The system verifies that the member belongs to the program of the related course
+   7. The system verifies that the member belongs to at least to one of the segments of the related course
+   8. the system verifies that the related course is active
+   9. The system verifies that the member is approved in the predecessors modules
+   10. The system verifies that the date of the response in within the period of the course
+   11. The system automatically completes the “Number of Attempts” field
+   12. The system verifies that the “Number of Attempts” is less than the “Attempts Allowed” of the related module
+   13. The system verifies that the related course subscription mode is manual and the related course status already exists for the member   
+   14. The system automatically fills the “Course Status” field with the existing course status
+   15. The system verifies that “IsApproved” field is set to “false”
+   16. The system saves the module response
+   17. The system displays the module response detail page with the options to Edit or Delete
+   18. End of flow
  
 ### Alternative flows
  
