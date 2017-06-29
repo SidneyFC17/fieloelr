@@ -116,15 +116,15 @@ An answer option was created
    4. The system displays an error message
    5. End of flow
  
-##### 15. Delete answer option when related module is inactive and does not have module response (step 9 of basic flow)
+##### 15. Delete answer option when related module is inactive and the related question does not have question response (step 9 of basic flow)
    1. The administrator presses the Delete button
-   2. The system verifies that the related module is inactive and doesn't have module response
+   2. The system verifies that the related module is inactive and that the related question doesn't have question response
    3. The system deletes the answer option
    4. End of flow
    
-##### 16. Delete answer option when related module is inactive and has module response (step 9 of basic flow)
+##### 16. Delete answer option when related module is inactive and the related question has question response (step 9 of basic flow)
    1. The administrator presses the Delete button
-   2. The system verifies that the related module is inactive and has module response
+   2. The system verifies that the related module is inactive and that the related question has question response
    3. The system does not delete the answer option
    4. The system displays an error message
    5. End of flow
@@ -145,20 +145,20 @@ An answer option was created
    6. The system displays an error message
    7. End of flow
  
-##### 19. Edit answer option when related module is inactive and does not have module response (step 9 of basic flow)
+##### 19. Edit answer option when related module is inactive and the related question does not have question response (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the Question field)
    3. The administrator presses the Save button
-   4. The system verifies that the related module is inactive and doesn't have module response
+   4. The system verifies that the related module is inactive and that the related question doesn't have question response
    5. The system updates the answer option
    6. The system displays the answer option detail page
    7. End of flow
  
-##### 20. Edit answer option when related module is inactive and has module response (step 9 of basic flow)
+##### 20. Edit answer option when related module is inactive and the related question has question response (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the Question field)
    3. The administrator presses the Save button
-   4. The system verifies that the related module is inactive and has module response
+   4. The system verifies that the related module is inactive and that the related question has question response
    5. The system does not save the answer option 
    6. The system displays an error message
    7. End of flow
