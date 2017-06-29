@@ -49,14 +49,14 @@ An answer option was created
    2. The system automatically numbers the “Order” field
    3. Back to step 8 of basic flow
    
-##### 5. Related question “Type” is “Statement” and it doesn't have already two answers options (step 5 of basic flow)
+##### 5. Related question “Type” is “Statement” and it doesn't have already two answer options (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Statement”
-   2. The system verifies that there aren't already two answers options for the related question
+   2. The system verifies that there aren't already two answer options for the related question
    3. Back to step 6 of basic flow
  
-##### 6. Related question “Type” is “Statement” and it has already two answers options (step 5 of basic flow)
+##### 6. Related question “Type” is “Statement” and it has already two answer options (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Statement”
-   2. The system verifies that there are already two answers options for the related question
+   2. The system verifies that there are already two answer options for the related question
    3. The system does not create the answer option
    4. The system displays an error message
    5. End of flow
