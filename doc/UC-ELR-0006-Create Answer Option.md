@@ -60,14 +60,30 @@ An answer option was created
    3. The system does not create the answer option
    4. The system displays an error message
    5. End of flow
+   
+##### 7. Related question “Type” is “Statement” and no other answer option was defined as correct (step 5 of basic flow)
+   1. The system verifies that the related question “Type” is “Statement”
+   2. The system verifies that the “IsCorrect” field is set to “true”
+   3. The system verifies that the related question doesn't have already two answer options
+   4. The system verifies that no other answer option of the same related question has its “IsCorrect” field set to “true”
+   5. Back to step 6 of basic flow
+   
+##### 8. Related question “Type” is “Statement” and another answer option was defined as correct (step 5 of basic flow)
+   1. The system verifies that the related question “Type” is “Statement”
+   2. The system verifies that the “IsCorrect” field is set to “true”
+   3. The system verifies that the related question doesn't have already two answer options
+   4. The system verifies that there is another answer option of the same related question that has its “IsCorrect” field set to “true”
+   5. The system does not create the answer option
+   6. The system displays an error message
+   7. End of flow
  
-##### 7. Related question “Type” is “Single Choice” and no other answer was defined as correct (step 5 of basic flow)
+##### 9. Related question “Type” is “Single Choice” and no other answer option was defined as correct (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Single Choice”
    2. The system verifies that the “IsCorrect” field is set to “true”
    3. The system verifies that no other answer option of the same related question has its “IsCorrect” field set to “true”
    4. Back to step 6 of basic flow
  
-##### 8. Related question “Type” is “Single Choice” and another answer option was defined as correct (step 5 of basic flow)
+##### 10. Related question “Type” is “Single Choice” and another answer option was defined as correct (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Single Choice”
    2. The system verifies that the “IsCorrect” field is set to “true”
    3. The system verifies that there is another answer option of the same related question that has its “IsCorrect” field set to “true”
@@ -75,52 +91,52 @@ An answer option was created
    5. The system displays an error message
    6. End of flow
  
-##### 9. Related question “Type” is “Short Answer” (step 5 of basic flow)
+##### 11. Related question “Type” is “Short Answer” (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Short Answer”
    2. Back to step 6 of basic flow
  
-##### 10. Related question “Type” is “Matching Options” and there is a matching pair (step 5 of basic flow)
+##### 12. Related question “Type” is “Matching Options” and there is a matching pair (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Matching Options”
    2. The system verifies that the “Matching Text” field is not null
    3. The system verifies that the “Answer Option Text” is not null
    4. The system sets the “IsCorrect” field to “true”
    5. Back to step 7 of basic flow
  
-##### 11. Related question “Type” is “Matching Options” and there is not a matching pair (step 5 of basic flow)
+##### 13. Related question “Type” is “Matching Options” and there is not a matching pair (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Matching Options”
    2. The system verifies that the “Matching Text” field is not null
    3. The system verifies that the “Answer Option Text” is null
    4. The system sets the “IsCorrect” field to “false”
    5. Back to step 7 of basic flow
  
-##### 12. Related question “Type” is “Matching Options” and “Matching Text” field is null (step 5 of basic flow)
+##### 14. Related question “Type” is “Matching Options” and “Matching Text” field is null (step 5 of basic flow)
    1. The system verifies that the related question “Type” is “Matching Options”
    2. The system verifies that the “Matching Text” field is null
    3. The system does not create the answer option
    4. The system displays an error message
    5. End of flow
  
-##### 13. Delete answer option when related module is inactive and does not have module response (step 9 of basic flow)
+##### 15. Delete answer option when related module is inactive and does not have module response (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is inactive and doesn't have module response
    3. The system deletes the answer option
    4. End of flow
    
-##### 14. Delete answer option when related module is inactive and has module response (step 9 of basic flow)
+##### 16. Delete answer option when related module is inactive and has module response (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is inactive and has module response
    3. The system does not delete the answer option
    4. The system displays an error message
    5. End of flow
  
-##### 15. Delete answer option when related module is active (step 9 of basic flow)
+##### 17. Delete answer option when related module is active (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is active
    3. The system does not delete the answer option
    4. The system displays an error message
    5. End of flow
    
-##### 16. Edit answer option when related module is active (step 9 of basic flow)
+##### 18. Edit answer option when related module is active (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the Question field)
    3. The administrator presses the Save button
@@ -129,7 +145,7 @@ An answer option was created
    6. The system displays an error message
    7. End of flow
  
-##### 17. Edit answer option when related module is inactive and does not have module response (step 9 of basic flow)
+##### 19. Edit answer option when related module is inactive and does not have module response (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the Question field)
    3. The administrator presses the Save button
@@ -138,7 +154,7 @@ An answer option was created
    6. The system displays the answer option detail page
    7. End of flow
  
-##### 18. Edit answer option when related module is inactive and has module response (step 9 of basic flow)
+##### 20. Edit answer option when related module is inactive and has module response (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the Question field)
    3. The administrator presses the Save button
@@ -147,7 +163,7 @@ An answer option was created
    6. The system displays an error message
    7. End of flow
 
-##### 19. Edit answer opting setting correct answer option for question Type “Statement” when no other answer option is defined as correct (step 9 of basic flow)
+##### 21. Edit answer opting setting correct answer option for question Type “Statement” when no other answer option is defined as correct (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsCorrect” field to “true”
    3. The administrator presses the Save button
@@ -157,7 +173,7 @@ An answer option was created
    7. The system displays the answer option detail page
    8. End of flow
  
-##### 20. Edit answer opting setting correct answer option for question Type “Statement” when another answer option is defined as correct (step 9 of basic flow)
+##### 22. Edit answer opting setting correct answer option for question Type “Statement” when another answer option is defined as correct (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsCorrect” field to “true”
    3. The administrator presses the Save button
