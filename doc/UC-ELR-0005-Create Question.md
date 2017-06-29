@@ -16,7 +16,7 @@ A question was created
  
 1. The system receives the field values for the question
 2. The administrator presses the Save button
-3. The system verifies that the related module is not active
+3. The system verifies that the related module is inactive
 4. The system verifies that the related module does not have module responses
 5. The system verifies that the Question Text field is not null
 6. The system verifies that the Order field is not null
@@ -108,31 +108,44 @@ A question was created
    1. The system verifies that the “Type” field is “Matching Options”
    2. Back to step 12 of basic flow
  
-##### 16. Delete question when related module is not active (step 12 of basic flow)
+##### 16. Delete question when related module is inactive and does not have module response (step 13 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is not active
    3. The system deletes the question
    4. The system deletes all related answers
    5. End of flow
- 
-##### 17. Delete question when related module is active (step 12 of basic flow)
+
+##### 17. Delete question when related module is inactive and has module response (step 13 of basic flow)
+   1. The administrator presses the Delete button
+   2. The system verifies that the related module is inactive and has module response
+   3. The system does not delete the question
+   4. The system displays an error message
+   5. End of flow
+   
+##### 18. Delete question when related module is active (step 13 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the related module is active
    3. The system does not delete the question
    4. The system displays an error message
    5. End of flow
- 
-##### 18. Edit question when related module is not active (step 12 of basic flow)
+   
+##### 19. Edit question type (step 13 of basic flow)
    1. The administrator presses the Edit button
-   2. The administrator makes the desired changes 
+   2. The administrator changes the “Type” field
    3. The administrator presses the Save button
-   4. The system verifies that the related module is not active
-   5. The system verifies that all other validations succeed
-   6. The system updates the question
-   7. The system displays the question detail page
-   8. End of flow
- 
-##### 19. Edit question when related module is active (step 12 of basic flow)
+   4. The system does not update the question
+   5. The system displays an error message
+   6. End of flow
+   
+##### 20. Edit the related module (step 13 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the “Module” field
+   3. The administrator presses the Save button
+   4. The system does not update the question
+   5. The system displays an error message
+   6. End of flow
+   
+##### 21. Edit question when related module is active (step 13 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes 
    3. The administrator presses the Save button
@@ -141,7 +154,64 @@ A question was created
    6. The system displays an error message
    7. End of flow
  
-##### 20. Edit question when “Question Pool” of related module is different from null (step 12 of basic flow)
+##### 20. Edit question when related module is inactive and does not have module response (step 13 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator makes the desired changes (except in Type and Module fields)
+   3. The administrator presses the Save button
+   4. The system verifies that the related module is inactive and doesn't have module response
+   5. The system verifies that all other validations succeed
+   6. The system updates the question
+   7. The system displays the question detail page
+   8. End of flow
+
+##### 20. Edit Question Name when related module is inactive and has module response (step 13 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the question name
+   3. The administrator presses the Save button
+   4. The system verifies that the related module is inactive and has module response
+   5. The system verifies that all other validations succeed
+   6. The system updates the question
+   7. The system displays the question detail page
+   8. End of flow
+   
+##### 21. Edit Question Text when related module is inactive and has module response (step 13 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the question name
+   3. The administrator presses the Save button
+   4. The system verifies that the related module is inactive and has module response
+   5. The system verifies that all other validations succeed
+   6. The system updates the question
+   7. The system displays the question detail page
+   8. End of flow
+   
+##### 21. Edit Correct Weight when related module is inactive and has module response (step 13 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the Correct Weight
+   3. The administrator presses the Save button
+   4. The system verifies that the related module is inactive and has module response
+   5. The system does not update the question
+   6. The system displays an error message
+   7. End of flow
+   
+##### 21. Edit Penalty per Attempt when related module is inactive and has module response (step 13 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the Penalty per Attempt
+   3. The administrator presses the Save button
+   4. The system verifies that the related module is inactive and has module response
+   5. The system does not update the question
+   6. The system displays an error message
+   7. End of flow
+   
+##### 21. Edit Incorrect Weight when related module is inactive and has module response (step 13 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the Incorrect Weight
+   3. The administrator presses the Save button
+   4. The system verifies that the related module is inactive and has module response
+   5. The system does not update the question
+   6. The system displays an error message
+   7. End of flow
+ 
+##### 21. Edit question when “Question Pool” of related module is different from null (step 12 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Correct Weight” to a value greater than 1
    3. The administrator presses the Save button
@@ -152,10 +222,3 @@ A question was created
    8. The system displays the question detail page
    9. End of flow
  
-##### 21. Edit question type (step 12 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the “Type” field
-   3. The administrator presses the Save button
-   4. The system does not update the question
-   5. The system displays an error message
-   6. End of flow
