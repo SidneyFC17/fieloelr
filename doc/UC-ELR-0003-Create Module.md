@@ -137,7 +137,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 16. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Incorrect Weight" to "Percent decrease" (step 11 of basic module) 
+##### 16. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Negative Weight" to "Percent decrease" (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Penalty Mode” field from "Incorrect Weight" to "Percent Decrease"
    3. The administrator presses the Save button
@@ -146,7 +146,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 17. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Incorrect Weight" to "None" (step 11 of basic module) 
+##### 17. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Negative Weight" to "None" (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Penalty Mode” field from "Incorrect Weight" to "None"
    3. The administrator presses the Save button
@@ -154,6 +154,9 @@ A module was created
    5. The system updates all the “Incorrect Weight” fields from the related questions with the value 0
    6. The system displays the module detail page
    7. End of flow
+   
+##### 18. Edit an active module (step 11 of basic flow)
+   1. The administrator presses the Edit button
 
 ##### 18. Edit the name of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
