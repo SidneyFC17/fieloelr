@@ -16,9 +16,9 @@ A module was created
 
 1. The system receives the fields for the module
 2. The administrator presses the Save button
-3. The system verifies that the module has a related Course in status “Draft”
+3. The system verifies that the module has a related Course in status “Draft” or "Inactive"
 4. The system verifies that the Approval Grade is between 0 and 100
-5. The system verifies that the “Question Pool” is not “null” and the “Weighted Questions” is set to false
+5. The system verifies that the “Question Pool” is greater than zero and the “Weighted Questions” is set to false
 6. The system verifies that the “IsActive” field is set to “false”
 7. The system verifies that the “Attempts Allowed” is “null” or greater than 0
 8. The system verifies that the “Attempts Allowed per Question” is “null” or greater than 0
@@ -47,19 +47,23 @@ A module was created
    3. The system displays an error message
    4. End of flow
    
-##### 4. Question Pool is zero and "Weighted Questions" is false (step 5 of basic flow)
-   1. The system verifies that the Question Pool is 0 (zero)
+##### 4. "Question Pool" is greater than zero and "Weighted Questions" is true (step 5 of basic flow)
+   1. The system verifies that "Question Pool" is greater than zero and "Weighted Questions" is set to true
    2. The system does not create the module
    3. The system displays an error message
    4. End of flow
+   
+##### 5. "Question Pool" is null (step 5 of basic flow)
+   1. The system verifies that "Question Pool" is null 
+   2. Back to step 6 of basic flow
 
-##### 5. "Question Pool" is not null and "Weighted Questions" is true (step 5 of basic flow)
-   1. The system verifies that "Question Pool" is different from "null" and "Weighted Questions" is set to true
+##### 6. Question Pool is zero or negative (step 5 of basic flow)
+   1. The system verifies that the Question Pool is 0 (zero) or negative
    2. The system does not create the module
    3. The system displays an error message
    4. End of flow
-
-##### 6. Create a module in status “Active” (step 6 of basic flow)
+   
+##### 7. Create a module in status “Active” (step 6 of basic flow)
    1. The system verifies that “IsActive” field is set to “true”
    2. The system verifies that the “Attempts Allowed” is “null” or greater than 0
    3. The system verifies that the “Attempts Allowed per Question” is “null” or greater than 0
@@ -69,24 +73,24 @@ A module was created
    7. The system displays the module detail page
    8. End of flow
 
-##### 7. “Attempts Allowed” is negative (step 7 of basic flow)
+##### 8. “Attempts Allowed” is negative (step 7 of basic flow)
    1. The system verifies that the “Attempts Allowed” field value is negative
    2. The system does not create the module
    3. The system displays an error message
    4. End of flow
 
-##### 8. “Attempts Allowed per Question” is negative (step 8 of basic flow)
+##### 9. “Attempts Allowed per Question” is negative (step 8 of basic flow)
    1. The system verifies that the “Attempts Allowed per Question” field value is negative
    2. The system does not create the module
    3. The system displays an error message
    4. End of flow
 
-##### 9. “Order” field is null (step 9 of basic flow)
+##### 10. “Order” field is null (step 9 of basic flow)
    1. The system verifies that the Order field is null
    2. The system automatically numbers the Order field
    3. Back to step 10 of basic flow
 
-##### 10. Edit an inactive module that has no related module response without changing the “Question Pool”, “Weighted Questions” or “Penalty Mode” fields (step 11 of basic module)
+##### 11. Edit an inactive module that has no related module response without changing the “Question Pool”, “Weighted Questions” or “Penalty Mode” fields (step 11 of basic module)
    1. The administrator presses the Edit button
    2. The administrator changes any field, except Course, “Question Pool”, “Weighted Questions” and “Penalty Mode”, keeping them valid
    3. The administrator presses the Save button
@@ -102,7 +106,7 @@ A module was created
    13. The system displays the module detail page
    14. End of flow
 
-##### 11. Edit a non active module that has no related module response changing the “Question Pool” field from “null” to “not null” (step 11 of basic module) 
+##### 12. Edit a non active module that has no related module response changing the “Question Pool” field from “null” to “not null” (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Question Pool” field from “null” by filling it with a number greater than 0
    3. The administrator presses the Save button
@@ -111,7 +115,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 12. Edit a non active module that has no related module response changing the “Weighted Questions” field from “true” to “false” (step 11 of basic module) 
+##### 13. Edit a non active module that has no related module response changing the “Weighted Questions” field from “true” to “false” (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Weighted Questions” field from “true” to “false”
    3. The administrator presses the Save button
@@ -120,7 +124,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 13. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Percent Decrease" to "Incorrect Weight" (step 11 of basic module) 
+##### 14. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Percent Decrease" to "Incorrect Weight" (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Penalty Mode” field from "Percent Decrease" to "Incorrect Weight"
    3. The administrator presses the Save button
@@ -129,7 +133,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 14. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Percent Decrease" to "None" (step 11 of basic module) 
+##### 15. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Percent Decrease" to "None" (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Penalty Mode” field from "Percent Decrease" to "None"
    3. The administrator presses the Save button
@@ -138,7 +142,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 15. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Incorrect Weight" to "Percent decrease" (step 11 of basic module) 
+##### 16. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Incorrect Weight" to "Percent decrease" (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Penalty Mode” field from "Incorrect Weight" to "Percent Decrease"
    3. The administrator presses the Save button
@@ -147,7 +151,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 16. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Incorrect Weight" to "None" (step 11 of basic module) 
+##### 17. Edit a non active module that has no related module response changing the “Penalty Mode” field from "Incorrect Weight" to "None" (step 11 of basic module) 
    1. The administrator presses the Edit button
    2. The administrator changes the “Penalty Mode” field from "Incorrect Weight" to "None"
    3. The administrator presses the Save button
@@ -156,7 +160,7 @@ A module was created
    6. The system displays the module detail page
    7. End of flow
 
-##### 17. Edit the name of an inactive module with related module response (step 11 of basic flow)
+##### 18. Edit the name of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the module “Name”
    3. The administrator presses the Save button
@@ -164,7 +168,7 @@ A module was created
    5. The system displays the module detail page
    6. End of flow
 
-##### 18. Edit the description of an inactive module with related module response (step 11 of basic flow)
+##### 19. Edit the description of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the module “Description”
    3. The administrator presses the Save button
@@ -172,7 +176,7 @@ A module was created
    5. The system displays the module detail page
    6. End of flow
 
-##### 19. Edit the order of an inactive module with related module response (step 11 of basic flow)
+##### 20. Edit the order of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the module “Order”
    3. The administrator presses the Save button
@@ -180,7 +184,7 @@ A module was created
    5. The system displays the module detail page
    6. End of flow
 
-##### 20. Edit the shuffle questions of an inactive module with related module response (step 11 of basic flow)
+##### 21. Edit the shuffle questions of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Shuffle Questions”
    3. The administrator presses the Save button
@@ -188,7 +192,7 @@ A module was created
    5. The system displays the module detail page
    6. End of flow
 
-##### 21. Edit the attempts allowed of an inactive module with related module response (step 11 of basic flow)
+##### 22. Edit the attempts allowed of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Attempts Allowed” field
    3. The administrator presses the Save button
@@ -197,7 +201,7 @@ A module was created
    6. The system displays an error message
    7. End of flow
 
-##### 22. Edit the attempts allowed per question of an inactive module with related module response (step 11 of basic flow)
+##### 23. Edit the attempts allowed per question of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Attempts Allowed per Question” field
    3. The administrator presses the Save button
@@ -206,7 +210,7 @@ A module was created
    6. The system displays an error message
    7. End of flow
 
-##### 23. Edit the approval grade of an inactive module with related module response (step 11 of basic flow)
+##### 24. Edit the approval grade of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Approval Grade” field
    3. The administrator presses the Save button
@@ -215,7 +219,7 @@ A module was created
    6. The system displays an error message
    7. End of flow
 
-##### 24. Edit the penalty mode of an inactive module with related module response (step 11 of basic flow)
+##### 25. Edit the penalty mode of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Penalty Mode” field
    3. The administrator presses the Save button
@@ -224,7 +228,7 @@ A module was created
    6. The system displays an error message
    7. End of flow
 
-##### 25. Edit the question pool of an inactive module with related module response (step 11 of basic flow)
+##### 26. Edit the question pool of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Question Pool” field
    3. The administrator presses the Save button
@@ -233,7 +237,7 @@ A module was created
    6. The system displays an error message
    7. End of flow
 
-##### 26. Edit the weighted questions of an inactive module with related module response (step 11 of basic flow)
+##### 27. Edit the weighted questions of an inactive module with related module response (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the “Weighted Questions” field
    3. The administrator presses the Save button
@@ -242,7 +246,7 @@ A module was created
    6. The system displays an error message
    7. End of flow
 
-##### 27. Activate a module (step 11 of basic module)
+##### 28. Activate a module (step 11 of basic module)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -261,7 +265,7 @@ A module was created
    16. The system displays the module detail page
    17. End of flow
 
-##### 28. Activate a module with “Approval Grade” null (step 11 of basic flow)
+##### 29. Activate a module with “Approval Grade” null (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -271,7 +275,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 29. Activate a module with no related questions (step 11 of basic flow)
+##### 30. Activate a module with no related questions (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -281,7 +285,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 30. Activate a module that has a question from type “Statement” with no correct answer (step 11 of basic flow)
+##### 31. Activate a module that has a question from type “Statement” with no correct answer (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -291,7 +295,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 31. Activate a module that has a question from type “Single Choice” with no correct answer (step 11 of basic flow)
+##### 32. Activate a module that has a question from type “Single Choice” with no correct answer (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -301,7 +305,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 32. Activate a module that has a question from type “Statement” with no answers (step 11 of basic flow)
+##### 33. Activate a module that has a question from type “Statement” with no answers (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -311,7 +315,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 33. Activate a module that has a question from type “Single Choice” with no answers (step 11 of basic flow)
+##### 34. Activate a module that has a question from type “Single Choice” with no answers (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -321,7 +325,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 34. Activate a module that has a question from type “Multiple Choice” with no answers (step 11 of basic flow)
+##### 35. Activate a module that has a question from type “Multiple Choice” with no answers (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -331,7 +335,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 35. Activate a module that has a question from type “Matching Options” with no answers (step 11 of basic flow)
+##### 36. Activate a module that has a question from type “Matching Options” with no answers (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -341,7 +345,7 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 36. Activate a module that has a question from type “Short Answer” with no answers (step 11 of basic flow)
+##### 37. Activate a module that has a question from type “Short Answer” with no answers (step 11 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
@@ -351,14 +355,14 @@ A module was created
    7. The system displays an error message
    8. End of flow
 
-##### 37. Delete a non active module (step 11 of basic module)
+##### 38. Delete a non active module (step 11 of basic module)8
    1. The administrator presses the Delete button of a non active module
    2. The system deletes the module
    3. The system deletes the related module dependencies
    4. The system deletes all related questions and answers
    5. End of flow
 
-##### 38. Delete an active module without related module responses and that has the related course not in status "Active" (step 11 of basic flow)
+##### 39. Delete an active module without related module responses and that has the related course not in status "Active" (step 11 of basic flow)
    1. The administrator presses the Delete button of an active module
    2. The system verifies that the module has no related module responses
    3. The system verifies that the related course is in status "Inactive"
@@ -368,7 +372,7 @@ A module was created
    7. The system updates the “ActiveModules” field in the related course
    8. End of flow
 
-##### 39. Delete an active module that has related module responses and that has the related course in status "Active" (step 11 of basic flow)
+##### 40. Delete an active module that has related module responses and that has the related course in status "Active" (step 11 of basic flow)
    1. The administrator presses the Delete button of an active module
    2. The system verifies that the module has related module responses
    3. The system verifies that the related course is in status "Inactive"
@@ -376,7 +380,7 @@ A module was created
    5. The system displays an error message
    6. End of flow
    
-#### 40. Delete an active module that has related module responses and that has the related course not in status "Active" (step 11 of basic flow)
+#### 41. Delete an active module that has related module responses and that has the related course not in status "Active" (step 11 of basic flow)
    1. The administrator presses the Delete button of an active module
    2. The system verifies that the module has no related module responses
    3. The system verifies that the related course is in status "Inactive"
@@ -386,7 +390,7 @@ A module was created
    7. The system updates the “ActiveModules” field in the related course
    8. End of flow
 
-##### 41. Inactivate a module without related module responses and that has the related course not in status "Active" (step 11 of basic flow)
+##### 42. Inactivate a module without related module responses and that has the related course not in status "Active" (step 11 of basic flow)
    1. The administrator presses the Edit button of an active module
    2. The administrator changes the “IsActive” field from “true” to “false”
    3. The administrator presses the Save button
@@ -397,7 +401,7 @@ A module was created
    8. The system displays the module detail page
    9. End of flow
 
-##### 42. Inactivate a module that has related module responses and that has the related course in status "Inactive" (step 11 of basic flow)
+##### 43. Inactivate a module that has related module responses and that has the related course in status "Inactive" (step 11 of basic flow)
    1. The administrator presses the Edit button of an active module
    2. The administrator changes the “IsActive” field from “true” to “false”
    3. The administrator presses the Save button
@@ -408,7 +412,7 @@ A module was created
    8. The system displays the module detail page
    9. End of flow
    
-##### 43. Inactivate a module that has the related course in status "Active" (step 11 of basic flow)
+##### 44. Inactivate a module that has the related course in status "Active" (step 11 of basic flow)
    1. The administrator presses the Edit button of an active module
    2. The administrator changes the “IsActive” field from “true” to “false”
    3. The administrator presses the Save button
@@ -417,10 +421,11 @@ A module was created
    6. The system displays an error message
    7. End of flow
 
-##### 44. Change the course of the module (step 11 of basic flow)
+##### 45. Change the course of the module (step 11 of basic flow)
    1. The administrator presses the Edit button of a module that can be edited
    2. The administrator changes the related course
    3. The administrator presses the Save button
    4. The system does not update the module
    5. The system displays an error message
    6. End of flow
+
