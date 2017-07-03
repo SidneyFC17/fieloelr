@@ -65,13 +65,8 @@ A module was created
    
 ##### 7. Create a module in status “Active” (step 6 of basic flow)
    1. The system verifies that “IsActive” field is set to “true”
-   2. The system verifies that the “Attempts Allowed” is “null” or greater than 0
-   3. The system verifies that the “Attempts Allowed per Question” is “null” or greater than 0
-   4. The system verifies that the “Order” is not null
-   5. The system automatically sets the “IsActive” field to “false”
-   6. The system saves the module
-   7. The system displays the module detail page
-   8. End of flow
+   2. The system automatically sets the “IsActive” field to “false”
+   3. Back to step 7 of basic flow
 
 ##### 8. “Attempts Allowed” is negative (step 7 of basic flow)
    1. The system verifies that the “Attempts Allowed” field value is negative
@@ -97,7 +92,7 @@ A module was created
    4. The system verifies that the IsActive field is set to “false”
    5. The system verifies that the related course was not changed
    6. The system verifies that the Approval Grade is between 0 and 100
-   7. The system verifies that question pool is not used used when the questions have weighted questions
+   7. The system verifies that Question Pool was not changed
    8. The system verifies that the “Attempts Allowed” is “null” or greater than 0
    9. The system verifies that the “Attempts Allowed per Question” is “null” or greater than 0
    10. The system verifies that the “Weighted Questions” field was not changed
@@ -108,7 +103,7 @@ A module was created
 
 ##### 12. Edit a non active module that has no related module response changing the “Question Pool” field from “null” to “not null” (step 11 of basic module) 
    1. The administrator presses the Edit button
-   2. The administrator changes the “Question Pool” field from “null” by filling it with a number greater than 0
+   2. The administrator changes the “Question Pool” field from “null” to a number greater than 0
    3. The administrator presses the Save button
    4. The system updates the module
    5. The system updates all the “Correct Weight” fields from the related questions with the value 1
