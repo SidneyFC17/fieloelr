@@ -116,13 +116,13 @@ A module response was created
 ##### 15. Delete a module response not submitted (step 17 of basic flow)
    1. The administrator presses the Delete button of a module response not submitted 
    2. The system deletes the module response
-   3. The system deletes all related question responses and answer options
+   3. The system deletes all related question responses and answers
    4. End of flow
  
 ##### 16. Delete a module response already submitted (step 17 of basic flow)
    1. The administrator presses the Delete button of a module response already submitted
    2. The system deletes the module response
-   3. The system deletes all related questions responses and answer options
+   3. The system deletes all related questions responses and answers
    4. End of flow
  
 ##### 17. Edit the course status of a module response not submitted (step 17 of basic flow)
