@@ -19,7 +19,7 @@ A module response was created
    4. The system verifies that the related module is active
    5. The system verifies that “Member” field is not null
    6. The system verifies that the member belongs to the program of the related course
-   7. The system verifies that the member belongs to at least to one of the segments of the related course
+   7. The system verifies that the member belongs to at least one of the segments of the related course
    8. The system verifies that the related course is active
    9. The system verifies that the member is approved in the predecessors modules
    10. The system verifies that the date of the response in within the period of the course
@@ -132,24 +132,40 @@ A module response was created
    4. The system does not update the module response
    5. The system displays an error message
    6. End of flow
+   
+##### 18. Edit the member of a module response not submitted (step 17 of basic flow)
+   1. The administrator presses the Edit button of a module response not submitted
+   2. The administrator changes the Member field
+   3. The administrator presses the Save button
+   4. The system does not update the module response
+   5. The system displays an error message
+   6. End of flow
+   
+##### 19. Edit the module of a module response not submitted (step 17 of basic flow)
+   1. The administrator presses the Edit button of a module response not submitted
+   2. The administrator changes the Module field
+   3. The administrator presses the Save button
+   4. The system does not update the module response
+   5. The system displays an error message
+   6. End of flow
  
-##### 18. Edit the date of a module response not submitted (step 17 of basic flow)
+##### 20. Edit the date of a module response not submitted (step 17 of basic flow)
    1. The administrator presses the Edit button of a module response not submitted
    2. The administrator changes the Date field
    3. The administrator presses the Save button
    4. The system updates the module response
    5. The system displays the module response detail page with the options to Edit or Delete
    6. End of flow 
- 
-##### 19. Edit a module response already submitted (step 17 of basic flow)
+   
+##### 21. Edit a module response already submitted (step 17 of basic flow)
    1. The administrator presses the Edit button of a module response already submitted 
-   2. The administrator makes the desired changes 
+   2. The administrator makes any change 
    3. The administrator presses the Save button
    4. The system does not update the module response
    5. The system displays an error message
    6. End of flow
  
-##### 20. Submit a module response (step 17 of basic flow)
+##### 22. Submit a module response (step 17 of basic flow)
    1. The administrator presses the Edit button of a module response not submitted
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
    3. The system calls the use case [*Submit Module Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0010-Submit%20Module%20Response.md)
