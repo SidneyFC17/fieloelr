@@ -40,21 +40,19 @@ A course was created
    3. The system displays an error message
    4. The system does not create the Course
 
-#### 2. The Program is not filled (step 9 of basic flow)
+##### 2. The Program is not filled (step 9 of basic flow)
    1. The administrator clears the Program field
    2. The administrator presses the Save button
-   3. The system considers for the Program field the program that user had selected before pressing the New button
+   3. The system considers for the Program field the program that user selected before pressing the New button
    4. Back to step 16 of basic flow
    
-##### 2. Subscription Mode is not selected (step 8 of basic flow)
+##### 3. Subscription Mode is not selected (step 11 of basic flow)
    1. The administrator does not select a Subscription Mode
    2. The administrator presses the Save button
    3. The system considers the Subscription Mode as "Manual"
    4. Back to step 11 of basic flow
    
-##### 3. Start Date invalid
- 
-##### 3. The administrator presses the New button in the Course Dependencies related list (step 12 of basic flow)
+##### 4. The administrator presses the New button in the Course Dependencies related list (step 18 of basic flow)
    1. The administrator presses the New course dependency button
    2. The system displays the New Course Dependency page
    3. The system displays the fields defined in the fieldset of the page settings for the New Course Dependency page 
@@ -64,7 +62,7 @@ A course was created
    7. The system calls the Use Case [*Create Course Dependency*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0002-Create%20Course%20Dependency.md)
    8. Back to step 12 of basic flow
  
-##### 4. Edit course (step 12 of basic flow)
+##### 5. Edit course (step 18 of basic flow)
    1. The administrator presses the Edit button in the Course view backend page
    2. The administrator makes the desired changes
-   3. Back to step 10 of basic flow
+   3. Back to step 17 of basic flow
