@@ -26,7 +26,7 @@ A question was created
 	    - Question Text (text)
    8. The system displays the Answer Options area with the following fields:
 	    - Answer Option Text
-            - IsCorrect (checkbox)
+	    - IsCorrect (checkbox)
    9. The system displays the New button in the Answer Options area
    10. The system displays for the answer option a Remove icon
    11. The system displays at the bottom of the page the buttons “Cancel”, “Save” and “Save and new”
@@ -54,7 +54,7 @@ A question was created
 	    - Question Text (text)
    5. The system displays the Answer Options area with the following fields:
 	    - Answer Option Text
-            - IsCorrect (checkbox, set as “true” by default)
+	    - IsCorrect (checkbox, set as “true” by default)
    6. The system displays the New button in the Answer Options area
    7. The system displays for each answer option a Remove icon
    8. The system displays at the bottom of the page the buttons “Cancel”, “Save” and “Save and new”
