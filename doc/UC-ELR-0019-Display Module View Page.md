@@ -54,10 +54,10 @@ The present use case describes how the system displays the Module details
  
 ##### 5. Create a new question (step 3 of basic flow)
    1. The administrator presses the New button on the Questions related list
-   2. The system calls the Use Case [*Create Module Backend Page*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0015-Create%20Module%20Backend%20Page.md)
+   2. The system calls the Use Case [*Create Question Backend Page*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0016-Create%20Question%20Backend%20Page.md)
    3. End of flow
  
 ##### 6. Create a new Module Dependency (step 3 of basic flow)
    1. The administrator presses the New button on the Course Dependencies related list
-   2. The system calls the Use Case [*Create Course Backend Page*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0014-Create%20Course%20Backend%20Page.md)
+   2. The system calls the Use Case [*Create Module Backend Page*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0015-Create%20Module%20Backend%20Page.md)
    3. End of flow
