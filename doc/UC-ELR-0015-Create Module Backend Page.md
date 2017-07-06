@@ -5,6 +5,7 @@ The present use case describes how the system creates a Module through its backe
  
 ### Preconditions
 The administrator must be logged in
+The related course must be in status "Draft" or "Inactive"
  
 ### Postconditions
 A module was created
@@ -38,4 +39,4 @@ A module was created
 ##### 2. Edit module (step 9 of basic flow)
    1. The administrator presses the Edit button in the Module view backend page
    2. The administrator makes the desired changes
-   3. Back to step 7 of basic flow
+   3. Back to step 8 of basic flow
