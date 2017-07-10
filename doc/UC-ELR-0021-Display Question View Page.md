@@ -4,10 +4,10 @@
 The present use case describes how the system displays the Question details
  
 ### Preconditions
-- The administrator must be logged in
+The administrator must be logged in
  
 ### Postconditions
-- The system displayed the details of the selected question
+The system displayed the details of the selected question
  
 ### Flow of Events
  
