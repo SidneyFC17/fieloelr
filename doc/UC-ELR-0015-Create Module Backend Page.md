@@ -4,7 +4,7 @@
 The present use case describes how the system creates a Module through its backend page
  
 ### Preconditions
-The administrator must be logged in
+The administrator must be logged in  
 The related course must be in status "Draft" or "Inactive"
  
 ### Postconditions
