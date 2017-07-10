@@ -4,10 +4,10 @@
 The present use case describes how the system displays the Manage Questions page
  
 ### Preconditions
-- The administrator must be logged in
+The administrator must be logged in
  
 ### Postconditions
-- The system updated the changes on questions and module settings
+The system updated the changes on questions and module settings
  
 ### Flow of Events
  
