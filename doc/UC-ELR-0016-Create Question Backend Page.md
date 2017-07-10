@@ -4,7 +4,7 @@
 The present use case describes how the system creates a Question through its backend page
  
 ### Preconditions
-The administrator must be logged in
+The administrator must be logged in  
 The related module must be inactive and have no module response
  
 ### Postconditions
