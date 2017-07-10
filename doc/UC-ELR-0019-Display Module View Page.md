@@ -4,10 +4,10 @@
 The present use case describes how the system displays the Module details
  
 ### Preconditions
-- The administrator must be logged in
+The administrator must be logged in
  
 ### Postconditions
-- The system displayed the details of the selected module
+The system displayed the details of the selected module
  
 ### Flow of Events
  
