@@ -22,17 +22,17 @@ global with sharing class ModuleService {
 		uow.commitWork();
 
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
-		fieldsModuleClone.add('QuestionPool__c');
+		fieldsModuleClone.add('FieloELR__QuestionPool__c');
 		String moduleQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleClone), ',');
 		moduleQuery += ' FROM Module__c WHERE Id =: moduleId ';
 		Module__c module = Database.query(moduleQuery);
 
 		Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
-		fieldsQuestionClone.add('Type__c');
+		fieldsQuestionClone.add('FieloELR__Type__c');
 		String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
 
 		Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
-		fieldsAnswerOptionClone.add('IsCorrect__c');
+		fieldsAnswerOptionClone.add('FieloELR__IsCorrect__c');
 		questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOptionClone), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
 
 		questionQuery += ' FROM Question__c WHERE Module__c =: moduleId ORDER BY OrderFormula__c';

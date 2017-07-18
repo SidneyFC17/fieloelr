@@ -297,16 +297,16 @@ global with sharing class CourseService {
 											String dynamicFilter) {
 		
 		Set<String> fieldsCourseClone = new Set<String>(fieldsCourse);
-		fieldsCourseClone.add('Segment__c');
-		fieldsCourseClone.add('HasDependencies__c');
-		fieldsCourseClone.add('KeyDependencies__c');
+		fieldsCourseClone.add('FieloELR__Segment__c');
+		fieldsCourseClone.add('FieloELR__HasDependencies__c');
+		fieldsCourseClone.add('FieloELR__KeyDependencies__c');
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
-		fieldsModuleClone.add('HasDependencies__c');
-		fieldsModuleClone.add('KeyDependencies__c');
+		fieldsModuleClone.add('FieloELR__HasDependencies__c');
+		fieldsModuleClone.add('FieloELR__KeyDependencies__c');
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
-		Set<String> fieldsCourseStatus = new Set<String>{'Course__c','Progress__c'};
-		Set<String> fieldsModuleResponse = new Set<String>{'GradeValue__c','IsApproved__c','NumberOfAttempt__c'};
+		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c'};
 		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}
@@ -330,7 +330,7 @@ global with sharing class CourseService {
 				dependenciesByModule = new Map<Id,List<ModuleDependency__c>>();
 
 				Set<String> fieldsModuleDependencyClone = new Set<String>(fieldsModuleDependency);
-				fieldsModuleDependencyClone.add('Module__c');
+				fieldsModuleDependencyClone.add('FieloELR__Module__c');
 				String queryModuleDependencies = 'SELECT ' + String.join(new List<String>(fieldsModuleDependencyClone), ',') + ' FROM ModuleDependency__c WHERE Module__c in : modules';
 				for(ModuleDependency__c md : Database.query(queryModuleDependencies)){
 					if(dependenciesByModule.containsKey(md.Module__c)){
@@ -359,9 +359,19 @@ global with sharing class CourseService {
 				cw.allowedForDependency = cdStringKeys.contains(c.KeyDependencies__c);
 			}
 
+			Map<Id,List<FieloELR__ModuleResponse__c>> moduleResponseMap = new Map<Id,List<FieloELR__ModuleResponse__c>>();
+			for(FieloELR__ModuleResponse__c mr:cs.ModuleResponses__r) {
+				if (moduleResponseMap.containsKey(mr.FieloELR__Module__c)) {
+					moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
+				} else {
+					moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c>());
+					moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
+				}
+			}
+
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
-					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, cs.ModuleResponses__r) : new ModuleWrapper(module);
+					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : null) : new ModuleWrapper(module);
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					}
