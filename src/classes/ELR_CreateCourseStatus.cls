@@ -296,7 +296,7 @@ private class ELR_CreateCourseStatus{
     	try{
     		insert courseStatus;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('The course status cannot be created if the subscription mode of the course is "Automatic"'));
+			System.assert(d.getMessage().Contains('The course status cannot be created if the subscription mode of the course is ""Automatic""'));
 		}
     }
 

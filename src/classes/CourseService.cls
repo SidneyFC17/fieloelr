@@ -88,7 +88,7 @@ global with sharing class CourseService {
 			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsCourseDependency), ',') + ' FROM PredecessorCourses__r) ';
 		}
 		if(fieldsModule != null){
-			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r) ';
+			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r ORDER BY FieloELR__Order__c) ';
 		}
 		
 		queryCourses += ' FROM Course__c WHERE ';
@@ -306,7 +306,7 @@ global with sharing class CourseService {
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'Course__c','Progress__c'};
-		Set<String> fieldsModuleResponse = new Set<String>{'Grade__c','IsApproved__c','NumberOfAttempt__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'GradeValue__c','IsApproved__c','NumberOfAttempt__c'};
 		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}

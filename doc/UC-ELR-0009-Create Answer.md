@@ -35,7 +35,7 @@ An Answer was created
  
 ##### 2. The related question type is “Matching Options” (step 4 of basic flow)
    1. The system verifies that the related question type is “Matching Options”
-   2. Back to step 6 of basic flow
+   2. Back to step 8 of basic flow
  
 ##### 3. The “Answer Option” field is null (step 5 of basic flow)
    1. The system verifies that the “Answer Option” field is null
