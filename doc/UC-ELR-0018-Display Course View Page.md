@@ -4,11 +4,11 @@
 The present use case describes how the system displays the Course details and the action buttons for each course status
  
 ### Preconditions
-- The administrator must be logged in
-- There must be Courses in all status (Draft, Active and Inactive)
+The administrator must be logged in  
+There must be Courses in all status (Draft, Active and Inactive)
  
 ### Postconditions
-- The system displayed the details of the selected course
+The system displayed the details of the selected course
  
 ### Flow of Events
  

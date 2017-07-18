@@ -346,7 +346,7 @@ private class ELR_CreateAnswer{
     	try{
     		delete listAnsOpt.get(0);
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('Active modules cannot have changes in their set of answer options.'));
+			System.assert(d.getMessage().Contains('Questions with active modules cannot be edited.'));
 		}
 	}
 

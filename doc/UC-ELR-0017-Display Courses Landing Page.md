@@ -21,7 +21,7 @@ Courses for the selected Program and View were displayed
    - Status view options (Draft, Active, Inactive)
    - Courses list
 3. The system shows as the default view, when page loads, the list of the Draft Courses
-4. The system shows in the picklist for Programs all the existing Programs for selection
+4. The system shows, in the picklist for Programs, all the existing Programs for selection
 5. The systems shows for the Courses list the columns defined in the fieldset of the page settings for the Courses landing page
 6. End of flow
  
