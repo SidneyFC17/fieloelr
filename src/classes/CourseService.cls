@@ -88,7 +88,7 @@ global with sharing class CourseService {
 			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsCourseDependency), ',') + ' FROM PredecessorCourses__r) ';
 		}
 		if(fieldsModule != null){
-			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r) ';
+			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r ORDER BY FieloELR__Order__c) ';
 		}
 		
 		queryCourses += ' FROM Course__c WHERE ';
