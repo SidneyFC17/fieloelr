@@ -306,7 +306,7 @@ global with sharing class CourseService {
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
-		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__Module__c'};
 		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}
