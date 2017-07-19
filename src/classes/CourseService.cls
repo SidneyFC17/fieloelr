@@ -371,7 +371,7 @@ global with sharing class CourseService {
 
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
-					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : null) : new ModuleWrapper(module);
+					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>()) : new ModuleWrapper(module);
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					}
