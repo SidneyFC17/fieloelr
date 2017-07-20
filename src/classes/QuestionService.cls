@@ -155,8 +155,9 @@ global with sharing class QuestionService {
 			Database.rollback(sp);
 			throw e;
 		}
-
+		
 		uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType});
+		// Done this way becouse the commit the UOW doesnt refreshes the entire object, just the ID.
 		QuestionResponse__c qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.QuestionPool__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
 		qResponseQuery.IsSubmitted__c = true;
 		uow.registerDirty(qResponseQuery);
@@ -167,8 +168,11 @@ global with sharing class QuestionService {
 			Database.rollback(sp);
 			throw e;
 		}
-		qResponseQuery = (FieloELR__QuestionResponse__c) uow.m_dirtyMapByType.get('FieloELR__QuestionResponse__c').get(qResponseQuery.Id);
+
+		// Done this way becouse the commit the UOW doesnt refreshes the entire object, just the ID.
+		qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.QuestionPool__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
 		system.debug(qResponseQuery.NumberOfAttempt__c);
+		system.debug(qResponseQuery.IsCorrect__c);
 		QuestionResponseResult qrResult = new QuestionResponseResult(questionResponseWrapper.question, qResponseQuery, questionResponseWrapper.answers);
 		qrResult.setRepeatQuestion(qResponseQuery.IsCorrect__c || qResponseQuery.NumberOfAttempt__c >= qResponseQuery.Question__r.Module__r.QuestionPool__c);
 		return qrResult;
