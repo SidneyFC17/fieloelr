@@ -147,6 +147,40 @@
 	            />
         </apex:panelGroup>
     	</apex:repeat>
+
+    	<!-- Standard Related List -->
+	    <apex:repeat value="{!relatedStandard}" var="relatedName">
+	      <apex:panelGroup rendered="{!relatedName == 'ProcessSteps'}">
+	        <c:RelatedWrapper heading="Approval History" icon="action-sprite/svg/symbols.svg#submit_for_approval" >
+	          <apex:relatedList list="ProcessSteps" />
+	        </c:RelatedWrapper>
+	      </apex:panelGroup>
+	      <apex:panelGroup rendered="{!relatedName == 'CombinedAttachments'}">
+	        <c:RelatedWrapper heading="Notes & Attachments" icon="action-sprite/svg/symbols.svg#new_note">
+	          <apex:relatedList list="CombinedAttachments" />
+	        </c:RelatedWrapper>
+	      </apex:panelGroup>
+	      <apex:panelGroup rendered="{!relatedName == 'ActivityHistories'}">
+	        <c:RelatedWrapper heading="Activity History" icon="action-sprite/svg/symbols.svg#log_event">
+	          <apex:relatedList list="ActivityHistories" />
+	        </c:RelatedWrapper>
+	      </apex:panelGroup>
+	      <apex:panelGroup rendered="{!relatedName == 'OpenActivities'}">
+	        <c:RelatedWrapper heading="Open Activities" icon="action-sprite/svg/symbols.svg#new_event">
+	          <apex:relatedList list="OpenActivities" />
+	        </c:RelatedWrapper>
+	      </apex:panelGroup>
+	      <apex:panelGroup rendered="{!relatedName == 'AttachedContentDocuments'}">
+	        <c:RelatedWrapper heading="Files" icon="standard-sprite/svg/symbols.svg#file">
+	          <apex:relatedList list="AttachedContentDocuments" />
+	        </c:RelatedWrapper>
+	      </apex:panelGroup>
+	      <apex:panelGroup rendered="{!relatedName == 'RelatedContentDistributionList'}">
+	        <c:RelatedWrapper heading="Content Deliveries" icon="standard-sprite/svg/symbols.svg#share_file">
+	          <apex:relatedList list="RelatedContentDistributionList" />
+	        </c:RelatedWrapper>
+	      </apex:panelGroup>
+	    </apex:repeat>
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionManage','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
 	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
