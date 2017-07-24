@@ -1,4 +1,4 @@
-public class Courses extends SObjectDomain{
+public  class Courses extends SObjectDomain{
     
     public static Boolean validateAdminFields = true;
     public static Boolean isDelete = false;

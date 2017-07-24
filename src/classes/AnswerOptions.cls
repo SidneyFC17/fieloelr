@@ -1,6 +1,6 @@
 public class AnswerOptions extends SObjectDomain {
 
-	public AnswerOptions(List<AnswerOption__c> records) {
+	public  AnswerOptions(List<AnswerOption__c> records) {
         super(records);
     }
 
