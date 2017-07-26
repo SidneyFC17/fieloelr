@@ -132,8 +132,6 @@ global with sharing class CourseService {
 				queryCourses += ' OFFSET ' + offset;
 			}
 		}
-
-		system.debug(queryCourses);
 		return Database.query(queryCourses);
 	}
 
@@ -343,7 +341,7 @@ global with sharing class CourseService {
 
 			if(!filterByDependencies){
 				cdStringKeys = getCDStringKeys(courses, memberId);
-				cdStringKeys = getMDStringKeys(modules, memberId);
+				mdStringKeys = getMDStringKeys(modules, memberId);
 			}
 		}
 
