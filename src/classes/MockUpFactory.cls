@@ -376,7 +376,6 @@ public class MockUpFactory {
             cr.FieloPLT__Challenge__c = challengeId;
             cr.FieloPLT__Badge__c = badgeId;
             cr.FieloPLT__Reward__c = rewardId;
-            cr.FieloPLT__Points__c = points;
             results.add(cr);
         }
         return results;
