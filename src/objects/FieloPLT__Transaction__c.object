@@ -241,6 +241,7 @@
     <fields>
         <fullName>FieloPLT__Type__c</fullName>
         <deprecated>false</deprecated>
+        <description>Different kind of Transactions which depend on their purpose: Adjustment, Challenge Reward, Expiration and Reversion</description>
         <externalId>false</externalId>
         <label>Type</label>
         <picklist>
