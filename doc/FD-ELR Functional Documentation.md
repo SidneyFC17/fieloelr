@@ -76,9 +76,21 @@ In the first page of the Question Wizard, select the *Short Answer* option and f
 
 :point_right: 1. In the Short Answer question, the option *Shuffle Answer Options* is not displayed since the answer options are not available to the member.  
 :point_right: 2. In this type of question, the *Is Correct* field is not displayed as well, because all the answer options are automatically set as "true" by the system.  
-:point_right: 3. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame. 
+:point_right: 3. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
 :point_right: 4. Any of the included answer options can be removed by clicking the remove icon (:heavy_multiplication_x:) in its right side.  
 :point_right: 5. Since the answer options are not displayed to the member, the reorder functionality is not available for this type of question.
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
+### Creating the Statement question
+In the first page of the Question Wizard, select the *Statement* option and fill in the following fields:
+- **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
+  :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
+- **Question Text** - This is the wording of the question. This is a rich text field.
+- **Answer Option Text** - For the Statement questions, the two possible answer option text fields are automatically created: True and False. 
+ > At CMS, these alternatives are preceded by radio buttons, enabling the member to select only one answer.
+- **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.
+
+:point_right: In the Statement question, the option *Shuffle Answer Options* is not displayed.  
+
+It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
