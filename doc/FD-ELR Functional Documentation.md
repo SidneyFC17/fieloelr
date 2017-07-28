@@ -139,4 +139,13 @@ Every time the member incorrectly answers a question, the system may penalize hi
    0 + 8 = 8  
 
 :point_right: If the member incorrectly answers all attempts allowed, his grade will be 0 (zero).
-- **Negative Weight**:
+- **Negative Weight**: In this mode, the member is immediately penalized for each attempt when he gives an incorrect answer for the question. For each attempt he will receive as partial grade:  
+    Correct Weight - if the member correctly answers the question  
+    Incorrect weight - if the member incorrectly answers the question  
+When selecting this mode, the system enables the global question *Incorrect Weight* field, allowing the administrator to give the same incorrectness value to all questions of the module. This option applies to a module with non weighted questions - all questions have the same *Correct Weight* that equals to 1 (one).  
+   For the modules where each question needs to have different weights, the administrator has to set the *Weighted Questions* field to "true". This way, the system enables the fields *Correct Weight* and *Incorrect Weight* for each individual question.  
+   - Example 1: - Weighted Questions is "false". Global Incorrect Weight is -0.01. Three attempts allowed per question. The member incorrectly answers the first 2 (two) attempts and correctly answers the third one. He will have the following partial grades:  
+    \- 0.01 - 0.01 + 1 = 0.98
+
+   - Example 2: - Weighted Questions is "true". Correct Weight is 10. Individual Incorrect Weight is 0.5. Three attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
+   0.5 + 10 = 10.5
