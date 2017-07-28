@@ -26,25 +26,25 @@ In the Course details page, go to the Modules related list and click the New but
  The first page of the Question Wizard will be displayed for type selection.
  There are five types of questions:
 - *Multiple Choice* - Multiple answer options can be defined as correct. 
-- *Single Choice* - One and only one answer option can be defined as correct. 
-  - Note: If no answer option is defined as correct, the module can not be activated.
+- *Single Choice* - One and only one answer option can be defined as correct.  
+  :point_right: If no answer option is defined as correct, the module can not be activated.
 - *Short Answer* - In this type of question, all the possible answers for the question must be configured. For example, if you have a question that can be answered with a number, set as answer options the number written in figures, in word form, in capitals and so on. All the included answer options are automatically considered as correct, so there is no need to configure this.
-- *Statement* - This type of question admits only two answer options: True or False. They cannot be changed, but they can have its correction defined. 
-  - Note: If no answer option is defined as correct, the module can not be activated.
+- *Statement* - This type of question admits only two answer options: True or False. They cannot be changed, but they can have its correction defined.  
+  :point_right: If no answer option is defined as correct, the module can not be activated.
 - *Matching Options* - For each answer option, there is a matching pair. Each combination of answer option x matching pair is considered as correct. It's possible to set a matching pair without an answer option, in order to give the member more alternatives of combination. In this case, the combination of "no answer option" x "existing matching pair" is not considered as correct.
  
  ### Creating the Multiple Choice question
 In the first page of the Question Wizard, select the *Multiple Choice* option and fill in the following fields:
-- **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.
-  - Note: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
+- **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
+  :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
 - **Shuffle Answer Options** - When this field is set to "true", the system will display the answer options in a different order each time the member makes a new allowed attempt for the question.
 - **Question Text** - This is the wording of the question. This is a rich text field.
 - **Answer Option Text** - For the Multiple Choice questions, the answer option text fields represent the alternatives of answers that will be displayed for the member. 
  > In the CMS, these alternatives are preceded by checkboxes, enabling the member to select one or more answers.
-- **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.
+- **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.  
 
-     - Note 1: It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.
-     - Note 2: It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
+:point_right: 1. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
+:point_right: 2. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
 
 
 
