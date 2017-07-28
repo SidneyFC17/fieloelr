@@ -149,3 +149,28 @@ When selecting this mode, the system enables the global question *Incorrect Weig
 
    - Example 2: - Weighted Questions is "true". Correct Weight is 10. Individual Incorrect Weight is 0.5. Three attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
    0.5 + 10 = 10.5
+
+### Setting the Attempts Allowed per Question
+
+
+### Configuring the Question Pool
+
+
+### Shuffling Questions
+
+
+### Setting Weighetd Questions
+
+
+### Ordering Questions
+
+
+## Activating a Module
+
+## Reordering Modules
+
+## Creating Module Dependencies
+
+## Activating a Course
+
+## Creating Course Dependencies
