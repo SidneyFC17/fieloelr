@@ -113,7 +113,7 @@ In the first page of the Question Wizard, select the *Matching Options* option a
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
 ## Managing questions
-By using this functionality, the administrator will be able to settle some configurations to the Module, define few Global Question setup and assign some parameters values to individual questions.
+In the Module details page, a button named *Manage* can be found. By using this functionality, the administrator will be able to settle some configurations to the Module, define few Global Question setup and assign some parameters values to individual questions.
 
 ### Choosing the Penalty Mode
 Every time the member incorrectly answers a question, the system may penalize him or not for the wrong answer. There are three possible ways to deal with wrong answers:
@@ -151,15 +151,19 @@ When selecting this mode, the system enables the global question *Incorrect Weig
    0.5 + 10 = 10.5
 
 ### Setting the Attempts Allowed per Question
-
+Here is where the administrator defines how many times the member can answer the question until he gives the right response. It may vary from 1 to 10 or be set to Unlimited, which means that the member will be allowed to answer the question indefinetely until he's able to give the right answer.  
+:point_right: If more than 10 attempts allowed per question are required, the administrator must go to the classic view of the module.
 
 ### Configuring the Question Pool
+Suppose the module has a great quantity of questions but the administrator does not want them to be all displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed.
 
+
+# VER BUG
 
 ### Shuffling Questions
 
 
-### Setting Weighetd Questions
+### Setting Weighted Questions
 
 
 ### Ordering Questions
