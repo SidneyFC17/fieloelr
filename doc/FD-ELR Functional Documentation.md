@@ -39,7 +39,7 @@ In the first page of the Question Wizard, select the *Multiple Choice* option an
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
 - **Shuffle Answer Options** - When this field is set to "true", the system will display the answer options in a different order each time the member makes a new allowed attempt for the question.
 - **Question Text** - This is the wording of the question. This is a rich text field.
-- **Answer Option Text** - For the Multiple Choice questions, the answer option text fields represent the alternatives of answers that will be displayed for the member. 
+- **Answer Option Text** - For the Multiple Choice questions, the answer option text fields represent the alternatives of answers that will be displayed for the member. This field has a maximum limit of 255 characters.  
  > At CMS, these alternatives are preceded by checkboxes, enabling the member to select one or more answers.
 - **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.  
 
@@ -55,7 +55,7 @@ In the first page of the Question Wizard, select the *Single Choice* option and 
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
 - **Shuffle Answer Options** - When this field is set to "true", the system will display the answer options in a different order each time the member makes a new allowed attempt for the question.
 - **Question Text** - This is the wording of the question. This is a rich text field.
-- **Answer Option Text** - For the Single Choice questions, the answer option text fields represent the alternatives of answers that will be displayed for the member. 
+- **Answer Option Text** - For the Single Choice questions, the answer option text fields represent the alternatives of answers that will be displayed for the member. This field has a maximum limit of 255 characters.  
  > At CMS, these alternatives are preceded by radio buttons, enabling the member to select only one answer.
 - **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.
 
@@ -71,7 +71,7 @@ In the first page of the Question Wizard, select the *Short Answer* option and f
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
 - **Question Text** - This is the wording of the question. This is a rich text field.
-- **Answer Option Text** - For the Short Answer questions, the answer option text fields represent the possible ways of response. It must be included all the alternatives of answers that will be accepted as correct. 
+- **Answer Option Text** - For the Short Answer questions, the answer option text fields represent the possible ways of response. It must be included all the alternatives of answers that will be accepted as correct. This field has a maximum limit of 255 characters.  
  > At CMS, these alternatives are not shown, but a field for the member to input the answer.
 
 :point_right: 1. In the Short Answer question, the option *Shuffle Answer Options* is not displayed since the answer options are not available to the member.  
@@ -87,10 +87,27 @@ In the first page of the Question Wizard, select the *Statement* option and fill
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
 - **Question Text** - This is the wording of the question. This is a rich text field.
-- **Answer Option Text** - For the Statement questions, the two possible answer option text fields are automatically created: True and False. 
+- **Answer Option Text** - For the Statement questions, the two possible answer option text fields are automatically created: True and False.    
  > At CMS, these alternatives are preceded by radio buttons, enabling the member to select only one answer.
 - **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.
 
 :point_right: In the Statement question, the option *Shuffle Answer Options* is not displayed.  
+
+It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
+
+### Creating the Matching Options question
+In the first page of the Question Wizard, select the *Matching Options* option and fill in the following fields:
+- **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
+  :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
+- **Shuffle Answer Options** - When this field is set to "true", both answer option text and matching text fields will be randomly displayed by the system, at CMS. If set to "false", only the matching text fields will be randomly displayed.
+- **Question Text** - This is the wording of the question. This is a rich text field.
+- **Answer Option Text** - For the Matching Options questions, these fields represent the items that demand correlation. This field has a maximum limit of 255 characters.  
+- **Matching Text** - These are the options that will be provided for correlation. This field has a maximum limit of 255 characters.
+ 
+:point_right: 1. The system automatically sets to true the Is Correct field of the pairs having answer option text field filled in. On the other hand, pairs which have no answer option text field filled in have their Is Correct field set to "false".  
+:point_right: 2. It's possible to create as many answer option text fields x matching text as desired by clicking the New button in the right upper corner of the Answer Options frame.  
+:point_right: 3. It's possible to have pairs which contains only the matching text, but the opposite is not allowed.  
+:point_right: 4. Any of the included answer options (meaning the pair answer option text x matching text) can be removed by clicking the remove icon (:heavy_multiplication_x:) in its right side.  
+:point_right: 5. The reorder functionality is not available for this type of question.
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
