@@ -50,8 +50,8 @@ It's possible to press the **Save and new** button which saves the question and 
 
 ### Creating the Single Choice question
 In the first page of the Question Wizard, select the *Single Choice* option and fill in the following fields:
-- **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.
-  - Note: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
+- **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
+  :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
 - **Shuffle Answer Options** - When this field is set to "true", the system will display the answer options in a different order each time the member makes a new allowed attempt for the question.
 - **Question Text** - This is the wording of the question. This is a rich text field.
 - **Answer Option Text** - For the Single Choice questions, the answer option text fields represent the alternatives of answers that will be displayed for the member. 
@@ -60,11 +60,22 @@ In the first page of the Question Wizard, select the *Single Choice* option and 
 
 :point_right: 1. As already mentioned, for Single Choice questions only one answer option can be defined as correct.  
 :point_right: 2. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
-:point_right: 3. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order
+:point_right: 3. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
+### Creating the Short Answer question
+In the first page of the Question Wizard, select the *Short Answer* option and fill in the following fields:
+- **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
+  :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
+- **Question Text** - This is the wording of the question. This is a rich text field.
+- **Answer Option Text** - For the Short Answer questions, the answer option text fields represent the possible ways of response. It must be included all the alternatives of answers that will be accepted as correct. 
+ > At CMS, these alternatives are not shown, but a field for the member to input the answer.
 
+:point_right: 1. In the Short Answer question, the option *Shuffle Answer Options* is not displayed since the answer options are not available to the member.  
+:point_right: 2. In this type of question, the *Is Correct* field is not displayed as well, because all the answer options are automatically set as "true" by the system.  
+:point_right: 3. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
+:point_right: 4. Since the answer options are not displayed to the member, the reorder functionality is not available for this type of question.
 
-
+It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
