@@ -111,3 +111,32 @@ In the first page of the Question Wizard, select the *Matching Options* option a
 :point_right: 5. The reorder functionality is not available for this type of question.
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
+
+## Managing questions
+By using this functionality, the administrator will be able to settle some configurations to the Module, define few Global Question setup and assign some parameters values to individual questions.
+
+### Choosing the Penalty Mode
+Every time the member incorrectly answers a question, the system may penalize him or not for the wrong answer. There are three possible ways to deal with wrong answers:
+
+- **None**: In this mode, no penalty is applied to the member when he incorrectly answers a question. That means that his grade for that question will be 0 (zero) every time he answers wrongly. As soon as he answers the question correctly, the grade of the question will be the full value defined for the field *Correct Weight*. 
+  - Example: Suppose that a question has a Correct Weight set to 10. If it has 3 (three) attempts allowed per question and the member incorrectly answers the first 2 (two) attempts and correctly answers the third one, he will have the following partial grades:  
+    0 + 0 + 10 = 10
+- **Percent Decrease**: In this mode, the member is penalized for each attempt when he gives an incorrect answer for the question. When he finally answers correctly, his grade is given by diminishing, for each wrong attempt, a percentage value of his partial grade.  
+   When selecting this mode, the system enables the global question *Penalty per Attempt* field, allowing the administrator to give the same penalty value to all questions of the module. This option applies to a module with non weighted questions - all questions have the same *Correct Weight* that equals to 1 (one).  
+   For the modules where each question needs to have different weights, the administrator has to set the *Weighted Questions* field to "true". This way, the system enables the fields *Correct Weight* and *Penalty per Attempt* for each individual question.  
+   The value inputted in the Penalty per Attempt field (global or individual) defines the percentage value to be decreased and must be between 0 and 100. 
+   
+        The formula used to calculate the grade is:
+              CW x (1 - PA (%)) ⌃ (AN - 1)
+       where: 
+       CW = Correct Weight
+       PA = Penalty per Attempt
+       AN = Attempt Number
+  - Example 1: Weighted Questions is "false". Global Penalty per Attempt is 10. Three attempts allowed per question. The member incorrectly answers the first 2 (two) attempts and correctly answers the third one. He will have the following partial grades:  
+    0 + 0 + 0.81 = 0.81
+
+  - Example 2: Weighted Questions is "true". Correct Weight is 10. Individual Penalty per Attempt is 20. Three attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
+   0 + 8 = 8  
+
+:point_right: If the member incorrectly answers all attempts allowed, his grade will be 0 (zero).
+- **Negative Weight**:
