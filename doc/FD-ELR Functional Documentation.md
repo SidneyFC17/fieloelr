@@ -44,7 +44,8 @@ In the first page of the Question Wizard, select the *Multiple Choice* option an
 - **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.  
 
 :point_right: 1. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
-:point_right: 2. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
+:point_right: 2. Any of the included answer options can be removed by clicking the remove icon (:heavy_multiplication_x:) in its right side.  
+:point_right: 3. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
@@ -60,7 +61,8 @@ In the first page of the Question Wizard, select the *Single Choice* option and 
 
 :point_right: 1. As already mentioned, for Single Choice questions only one answer option can be defined as correct.  
 :point_right: 2. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
-:point_right: 3. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
+:point_right: 3. Any of the included answer options can be removed by clicking the remove icon (:heavy_multiplication_x:) in its right side.  
+:point_right: 4. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
@@ -74,8 +76,9 @@ In the first page of the Question Wizard, select the *Short Answer* option and f
 
 :point_right: 1. In the Short Answer question, the option *Shuffle Answer Options* is not displayed since the answer options are not available to the member.  
 :point_right: 2. In this type of question, the *Is Correct* field is not displayed as well, because all the answer options are automatically set as "true" by the system.  
-:point_right: 3. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
-:point_right: 4. Since the answer options are not displayed to the member, the reorder functionality is not available for this type of question.
+:point_right: 3. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame. 
+:point_right: 4. Any of the included answer options can be removed by clicking the remove icon (:heavy_multiplication_x:) in its right side.  
+:point_right: 5. Since the answer options are not displayed to the member, the reorder functionality is not available for this type of question.
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
