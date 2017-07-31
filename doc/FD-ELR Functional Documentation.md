@@ -147,9 +147,10 @@ When selecting this mode, the system enables the global question *Incorrect Weig
    - Example 1: - Weighted Questions is "false". Global Incorrect Weight is -0.01. Three attempts allowed per question. The member incorrectly answers the first 2 (two) attempts and correctly answers the third one. He will have the following partial grades:  
     \- 0.01 - 0.01 + 1 = 0.98
 
-   - Example 2: - Weighted Questions is "true". Correct Weight is 10. Individual Incorrect Weight is 0.5. Two attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
-   0.5 + 10 = 10.5
-
+   - Example 2: - Weighted Questions is "true". Correct Weight is 10. Individual Incorrect Weight is 0.5. One attempt allowed per question.  
+   If the member incorrectly answers the question, his partial grade equals to 0.5.  
+   If he correctly answers the question, his partial grade equals to 10.
+   
 ### Setting the Attempts Allowed per Question
 Here is where the administrator defines how many times the member can answer the question until he gives the right response. It may vary from 1 to 10 or be set to Unlimited, which means that the member will be allowed to answer the question indefinetely until he's able to give the right answer.  
 :point_right: If more than 10 attempts allowed per question are required, the administrator must go to the classic view of the module.
@@ -168,6 +169,10 @@ By setting this field to "true", the administrator is allowed to set a weight fo
 It's possible to reorder the questions by dragging them and dropping them in the desired order. This functionality will be enabled provided the *Shuffle Questions* field is not set to "true" or there is no *Question Pool*.
 
 ## Activating a Module
+Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course is activated, the module will be shown as part of it.
+Active modules contribute to the progress of the course, as soon as they are considered is its calculation.  
+Example: A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).
+If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).
 
 ## Reordering Modules
 
