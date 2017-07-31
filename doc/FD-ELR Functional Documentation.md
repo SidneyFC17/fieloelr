@@ -155,7 +155,8 @@ Here is where the administrator defines how many times the member can answer the
 :point_right: If more than 10 attempts allowed per question are required, the administrator must go to the classic view of the module.
 
 ### 4.3. Configuring the Question Pool
-Suppose the module has a great quantity of questions and the administrator does not want them all to be displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed. If left blank, no subset is determined and all questions will be displayed. In order to determine the subset, the administrator must enter a positive number greater than 0 (zero) and less than the quantity of questions of the module. Each time the module is taken by the member, the quantity of questions defined in the question pool will be randomly displayed.
+Suppose the module has a great quantity of questions and the administrator does not want them all to be displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed. If left blank, no subset is determined and all questions will be displayed.   
+In order to determine the subset, the administrator must enter a positive number greater than 0 (zero) and less than the quantity of questions of the module. Each time the module is taken by the member, the quantity of questions defined in the question pool will be randomly displayed.  
 When setting a question pool, all questions automatically have their *Correct Weight* set to 1 (one), so it's not possible to set the field *Weighted Questions* to "true".
 
 ### 4.4. Shuffling Questions
