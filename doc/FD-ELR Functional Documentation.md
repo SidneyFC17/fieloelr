@@ -1,5 +1,5 @@
 # ELR Functional Documentation
-## Creating the course
+## 1. Creating the course
 In the Courses Landing Page, click the New button and fill in the fields below:
  - **Course Name** - This field has a maximum limit of 80 characters.
  - **Program** - By default, this field is automatically filled with the program already chosen in the Program selector. If there is more than one program, the administrator can select another one. If the field is left in blank, it wil be set automatically to the program already chosen in the Program selector.
@@ -12,7 +12,7 @@ In the Courses Landing Page, click the New button and fill in the fields below:
  
  After pressing the Save button, the administrator will be directed to the course detail page, Where he can proceed with the creation of course structure. 
 
-## Creating the modules
+## 2. Creating the modules
 In the Course details page, go to the Modules related list and click the New button. Fill in the following fields:
 - **Module Name** - This field has a maximum limit of 80 characters.
 - **Description** - This field has a maximum limit of 255 characters.
@@ -21,7 +21,7 @@ In the Course details page, go to the Modules related list and click the New but
 
  After pressing the Save button, the administrator will be directed to the module detail page. At this point, the administrator can go back to the course details page to create the basic details for the remaining modules or stay on the module details page in order to continuing the module creation process, creating its questions and completing the residual settings.
  
-## Creating the questions
+## 3. Creating the questions
  In the Module details page, go to the Questions related list and click the New button.
  The first page of the Question Wizard will be displayed for type selection.
  There are five types of questions:
@@ -33,7 +33,7 @@ In the Course details page, go to the Modules related list and click the New but
   :point_right: If no answer option is defined as correct, the module can not be activated.
 - *Matching Options* - For each answer option, there is a matching pair. Each combination of answer option x matching pair is considered as correct. It's possible to set a matching pair without an answer option, in order to give the member more alternatives of combination. In this case, the combination of "no answer option" x "existing matching pair" is not considered as correct.
  
-### Creating the Multiple Choice question
+### 3.1. Creating the Multiple Choice question
 In the first page of the Question Wizard, select the *Multiple Choice* option and fill in the following fields:
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
@@ -49,7 +49,7 @@ In the first page of the Question Wizard, select the *Multiple Choice* option an
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
-### Creating the Single Choice question
+### 3.2. Creating the Single Choice question
 In the first page of the Question Wizard, select the *Single Choice* option and fill in the following fields:
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
@@ -66,7 +66,7 @@ In the first page of the Question Wizard, select the *Single Choice* option and 
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
-### Creating the Short Answer question
+### 3.3. Creating the Short Answer question
 In the first page of the Question Wizard, select the *Short Answer* option and fill in the following fields:
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
@@ -82,7 +82,7 @@ In the first page of the Question Wizard, select the *Short Answer* option and f
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
-### Creating the Statement question
+### 3.4. Creating the Statement question
 In the first page of the Question Wizard, select the *Statement* option and fill in the following fields:
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
@@ -95,7 +95,7 @@ In the first page of the Question Wizard, select the *Statement* option and fill
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
-### Creating the Matching Options question
+### 3.5. Creating the Matching Options question
 In the first page of the Question Wizard, select the *Matching Options* option and fill in the following fields:
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
   :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
@@ -112,11 +112,11 @@ In the first page of the Question Wizard, select the *Matching Options* option a
 
 It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
-## Managing questions
+## 4. Managing questions
 In the Module details page, a button named *Manage* can be found. By using this functionality, the administrator will be able to settle some configurations to the Module, define few Global Question setup and assign some parameters values to individual questions.
 After configuring the items below, the administrator presses the *Save* button and the system refreshes the Module details page.
 
-### Choosing the Penalty Mode
+### 4.1. Choosing the Penalty Mode
 Every time the member incorrectly answers a question, the system may penalize him or not for the wrong answer. There are three possible ways to deal with wrong answers:
 
 - **None**: In this mode, no penalty is applied to the member when he incorrectly answers a question. That means that his grade for that question will be 0 (zero) every time he answers wrongly. As soon as he answers the question correctly, the grade of the question will be the full value defined for the field *Correct Weight*. 
@@ -152,28 +152,28 @@ When selecting this mode, the system enables the global question *Incorrect Weig
    If the member incorrectly answers the question, his partial grade equals to 0.5.  
    If he correctly answers the question, his partial grade equals to 10.
    
-### Setting the Attempts Allowed per Question
+### 4.2. Setting the Attempts Allowed per Question
 Here is where the administrator defines how many times the member can answer the question until he gives the right response. It may vary from 1 to 10 or be set to Unlimited, which means that the member will be allowed to answer the question indefinetely until he's able to give the right answer.  
 :point_right: If more than 10 attempts allowed per question are required, the administrator must go to the classic view of the module.
 
-### Configuring the Question Pool
+### 4.3. Configuring the Question Pool
 Suppose the module has a great quantity of questions and the administrator does not want them all to be displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed. If left blank, no subset is determined and all questions will be displayed. In order to determine the subset, the administrator must enter a positive number greater than 0 (zero) and less than the quantity of questions of the module. Each time the module is taken by the member, the quantity of questions defined in the question pool will be randomly displayed.
 When setting a question pool, all questions automatically have their *Correct Weight* set to 1 (one), so it's not possible to set the field *Weighted Questions* to "true".
 
-### Shuffling Questions
+### 4.4. Shuffling Questions
 If the module has more than one attempt allowed, the administrator might want the questions not to be displayed in the same order in all attempts. By setting the field *Shuffle Questions* to "true", each time the member takes the module, the questions will be displayed in a different order. It's not possible to set this field to "true" if a question pool is defined.
 
-### Setting Weighted Questions
+### 4.5. Setting Weighted Questions
 By setting this field to "true", the administrator is allowed to set a weight for each question, this is, to define the value of each question. This field is used as the basis of calculation for each Penalty Mode previously described.
 
-### Ordering Questions
+### 4.6. Ordering Questions
 It's possible to reorder the questions by dragging them and dropping them in the desired order. This functionality will be enabled provided the *Shuffle Questions* field is not set to "true" or there is no *Question Pool*.
 
-## Activating or Inactivating a Module
+## 5. Activating or Inactivating a Module
 Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course is activated, the module will be shown as part of it.
 Active modules contribute to the progress of the course, as soon as they are considered is its calculation.  
 Example: A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).
-If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).  
+If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).
 In the Module details page, clicking the *Activate* button in the right upper corner of the page and confirming the message, makes the module active and replaces the button by the *Inactivate* one.
 
 The module can be inactivated at any time, even if it has already a related module response.
@@ -182,13 +182,10 @@ When inactivating a module, some fields can be edited, like *Module Name* and *D
 For the same reason, it's not allowed to create new questions and new answer options or delete questions and delete answer options.
 It's possible to edit questions and answer options when the module is inactive, but not the *Correct Weight*, *Penalty per Attempt* and *Incorrect Weight*.
 
-## Reordering Modules
+## 6. Reordering Modules
 
-## Creating Module Dependencies
+## 7. Creating Module Dependencies
 
-## Activating a Course
+## 8. Activating a Course
 
-When inactivating a course, any field can be edited.
-The course can be inactivated at any time. All fields can be edited.
-
-## Creating Course Dependencies
+## 9. Creating Course Dependencies
