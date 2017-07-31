@@ -111,14 +111,14 @@ In the first page of the Question Wizard, select the *Matching Options* option a
 It is possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
 ## 4. Managing questions
-In the Module details page, a button named *Manage* can be found. By using this functionality, the administrator will be able to settle some configurations to the Module, define few Global Question setup and assign some parameters values to individual questions.
+In the Module details page, a button named *Manage* can be found. By using this functionality, the administrator will be able to settle some configurations to the Module, define few Global Question setup and assign some parameter values to individual questions.  
 After configuring the items below, the administrator presses the *Save* button and the system refreshes the Module details page.
 
 ### 4.1. Choosing the Penalty Mode
 Every time the member incorrectly answers a question, the system may penalize him or not for the wrong answer. There are three possible ways to deal with wrong answers:
 
 - **None**: In this mode, no penalty is applied to the member when he incorrectly answers a question. That means that his grade for that question will be 0 (zero) every time he answers wrongly. As soon as he answers the question correctly, the grade of the question will be the full value defined for the field *Correct Weight*. 
-  - Example: Suppose that a question has a Correct Weight set to 10. If it has 3 (three) attempts allowed per question and the member incorrectly answers the first 2 (two) attempts and correctly answers the third one, he will have the following partial grades:  
+  - Example: Suppose that a question has a *Correct Weight* set to 10. If it has 3 (three) attempts allowed per question and the member incorrectly answers the first 2 (two) attempts and correctly answers the third one, he will have the following partial grades:  
     0 + 0 + 10 = 10
 - **Percent Decrease**: In this mode, the member is penalized for each attempt when he gives an incorrect answer for the question. When he finally answers correctly, his grade is given by diminishing, for each wrong attempt, a percentage value of his partial grade.  
    When selecting this mode, the system enables the global question *Penalty per Attempt* field, allowing the administrator to give the same penalty value to all questions of the module. This option applies to a module with non weighted questions - all questions have the same *Correct Weight* that equals to 1 (one).  
@@ -151,7 +151,7 @@ When selecting this mode, the system enables the global question *Incorrect Weig
    If he correctly answers the question, his partial grade equals to 10.
    
 ### 4.2. Setting the Attempts Allowed per Question
-Here is where the administrator defines how many times the member can answer the question until he gives the right response. It may vary from 1 to 10 or be set to Unlimited, which means that the member will be allowed to answer the question indefinetely until he's able to give the right answer.  
+Here is where the administrator defines how many times the member can answer the question until he gives the right response. It may vary from *1* to *10* or be set to *Unlimited*, which means that the member will be allowed to answer the question indefinitely until he's able to give the right answer.  
 :point_right: If more than 10 attempts allowed per question are required, the administrator must go to the classic view of the module.
 
 ### 4.3. Configuring the Question Pool
@@ -169,12 +169,12 @@ It's possible to reorder the questions by dragging them and dropping them in the
 
 ## 5. Activating or Inactivating a Module
 Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course is activated, the module will be shown as part of it.
-Active modules contribute to the progress of the course, since they are considered in its calculation.  
+Active modules contribute to the progress of the course since they are considered in its calculation.  
 Example: A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).
 If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).
 In the Module details page, clicking the *Activate* button in the right upper corner of the page and confirming the message, makes the module active and replaces the button by the *Inactivate* one.  
 The module can be inactivated at any time, even if it has already a related module response.  
-When inactivating a module, some fields can be edited, like *Module Name* and *Description*, but there are some fields that compromise the course structure and can not be changed if there is already a module response for the module: *Attempts Allowed*, *Approval Grade*, *Penalty Mode*, *Question Pool*, *Attempts Allowed Per Question* and *Weighted Questions*.  
+When inactivating a module, some fields can be edited, like *Module Name* and *Description*, but there are some fields that compromise the course structure and cannot be changed if there is already a module response for the module: *Attempts Allowed*, *Approval Grade*, *Penalty Mode*, *Question Pool*, *Attempts Allowed Per Question* and *Weighted Questions*.  
 For the same reason, it's not allowed to create new questions and new answer options or delete questions and delete answer options.  
 It's possible to edit questions and answer options when the module is inactive, but not the *Correct Weight*, *Penalty per Attempt* and *Incorrect Weight*,  when there is already a question response for the question.
 
@@ -183,7 +183,7 @@ Once all the needed modules were created, the administrator might want to change
 
 ## 7. Creating Module Dependencies
 A module can be dependent of one or more other modules, this is, it could only be taken after member approval on the predecessors modules.
-To determine wich are the predecessors modules, the administrator goes to the Module details page and clicks the *New* button in the right upper corner of the Modules Dependencies related list. He can type part of the predecessor module name. The complete name of the module will be shown in the list. The administrator selects the module by clicking its name and presses the *Save* button*.  
+To determine which are the predecessors modules, the administrator goes to the Module details page and clicks the *New* button in the right upper corner of the Modules Dependencies related list. He can type part of the predecessor module name. The complete name of the module will be shown in the list. The administrator selects the module by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
 
 ## 8. Activating  or Inactivating a Course
@@ -193,5 +193,5 @@ The course can be inactivated at any time. When inactivating a course, any field
 
 ## 9. Creating Course Dependencies
 A course can be dependent of one or more other courses, this is, it could only be joined after member approval on the predecessors courses.
-To determine wich are the predecessors courses, the administrator goes to the Course details page and clicks the *New* button in the right upper corner of the Courses Dependencies related list. He can type part of the predecessor course name. The complete name of the course will be shown in the list. The administrator selects the course by clicking its name and presses the *Save* button*.  
+To determine which are the predecessors courses, the administrator goes to the Course details page and clicks the *New* button in the right upper corner of the Courses Dependencies related list. He can type part of the predecessor course name. The complete name of the course will be shown in the list. The administrator selects the course by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
