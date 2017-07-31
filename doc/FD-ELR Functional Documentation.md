@@ -135,7 +135,7 @@ Every time the member incorrectly answers a question, the system may penalize hi
   - Example 1: Weighted Questions is "false". Global Penalty per Attempt is 10. Three attempts allowed per question. The member incorrectly answers the first 2 (two) attempts and correctly answers the third one. He will have the following partial grades:  
     0 + 0 + 0.81 = 0.81
 
-  - Example 2: Weighted Questions is "true". Correct Weight is 10. Individual Penalty per Attempt is 20. Three attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
+  - Example 2: Weighted Questions is "true". Correct Weight is 10. Individual Penalty per Attempt is 20. Two attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
    0 + 8 = 8  
 
 :point_right: If the member incorrectly answers all attempts allowed, his grade will be 0 (zero).
@@ -147,7 +147,7 @@ When selecting this mode, the system enables the global question *Incorrect Weig
    - Example 1: - Weighted Questions is "false". Global Incorrect Weight is -0.01. Three attempts allowed per question. The member incorrectly answers the first 2 (two) attempts and correctly answers the third one. He will have the following partial grades:  
     \- 0.01 - 0.01 + 1 = 0.98
 
-   - Example 2: - Weighted Questions is "true". Correct Weight is 10. Individual Incorrect Weight is 0.5. Three attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
+   - Example 2: - Weighted Questions is "true". Correct Weight is 10. Individual Incorrect Weight is 0.5. Two attempts allowed per question. The member incorrectly answers the first attempt and correctly answers the second one. He will have the following partial grades:  
    0.5 + 10 = 10.5
 
 ### Setting the Attempts Allowed per Question
@@ -155,15 +155,14 @@ Here is where the administrator defines how many times the member can answer the
 :point_right: If more than 10 attempts allowed per question are required, the administrator must go to the classic view of the module.
 
 ### Configuring the Question Pool
-Suppose the module has a great quantity of questions but the administrator does not want them to be all displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed.
-
-
-# VER BUG
+Suppose the module has a great quantity of questions but the administrator does not want them all to be displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed. If left blank, no subset is determined and all questions will be displayed. In order to determine the subset, the administrator must enter a positive number greater than 0 (zero) and less than the quantity of questions of the module. Each time the module is taken by the member, the quantity of questions defined in the question pool will be randomly displayed.
+When setting a question pool, all question automatically have their *Correct Weight* set to 1 (one), so it's not possible to set the field *Weighted Questions* to "true".
 
 ### Shuffling Questions
-
+When the module is set to have more than one attempt allowed, the administrator might want the questions not to be displayed in the same order in all attempts. By setting the field *Shuffle Questions* to "true", each time that the member takes the module, the questions will be displayed in a different order. It's not possible to set this field to "true" if a question pool is defined.
 
 ### Setting Weighted Questions
+
 
 
 ### Ordering Questions
