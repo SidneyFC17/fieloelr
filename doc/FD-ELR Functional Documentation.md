@@ -25,27 +25,27 @@ In the Course details page, go to the Modules related list and click the New but
  There are five types of questions:
 - *Multiple Choice* - Multiple answer options can be defined as correct. 
 - *Single Choice* - One and only one answer option can be defined as correct.  
-  :point_right: If no answer option is defined as correct, the module can not be activated.
-- *Short Answer* - In this type of question, all the possible answers for the question must be configured. For example, if you have a question that can be answered with a number, set as answer options the number written in figures, in word form, in capitals and so on. All the included answer options are automatically considered as correct, so there is no need to configure this.
+  :point_right: If no answer option is defined as correct, the module cannot be activated.
+- *Short Answer* - In this type of question, all the possible answers for the question must be configured. For example, if you have a question that can be answered with a number, set as answer options the number written in figures, in word form, in capitals and so on. All the included answer options are automatically considered correct, so there is no need to configure this.
 - *Statement* - This type of question admits only two answer options: True or False. They cannot be changed, but they can have its correction defined.  
-  :point_right: If no answer option is defined as correct, the module can not be activated.
-- *Matching Options* - For each answer option, there is a matching pair. Each combination of answer option x matching pair is considered as correct. It's possible to set a matching pair without an answer option, in order to give the member more alternatives of combination. In this case, the combination of "no answer option" x "existing matching pair" is not considered as correct.
+  :point_right: If no answer option is defined as correct, the module cannot be activated.
+- *Matching Options* - For each answer option, there is a matching pair. Each combination of answer option x matching pair is considered correct. It's possible to set a matching pair without an answer option, in order to give the member more alternatives of combination. In this case, the combination of "no answer option" x "existing matching pair" is not considered as correct.
  
 ### 3.1. Creating the Multiple Choice question
 In the first page of the Question Wizard, select the *Multiple Choice* option and fill in the following fields:
 - **Question Name** - This field is intended to identify the question. It has a maximum limit of 80 characters.  
-  :point_right: If this field is left blank, the system will automatically set the Question Name field with the 20 first characters of the Question Text.
+  :point_right: If this field is left blank, the system will automatically set the Question Name field with the first 20 characters of the Question Text.
 - **Shuffle Answer Options** - When this field is set to "true", the system will display the answer options in a different order each time the member makes a new allowed attempt for the question.
 - **Question Text** - This is the wording of the question. This is a rich text field.
 - **Answer Option Text** - For the Multiple Choice questions, the answer option text fields represent the alternatives of answers that will be displayed for the member. This field has a maximum limit of 255 characters.  
  > At CMS, these alternatives are preceded by checkboxes, enabling the member to select one or more answers.
-- **Is Correct** - When set to "true", indicates that the answer option is correct. When set to "false", indicates that the answer is not correct.  
+- **Is Correct** - When it is set to "true", indicates that the answer option is correct. When it is set to "false", indicates that the answer is not correct.  
 
-:point_right: 1. It's possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
-:point_right: 2. Any of the included answer options can be removed by clicking the remove icon (:heavy_multiplication_x:) in its right side.  
+:point_right: 1. It is possible to create as many answer option text fields as desired by clicking the New button in the right upper corner of the Answer Options frame.  
+:point_right: 2. Any of the included answer options can be removed by clicking the *remove* icon (:heavy_multiplication_x:) in its right side.  
 :point_right: 3. It's possible to reorder the answer option text fields and their corresponding corrections by dragging them and dropping them in the desired order.
 
-It's possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
+It is possible to press the **Save and new** button which saves the question and its answer options and automatically displays the first question wizard page or the **Save** button that saves all data and just refreshes the module details page.
 
 ### 3.2. Creating the Single Choice question
 In the first page of the Question Wizard, select the *Single Choice* option and fill in the following fields:
