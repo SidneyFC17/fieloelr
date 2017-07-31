@@ -155,15 +155,14 @@ Here is where the administrator defines how many times the member can answer the
 :point_right: If more than 10 attempts allowed per question are required, the administrator must go to the classic view of the module.
 
 ### Configuring the Question Pool
-Suppose the module has a great quantity of questions but the administrator does not want them all to be displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed. If left blank, no subset is determined and all questions will be displayed. In order to determine the subset, the administrator must enter a positive number greater than 0 (zero) and less than the quantity of questions of the module. Each time the module is taken by the member, the quantity of questions defined in the question pool will be randomly displayed.
-When setting a question pool, all question automatically have their *Correct Weight* set to 1 (one), so it's not possible to set the field *Weighted Questions* to "true".
+Suppose the module has a great quantity of questions and the administrator does not want them all to be displayed, but just a subset of them. This is the field where the administrator determines the quantity of questions that will be included in the subset to be displayed. If left blank, no subset is determined and all questions will be displayed. In order to determine the subset, the administrator must enter a positive number greater than 0 (zero) and less than the quantity of questions of the module. Each time the module is taken by the member, the quantity of questions defined in the question pool will be randomly displayed.
+When setting a question pool, all questions automatically have their *Correct Weight* set to 1 (one), so it's not possible to set the field *Weighted Questions* to "true".
 
 ### Shuffling Questions
-When the module is set to have more than one attempt allowed, the administrator might want the questions not to be displayed in the same order in all attempts. By setting the field *Shuffle Questions* to "true", each time that the member takes the module, the questions will be displayed in a different order. It's not possible to set this field to "true" if a question pool is defined.
+If the module has more than one attempt allowed, the administrator might want the questions not to be displayed in the same order in all attempts. By setting the field *Shuffle Questions* to "true", each time the member takes the module, the questions will be displayed in a different order. It's not possible to set this field to "true" if a question pool is defined.
 
 ### Setting Weighted Questions
-
-
+By setting this field to "true", the administrator is allowed to set a weight for each question, this is, to define the value of each question. This field is used as the basis of calculation for each Penalty Mode previously described.
 
 ### Ordering Questions
 
