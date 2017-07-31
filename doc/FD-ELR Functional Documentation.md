@@ -114,6 +114,7 @@ It's possible to press the **Save and new** button which saves the question and 
 
 ## Managing questions
 In the Module details page, a button named *Manage* can be found. By using this functionality, the administrator will be able to settle some configurations to the Module, define few Global Question setup and assign some parameters values to individual questions.
+After configuring the items below, the administrator presses the *Save* button and the system refreshes the Module details page.
 
 ### Choosing the Penalty Mode
 Every time the member incorrectly answers a question, the system may penalize him or not for the wrong answer. There are three possible ways to deal with wrong answers:
@@ -173,6 +174,7 @@ Once the module is ready to compose the course, the administrator needs to *Acti
 Active modules contribute to the progress of the course, as soon as they are considered is its calculation.  
 Example: A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).
 If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).
+In the Module details page, click the *Activate* button in the right upper corner of the page and confirm.
 
 ## Reordering Modules
 
