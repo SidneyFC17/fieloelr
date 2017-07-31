@@ -171,21 +171,26 @@ It's possible to reorder the questions by dragging them and dropping them in the
 
 ## 5. Activating or Inactivating a Module
 Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course is activated, the module will be shown as part of it.
-Active modules contribute to the progress of the course, as soon as they are considered is its calculation.  
+Active modules contribute to the progress of the course, since they are considered in its calculation.  
 Example: A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).
 If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).
-In the Module details page, clicking the *Activate* button in the right upper corner of the page and confirming the message, makes the module active and replaces the button by the *Inactivate* one.
-
-The module can be inactivated at any time, even if it has already a related module response.
-
-When inactivating a module, some fields can be edited, like *Module Name* and *Description*, but there are some fields that compromise the course structure and can not be changed: *Attempts Allowed*, *Approval Grade*, *Penalty Mode*, *Question Pool*, *Attempts Allowed Per Question* and *Weighted Questions*.  
-For the same reason, it's not allowed to create new questions and new answer options or delete questions and delete answer options.
-It's possible to edit questions and answer options when the module is inactive, but not the *Correct Weight*, *Penalty per Attempt* and *Incorrect Weight*.
+In the Module details page, clicking the *Activate* button in the right upper corner of the page and confirming the message, makes the module active and replaces the button by the *Inactivate* one.  
+The module can be inactivated at any time, even if it has already a related module response.  
+When inactivating a module, some fields can be edited, like *Module Name* and *Description*, but there are some fields that compromise the course structure and can not be changed if there is already a module response for the module: *Attempts Allowed*, *Approval Grade*, *Penalty Mode*, *Question Pool*, *Attempts Allowed Per Question* and *Weighted Questions*.  
+For the same reason, it's not allowed to create new questions and new answer options or delete questions and delete answer options.  
+It's possible to edit questions and answer options when the module is inactive, but not the *Correct Weight*, *Penalty per Attempt* and *Incorrect Weight*,  when there is already a question response for the question.
 
 ## 6. Reordering Modules
+Once all the needed modules were created, the administrator might want to change the order that was automatically given to them. In the Module details page, a button named *Reorder* can be found. When clicking this button, by dragging the modules and dropping them in the desired position, the administrator sets the order that the modules will be displayed in the course.
 
 ## 7. Creating Module Dependencies
+A module can be dependent of one or more modules, this is, it could only be taken after member approval on the predecessors modules.
+To determine wich are the predecessors modules, the administrator goes to the Module details page and clicks the *New* button in the right upper corner of the Modules Dependencies related list. He can type part of the predecessor module name. The complete name of the module will be shown in the list. The administrator selects the module by clicking its name and presses the *Save* button*.  
+This action must be repeated for each dependency.
 
-## 8. Activating a Course
+## 8. Activating  or Inactivating a Course
+To activate a course, there must be at least one active module for the course. The administrator goes to the Course details page, clicks the *Activate* button in the right upper corner of the page and confirm the message.  
+After being activated, the course starts to be shown at CMS.   
+The course can be inactivated at any time. When inactivating a course, any field can be edited.
 
 ## 9. Creating Course Dependencies
