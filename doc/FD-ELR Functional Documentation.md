@@ -165,7 +165,7 @@ If the module has more than one attempt allowed, the administrator might want th
 By setting this field to "true", the administrator is allowed to set a weight for each question, this is, to define the value of each question. This field is used as the basis of calculation for each Penalty Mode previously described.
 
 ### Ordering Questions
-
+It's possible to reorder the questions by dragging them and dropping them in the desired order. This functionality will be enabled provided the *Shuffle Questions* field is not set to "true" or there is no *Question Pool*.
 
 ## Activating a Module
 
