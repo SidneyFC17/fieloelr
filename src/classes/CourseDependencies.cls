@@ -44,7 +44,7 @@ public class CourseDependencies extends SObjectDomain{
 
         for(CourseDependency__c coursedependency : courseDependencies) {
             course = coursesMap.get(coursedependency.Course__c);
-            predecessor = coursedependency.Predecessor__c;
+            predecessor = String.valueOf(coursedependency.Predecessor__c).subString(0,15);
             if(Trigger.IsInsert) {
                 // Add key
                 if(String.IsBlank(course.KeyDependencies__c)) {
