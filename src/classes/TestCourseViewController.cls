@@ -114,8 +114,6 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
 		segments.add(metaSegment);
 
 		for (FieloPLT__Segment__c segment:segments) {
@@ -123,6 +121,8 @@ public class TestCourseViewController
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -382,5 +382,7 @@ public class TestCourseViewController
 		CourseService.testTemporal14();
 		CourseService.testTemporal15();
 		CourseService.testTemporal16();
+		CourseService.testTemporal17();
+		CourseService.testTemporal18();
 	}
 }

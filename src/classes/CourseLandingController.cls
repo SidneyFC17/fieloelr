@@ -95,7 +95,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
     }
 
     @RemoteAction
-    public static List<SObject> getCourses( String objectName, String fields, Integer offset, String orderBy, String filter, Integer recordsPerPage ) {
+    public static List<FieloELR__Course__c> getCourses( String objectName, String fields, Integer offset, String orderBy, String filter, Integer recordsPerPage, String whereClause ) {
         Set<String> fieldset = new Set<String> { 'Name', 'SubscriptionMode__c', 'Status__c', 'Program__r.Name' };
         Map<String,Object> jsonObject = (Map<String, Object>) JSON.deserializeUntyped( filter);
         Id programId = (String)jsonObject.get('Program__c');
