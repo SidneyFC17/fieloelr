@@ -106,7 +106,8 @@ private class TestCourseLandingController
 			null,
 			null,
 			'{"FieloELR__Program__c":"'+programs[0].Id+'"}',
-			10
+			10,
+			''
 		);    
 	}
 

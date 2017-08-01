@@ -54,6 +54,7 @@
               dataController="CourseLandingController.getCourses"
               dataBinding="fielosf-elearning-landing--binding"
               dataFilters="{'Program__c':'{!currentProgram.Id}', 'viewName':'{!currentView}'}"
+              dataOrderBy="{!landingCourse.FieloPLT__Order__c}"
             />
             <c:Form namespace="FieloELR" formId="FieloELR__Course__cForm"
               saveController="{!saveController}"

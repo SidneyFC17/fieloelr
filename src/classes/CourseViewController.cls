@@ -137,13 +137,23 @@ public with sharing class CourseViewController extends PageSettingsController {
 	}
 
 	@RemoteAction
-	public static sObject retrieve( String objectName, String recordId, String fields ){
+	public static Course__c retrieve( String objectName, String recordId, String fields ){
 		String query = 'SELECT FieloELR__Segment__r.FieloPLT__RelatedSegments__c,' + fields;
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
 		System.debug('retrieve query: '+query);
-		List<sObject> result = Database.query(query);
+		List<Course__c> result = Database.query(query);
+
+		if(result[0].Segment__r.FieloPLT__RelatedSegments__c != null){
+	      List<String> segIds15 = result[0].Segment__r.FieloPLT__RelatedSegments__c.split(';');
+	      List<Id> segIds18 = segIds15;
+	      result[0].Segment__r.FieloPLT__RelatedSegments__c = '';
+	      for(Id id18: segIds18){
+	        result[0].Segment__r.FieloPLT__RelatedSegments__c += id18 + ';';
+	      }
+	      result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
+	    }
 		return result.get(0);
 	}
 
