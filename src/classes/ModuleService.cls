@@ -108,10 +108,15 @@ global with sharing class ModuleService {
 	global static ModuleResponseResult getModuleResponse(Id moduleResponseId,
 									  Set<String> fieldsModuleResponse,
 									  Set<String> fieldsQuestion,
-									  Set<String> fieldsAnswerOption) {		
-		String moduleResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',');
+									  Set<String> fieldsAnswerOption) {
+		Set<String> fieldsModuleResponseClone = new Set<String>(fieldsModuleResponse);
+		fieldsModuleResponseClone.add('FieloELR__Module__r.FieloELR__AttemptsAllowed__c');
+		fieldsModuleResponseClone.add('FieloELR__NumberOfAttempt__c');
+		fieldsModuleResponseClone.add('FieloELR__IsApproved__c');
+		String moduleResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleResponseClone), ',');
 		moduleResponseQuery += ' FROM ModuleResponse__c WHERE Id =: moduleResponseId ';
-		ModuleResponseResult moduleResponseWrapper = new ModuleResponseResult(Database.query(moduleResponseQuery));
+		ModuleResponse__c moduleResponse = Database.query(moduleResponseQuery);
+		ModuleResponseResult moduleResponseWrapper = new ModuleResponseResult(moduleResponse);
 
 		if(fieldsQuestion != null){
 			Set<String> fieldsQuestionResponse = new Set<String>{'Question__c','TextValue__c','IsCorrect__c','PartialGradeValue__c'};
@@ -131,17 +136,19 @@ global with sharing class ModuleService {
 			}
 			
 			Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
-			fieldsQuestionClone.add('Type__c');
+			fieldsQuestionClone.add('FieloELR__Type__c');
 			String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
 			
 			Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
-			fieldsAnswerOption.add('IsCorrect__c');
+			fieldsAnswerOption.add('FieloELR__IsCorrect__c');
+			fieldsAnswerOption.add('FieloELR__AnswerOptionText__c');
 			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r)';
 			Set<Id> questionIds = responsesByQuestion.keySet();
 			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
-			
+
+			Boolean showDetailedAnswers = moduleResponse.IsApproved__c || moduleResponse.NumberOfAttempt__c == moduleResponse.Module__r.AttemptsAllowed__c;
 			for(Question__c question : Database.query(questionQuery)){
-				moduleResponseWrapper.addQuestion(new QuestionService.QuestionResponseResult(question, responsesByQuestion.get(question.Id)));
+				moduleResponseWrapper.addQuestion(new QuestionService.QuestionResponseResult(question, responsesByQuestion.get(question.Id), showDetailedAnswers));
 			}
 		}
 
