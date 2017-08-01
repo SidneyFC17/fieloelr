@@ -79,7 +79,6 @@ public class MockUpFactory {
             FieloPLT__Rule__c r = new FieloPLT__Rule__c();
             r.Name = basename + String.valueOf(x);
             r.FieloPLT__Promotion__c = promotionId;
-            r.FieloPLT__PointType__c = pointTypeId;
             results.add(r);
         }
         return results;
@@ -91,7 +90,6 @@ public class MockUpFactory {
             FieloPLT__Rule__c r = new FieloPLT__Rule__c();
             r.Name = basename + String.valueOf(x);
             r.FieloPLT__Promotion__c = promotionId;
-            r.FieloPLT__PointType__c = pointTypeId;
             r.FieloPLT__Action__c = actionId;
             results.add(r);
         }
