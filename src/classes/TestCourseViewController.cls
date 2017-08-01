@@ -382,5 +382,7 @@ public class TestCourseViewController
 		CourseService.testTemporal14();
 		CourseService.testTemporal15();
 		CourseService.testTemporal16();
+		CourseService.testTemporal17();
+		CourseService.testTemporal18();
 	}
 }
