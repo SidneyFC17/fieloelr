@@ -26,9 +26,8 @@
 			sObjectName="{!objectName}"
 			fieldset="{!editSettings.FieloPLT__Sections__c}"
 			saveController="CourseViewController.save"
-			secondaryParameters="{!secondaryParameters}"
 			retrieveController="CourseViewController.retrieve"
-			record="{!record}"
+			secondaryParameters="{!secondaryParameters}"
 		/>
 
 		<c:Form namespace="FieloELR" formId="FieloELR__Course__cFormClone"
@@ -159,7 +158,7 @@
     </apex:repeat>
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloRecentRecords','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
-	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
+	<script type="text/javascript" src="{!URLFOR($Resource.FieloSalesforce_Backend_Custom, 'jquery/jquery-ui.min.js')}"></script>
 </body>
 </html>
 </apex:page>
