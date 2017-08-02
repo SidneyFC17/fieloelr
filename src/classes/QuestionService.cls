@@ -81,19 +81,37 @@ global with sharing class QuestionService {
 		global QuestionResponse__c questionResponse {get; private set;}
 		global List<AnswerWrapper> answerWrappers {get; private set;}
 		global Boolean canRepeatQuestion {get; private set;}
+		global String correctedAnswers {get; private set;}
+		private Boolean showDetailedAnswers;
 
-		public QuestionResponseResult(Question__c question, List<QuestionResponse__c> questionResponses){
+		public QuestionResponseResult(Question__c question, List<QuestionResponse__c> questionResponses, Boolean showDetailedAnswers){
 			this.question = question;
 			this.numberOfAttempts = questionResponses.size();
 			this.questionResponse = this.numberOfAttempts > 0 ? questionResponses.get(this.numberOfAttempts - 1) : null;
-			setAnswerWrappers(this.questionResponse.Answers__r);
+			this.showDetailedAnswers = showDetailedAnswers;
+			setAnswers();
 		}
 
 		public QuestionResponseResult(Question__c question, QuestionResponse__c questionResponse, List<Answer__c> answers){
 			this.question = question;
 			this.numberOfAttempts = questionResponse.NumberOfAttempt__c.intValue();
 			this.questionResponse = questionResponse;
-			setAnswerWrappers(answers);	
+			this.showDetailedAnswers = false;
+			setAnswers();
+		}
+
+		private void setAnswers(){
+			if(question.Type__c != 'Short Answer'){
+				setAnswerWrappers(this.questionResponse.Answers__r);
+			}
+			
+			if(this.showDetailedAnswers){
+				if(question.Type__c == 'Short Answer'){
+					setShortAnswerDescription();
+				}else if(question.Type__c == 'Matching Options'){
+					setMatchingDescription();
+				}
+			}
 		}
 
 		public void setRepeatQuestion(Boolean canRepeatQuestion){
@@ -101,41 +119,61 @@ global with sharing class QuestionService {
 		}
 
 		private void setAnswerWrappers(List<Answer__c> answers){
-			if(question.Type__c != 'Short Answer'){
-				Map<Id,Answer__c> answersByOption = new Map<Id,Answer__c>();
-				if(questionResponse != null){
-					for(Answer__c answer : answers){
-						answersByOption.put(answer.AnswerOption__c, answer);
-					}
-				}
-
-				this.answerWrappers = new List<AnswerWrapper>();
-				for(AnswerOption__c answerOption : question.AnswerOptions__r){
-					answerWrappers.add(new AnswerWrapper(answerOption, answersByOption.get(answerOption.Id), question.Type__c));
+			Map<Id,Answer__c> answersByOption = new Map<Id,Answer__c>();
+			if(questionResponse != null){
+				for(Answer__c answer : answers){
+					answersByOption.put(answer.AnswerOption__c, answer);
 				}
 			}
+
+			this.answerWrappers = new List<AnswerWrapper>();
+			for(AnswerOption__c answerOption : question.AnswerOptions__r){
+				answerWrappers.add(new AnswerWrapper(answerOption, answersByOption.get(answerOption.Id), question.Type__c, showDetailedAnswers));
+			}
+		}
+		
+		private void setShortAnswerDescription(){
+			List<String> correctedOptions = new List<String>();
+			for(AnswerOption__c answerOption : question.AnswerOptions__r){
+				correctedOptions.add(answerOption.AnswerOptionText__c);
+			}
+			this.correctedAnswers = String.join(correctedOptions,' , ');
+		}
+
+		private void setMatchingDescription(){
+			List<String> correctedOptions = new List<String>();
+			for(AnswerOption__c answerOption : question.AnswerOptions__r){
+				correctedOptions.add(answerOption.AnswerOptionText__c + ' -- ' + answerOption.MatchingText__c);
+			}
+			this.correctedAnswers = String.join(correctedOptions,' , ');
 		}
 	}
 
 	global class AnswerWrapper{
 		global AnswerOption__c answerOption {get; private set;}
 		global String answerStatus {get; private set;}
-		
-		public AnswerWrapper(AnswerOption__c answerOption, Answer__c answer, String questionType){
+
+		public AnswerWrapper(AnswerOption__c answerOption, Answer__c answer, String questionType, Boolean showDetailedAnswers){
 			this.answerOption = answerOption;
 			if(questionType != 'Matching Options'){
 				if(answer != null){
 					this.answerStatus = answerOption.IsCorrect__c ? 'Correct' : 'Incorrect';
 				}else{
-					this.answerStatus = answerOption.IsCorrect__c ? 'Incorrect' : 'Neutral';
+					if(showDetailedAnswers){
+						this.answerStatus = answerOption.IsCorrect__c ? 'Missing' : 'Neutral';
+					}else{
+						this.answerStatus = 'Neutral';
+					}
 				}
 			}else{
-				if(answer != null){
-					this.answerStatus = answerOption.IsCorrect__c ? 'Correct' : 'Incorrect';
-					this.answerOption.MatchingText__c = answer.TextValue__c;
+				if(answerOption.IsCorrect__c){
+					if(this.answerOption.MatchingText__c == answer.TextValue__c){
+						this.answerStatus = 'Correct';
+					}else{
+						this.answerStatus = 'Incorrect';
+					}
 				}else{
-					this.answerStatus = answerOption.IsCorrect__c ? 'Incorrect' : 'Neutral';
-					this.answerOption.MatchingText__c = null;
+					this.answerStatus = 'Neutral';
 				}
 			}
 		}
