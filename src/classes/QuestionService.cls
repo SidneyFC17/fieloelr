@@ -143,7 +143,9 @@ global with sharing class QuestionService {
 		private void setMatchingDescription(){
 			List<String> correctedOptions = new List<String>();
 			for(AnswerOption__c answerOption : question.AnswerOptions__r){
-				correctedOptions.add(answerOption.AnswerOptionText__c + ' -- ' + answerOption.MatchingText__c);
+				if (answerOption.IsCorrect__c) {
+					correctedOptions.add(answerOption.AnswerOptionText__c + ' -- ' + answerOption.MatchingText__c);
+				}
 			}
 			this.correctedAnswers = String.join(correctedOptions,' , ');
 		}
@@ -175,6 +177,7 @@ global with sharing class QuestionService {
 				}else{
 					this.answerStatus = 'Neutral';
 				}
+				this.answerOption.MatchingText__c = answer.TextValue__c;
 			}
 		}
 	}
