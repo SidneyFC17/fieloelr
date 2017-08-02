@@ -175,6 +175,7 @@ global with sharing class QuestionService {
 				}else{
 					this.answerStatus = 'Neutral';
 				}
+				this.answerOption.MatchingText__c = answer.TextValue__c;
 			}
 		}
 	}
