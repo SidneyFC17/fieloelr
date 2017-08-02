@@ -210,7 +210,13 @@
         <errorMessage>Course Status is required.</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Module_cannot_change</fullName>
+        <fullName>MemberCannotChange</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Member__c )</errorConditionFormula>
+        <errorMessage>The member cannot be changed</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ModuleCannotChange</fullName>
         <active>true</active>
         <errorConditionFormula>ISCHANGED( Module__c )</errorConditionFormula>
         <errorMessage>The module cannot be changed.</errorMessage>
