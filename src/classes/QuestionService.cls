@@ -106,9 +106,9 @@ global with sharing class QuestionService {
 			}
 			
 			if(this.showDetailedAnswers){
-				if(question.Type__c != 'Short Answer'){
+				if(question.Type__c == 'Short Answer'){
 					setShortAnswerDescription();
-				}else if(question.Type__c != 'Matching Options'){
+				}else if(question.Type__c == 'Matching Options'){
 					setMatchingDescription();
 				}
 			}
