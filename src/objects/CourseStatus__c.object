@@ -141,6 +141,18 @@
         <errorMessage>Course Status must be related to a Course with the Status Active</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>Course_cannot_change</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Course__c )</errorConditionFormula>
+        <errorMessage>Course cannot be changed</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>MemberCannotChange</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Member__c )</errorConditionFormula>
+        <errorMessage>The member cannot be changed</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>MemberProgram</fullName>
         <active>true</active>
         <description>Validate that member&apos;s program is the same as Courses&apos;s program</description>
