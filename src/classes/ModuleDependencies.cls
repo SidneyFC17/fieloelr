@@ -56,7 +56,7 @@ public class ModuleDependencies extends SObjectDomain {
 
         for(ModuleDependency__c moduledependency : moduleDependencies) {
             module = modulesMap.get(moduledependency.Module__c);
-            predecessor = moduledependency.Predecessor__c;
+            predecessor = String.valueOf(moduledependency.Predecessor__c).subString(0,15);
             if(Trigger.IsInsert) {
                 // Add key
                 if(String.IsBlank(module.KeyDependencies__c)) {

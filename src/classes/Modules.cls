@@ -26,6 +26,7 @@ public class Modules extends SObjectDomain {
             if(module.Order__c == null) {
                 courseIds.add(module.Course__c);
             }
+            module.KeyDependencies__c = '';
         }
         
         List<AggregateResult> aggResult = new ModulesSelector().selectByCourseGroupByCourse(courseIds);

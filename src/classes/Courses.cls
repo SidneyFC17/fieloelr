@@ -22,6 +22,7 @@ public  class Courses extends SObjectDomain{
         for(Course__c course : (List<Course__c>)records){
             course.ActiveModules__c = 0;
             course.Status__c = 'Draft';
+            course.KeyDependencies__c = '';
             if(String.isBlank(course.SubscriptionMode__c)){
                 course.SubscriptionMode__c = 'Manual';
             }
