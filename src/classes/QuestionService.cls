@@ -65,12 +65,22 @@ global with sharing class QuestionService {
 		}
 
 		global void setAnswers(List<AnswerOption__c> answerOptions){
-			if(question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options'){
+			if(question.Type__c == 'Multiple Choice'){
 				for(AnswerOption__c answerOption : answerOptions){
 					answers.add(new Answer__c(AnswerOption__c = answerOption.Id));
 				}
 			}else{
-				throw new FieloPLT.FieloException('This method is only for Multiple Choice or Matching Option questions.');
+				throw new FieloPLT.FieloException('This method is only for Multiple Choice questions.');
+			}
+		}
+
+		global void setMatchingAnswers(Map<Id,String> answersMap){
+			if(question.Type__c == 'Matching Options'){
+				for(Id answerOptionId : answersMap.keySet()){
+					answers.add(new Answer__c(AnswerOption__c = answerOptionId, TextValue__c = answersMap.get(answerOptionId)));
+				}
+			}else{
+				throw new FieloPLT.FieloException('This method is only for Matching Option questions.');
 			}
 		}
 	}
@@ -120,7 +130,7 @@ global with sharing class QuestionService {
 
 		private void setAnswerWrappers(List<Answer__c> answers){
 			Map<Id,Answer__c> answersByOption = new Map<Id,Answer__c>();
-			if(questionResponse != null){
+			if(this.questionResponse != null){
 				for(Answer__c answer : answers){
 					answersByOption.put(answer.AnswerOption__c, answer);
 				}
@@ -177,7 +187,9 @@ global with sharing class QuestionService {
 				}else{
 					this.answerStatus = 'Neutral';
 				}
-				this.answerOption.MatchingText__c = answer.TextValue__c;
+				if (answer != null) {
+					this.answerOption.MatchingText__c = answer.TextValue__c;
+				}
 			}
 		}
 	}
