@@ -196,3 +196,8 @@ The course can be inactivated at any time. When inactivating a course, any field
 A course can be dependent of one or more other courses, this is, it could only be joined after member approval on the predecessors courses.  
 To determine which are the predecessors courses, the administrator goes to the Course details page and clicks the *New* button in the right upper corner of the Courses Dependencies related list. He can type part of the predecessor course name. The complete name of the course will be shown in the list. The administrator selects the course by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
+
+## 10. Cloning Courses
+It may be interesting to have an already existing course structure used for another course and, to meet this need, we can clone a course.  
+Being in the Course details page, the administrator presses the *Clone* button and the whole course structure with its modules, questions and answer options is duplicated.  
+The cloned course must have its *Start Date* and *End Date* edited to a valid period, and all the other fields can be edited by the administrator as well. When created, the cloned course has is status set to *Draft* and its modules are *Inactive*, which allows the administrator to make all needed changes.
