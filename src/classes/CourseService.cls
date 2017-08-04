@@ -358,12 +358,16 @@ global with sharing class CourseService {
 			}
 
 			Map<Id,List<FieloELR__ModuleResponse__c>> moduleResponseMap = new Map<Id,List<FieloELR__ModuleResponse__c>>();
-			for(FieloELR__ModuleResponse__c mr:cs.ModuleResponses__r) {
-				if (moduleResponseMap.containsKey(mr.FieloELR__Module__c)) {
-					moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
-				} else {
-					moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c>());
-					moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
+			if (cs != null) {
+				if (cs.ModuleResponses__r != null) {
+					for(FieloELR__ModuleResponse__c mr:cs.ModuleResponses__r) {
+						if (moduleResponseMap.containsKey(mr.FieloELR__Module__c)) {
+							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
+						} else {
+							moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c>());
+							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
+						}
+					}
 				}
 			}
 
