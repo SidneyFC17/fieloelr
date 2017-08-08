@@ -240,12 +240,14 @@ public class Modules extends SObjectDomain {
         
         Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(activatedModules);
 
-        List<Module__c> modulesWithQuestion = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingQuestions(modulesMap.KeySet()); 
+        List<Module__c> modulesWithQuestion = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingQuestions(modulesMap.KeySet());
                                                                                 
         for(Module__c module : modulesWithQuestion) {
             if(module.Questions__r.isEmpty()){
-                modulesMap.get(module.Id).addError(Label.ValidateModuleActive);        
-            }        
+                modulesMap.get(module.Id).addError(Label.ValidateModuleActive);
+            }else if(modulesMap.get(module.Id).QuestionPool__c != null && modulesMap.get(module.Id).QuestionPool__c > module.Questions__r.size()){
+                modulesMap.get(module.Id).addError('The question pool value cannot be greater than the number of questions.');
+            }
         }
     }
 
