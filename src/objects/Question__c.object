@@ -218,6 +218,13 @@ mod(
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
+        <fullName>Cannot_change_type</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Type__c )</errorConditionFormula>
+        <errorDisplayField>Type__c</errorDisplayField>
+        <errorMessage>The question type cannot be changed.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>CorrectWeightRange</fullName>
         <active>true</active>
         <description>The Correct Weight must be greater than 0.</description>
