@@ -255,9 +255,11 @@ public class Modules extends SObjectDomain {
     private void checkModule(List<Module__c> modules) {
         Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(modules);
 
-        List<Module__c> modulesWithResponse = new ModulesSelector().selectByIdHavingModuleResponses(modulesMap.KeySet()); 
+        List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String>{'FieloELR__IsActive__c','FieloELR__Course__r.FieloELR__Status__c'}).selectByIdHavingModuleResponses(modulesMap.KeySet()); 
         for(Module__c module : modulesWithResponse) {
-            if (!module.ModuleResponses__r.isEmpty()) {
+            if(module.FieloELR__IsActive__c && module.FieloELR__Course__r.FieloELR__Status__c == 'Active'){
+                addError(modulesMap.get(module.Id), 'Cannot delete or update an active module from an active course.');
+            }else if (!module.ModuleResponses__r.isEmpty()) {
                 addError(modulesMap.get(module.Id), Label.ValidateModuleEditableFields);
             }
         }
