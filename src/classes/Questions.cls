@@ -30,24 +30,26 @@ public class Questions extends SObjectDomain {
 			}
 		}
         
-        List<AggregateResult> aggResult = new QuestionsSelector().selectByModuleGroupByModule(moduleIds);
-        Map<String,Decimal> maxNumbByModule = new Map<String,Decimal>();
-        for(AggregateResult mr : aggResult){
-            maxNumbByModule.put((String)mr.get('FieloELR__Module__c'), (Decimal)mr.get('order'));
-        }
-        
-        for(Question__c question : (List<Question__c>)records){
-			if(question.Order__c == null) {
-	            if(maxNumbByModule.containsKey(question.Module__c)){
-	                Decimal maxOrder = maxNumbByModule.get(question.Module__c);
-	                question.Order__c = ++maxOrder;
-	                maxNumbByModule.put(question.Module__c, maxOrder);
-	            }else{
-	                question.Order__c = 1;
-	                maxNumbByModule.put(question.Module__c, 1);
-	            }
+        if(!moduleIds.isEmpty()){
+	        List<AggregateResult> aggResult = new QuestionsSelector().selectByModuleGroupByModule(moduleIds);
+	        Map<String,Decimal> maxNumbByModule = new Map<String,Decimal>();
+	        for(AggregateResult mr : aggResult){
+	            maxNumbByModule.put((String)mr.get('FieloELR__Module__c'), (Decimal)mr.get('order'));
 	        }
-        }	    	
+	        
+	        for(Question__c question : (List<Question__c>)records){
+				if(question.Order__c == null) {
+		            if(maxNumbByModule.containsKey(question.Module__c)){
+		                Decimal maxOrder = maxNumbByModule.get(question.Module__c);
+		                question.Order__c = ++maxOrder;
+		                maxNumbByModule.put(question.Module__c, maxOrder);
+		            }else{
+		                question.Order__c = 1;
+		                maxNumbByModule.put(question.Module__c, 1);
+		            }
+		        }
+	        }
+	    }	    	
     }
 
     public override void onValidate(){

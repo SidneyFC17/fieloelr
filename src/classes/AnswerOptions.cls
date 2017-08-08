@@ -10,19 +10,54 @@ public class AnswerOptions extends SObjectDomain {
         }
     }
 
+    public override void onApplyDefaults() {
+        setDefaultOrder(records);                   
+    }
+
     public override void onBeforeInsert() {
     	validateAnswerOptions(records, true);
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
 		validateAnswerOptions(records, true);
+        setDefaultOrder(records);
     }
-
 
 	public override void onBeforeDelete() {
      	if(!Questions.isDelete){
      		validateAnswerOptions(records, false);
      	}
+    }
+
+    private void setDefaultOrder(List<AnswerOption__c> answerOptions){
+        // If Order is null, calculate it automatically
+        Set<Id> questionIds = new Set<Id>();
+        for(AnswerOption__c answerOption : answerOptions){
+            if(answerOption.Order__c == null) {
+                questionIds.add(answerOption.Question__c);
+            }
+        }
+        
+        if(!questionIds.isEmpty()){
+            List<AggregateResult> aggResult = new AnswerOptionsSelector().selectByQuestionGroupByQuestion(questionIds);
+            Map<String,Decimal> maxNumbByQuestion = new Map<String,Decimal>();
+            for(AggregateResult mr : aggResult){
+                maxNumbByQuestion.put((String)mr.get('FieloELR__Question__c'), (Decimal)mr.get('order'));
+            }
+            
+            for(AnswerOption__c answerOption : answerOptions){
+                if(answerOption.Order__c == null) {
+                    if(maxNumbByQuestion.containsKey(answerOption.Question__c)){
+                        Decimal maxOrder = maxNumbByQuestion.get(answerOption.Question__c);
+                        answerOption.Order__c = ++maxOrder;
+                        maxNumbByQuestion.put(answerOption.Question__c, maxOrder);
+                    }else{
+                        answerOption.Order__c = 1;
+                        maxNumbByQuestion.put(answerOption.Question__c, 1);
+                    }
+                }
+            }
+        }
     }
 
 	// General validations for a list of answers
@@ -33,7 +68,7 @@ public class AnswerOptions extends SObjectDomain {
 			questions.add(answerOption.Question__c);
 	    }
 
-		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithAnswersAndQuestionResponses(questions));
+		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithQuestionResponses(questions));
 
 	    for(AnswerOption__c answerOption : answerOptions) {
 
@@ -54,11 +89,6 @@ public class AnswerOptions extends SObjectDomain {
 					answerOption.IsCorrect__c = false;
 				}				
 	    	}
-
-	    	// If Order__c field is null, calculate it automatically
-    		if( Trigger.isInsert && answerOption.Order__c == null) {
-    			answerOption.Order__c = questionsMap.get(answerOption.Question__c).AnswerOptions__r.size() + 1;
-    		}
 
     		if( !questionsMap.get(answerOption.Question__c).QuestionsResponses__r.isEmpty()){
     			if(Trigger.isDelete || Trigger.isInsert) {
