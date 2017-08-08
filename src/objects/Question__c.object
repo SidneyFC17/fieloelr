@@ -265,7 +265,7 @@ mod(
         <fullName>QuestionTextRequired</fullName>
         <active>true</active>
         <description>Question text is required.</description>
-        <errorConditionFormula>ISBLANK( QuestionText__c )</errorConditionFormula>
+        <errorConditionFormula>ISNULL(QuestionText__c) || QuestionText__c == &apos;&apos;</errorConditionFormula>
         <errorDisplayField>QuestionText__c</errorDisplayField>
         <errorMessage>The question text is required.</errorMessage>
     </validationRules>
