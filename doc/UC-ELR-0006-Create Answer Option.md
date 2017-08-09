@@ -4,7 +4,7 @@
 This use case describes the creation of an Answer Option
  
 ### Preconditions
-The administrator must be logged in
+The administrator must be logged in  
 The related question was already created (Use Case [*Create Question*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0005-Create%20Question.md) already run)
  
 ### Postconditions
@@ -31,7 +31,7 @@ An answer option was created
    2. The system does not create the answer option
    3. The system displays an error message
    4. End of flow
-   
+
 ##### 2. The related module has module response (step 4 of basic flow)
    1. The system verifies that the related module has module response
    2. The system does not create the answer option
@@ -141,7 +141,7 @@ An answer option was created
    2. The administrator makes the desired changes (except the Question field)
    3. The administrator presses the Save button
    4. The system verifies that the related module is active
-   5. The system does not save the answer option 
+   5. The system does not update the answer option 
    6. The system displays an error message
    7. End of flow
  
@@ -159,7 +159,7 @@ An answer option was created
    2. The administrator makes the desired changes (except the Question field)
    3. The administrator presses the Save button
    4. The system verifies that the related module is inactive and that the related question has question response
-   5. The system does not save the answer option 
+   5. The system does not update the answer option 
    6. The system displays an error message
    7. End of flow
 
@@ -179,6 +179,14 @@ An answer option was created
    3. The administrator presses the Save button
    4. The system verifies that the related question “Type” is “Statement”
    5. The system verifies that there is another answer option of the same related question that has its “IsCorrect” field set to “true”
-   6. The system does not create the answer option
+   6. The system does not update the answer option
    7. The system displays an error message
    8. End of flow
+
+##### 23. Edit question (step 9 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrator changes the question field
+   3. The administrator presses the Save button
+   4. The system does not update the answer option
+   5. The system displays an error message
+   6. End of flow
