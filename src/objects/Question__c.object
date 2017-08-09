@@ -218,6 +218,13 @@ mod(
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
+        <fullName>CannotChangeModule</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Module__c )</errorConditionFormula>
+        <errorDisplayField>Module__c</errorDisplayField>
+        <errorMessage>The module cannot be changed.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>Cannot_change_type</fullName>
         <active>true</active>
         <errorConditionFormula>ISCHANGED( Type__c )</errorConditionFormula>

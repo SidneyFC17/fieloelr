@@ -54,7 +54,7 @@ public class Questions extends SObjectDomain {
 
     public override void onValidate(){
     	// If the module is active, questions cannot be deleted, updated or added.
-    	checkModule(records);
+    	checkModule(records, null);
     }
 
     public override void onBeforeInsert() {
@@ -63,19 +63,11 @@ public class Questions extends SObjectDomain {
 
 		// If the question is updated or inserted and the weigth is null or the question pool is != null then the weight will be 1 
     	updateWeights(records);
-
-	    // If the type is "Fill in the blanks", must validate {} and []
-    	//validateFormat(records);
-
-    	//If the MetadataAnswer field is set, convert it to plain text.
-    	/*for(Question__c record: (List<Question__c>) records) {
-    		formatAnswer(record);
-    	}*/
     }
 
     public override void onValidate(Map<Id,SObject> existingRecords){
 		// If the module is active, questions cannot be deleted, updated or added.																		
-		checkModule(records);
+		checkModule(records, (Map<Id,Question__c>)existingRecords);
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
@@ -84,23 +76,13 @@ public class Questions extends SObjectDomain {
 
 		// If the question is updated or inserted and the weigth is null or the question pool is != null then the weight will be 1 
     	updateWeights(records);
-
-	    // If the type is "Fill in the blanks", must validate {} and []
-    	//validateFormat(records);
-
-    	//If the MetadataAnswer field is set, convert it to plain text.
-    	/*for(Question__c record: (List<Question__c>) records) {
-    		if(record.MetadataAnswer__c != ((Question__c)existingRecords.get(record.Id)).MetadataAnswer__c  ) {
-    			formatAnswer(record);
-    		}
-    	}*/
     }
 
 	public override void onBeforeDelete() {
 		isDelete = true;
 		if(validateAdminFields && !Modules.isDelete){
 			// If the module is active, questions cannot be deleted, updated or added.																		
-	    	checkModule(records);
+	    	checkModule(records, null);
 	    }
     }
 
@@ -126,7 +108,7 @@ public class Questions extends SObjectDomain {
 	}
 
 	// Check the modules
-    private void checkModule(List<Question__c> questions) {
+    private void checkModule(List<Question__c> questions, Map<Id,Question__c> existingQuestions) {
 
 	    Set<Id> modules = new Set<Id>();
 	    for(Question__c question : questions) {
@@ -138,17 +120,22 @@ public class Questions extends SObjectDomain {
 		// If the module is active, questions cannot be deleted or added.															
 	    for(Question__c question : questions) {
 	    	if(modulesMap.containsKey(question.Module__c)) {
-	    		if (modulesMap.get(question.Module__c).IsActive__c) {
+	    		if (modulesMap.get(question.Module__c).IsActive__c){
 	    			if (Trigger.isInsert || Trigger.isDelete) {
 	    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
-	    			} else {
-	    				question.addError(Label.ActiveModuleQuestionNotEditable);	
+	    			}else{
+	    				question.addError(Label.ActiveModuleQuestionNotEditable);
 	    			}
-	    		} else {
-	    			if (!modulesMap.get(question.Module__c).ModuleResponses__r.isEmpty()) {
-	    				if (Trigger.isInsert || Trigger.isDelete) {
-		    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
-		    			}	
+	    		}else if (!modulesMap.get(question.Module__c).ModuleResponses__r.isEmpty()) {
+		    		if (Trigger.isInsert || Trigger.isDelete) {
+	    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
+	    			} else {
+	    				Question__c oldQuestion = existingQuestions.get(question.Id);
+    					if(oldQuestion.CorrectWeight__c != question.CorrectWeight__c || 
+	                    oldQuestion.IncorrectWeight__c != question.IncorrectWeight__c || 
+	                    oldQuestion.PenaltyPerAttempt__c != question.PenaltyPerAttempt__c) {
+	                    	question.addError('Cannot modified any of the following fields for an active module or module that already has module responses: Correct Weight, Incorrect Weight or Penalty per Attempt.');
+		                }
 	    			}
 	    		}
 	    	}
