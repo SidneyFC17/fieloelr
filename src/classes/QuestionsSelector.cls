@@ -42,10 +42,9 @@ public with sharing class QuestionsSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-    public List<Question__c> selectByIdWithAnswersAndQuestionResponses(Set<Id> questionIds) {
+    public List<Question__c> selectByIdWithQuestionResponses(Set<Id> questionIds) {
         return (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
-                  ', (SELECT Id, Name, AnswerOptionText__c, IsCorrect__c FROM AnswerOptions__r) ' +
                   ', (SELECT Id FROM QuestionsResponses__r LIMIT 1) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionIds ' +

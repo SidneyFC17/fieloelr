@@ -30,29 +30,31 @@ public class Questions extends SObjectDomain {
 			}
 		}
         
-        List<AggregateResult> aggResult = new QuestionsSelector().selectByModuleGroupByModule(moduleIds);
-        Map<String,Decimal> maxNumbByModule = new Map<String,Decimal>();
-        for(AggregateResult mr : aggResult){
-            maxNumbByModule.put((String)mr.get('FieloELR__Module__c'), (Decimal)mr.get('order'));
-        }
-        
-        for(Question__c question : (List<Question__c>)records){
-			if(question.Order__c == null) {
-	            if(maxNumbByModule.containsKey(question.Module__c)){
-	                Decimal maxOrder = maxNumbByModule.get(question.Module__c);
-	                question.Order__c = ++maxOrder;
-	                maxNumbByModule.put(question.Module__c, maxOrder);
-	            }else{
-	                question.Order__c = 1;
-	                maxNumbByModule.put(question.Module__c, 1);
-	            }
+        if(!moduleIds.isEmpty()){
+	        List<AggregateResult> aggResult = new QuestionsSelector().selectByModuleGroupByModule(moduleIds);
+	        Map<String,Decimal> maxNumbByModule = new Map<String,Decimal>();
+	        for(AggregateResult mr : aggResult){
+	            maxNumbByModule.put((String)mr.get('FieloELR__Module__c'), (Decimal)mr.get('order'));
 	        }
-        }	    	
+	        
+	        for(Question__c question : (List<Question__c>)records){
+				if(question.Order__c == null) {
+		            if(maxNumbByModule.containsKey(question.Module__c)){
+		                Decimal maxOrder = maxNumbByModule.get(question.Module__c);
+		                question.Order__c = ++maxOrder;
+		                maxNumbByModule.put(question.Module__c, maxOrder);
+		            }else{
+		                question.Order__c = 1;
+		                maxNumbByModule.put(question.Module__c, 1);
+		            }
+		        }
+	        }
+	    }	    	
     }
 
     public override void onValidate(){
     	// If the module is active, questions cannot be deleted, updated or added.
-    	checkModule(records);
+    	checkModule(records, null);
     }
 
     public override void onBeforeInsert() {
@@ -61,19 +63,11 @@ public class Questions extends SObjectDomain {
 
 		// If the question is updated or inserted and the weigth is null or the question pool is != null then the weight will be 1 
     	updateWeights(records);
-
-	    // If the type is "Fill in the blanks", must validate {} and []
-    	//validateFormat(records);
-
-    	//If the MetadataAnswer field is set, convert it to plain text.
-    	/*for(Question__c record: (List<Question__c>) records) {
-    		formatAnswer(record);
-    	}*/
     }
 
     public override void onValidate(Map<Id,SObject> existingRecords){
 		// If the module is active, questions cannot be deleted, updated or added.																		
-		checkModule(records);
+		checkModule(records, (Map<Id,Question__c>)existingRecords);
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
@@ -82,23 +76,13 @@ public class Questions extends SObjectDomain {
 
 		// If the question is updated or inserted and the weigth is null or the question pool is != null then the weight will be 1 
     	updateWeights(records);
-
-	    // If the type is "Fill in the blanks", must validate {} and []
-    	//validateFormat(records);
-
-    	//If the MetadataAnswer field is set, convert it to plain text.
-    	/*for(Question__c record: (List<Question__c>) records) {
-    		if(record.MetadataAnswer__c != ((Question__c)existingRecords.get(record.Id)).MetadataAnswer__c  ) {
-    			formatAnswer(record);
-    		}
-    	}*/
     }
 
 	public override void onBeforeDelete() {
 		isDelete = true;
 		if(validateAdminFields && !Modules.isDelete){
 			// If the module is active, questions cannot be deleted, updated or added.																		
-	    	checkModule(records);
+	    	checkModule(records, null);
 	    }
     }
 
@@ -124,7 +108,7 @@ public class Questions extends SObjectDomain {
 	}
 
 	// Check the modules
-    private void checkModule(List<Question__c> questions) {
+    private void checkModule(List<Question__c> questions, Map<Id,Question__c> existingQuestions) {
 
 	    Set<Id> modules = new Set<Id>();
 	    for(Question__c question : questions) {
@@ -136,17 +120,22 @@ public class Questions extends SObjectDomain {
 		// If the module is active, questions cannot be deleted or added.															
 	    for(Question__c question : questions) {
 	    	if(modulesMap.containsKey(question.Module__c)) {
-	    		if (modulesMap.get(question.Module__c).IsActive__c) {
+	    		if (modulesMap.get(question.Module__c).IsActive__c){
 	    			if (Trigger.isInsert || Trigger.isDelete) {
 	    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
-	    			} else {
-	    				question.addError(Label.ActiveModuleQuestionNotEditable);	
+	    			}else{
+	    				question.addError(Label.ActiveModuleQuestionNotEditable);
 	    			}
-	    		} else {
-	    			if (!modulesMap.get(question.Module__c).ModuleResponses__r.isEmpty()) {
-	    				if (Trigger.isInsert || Trigger.isDelete) {
-		    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
-		    			}	
+	    		}else if (!modulesMap.get(question.Module__c).ModuleResponses__r.isEmpty()) {
+		    		if (Trigger.isInsert || Trigger.isDelete) {
+	    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
+	    			} else {
+	    				Question__c oldQuestion = existingQuestions.get(question.Id);
+    					if(oldQuestion.CorrectWeight__c != question.CorrectWeight__c || 
+	                    oldQuestion.IncorrectWeight__c != question.IncorrectWeight__c || 
+	                    oldQuestion.PenaltyPerAttempt__c != question.PenaltyPerAttempt__c) {
+	                    	question.addError('Cannot modified any of the following fields for an active module or module that already has module responses: Correct Weight, Incorrect Weight or Penalty per Attempt.');
+		                }
 	    			}
 	    		}
 	    	}
@@ -200,103 +189,4 @@ public class Questions extends SObjectDomain {
     		delete existingAnswerOptions;
     	}
     }
-
-    // If the type is "Fill in the blanks", must validate {} and []
-    /*private void validateFormat(List<Question__c> questions) {
-    	String questionText;
-    	for(Question__c question : questions) {
-	    	if(question.Type__c == 'Fill in the Blanks') {
-	    		// Validate format
-	    		//questionText = question.QuestionText__c;
-
-				String regex = '(?<=\\{\\!)(.*?)(?=\\})';
-				Pattern regexPattern = Pattern.compile(regex);
-				Matcher regexMatcher = regexPattern.matcher(questionText);
-
-				String error = '';
-
-				while(regexMatcher.find()) {
-				    			    
-				    if(regexMatcher.group().contains('{') || regexMatcher.group().contains('}')) {
-						error = 'nested bracket';
-				    } else {
-				    	List<String> words = regexMatcher.group().split(',');
-				        if(words.size() == 1) {
-							if(String.IsBlank(words[0])) {
-				                error = 'empty answer';
-				            }
-				        } else {
-				            Integer correctWords = 0;
-				            for(String word : words) {
-				                if(String.IsBlank(word)) {
-				                	error = 'empty answer';
-				                } else {
-				                    if(word.substring(0,1) == '(' && word.substring(word.length() - 1, word.length()) == ')') {
-				                        if(correctwords == 0) {
-				                			correctwords++;
-				                        } else {
-				                			error = 'more than one correct answer';
-				                        }
-				                    }
-				                }
-							}
-				            if(correctWords == 0) {
-								error = 'missing correct answer';
-				            }
-				        }
-				    }
-				    if(!String.IsBlank(error)) {
-				        break;
-					}
-				}
-				if(!String.IsBlank(error)) {
-					question.addError('Question text is in the wrong format for a question of the type "Fill in the Blanks". Error: ' + error + '.');             
-				} 
-	    	}
-		}
-	}
-
-	// Convert an answer with markups to an plain text answer.
-	/*private void formatAnswer(Question__c question) {
-		if ( question.MetadataAnswer__c != null && question.MetadataAnswer__c != '') {
-			String answer = question.MetadataAnswer__c;
-			String regex = '(?<=\\{\\!)(.*?)(?=\\})';
-			Pattern regexPattern = Pattern.compile(regex);
-			Matcher regexMatcher = regexPattern.matcher(answer);
-
-			List<String> subquestions = new List<String>();
-			List<String> answers = new List<String>();
-			List<String> correctOption = new List<String>();
-			String answerText;
-
-			while(regexMatcher.find()){
-				subquestions.add(regexMatcher.group());
-				answers = (regexMatcher.group()).split(',');
-				if(answers.size()==1){
-					correctOption.add(answers[0]);
-				} else if (answers.size() > 1) {
-					for (String option:answers) {
-						if (option.length() < 3)
-							continue;
-						if (option.substring(0,1)=='(' && option.substring(option.length()-1)==')') {
-							correctOption.add(option.substring(1,option.length()-1));
-						}
-					}
-				}
-			}
-
-			if(subquestions.size() != correctOption.size()) {
-				question.addError('Mismatch of number of questions and number of correct answers.');
-			}
-
-			for(String option: correctOption){
-				answer = answer.replaceFirst(regex,option);
-				answer = answer.replaceFirst('\\{\\!','');
-				answer = answer.replaceFirst('\\}','');
-			}
-			question.AnswerText__c = answer;
-		} else {
-			question.AnswerText__c = null;
-		}
-    }*/
 }
