@@ -95,3 +95,9 @@ The progress was calculated for the related course status
    2. The system displays an error message
    3. The system does not save the module response
    4. End of flow
+   
+##### 9. The related module is not active (step 2 of basic flow)
+   1. The system verifies that the related module is not active
+   2. The system displays an error message
+   3. The system does not save the module response
+   4. End of flow   
