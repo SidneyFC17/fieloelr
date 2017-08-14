@@ -7,15 +7,15 @@ This use case describes the module response calculations performed when it was s
 The module response is submitted (IsSubmitted = TRUE)
  
 ### Postconditions
-The grade value was calculated for the module response
+The grade value was calculated for the module response  
 The grade % was calculated for the module response  
-The approval status was determined for the module
+The approval status was determined for the module  
 The progress was calculated for the related course status 
  
 ### Flow of Events
  
 ### Basic Flow
-   1.  The system verifies that there are unsubmitted related questions responses and that the Question Pool is “null”
+   1. The system verifies that there are unsubmitted related questions responses and that the Question Pool is “null”
    2. The system sets, for each question response, its “IsSubmitted” field to “true”
    3. The system calls, for each question, the Use Case [*Determine Question Response Correction*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0011-Determine%20Question%20Response%20Correction.md)
    4. The system calls, for each question, the Use Case [*Submit Question Response*](https://github.com/FieloIncentiveAutomation/fieloelr/blob/feature/elrbackend/doc/UC-ELR-0012-Submit%20Question%20Response.md)
