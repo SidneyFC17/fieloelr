@@ -33,7 +33,7 @@
 		<c:Form namespace="FieloELR" formId="FieloELR__Course__cFormClone"
 			heading="{!$Label.fieloelr__clone} {!record['Name']}"
 			sObjectName="{!objectName}"
-			fieldset="{!editSettings.FieloPLT__Sections__c}"
+			fieldset="{!cloneSettings.FieloPLT__Sections__c}"
 			saveController="CourseViewController.clone"
 			secondaryParameters="{!secondaryParameters}"
 			retrieveController="CourseViewController.retrieve"
