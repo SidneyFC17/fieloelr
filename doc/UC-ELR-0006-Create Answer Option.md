@@ -182,11 +182,3 @@ An answer option was created
    6. The system does not update the answer option
    7. The system displays an error message
    8. End of flow
-
-##### 23. Edit question (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the question field
-   3. The administrator presses the Save button
-   4. The system does not update the answer option
-   5. The system displays an error message
-   6. End of flow

@@ -98,11 +98,3 @@ A question response was created
    5. The system updates the question response
    6. The system displays the question response detail page
    7. End of flow
-
-##### 11. Edit the module response (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator changes the module response field
-   3. The administrator presses the Save button
-   4. The system does not update the question response
-   5. The system displays an error message
-   6. End of flow
