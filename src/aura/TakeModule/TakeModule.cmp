@@ -1,0 +1,11 @@
+<aura:component >
+    <aura:attribute name="record" type="String"/>    
+    <aura:attribute name="takeModule" type="Boolean" default="false" /> 
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    
+    <aura:if isTrue="{!v.takeModule}">
+        <lightning:button variant="brand" onclick="{!c.takeModule}" > Take Module </lightning:button>
+    </aura:if>  
+    
+</aura:component>
