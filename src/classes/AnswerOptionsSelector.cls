@@ -24,4 +24,8 @@ public with sharing class AnswerOptionsSelector extends SObjectSelector {
     public List<AnswerOption__c> selectById(Set<Id> answerOptionIds) {
         return (List<AnswerOption__c>) selectSObjectsById(answerOptionIds);
     }
+
+    public List<AggregateResult> selectByQuestionGroupByQuestion(Set<Id> questionIds) {
+        return [SELECT MAX(Order__c) order, Question__c FROM AnswerOption__c WHERE Question__c in : questionIds GROUP BY Question__c];
+    }
 }

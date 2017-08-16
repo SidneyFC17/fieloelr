@@ -151,6 +151,13 @@
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
+        <fullName>CannotChangeModuleResponse</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( ModuleResponse__c )</errorConditionFormula>
+        <errorDisplayField>ModuleResponse__c</errorDisplayField>
+        <errorMessage>Cannot change the related Module Response.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>ValidateAttemptNumber</fullName>
         <active>true</active>
         <errorConditionFormula>AND(NOT(ISBLANK(NumberOfAttempt__c)),NumberOfAttempt__c &gt; ModuleResponse__r.Module__r.AttemptsAllowedPerQuestion__c)</errorConditionFormula>

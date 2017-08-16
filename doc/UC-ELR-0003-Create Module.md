@@ -272,7 +272,7 @@ A module was created
    1. The administrator presses the Edit button
    2. The administrator sets the “IsActive” field to “true”
    3. The administrator presses the Save button
-   4. The system verifies that the “Approval” Grade is null
+   4. The system verifies that the “Approval Grade" is null
    5. The system verifies that all other validations succeed
    6. The system does not update the module
    7. The system displays an error message
@@ -416,4 +416,13 @@ A module was created
    4. The system does not update the module
    5. The system displays an error message
    6. End of flow
-
+   
+##### 46. Activate a module with question pool greater than the quantity of questions (step 11 of basic flow)
+   1. The administrator presses the Edit button
+   2. The administrrator sets the "IsActive" field to "true"
+   3. The administrator presses the Save button
+   4. The system verifies that the “Question Pool" value is greater than the module questions number
+   5. The system verifies that all other validations succeed
+   6. The system does not update the module
+   7. The system displays an error message
+   8. End of flow   
