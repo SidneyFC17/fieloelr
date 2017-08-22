@@ -144,4 +144,11 @@ mod(
         <errorDisplayField>AnswerOptionText__c</errorDisplayField>
         <errorMessage>The answer option text is required.</errorMessage>
     </validationRules>
+    <validationRules>
+        <fullName>CannotChangeQuestion</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Question__c )</errorConditionFormula>
+        <errorDisplayField>Question__c</errorDisplayField>
+        <errorMessage>Cannot change the related question.</errorMessage>
+    </validationRules>
 </CustomObject>

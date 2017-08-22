@@ -240,12 +240,14 @@ public class Modules extends SObjectDomain {
         
         Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(activatedModules);
 
-        List<Module__c> modulesWithQuestion = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingQuestions(modulesMap.KeySet()); 
+        List<Module__c> modulesWithQuestion = new ModulesSelector(new Set<String> {'Id'}).selectByIdHavingQuestions(modulesMap.KeySet());
                                                                                 
         for(Module__c module : modulesWithQuestion) {
             if(module.Questions__r.isEmpty()){
-                modulesMap.get(module.Id).addError(Label.ValidateModuleActive);        
-            }        
+                modulesMap.get(module.Id).addError(Label.ValidateModuleActive);
+            }else if(modulesMap.get(module.Id).QuestionPool__c != null && modulesMap.get(module.Id).QuestionPool__c > module.Questions__r.size()){
+                modulesMap.get(module.Id).addError('The question pool value cannot be greater than the number of questions.');
+            }
         }
     }
 
@@ -253,9 +255,11 @@ public class Modules extends SObjectDomain {
     private void checkModule(List<Module__c> modules) {
         Map<Id,Module__c> modulesMap = new Map<Id, Module__c>(modules);
 
-        List<Module__c> modulesWithResponse = new ModulesSelector().selectByIdHavingModuleResponses(modulesMap.KeySet()); 
+        List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String>{'FieloELR__IsActive__c','FieloELR__Course__r.FieloELR__Status__c'}).selectByIdHavingModuleResponses(modulesMap.KeySet()); 
         for(Module__c module : modulesWithResponse) {
-            if (!module.ModuleResponses__r.isEmpty()) {
+            if(module.FieloELR__IsActive__c && module.FieloELR__Course__r.FieloELR__Status__c == 'Active'){
+                addError(modulesMap.get(module.Id), 'Cannot delete or update an active module from an active course.');
+            }else if (!module.ModuleResponses__r.isEmpty()) {
                 addError(modulesMap.get(module.Id), Label.ValidateModuleEditableFields);
             }
         }

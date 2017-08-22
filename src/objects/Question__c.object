@@ -218,6 +218,20 @@ mod(
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
+        <fullName>CannotChangeModule</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Module__c )</errorConditionFormula>
+        <errorDisplayField>Module__c</errorDisplayField>
+        <errorMessage>The module cannot be changed.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Cannot_change_type</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISCHANGED( Type__c )</errorConditionFormula>
+        <errorDisplayField>Type__c</errorDisplayField>
+        <errorMessage>The question type cannot be changed.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>CorrectWeightRange</fullName>
         <active>true</active>
         <description>The Correct Weight must be greater than 0.</description>
@@ -258,7 +272,7 @@ mod(
         <fullName>QuestionTextRequired</fullName>
         <active>true</active>
         <description>Question text is required.</description>
-        <errorConditionFormula>ISBLANK( QuestionText__c )</errorConditionFormula>
+        <errorConditionFormula>ISNULL(QuestionText__c) || QuestionText__c == &apos;&apos;</errorConditionFormula>
         <errorDisplayField>QuestionText__c</errorDisplayField>
         <errorMessage>The question text is required.</errorMessage>
     </validationRules>

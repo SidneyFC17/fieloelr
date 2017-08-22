@@ -5,6 +5,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 	public static String secondaryParameters {get;set;}
 	public List<Map<String,Object>> buttonList {get;set;}
 	private ApexPages.StandardController controller;
+	public FieloPLT__PageSettings__c cloneSettings {get; set;}
 
 	/**
     * @brief constructor
@@ -81,6 +82,13 @@ public with sharing class CourseViewController extends PageSettingsController {
 		initPageSettings(objectName, record, buttonString, standardTools, '');
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
+		try{
+			cloneSettings = [SELECT Id, Name, FieloPLT__Sections__c FROM FieloPLT__PageSettings__c WHERE FieloPLT__Type__c = 'Clone' AND FieloPLT__Object__c = 'FieloELR__Course__c' LIMIT 1];
+			cloneSettings.FieloPLT__Sections__c = '[' + cloneSettings.FieloPLT__Sections__c + ']';
+			cloneSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(cloneSettings.FieloPLT__Sections__c, record.Program__c);
+		}catch(Exception e){
+			cloneSettings = editSettings;
+		}
 
 		if (relatedSettings != null) {
 			for(FieloPLT__PageSettings__c settings:relatedSettings) {
@@ -146,13 +154,14 @@ public with sharing class CourseViewController extends PageSettingsController {
 		List<Course__c> result = Database.query(query);
 
 		if(result[0].Segment__r.FieloPLT__RelatedSegments__c != null){
-	      List<String> segIds15 = result[0].Segment__r.FieloPLT__RelatedSegments__c.split(';');
-	      List<Id> segIds18 = segIds15;
-	      result[0].Segment__r.FieloPLT__RelatedSegments__c = '';
-	      for(Id id18: segIds18){
-	        result[0].Segment__r.FieloPLT__RelatedSegments__c += id18 + ';';
-	      }
-	      result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
+			system.debug(result[0].Segment__r.FieloPLT__RelatedSegments__c);
+	      	List<String> segIds15 = result[0].Segment__r.FieloPLT__RelatedSegments__c.split(';');
+	      	List<Id> segIds18 = segIds15;
+	      	result[0].Segment__r.FieloPLT__RelatedSegments__c = '';
+	      	for(Id id18: segIds18){
+		        result[0].Segment__r.FieloPLT__RelatedSegments__c += id18 + ';';
+	      	}
+	      	result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
 	    }
 		return result.get(0);
 	}

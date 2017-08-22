@@ -132,6 +132,7 @@ global with sharing class CourseService {
 				queryCourses += ' OFFSET ' + offset;
 			}
 		}
+
 		return Database.query(queryCourses);
 	}
 
@@ -147,7 +148,7 @@ global with sharing class CourseService {
 			return '';
 		}
 
-		Map<String,String> operatorsMap = new Map<String,String>{'eq'=>'=','gt'=>'>'};
+		Map<String,String> operatorsMap = new Map<String,String>{'eq'=>'=','gt'=>'>','in'=>''};
 		Set<String> andoroperators = new Set<String>{'and','or'};
 		Set<String> nonQuotedTypes = new Set<String>{'DOUBLE','DATETIME','DATE','CURRENCY','INTEGER','BOOLEAN','PERCENT','TIME'};
 		Map<String,Schema.SObjectField> fieldsTypeMap = Course__c.getSObjectType().getDescribe().fields.getMap();
@@ -156,8 +157,32 @@ global with sharing class CourseService {
 			throw new FieloPLT.FieloException('And_Or Operator for the first condition must be blank.');
 		}
 
-		String whereCondition = '(';
+		deepLevel = 0;
+		return getWhereCondition(filterWrappers, operatorsMap, andoroperators, nonQuotedTypes, fieldsTypeMap);
+	}
+
+	private class FilterWrapper{
+		public String field;
+		public String value;
+		public String operator;
+		public String andOrOperator;
+		public SubQueryFilter subQueryFilter;
+	}
+
+	private class SubQueryFilter{
+		public String field;
+		public String objectName;
+		public List<FilterWrapper> filters;
+	}
+
+	private static Integer deepLevel = 0;
+	private static String getWhereCondition(List<FilterWrapper> filterWrappers, Map<String,String> operatorsMap, Set<String> andoroperators, Set<String> nonQuotedTypes, Map<String,Schema.SObjectField> fieldsTypeMap){
+		deepLevel++;
+		String whereCondition = '';
 		Integer position = 0;
+		Boolean hasOrConditions = false;
+		Boolean hasInConditions = false;
+
 		for(FilterWrapper filter : filterWrappers){
 			if(String.isBlank(filter.field) || !fieldsTypeMap.containsKey(filter.field)){
 				throw new FieloPLT.FieloException('Field ' + filter.field + ' not found in object.');
@@ -175,31 +200,54 @@ global with sharing class CourseService {
 				throw new FieloPLT.FieloException('And_Or Operator must be null only for the first condition.');
 			}
 
-			//whereCondition = '(' + whereCondition;
-			
+			if(filter.operator == 'in' && filter.SubQueryFilter == null){
+				throw new FieloPLT.FieloException('SubQueryFilter is required for operator "in".');
+			}
+
 			if(!String.isBlank(filter.andOrOperator)){
 				whereCondition += ' ' + filter.andOrOperator + ' ';
+
+				if(filter.andOrOperator == 'or'){
+					hasOrConditions = true;
+				}
 			}
 			
-			String fieldType = fieldsTypeMap.get(filter.field).getDescribe().getType().name();
-            if(nonQuotedTypes.contains(fieldType)){
-                whereCondition += filter.field + ' = ' + filter.value;
-            } else {
-                whereCondition += filter.field + ' = \'' + filter.value + '\'';
-            }
-            //whereCondition += ')';
-            position++;
-		}
+			if(filter.operator == 'eq' || filter.operator == 'gt'){
+				String fieldType = fieldsTypeMap.get(filter.field).getDescribe().getType().name();
+	            if(nonQuotedTypes.contains(fieldType)){
+	                whereCondition += filter.field + ' ' + operatorsMap.get(filter.operator) + ' ' + filter.value;
+	            } else {
+	                whereCondition += filter.field + ' ' + operatorsMap.get(filter.operator) + ' \'' + filter.value + '\'';
+	            }
+	        }else if(filter.operator == 'in'){
+				hasInConditions = true;
+				if(deepLevel > 1){
+	        		throw new FieloPLT.FieloException('Subquery not supported inside another subquery');
+	        	}
 
-		whereCondition += ')';
-		return whereCondition;
-	}
+				Schema.DescribeSobjectResult[] results = Schema.describeSObjects(new List<String>{filter.subQueryFilter.objectName});
+	        	if(results == null){
+	        		throw new FieloPLT.FieloException('Invalid object ' + filter.subQueryFilter.objectName);
+	        	}
+	        	
+	        	Map<String,Schema.SObjectField> fieldsTypeMapSubQuery = results[0].fields.getMap();
+	        	if(String.isBlank(filter.subQueryFilter.field) || !fieldsTypeMapSubQuery.containsKey(filter.subQueryFilter.field)){
+					throw new FieloPLT.FieloException('Field ' + filter.field + ' not found in object.');
+				}
 
-	private class FilterWrapper{
-		public String field;
-		public String value;
-		public String operator;
-		public String andOrOperator;
+	        	whereCondition += filter.field + ' in (SELECT ' + filter.subQueryFilter.field + ' FROM ' + filter.subQueryFilter.objectName + ' WHERE ' + getWhereCondition(filter.subQueryFilter.filters, operatorsMap, andoroperators, nonQuotedTypes, fieldsTypeMapSubQuery) + ')';
+	        }
+	    }
+
+	    if(hasOrConditions){
+	    	if(hasInConditions){
+	    		throw new FieloPLT.FieloException('Cannot use in condition and or in the same query.');
+    		}else{
+    			return '(' + whereCondition + ')';
+    		}
+    	}else{
+    		return whereCondition;
+    	}
 	}
 
 	//active courses

@@ -65,7 +65,7 @@ A question response was created
  
 ##### 7. Edit a question response not submitted (step 9 of basic flow)
    1. The administrator presses the Edit button
-   2. The administrator makes the desired changes 
+   2. The administrator makes the desired changes (except the module response)
    3. The administrator presses the Save button
    4. The system verifies that the question response is not submitted
    5. The system verifies that all other validations succeed
@@ -82,7 +82,7 @@ A question response was created
    6. The system displays an error message
    7. End of flow
  
-##### 09. Submit a question response when there is already a correct question response for the related question (step 9 of basic flow)
+##### 9. Submit a question response when there is already a correct question response for the related question (step 9 of basic flow)
    1. The administrator presses the Edit button 
    2. The administrator changes the field “IsSubmitted” from “false” to “true”
    3. The system verifies that the related question has already another correct question response
@@ -98,4 +98,3 @@ A question response was created
    5. The system updates the question response
    6. The system displays the question response detail page
    7. End of flow
-

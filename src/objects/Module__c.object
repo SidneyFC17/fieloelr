@@ -310,11 +310,11 @@
         <errorMessage>New module (without questions) cannot be active.</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>QuestioPoolNotZero</fullName>
+        <fullName>QuestioPoolPositive</fullName>
         <active>true</active>
         <description>Question Pool cannot be equal to zero.</description>
-        <errorConditionFormula>QuestionPool__c  = 0</errorConditionFormula>
+        <errorConditionFormula>QuestionPool__c &lt;= 0</errorConditionFormula>
         <errorDisplayField>QuestionPool__c</errorDisplayField>
-        <errorMessage>Question Pool cannot be equal to zero.</errorMessage>
+        <errorMessage>Question Pool must be greater than zero.</errorMessage>
     </validationRules>
 </CustomObject>

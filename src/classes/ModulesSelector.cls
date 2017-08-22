@@ -100,7 +100,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
       return (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id ' +
-                  '   FROM Questions__r LIMIT 1) ' +
+                  '   FROM Questions__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :moduleIds ' +
                   'ORDER BY {2}',
