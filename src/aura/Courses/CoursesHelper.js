@@ -17,10 +17,18 @@
             action.setCallback(this, function(response) {
                 var state = response.getState();
                 if (component.isValid() && state === 'SUCCESS') {
-                    component.set('v.courses', response.getReturnValue());
+                    var coursesList = [];
+                    var coursesWrapper = JSON.parse(response.getReturnValue());
+                    coursesWrapper.forEach(function(course){
+                        var newCourse = course.course;
+                        newCourse.showJoinBtn = course.allowedForDependency && course.allowedForSegment && !course.courseStatus;                                            
+                        newCourse.modules = course.modules;
+                        coursesList.push(newCourse);
+                    });
+                    component.set('v.coursesList', coursesList);                    
                     component.set('v.showCoursesList', false);
                     component.set('v.showCoursesList', true);
-                    console.log(response.getReturnValue());
+                    console.log(coursesWrapper);                    
                 }else {
                     console.log('Failed with state: ' + state);
                 }
