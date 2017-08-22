@@ -1,5 +1,10 @@
 ({
 	loadCourses : function(component, event, helper) {
+        var spinner = $A.get("e.c:ToggleSpinnerEvent");
+        if(spinner){
+            spinner.setParam('show', true);
+            spinner.fire();    
+        }       
         var member = component.get('v.member');                
         if(member){            
             var action = component.get('c.getMyCourses');

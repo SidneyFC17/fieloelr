@@ -12,5 +12,5 @@
     <aura:if isTrue="{!v.showMyCourses}">        
         <c:ListView layout="{!v.layout}" fieldset="{!v.fieldset}" records="{!v.myCourses}" />
     </aura:if>
-    
+    <c:Spinner />        
 </aura:component>
