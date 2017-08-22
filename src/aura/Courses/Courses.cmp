@@ -38,6 +38,6 @@
         <c:ListView layout="{!v.layout}" fieldset="{!v.modulesFieldset}" records="{!v.modules}" />
     </aura:if>
     
-    <c:Spinner />
+    <c:Spinner />    
     
 </aura:component>

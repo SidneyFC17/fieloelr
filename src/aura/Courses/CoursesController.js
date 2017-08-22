@@ -15,8 +15,7 @@
     showCourse: function(component, event, helper){
         var modulesRecord = event.getParam('record');        
         var modulesList = [];
-        var modules = modulesRecord.modules;
-        console.log(modules);
+        var modules = modulesRecord.modules;        
         for(var i = 0; i < modules.length; i++){
             var newModule = modules[i].module;
             newModule.moduleResponses = modules[i].moduleResponses;

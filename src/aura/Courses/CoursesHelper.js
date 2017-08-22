@@ -25,7 +25,7 @@
                         newCourse.modules = course.modules;
                         coursesList.push(newCourse);
                     });
-                    component.set('v.coursesList', coursesList);                    
+                    component.set('v.coursesList', coursesList);                                        
                     component.set('v.showCoursesList', false);
                     component.set('v.showCoursesList', true);
                     console.log(coursesWrapper);                    
