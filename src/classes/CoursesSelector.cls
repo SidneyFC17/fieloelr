@@ -134,4 +134,16 @@ public with sharing class CoursesSelector extends SObjectSelector{
                     getSObjectName(),
                     getOrderBy() } ));
     }
+
+    public List<Course__c> selectByIdAndStatus(Set<Id> courseIds, Set<String> status) {
+      return (List<Course__c>) Database.query(String.format(
+               'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN : courseIds AND Status__c in : status ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }
