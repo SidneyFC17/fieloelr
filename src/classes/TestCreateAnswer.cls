@@ -1,5 +1,5 @@
 @isTest
-private class ELR_CreateAnswer{
+private class TestCreateAnswer{
 	
 	private static List<FieloPLT__Program__c> listProg;
 	private static List<FieloPLT__Segment__c> listSeg;

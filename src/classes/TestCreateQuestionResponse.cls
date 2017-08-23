@@ -1,5 +1,5 @@
 @isTest
-private class ELR_CreateQuestionResponse {
+private class TestCreateQuestionResponse {
 	private static List<FieloELR__QuestionResponse__c> questionResponses = new List<FieloELR__QuestionResponse__c>();
     private static List<FieloELR__ModuleResponse__c> moduleResponses = new List<FieloELR__ModuleResponse__c>();
 	@testSetup

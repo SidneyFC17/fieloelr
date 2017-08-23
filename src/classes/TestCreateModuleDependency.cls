@@ -1,5 +1,5 @@
 @isTest
-private class ELR_CreateModuleDependency {
+private class TestCreateModuleDependency {
 
 	private static List<FieloPLT__Program__c> listProg;
 	private static List<FieloPLT__Segment__c> listSeg;

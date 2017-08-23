@@ -1,5 +1,5 @@
 @isTest
-private class ELR_CreateCourseStatus{
+private class TestCreateCourseStatus{
 
 	private static List<FieloPLT__Program__c> listProg;
 	private static List<FieloPLT__Segment__c> listSeg;
@@ -261,7 +261,7 @@ private class ELR_CreateCourseStatus{
 		insert listModResp;
 	}
 
-    @isTest
+    /*@isTest
     static void ELR_0013_FB(){
 
 		courseStatus.FieloELR__Course__c = [SELECT Id FROM FieloELR__Course__c WHERE Name = 'Course 0' LIMIT 1].Id;
@@ -384,5 +384,5 @@ private class ELR_CreateCourseStatus{
 		courseStatus.FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1].Id;
 
 		update courseStatus;
-    }
+    }*/
 }
