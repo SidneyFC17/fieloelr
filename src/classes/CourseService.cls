@@ -1,5 +1,52 @@
 global with sharing class CourseService {
 	
+	public static void activateCourses(Set<Id> courseIds){
+		Set<String> possibleStatus = new Set<String>{'Draft', 'Inactive'};
+		Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'StartDate__c','EndDate__c'}).selectByIdAndStatus(courseIds, possibleStatus));
+
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+		for(Id courseId : courseIds){
+			if(coursesMap.containsKey(courseId)){
+				Course__c course = coursesMap.get(courseId);
+				if(course.StartDate__c == null && course.EndDate__c == null){
+					course.Status__c = 'Active';
+				}else{
+					if((course.StartDate__c == null || course.StartDate__c <= date.today())
+						&& (course.EndDate__c == null || course.EndDate__c >= date.today())){
+							course.Status__c = 'Active';
+					}else if(course.StartDate__c != null && course.StartDate__c > date.today()){
+						course.Status__c = 'Scheduled';
+					}else{
+						course.Status__c = 'Completed';
+					}
+				}
+				uow.registerDirty(course);
+			}else{
+				throw new FieloPLT.FieloException('The course ' + courseId + ' cannot be Activated.');
+			}
+		}
+
+		uow.commitWork();
+	}
+
+	public static void inactivateCourses(Set<Id> courseIds){
+		Set<String> possibleStatus = new Set<String>{'Active' ,'Scheduled' ,'Completed'};
+		Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id'}).selectByIdAndStatus(courseIds, possibleStatus));
+
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+		for(Id courseId : courseIds){
+			if(coursesMap.containsKey(courseId)){
+				Course__c course = coursesMap.get(courseId);
+				course.Status__c = 'Inactive';
+				uow.registerDirty(course);
+			}else{
+				throw new FieloPLT.FieloException('The course ' + courseId + ' cannot be Inactivated.');
+			}
+		}
+
+		uow.commitWork();
+	}
+
 	public static void createFromModel( Course__c record, Id modelId){
         if ( !String.isBlank(modelId ) ) {
             SavePoint sp;

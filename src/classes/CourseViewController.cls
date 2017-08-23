@@ -141,7 +141,9 @@ public with sharing class CourseViewController extends PageSettingsController {
 	}
 
 	public Boolean getShowInActivate() {
-		return this.record.FieloELR__Status__c == 'Active';
+		return this.record.FieloELR__Status__c == 'Active' || 
+			this.record.FieloELR__Status__c == 'Scheduled' ||
+			this.record.FieloELR__Status__c == 'Completed';
 	}
 
 	@RemoteAction
@@ -375,8 +377,7 @@ public with sharing class CourseViewController extends PageSettingsController {
   	public static RemoteActionResult activate( Id recordId ){
 		RemoteActionResult result = new RemoteActionResult();
 		try{
-			Course__c record = new Course__c ( Id = recordId, Status__c = 'Active');
-			update record;
+			CourseService.activateCourses(new Set<Id>{recordId});
 			
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseActivated) );
 
@@ -394,8 +395,7 @@ public with sharing class CourseViewController extends PageSettingsController {
   	public static RemoteActionResult inactivate( Id recordId ){
 		RemoteActionResult result = new RemoteActionResult();
 		try{
-			Course__c record = new Course__c ( Id = recordId, Status__c = 'Inactive');
-			update record;
+			CourseService.inactivateCourses(new Set<Id>{recordId});
 			
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseInactivated) );
 
