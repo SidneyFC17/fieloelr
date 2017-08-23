@@ -147,7 +147,7 @@
         <label>Question Response Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Questions Reponses</pluralLabel>
+    <pluralLabel>Question Responses</pluralLabel>
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
