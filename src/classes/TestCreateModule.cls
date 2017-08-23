@@ -1,5 +1,5 @@
 @isTest
-private class ELR_CreateModule{
+private class TestCreateModule{
 
     private static List<FieloPLT__Program__c> programs;
     private static List<FieloPLT__Segment__c> segments;

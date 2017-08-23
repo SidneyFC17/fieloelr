@@ -87,6 +87,8 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
         options.add(new SelectOption('Draft', 'Draft'));
         options.add(new SelectOption('Active', 'Active'));
         options.add(new SelectOption('Inactive', 'Inactive'));
+        options.add(new SelectOption('Scheduled', 'Scheduled'));
+        options.add(new SelectOption('Completed', 'Completed'));
         return options;
     }
 

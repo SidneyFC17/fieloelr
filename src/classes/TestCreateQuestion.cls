@@ -1,5 +1,5 @@
 @isTest
-private class ELR_CreateQuestion{
+private class TestCreateQuestion{
 	private static List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
 	private static List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
     private static List<FieloELR__AnswerOption__c> answers = new List<FieloELR__AnswerOption__c>();
@@ -151,7 +151,7 @@ private class ELR_CreateQuestion{
 		} validation is not working*/ 
 
 
-    @isTest
+    /*@isTest
         static void ELR_0005_FA3(){
             questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
                 FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2' LIMIT 1].id,
@@ -282,7 +282,7 @@ private class ELR_CreateQuestion{
             }catch(System.Dmlexception e){
                 System.assert(e.getMessage().Contains('Required fields are missing'));
             }
-        }
+        }*/
 
     @isTest
         static void ELR_0005_FA12(){

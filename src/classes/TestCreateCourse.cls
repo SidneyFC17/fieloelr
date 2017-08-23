@@ -1,5 +1,5 @@
 @isTest
-private class ELR_CreateCourse{
+private class TestCreateCourse{
     private static List<FieloPLT__Program__c> programs;
     private static List<FieloPLT__Segment__c> segments;
     private static List<FieloELR__Course__c> courses;
@@ -145,26 +145,26 @@ private class ELR_CreateCourse{
         courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
 
         try{
-    		insert courses.get(0);
-    	}catch(System.DmlException e){
-    			System.assert(e.getMessage().Contains('You must select a Program'));
-    		}
+            insert courses.get(0);
+        }catch(System.DmlException e){
+                System.assert(e.getMessage().Contains('You must select a Program'));
+            }
     }
 
 
-   	@isTest
+    @isTest
     static void ELR_0001_FA2(){
-    	courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
+        courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
 
-    	courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram0' LIMIT 1].id;
-    	courses.get(0).FieloELR__Segment__c = [SELECT Id FROM FieloPLT__Segment__c WHERE Name = 'testSegment1' LIMIT 1 ].id;
+        courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram0' LIMIT 1].id;
+        courses.get(0).FieloELR__Segment__c = [SELECT Id FROM FieloPLT__Segment__c WHERE Name = 'testSegment1' LIMIT 1 ].id;
 
-    	try{
-    		insert courses.get(0);
-    	}catch(System.DmlException e){
-    			System.assert(e.getMessage().Contains('Segment must be on the same program.'));
-    	   }
-   		
+        try{
+            insert courses.get(0);
+        }catch(System.DmlException e){
+                System.assert(e.getMessage().Contains('Segment must be on the same program.'));
+           }
+        
     }
 
 
@@ -196,7 +196,7 @@ private class ELR_CreateCourse{
         }
 
 
-    @isTest
+    /*@isTest
         static void ELR_0001_FA5(){
                 courses = [SELECT Name,FieloELR__SubscriptionMode__c,FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 2'];
                 courses.get(0).FieloELR__SubscriptionMode__c = 'Automatic';
@@ -256,10 +256,10 @@ private class ELR_CreateCourse{
                 System.assert(e.getMessage().Contains('Cannot edit the Subscription Mode of an active Course already associated to a member.'));
              }    
                     
-        }
+        }*/
 
 
-    @isTest
+    /*@isTest
         static void ELR_0001_FA10(){
             courses = [SELECT Id,FieloELR__Program__c FROM FieloELR__Course__c WHERE Name ='Course 3'];
             courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram0' LIMIT 1].id;
@@ -332,7 +332,7 @@ private class ELR_CreateCourse{
             }catch(System.DmlException e){
                 System.assert(e.getMessage().Contains('Cannot delete an active Course with already associated to a member.'));
             }
-        } 
+        } */
 
     @isTest
         static void ELR_0001_FA16(){
