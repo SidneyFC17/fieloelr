@@ -10,6 +10,7 @@
     updateMember: function(component, event, helper){
         var member = event.getParam('member');        
         component.set('v.member', member);        
+        console.log(member);
         helper.loadCourses(component, event, helper);        
     },
     showCourse: function(component, event, helper){

@@ -1,12 +1,12 @@
 ({
-	loadCourses : function(component, event, helper) {
-        var spinner = $A.get("e.c:ToggleSpinnerEvent");
-        if(spinner){
-            spinner.setParam('show', true);
-            spinner.fire();    
-        }       
+    loadCourses : function(component, event, helper) {
         var member = component.get('v.member');                
-        if(member){            
+        if(member){
+            var spinner = $A.get("e.c:ToggleSpinnerEvent");
+            if(spinner){
+                spinner.setParam('show', true);
+                spinner.fire();    
+            }                
             var action = component.get('c.getMyCourses');
             action.setParams({
                 'member': member
@@ -26,5 +26,5 @@
             // Send action off to be executed
             $A.enqueueAction(action);   
         }
-	}
+    }
 })
