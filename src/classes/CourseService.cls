@@ -26,6 +26,7 @@ global with sharing class CourseService {
 			}
 		}
 
+		Courses.validateAdminFields = false;
 		uow.commitWork();
 	}
 
@@ -44,6 +45,7 @@ global with sharing class CourseService {
 			}
 		}
 
+		Courses.validateAdminFields = false;
 		uow.commitWork();
 	}
 

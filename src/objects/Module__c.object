@@ -272,7 +272,10 @@
         <fullName>IsActiveChangedWhenCourseIsActive</fullName>
         <active>true</active>
         <description>The module &quot;IsActive&quot; field cannot be changed if the related course is active.</description>
-        <errorConditionFormula>AND( ISCHANGED( IsActive__c ) ,  TEXT(Course__r.Status__c) = &apos;Active&apos;)</errorConditionFormula>
+        <errorConditionFormula>AND( ISCHANGED( IsActive__c ) ,  OR(TEXT(Course__r.Status__c) = &apos;Active&apos;,
+TEXT(Course__r.Status__c) = &apos;Scheduled&apos;,
+TEXT(Course__r.Status__c) = &apos;Active&apos;)
+)</errorConditionFormula>
         <errorDisplayField>IsActive__c</errorDisplayField>
         <errorMessage>&quot;Active&quot; status cannot be changed if the related course is active.</errorMessage>
     </validationRules>
@@ -287,9 +290,15 @@
         <active>true</active>
         <description>A Module cannot be created with a relation to an active Course, and the Course cannot be modified afterwards.</description>
         <errorConditionFormula>AND( 
-      ISNEW() , 
-      ISPICKVAL(Course__r.Status__c , 
-         &apos;Active&apos;) 
+      ISNEW() ,
+      OR(
+        ISPICKVAL(Course__r.Status__c , 
+         &apos;Active&apos;),
+        ISPICKVAL(Course__r.Status__c , 
+         &apos;Scheduled&apos;),
+        ISPICKVAL(Course__r.Status__c , 
+         &apos;Completed&apos;)
+      )
    )</errorConditionFormula>
         <errorDisplayField>Course__c</errorDisplayField>
         <errorMessage>On module creation, course cannot be active.</errorMessage>
