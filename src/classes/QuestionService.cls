@@ -1,41 +1,4 @@
 global with sharing class QuestionService {
-	
-	/*public static List<Question__c> getQuestions(Id moduleId,
-									  Set<Id> excludedQuestionIds,
-									  Set<String> fieldsQuestion,
-									  Set<String> fieldsAnswerOption,
-									  Integer quantity,
-									  Integer offset) {
-		String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestion), ',');
-		if(fieldsAnswerOption != null){
-			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
-		}
-		questionQuery += ' FROM Question__c WHERE Module__c =: moduleId';
-		if(excludedQuestionIds != null){
-			questionQuery += ' AND Id NOT in : excludedQuestionIds';
-		}
-		questionQuery += ' ORDER BY OrderFormula__c';
-		
-		Module__c module = [SELECT QuestionPool__c FROM Module__c WHERE Id =: moduleId];
-
-		if(module.QuestionPool__c != null){
-			if(quantity != null && quantity < module.QuestionPool__c){
-				questionQuery += ' LIMIT ' + quantity;
-			}else{
-				questionQuery += ' LIMIT ' + module.QuestionPool__c;
-			}
-		}else{
-			if(quantity != null){
-				questionQuery += ' LIMIT ' + quantity;
-			}
-		}
-
-		if(offset != null){
-			questionQuery += ' OFFSET ' + offset;
-		}
-
-		return Database.query(questionQuery);
-	}*/
 
 	global class QuestionResponseWrapper{
 		public QuestionResponse__c questionResponse {get; set;}
