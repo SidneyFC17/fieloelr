@@ -62,25 +62,7 @@ A course is created
    2. The system sets the "Subscription Mode" to "Manual"
    3. Back to step 7 of basic flow
 
-##### 7. Activate a course that has active related modules (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator sets the status of the course to “Active”
-   3. The administrator presses the Save button
-   4. The system verifies that there is, at least, one active related module
-   5. The system updates the course
-   6. The system displays the course detail page
-   7. End of flow
- 
-##### 8. Activate a course that has no active related modules (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator sets the status of the course to “Active”
-   3. The administrator presses the Save button
-   4. The system verifies that there is no active related modules
-   5. The system does not update the course
-   6. The system displays an error message 
-   7. End of flow
-   
-##### 9. Edit the program of a course (step 9 of basic flow)
+##### 7. Edit the program of a course (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator changes the program of the course
    3. The administrator presses the Save button
@@ -88,7 +70,7 @@ A course is created
    5. The system displays an error message
    6. End of flow
  
-##### 10. Edit a draft course (step 9 of basic flow)
+##### 8. Edit a draft course (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the status and program change)
    3. The administrator presses the Save button
@@ -97,7 +79,7 @@ A course is created
    6. The system displays the course detail page
    7. End of flow
  
-##### 11. Edit an active course (step 9 of basic flow)
+##### 9. Edit an active course (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the status and program change)
    3. The administrator presses the Save button
@@ -106,7 +88,7 @@ A course is created
    6. The system displays an error message
    7. End of flow
    
-##### 12. Edit an inactive course (step 9 of basic flow)
+##### 10. Edit an inactive course (step 9 of basic flow)
    1. The administrator presses the Edit button
    2. The administrator makes the desired changes (except the status and program change)
    3. The administrator presses the Save button
@@ -115,15 +97,7 @@ A course is created
    6. The system displays the course detail page
    7. End of flow
  
- ##### 13. Inactivate an active course (step 9 of basic flow)
-   1. The administrator presses the Edit button
-   2. The administrator sets the status of the course to “Inactive” 
-   3. The administrator presses the Save button
-   4. The system saves the course
-   5. The system displays the course detail page
-   6. End of flow
-   
-##### 14. Delete a draft course (step 9 of basic flow)
+##### 11. Delete a draft course (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that course status is "Draft"
    3. The system deletes the course
@@ -131,7 +105,7 @@ A course is created
    5. The system deletes the related modules
    6. End of flow
  
-##### 15. Delete an active course with no related course status (step 9 of basic flow)
+##### 12. Delete an active course with no related course status (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that course status is "Active"
    3. The system verifies that the course has no related course status
@@ -140,7 +114,7 @@ A course is created
    6. The system deletes the related course modules
    7. End of flow
  
-##### 16. Delete an active course with related course status (step 9 of basic flow)
+##### 13. Delete an active course with related course status (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the status of the course is "Active"
    3. The system verifies that the course has related course status
@@ -148,7 +122,7 @@ A course is created
    5. The system displays an error message
    6. End of flow
 
-##### 17. Delete an inactive course with no related course status (step 9 of basic flow)
+##### 14. Delete an inactive course with no related course status (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the status of the course is "Inactive"
    3. The system verifies that the course has no related course status
@@ -157,7 +131,7 @@ A course is created
    6. The system deletes the related course modules
    7. End of flow
    
-##### 18. Delete an inactive course with related course status (step 9 of basic flow)
+##### 15. Delete an inactive course with related course status (step 9 of basic flow)
    1. The administrator presses the Delete button
    2. The system verifies that the status of the course is "Inactive"
    3. The system verifies that the course has related course status
