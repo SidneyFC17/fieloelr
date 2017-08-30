@@ -1,0 +1,5 @@
+<aura:component >
+    <aura:attribute name="record" type="String"/>
+    <aura:attribute name="name" type="String" />
+    <a onclick="{!c.showModule}" > {!v.name}</a>
+</aura:component>

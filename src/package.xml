@@ -55,6 +55,7 @@
 	</types>
 	<types>
 		<members>MyCourses</members>
+		<members>ShowModule</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<version>34.0</version>
