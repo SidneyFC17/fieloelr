@@ -38,8 +38,14 @@ public  class Courses extends SObjectDomain{
                     course.ActiveModules__c = oldCourse.ActiveModules__c;
                 }
 
+                if(course.Status__c != oldCourse.Status__c) {
+                    course.Status__c = oldCourse.Status__c;
+                }
+
                 // When Active, no field can be edited
-                if(oldCourse.Status__c == 'Active' && course.Status__c == 'Active') {
+                if((oldCourse.Status__c == 'Active' && course.Status__c == 'Active') ||
+                    (oldCourse.Status__c == 'Scheduled' && course.Status__c == 'Scheduled') ||
+                    (oldCourse.Status__c == 'Completed' && course.Status__c == 'Completed')) {
                     addError(course, Label.ActiveCourseCannotBeEdited);
                 }
             }
