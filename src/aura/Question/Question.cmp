@@ -1,0 +1,19 @@
+<aura:component >
+    <aura:attribute name="question" type="FieloELR__Question__c" />
+    <aura:attribute name="type" type="String" />
+    <aura:if isTrue="{!v.type == 'Single Choice'}" >
+        Single Choice
+    </aura:if>
+    <aura:if isTrue="{!v.type == 'Multiple Choice'}" >
+        Multiple Choice
+    </aura:if>
+    <aura:if isTrue="{!v.type == 'Short Answer'}" >
+        Short Answer
+    </aura:if>
+    <aura:if isTrue="{!v.type == 'Statement'}" >
+        Statement
+    </aura:if>
+    <aura:if isTrue="{!v.type == 'Matching Options'}" >
+        Matching Options
+    </aura:if>
+</aura:component>

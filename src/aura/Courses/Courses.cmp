@@ -9,6 +9,10 @@
     <aura:attribute type="sObject[]" name="modulesFieldset" />
     <aura:attribute type="Boolean" name="showCourse" default="false" />
     
+    <aura:attribute type="Boolean" name="showModule" default="false" />
+    <aura:attribute type="sObject" name="moduleRecord" default="" />
+    <aura:attribute type="String" name="moduleTitle" default="" />
+    
     <aura:attribute type="sObject[]" name="fieldset" />
     <aura:attribute type="String" name="config" />
     
@@ -22,6 +26,9 @@
     
     <aura:handler event="c:UpdateMemberEvent" action="{!c.updateMember}"/>
     <aura:handler event="c:ShowCourseEvent" action="{!c.showCourse}"/>
+    
+    <aura:handler event="c:TakeModuleEvent" action="{!c.takeModule}"/>
+    
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     
     <aura:if isTrue="{!v.showCoursesList}">
@@ -37,6 +44,15 @@
         
         <c:ListView layout="{!v.layout}" fieldset="{!v.modulesFieldset}" records="{!v.modules}" />
     </aura:if>
+    
+    <aura:if isTrue="{!v.showModule}">        
+        <div>
+            <h3 class="slds-section-title--divider slds-float_left">{!v.moduleTitle}</h3>        
+            <lightning:button class="slds-float_right" variant="neutral" label="Back to Course" onclick="{!c.showCourseInformation }" />
+            <c:Module module="{!v.moduleRecord}" />
+        </div>                
+    </aura:if>
+
     
     <c:Spinner />    
     

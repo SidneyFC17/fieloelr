@@ -10,11 +10,10 @@
     updateMember: function(component, event, helper){
         var member = event.getParam('member');        
         component.set('v.member', member);        
-        console.log(member);
         helper.loadCourses(component, event, helper);        
     },
     showCourse: function(component, event, helper){
-        var modulesRecord = event.getParam('record');        
+        var modulesRecord = event.getParam('record');      
         var modulesList = [];
         var modules = modulesRecord.modules;        
         for(var i = 0; i < modules.length; i++){
@@ -22,6 +21,7 @@
             newModule.moduleResponses = modules[i].moduleResponses;
             newModule.numberOfAttempts = modules[i].numberOfAttempts;
             newModule.isApproved = modules[i].isApproved;
+            newModule.showBtn = !modulesRecord.showJoinBtn;
             modulesList.push(newModule);
         }                
         var courseName = event.getParam('courseName');
@@ -33,5 +33,16 @@
     showCoursesList: function(component, event, helper){
         component.set('v.showCoursesList', true);        
         component.set('v.showCourse', false); 
+    },
+    takeModule: function(component, event, helper){
+        component.set('v.showCourse', false); 
+        var moduleRecord = event.getParam('module');
+        component.set('v.moduleRecord', moduleRecord);
+        component.set('v.moduleTitle', moduleRecord.module.Name);
+        component.set('v.showModule', true); 
+    },
+    showCourseInformation: function(component, event, helper){
+        component.set('v.showModule', false); 
+        component.set('v.showCourse', true); 
     }
 })

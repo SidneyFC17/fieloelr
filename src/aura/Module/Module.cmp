@@ -1,0 +1,15 @@
+<aura:component >
+    <aura:attribute type="FieloELR__Module__c" name="module" />
+    <aura:attribute type="FieloELR__Question__c[]" name="questions" />
+    <aura:attribute type="Boolean" name="showQuestions" default="false" />    
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    
+    <lightning:button variant="neutral" label="Module" onclick="{!c.showModule }" />    
+    
+    <aura:if isTrue="{!v.showQuestions}">
+        <aura:iteration var="question" items="{!v.questions}">
+            <c:Question question="{!question}" type="{!question.FieloELR__Type__c}"/>
+        </aura:iteration>
+    </aura:if>    
+</aura:component>

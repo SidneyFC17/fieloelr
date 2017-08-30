@@ -1,12 +1,7 @@
 ({
     doInit : function(component, event, helper){
         var course = component.get('v.record');
-        var courseId = course.Id;
-        var joinedCourses = window.localStorage.getItem('joinedCourses') || '{}';
-        joinedCourses = JSON.parse(joinedCourses);
-        if(joinedCourses[courseId]){
-            component.set('v.join', false);
-        }
+        component.set('v.join', course.showJoinBtn);        
     },
     joinCourse : function(component, event, helper) {         
         var toastEvent = $A.get("e.force:showToast");
@@ -15,28 +10,35 @@
         var courseName = course.Name;
         var memberId = JSON.parse(window.localStorage.getItem('member')).Id;
         
-        if(memberId && courseId){            
+        if(memberId && courseId){       
+            var spinner = $A.get("e.c:ToggleSpinnerEvent");
+            if(spinner){
+                spinner.setParam('show', true);
+                spinner.fire();    
+            }    
             var joinCourseAction = component.get('c.memberJoinCourse');
-            var joinedCourses = window.localStorage.getItem('joinedCourses') || '{}';
-            joinedCourses = JSON.parse(joinedCourses);
             joinCourseAction.setParams({
                 'memberId': memberId,
                 'courseId': courseId
             })
             // Add callback behavior for when response is received
             joinCourseAction.setCallback(this, function(response) {
+                var course = component.get('v.record');
+                var spinner = $A.get("e.c:ToggleSpinnerEvent");
                 var state = response.getState();
-                if (component.isValid() && state === 'SUCCESS') {
+                if (component.isValid() && state === 'SUCCESS') {                    
                     toastEvent.setParams({
                         "title": "Thanks for joining " + courseName + "!",
                         "message": "Now you can complete it"
                     });
-                    toastEvent.fire();
-                    joinedCourses[courseId] = true;
-                    window.localStorage.setItem('joinedCourses', JSON.stringify(joinedCourses));
+                    toastEvent.fire();                    
                     component.set('v.join', false);
                 }else {
                     console.log('Failed with state: ' + state);
+                }
+                if(spinner){
+                    spinner.setParam('show', false);
+                    spinner.fire();
                 }
             });      
             // Send action off to be executed

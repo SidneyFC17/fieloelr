@@ -1,6 +1,6 @@
 ({
     loadCourses : function(component, event, helper) {
-        var spinner = $A.get("e.c:ToggleSpinnerEvent");
+        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -27,8 +27,8 @@
                     });
                     component.set('v.coursesList', coursesList);                                        
                     component.set('v.showCoursesList', false);
-                    component.set('v.showCoursesList', true);
-                    console.log(coursesWrapper);                    
+                    component.set('v.showCoursesList', true); 
+                    console.log(coursesList);
                 }else {
                     console.log('Failed with state: ' + state);
                 }
