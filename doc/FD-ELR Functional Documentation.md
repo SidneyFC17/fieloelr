@@ -189,8 +189,15 @@ This action must be repeated for each dependency.
 
 ## 8. Activating  or Inactivating a Course
 To activate a course, there must be at least one active module for the course. The administrator goes to the Course details page, clicks the *Activate* button in the right upper corner of the page and confirm the message.  
-After being activated, the course starts to be shown at CMS.   
-The course can be inactivated at any time. When inactivating a course, any field can be edited.
+Depending on how the course period is configured, there are 3 (three) possible status to where the course can go:
+- **Active** - When the course has no defined period or when the date when the course is being activated is within the period defined for the course (Start Date and End Date are equal or greater than the activation date);
+- **Scheduled** - When the Start Date defined to the course period is later than the course activation date;
+- **Completed** - When the End Date defined to the course period is earlier than the activation date.
+
+:point_right: For courses in status *Scheduled*, the system automatically changes their status to *Active* as soon as the start date is reached.  
+:point_right: For courses in status *Active*, the system automatically changes their status to *Completed* as soon as the end date is over.  
+
+A course can be inactivated at any time. When inactivating a course, any of its fields can be edited.
 
 ## 9. Creating Course Dependencies
 A course can be dependent of one or more other courses, this is, it could only be joined after member approval on the predecessors courses.  
