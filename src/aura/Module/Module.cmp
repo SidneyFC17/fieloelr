@@ -5,11 +5,9 @@
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     
-    <lightning:button variant="neutral" label="Module" onclick="{!c.showModule }" />    
+    <!--<lightning:button variant="neutral" label="Module" onclick="{!c.showModule }" />        -->
     
-    <aura:if isTrue="{!v.showQuestions}">
-        <aura:iteration var="question" items="{!v.questions}">
-            <c:Question question="{!question}" type="{!question.FieloELR__Type__c}"/>
-        </aura:iteration>
-    </aura:if>    
+    <c:Quiz questions="{!v.questions}" module="{!v.module}" />
+    
+    
 </aura:component>

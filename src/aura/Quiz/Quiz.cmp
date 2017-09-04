@@ -1,0 +1,15 @@
+<aura:component >
+    <aura:attribute name="questions" type="FieloELR__Question__c[]" />
+    <aura:attribute name="type" type="String" default="singular" />
+    <aura:attribute name="module" type="FieloELR__Module__c" />
+    
+    <aura:if isTrue="{!v.type == 'singular'}">
+        <aura:iteration var="question" items="{!v.questions}">
+            <c:Question question="{!question}" type="{!question.FieloELR__Type__c}"/>
+        </aura:iteration>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.type == ''}">
+        
+    </aura:if>    
+</aura:component>

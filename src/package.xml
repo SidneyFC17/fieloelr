@@ -60,6 +60,7 @@
 		<members>Module</members>
 		<members>TakeModuleEvent</members>
 		<members>Question</members>
+		<members>Quiz</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<version>40.0</version>

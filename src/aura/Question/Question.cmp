@@ -1,19 +1,38 @@
 <aura:component >
     <aura:attribute name="question" type="FieloELR__Question__c" />
-    <aura:attribute name="type" type="String" />
-    <aura:if isTrue="{!v.type == 'Single Choice'}" >
-        Single Choice
+    <aura:attribute name="options" type="sObject[]" />
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="type" type="String" /> 
+    <aura:attribute name="renderQuestion" type="Boolean" default="false" />
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    <div class="question slds-p-top_large">
+        <aura:if isTrue="{!v.renderQuestion}">
+        <div class="slds-text-heading_small slds-text-align_left">{!v.title}</div>
+        <aura:if isTrue="{!v.type == 'Single Choice'}" >        
+            <aura:iteration items="{!v.options}" var="option">                
+                <lightning:input name="{!v.question.Id}" class="slds-p-top_xx-small" type="radio" label="{!option.FieloELR__AnswerOptionText__c}" onchange="{!c.setAnswer}" />    
+            </aura:iteration>
+            
+        </aura:if>
+        <aura:if isTrue="{!v.type == 'Multiple Choice'}" >
+            <aura:iteration items="{!v.options}" var="option">
+                <lightning:input class="slds-p-top_xx-small" type="checkbox" label="{!option.FieloELR__AnswerOptionText__c}"/>    
+            </aura:iteration>        
+        </aura:if>
+        <aura:if isTrue="{!v.type == 'Short Answer'}" >        
+            <lightning:input label="Write your answer" />
+        </aura:if>
+        <aura:if isTrue="{!v.type == 'Statement'}" >
+            <aura:iteration items="{!v.options}" var="option">
+                <lightning:input name="{!v.question.Id}" class="slds-p-top_xx-small" type="radio" label="{!option.FieloELR__AnswerOptionText__c}"/>    
+            </aura:iteration>
+        </aura:if>
+        <aura:if isTrue="{!v.type == 'Matching Options'}" >
+            Matching Options
+        </aura:if>
     </aura:if>
-    <aura:if isTrue="{!v.type == 'Multiple Choice'}" >
-        Multiple Choice
-    </aura:if>
-    <aura:if isTrue="{!v.type == 'Short Answer'}" >
-        Short Answer
-    </aura:if>
-    <aura:if isTrue="{!v.type == 'Statement'}" >
-        Statement
-    </aura:if>
-    <aura:if isTrue="{!v.type == 'Matching Options'}" >
-        Matching Options
-    </aura:if>
+    </div>
+    
+    
 </aura:component>
