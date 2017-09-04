@@ -171,12 +171,16 @@ It's possible to reorder the questions by dragging them and dropping them in the
 ## 5. Activating or Inactivating a Module
 Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course turns to "Active" status, the module will be shown as part of it.   
 Active modules contribute to the progress of the course since they are considered in its calculation.  
-Example: A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).  
-If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).  
+
+Example:  
+A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).  
+If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active modules, his progress will be 33% (1 / 3).  
+
 In the Module details page, clicking the *Activate* button in the right upper corner of the page and confirming the message, makes the module active and replaces the button by the *Inactivate* one.  
 The module can be inactivated at any time, even if it has already a related module response.  
 When inactivating a module, some fields can be edited, like *Module Name* and *Description*, but there are some fields that compromise the course structure integrity and cannot be changed if there is already a module response for the module: *Attempts Allowed*, *Approval Grade*, *Penalty Mode*, *Question Pool*, *Attempts Allowed Per Question* and *Weighted Questions*.  
-For the same reason, it's not allowed to create new questions and new answer options or delete questions and delete answer options.  
+For the same reason, it's not allowed to create new questions and new answer options or delete questions and delete answer options.   
+
 It's possible to edit questions and answer options when the module is inactive, but not the *Correct Weight*, *Penalty per Attempt* and *Incorrect Weight*,  when there is already a question response for the question.
 
 ## 6. Reordering Modules
