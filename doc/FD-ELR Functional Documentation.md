@@ -9,7 +9,8 @@ In the Courses Landing Page, click the New button and fill in the fields below:
  - **Description** - This field has a maximum limit of 255 characters.
  - **Start Date** - This field must be filled in if the course has a specific date to start. This date cannot be earlier than the current date.
  - **End Date** - This field must be filled in if the course has a specific date to finish. This date cannot be earlier than the current date nor earlier than the Start Date, if a period is defined.   
- After pressing the *Save* button, the administrator will be directed to the course detail page, Where he can proceed with the creation of course structure. 
+ 
+After pressing the *Save* button, the course is set to the status *Draft* and the administrator will be directed to the course detail page, Where he can proceed with the creation of course structure. 
 
 ## 2. Creating the modules
 In the Course details page, go to the Modules related list and click the New button. Fill in the following fields:
@@ -169,11 +170,11 @@ By setting this field to "true", the administrator is allowed to set a weight fo
 It's possible to reorder the questions by dragging them and dropping them in the desired order. This functionality will be enabled provided the *Shuffle Questions* field is not set to "true" or there is no *Question Pool*.
 
 ## 5. Activating or Inactivating a Module
-Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course turns to "Active" status, the module will be shown as part of it.   
+Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course turns to "Active" status, the module will be available as part of it.   
 Active modules contribute to the progress of the course since they are considered in its calculation.  
 
 Example:  
-A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).  
+An active course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).  
 If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active modules, his progress will be 33% (1 / 3).  
 
 In the Module details page, clicking the *Activate* button in the right upper corner of the page and confirming the message, makes the module active and replaces the button by the *Inactivate* one.  
@@ -201,7 +202,8 @@ Depending on how the course period is configured, there are 3 (three) possible s
 :point_right: For courses in status *Scheduled*, the system automatically changes their status to *Active* as soon as the start date is reached.  
 :point_right: For courses in status *Active*, the system automatically changes their status to *Completed* as soon as the end date is over.  
 
-A course can be inactivated at any time. When inactivating a course, any of its fields can be edited.
+A course can be inactivated at any time. When inactivating a course, its status is set to *Inactive* and any of its fields can be edited.  
+In order to activate the course again, the same condition must be met: at least one active module. The final status after reactivation also depends on period dates.
 
 ## 9. Creating Course Dependencies
 A course can be dependent of one or more other courses, this is, it could only be joined after member approval on the predecessors courses.  
