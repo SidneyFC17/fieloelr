@@ -169,7 +169,7 @@ By setting this field to "true", the administrator is allowed to set a weight fo
 It's possible to reorder the questions by dragging them and dropping them in the desired order. This functionality will be enabled provided the *Shuffle Questions* field is not set to "true" or there is no *Question Pool*.
 
 ## 5. Activating or Inactivating a Module
-Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course is activated, the module will be shown as part of it.  
+Once the module is ready to compose the course, the administrator needs to *Activate* it. This way, when the course turns to "Active" status, the module will be shown as part of it.   
 Active modules contribute to the progress of the course since they are considered in its calculation.  
 Example: A course has four modules and all of them are active ones. When the member approves the first one, his progress in the course will be 25% (1 / 4).  
 If one of the four modules is not active, the member will be unable to take the inactive module. When approving the first of the three active ones, his progress will be 33% (1 / 3).  
