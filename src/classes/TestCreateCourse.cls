@@ -175,7 +175,6 @@ private class TestCreateCourse{
         courses.get(0).FieloELR__Status__c = 'Active';
         
         update courses.get(0);
-        courses = [SELECT Id,FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 1' LIMIT 1];
 
         System.assertEquals('Active', courses.get(0).FieloELR__Status__c);
         
