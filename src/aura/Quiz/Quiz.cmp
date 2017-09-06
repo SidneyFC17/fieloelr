@@ -3,12 +3,14 @@
     <aura:attribute name="type" type="String" default="singular" />
     <aura:attribute name="module" type="FieloELR__Module__c" />
     
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    
     <aura:if isTrue="{!v.type == 'singular'}">
         <aura:iteration var="question" items="{!v.questions}">
-            <c:Question question="{!question}" type="{!question.FieloELR__Type__c}"/>
+            <c:Question question="{!question}" type="{!question.FieloELR__Type__c}" moduleId="{!v.module.Id}" />
         </aura:iteration>
     </aura:if>
-    
+    <lightning:button variant="brand" onclick="{!c.showAnswer}" label="Answer" />
     <aura:if isTrue="{!v.type == ''}">
         
     </aura:if>    

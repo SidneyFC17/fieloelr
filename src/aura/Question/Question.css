@@ -1,2 +1,6 @@
-.THIS {
+.THIS .matchingAnswer{
+    max-width: 50px;    
+}
+.THIS .inline{
+    display: inline;
 }
