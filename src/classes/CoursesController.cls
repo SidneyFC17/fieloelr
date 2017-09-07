@@ -19,4 +19,5 @@ public with sharing class CoursesController {
         List<FieloELR__CourseStatus__c> memberCourses = FieloELR.CourseService.getCourseStatus(fieldsCourseStatus, fieldsModuleResponse,null, memberId,10, 0, 'Name');
         return JSON.serialize(memberCourses);        
     }
+    
 }

@@ -1,0 +1,4 @@
+<aura:component controller="ModuleResponseController">
+    <aura:attribute name="moduleResponse" type="sObject" />
+	<aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+</aura:component>

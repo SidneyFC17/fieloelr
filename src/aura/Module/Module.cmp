@@ -7,7 +7,7 @@
     
     <!--<lightning:button variant="neutral" label="Module" onclick="{!c.showModule }" />        -->
     
-    <c:Quiz questions="{!v.questions}" module="{!v.module}" />
+    <c:Quiz questions="{!v.questions}" module="{!v.module.module}" moduleWrapper="{!v.module}"  />
     
     
 </aura:component>

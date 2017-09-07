@@ -1,0 +1,34 @@
+({
+	doInit : function(component, event, helper) {        
+        var moduleResponse = component.get('v.moduleResponse');                
+        debugger;
+        var spinner = $A.get("e.c:ToggleSpinnerEvent");        
+        if(spinner){
+            spinner.setParam('show', true);
+            spinner.fire();    
+        }                   
+        var action = component.get('c.getModuleResponse');
+        action.setParams({
+            'moduleResponseId': moduleResponse.Id
+        })
+        // Add callback behavior for when response is received
+        action.setCallback(this, function(response) {        	
+            var state = response.getState();         
+            var spinner = $A.get("e.c:ToggleSpinnerEvent");                
+            if (component.isValid() && state === 'SUCCESS') {                    
+                var moduleResponse = JSON.parse(response.getReturnValue());                
+                debugger;
+            }else {
+                console.log('Failed with state: ' + state);
+            }
+            if(spinner){
+                spinner.setParam('show', false);
+                spinner.fire();    
+            }   
+        });      
+        // Send action off to be executed
+        $A.enqueueAction(action);   
+        
+        
+	}
+})

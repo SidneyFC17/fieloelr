@@ -18,7 +18,8 @@
         var courseRecord = event.getParam('record');
         var courseId = courseRecord.Id;
         var modulesList = [];
-        var modules = courseRecord.modules;        
+        var modules = courseRecord.modules;
+        console.log(courseRecord);        
         var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
         for(var i = 0; i < modules.length; i++){
             var newModule = modules[i].module;
@@ -48,5 +49,11 @@
     showCourseInformation: function(component, event, helper){
         component.set('v.showModule', false); 
         component.set('v.showCourse', true); 
+    },
+    showModuleResponse: function(component, event, helper){
+        var moduleResponse = event.getParam('moduleResponse');
+        component.set('v.moduleResponse', moduleResponse);
+        component.set('v.showModule', false);
+        component.set('v.showModuleResponse', true);
     }
 })

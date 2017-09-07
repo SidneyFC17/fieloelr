@@ -9,7 +9,7 @@
             var options = {};
             var i = 0;
             question.FieloELR__AnswerOptions__r.records.forEach(function(option){
-               options[i] = option.FieloELR__AnswerOptionText__c; 
+               options[i] = option.Id; 
                i++;
             });
             component.set('v.matchingOptions', options);
@@ -18,6 +18,7 @@
     setAnswer: function(component, event, helper){
         var answerLabel = event.getSource().get('v.label');
         var answerValue = event.getSource().get('v.value');        
+        var answerText = event.getSource().get('v.text');        
         var moduleAnswer = window.localStorage.getItem('moduleAnswer');        
         moduleAnswer = JSON.parse(moduleAnswer);        
         var moduleId = component.get('v.moduleId');        
@@ -25,14 +26,14 @@
         var type = component.get('v.type');           
         
         if (type == 'Single Choice' || type == 'Statement') {                                    
-            moduleAnswer[moduleId][question] =  answerLabel;
+            moduleAnswer[moduleId][question] =  answerText;
         } else if (type == 'Multiple Choice') {                        
             if(answerValue){
                 var answer = moduleAnswer[moduleId][question] || {};            
-                answer[answerLabel] = answerValue;
+                answer[answerText] = true;
                 moduleAnswer[moduleId][question] =  answer;                
             } else {
-                delete moduleAnswer[moduleId][question][answerLabel];
+                delete moduleAnswer[moduleId][question][answerText];
             }
             
         } else if (type == 'Short Answer') {

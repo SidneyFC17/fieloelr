@@ -1,7 +1,8 @@
-<aura:component >
+<aura:component controller="QuizController" >
     <aura:attribute name="questions" type="FieloELR__Question__c[]" />
     <aura:attribute name="type" type="String" default="singular" />
     <aura:attribute name="module" type="FieloELR__Module__c" />
+    <aura:attribute name="moduleWrapper" type="sObject" />
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     
@@ -10,7 +11,7 @@
             <c:Question question="{!question}" type="{!question.FieloELR__Type__c}" moduleId="{!v.module.Id}" />
         </aura:iteration>
     </aura:if>
-    <lightning:button variant="brand" onclick="{!c.showAnswer}" label="Answer" />
+    <lightning:button variant="brand" onclick="{!c.submitAnswer}" label="Answer" />
     <aura:if isTrue="{!v.type == ''}">
         
     </aura:if>    
