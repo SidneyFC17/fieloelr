@@ -37,7 +37,7 @@
     </aura:if>
     
     <aura:if isTrue="{!v.showCourse}">        
-        <div>
+        <div class="slds-clearfix">
             <h3 class="slds-section-title--divider slds-float_left">{!v.courseTitle}</h3>        
             <lightning:button class="slds-float_right" variant="neutral" label="Back to Courses" onclick="{!c.showCoursesList }" />
         </div>
@@ -46,13 +46,12 @@
     </aura:if>
     
     <aura:if isTrue="{!v.showModule}">        
-        <div>
+        <div class="slds-clearfix">
             <h3 class="slds-section-title--divider slds-float_left">{!v.moduleTitle}</h3>        
-            <lightning:button class="slds-float_right" variant="neutral" label="Back to Course" onclick="{!c.showCourseInformation }" />
-            <c:Module module="{!v.moduleRecord}" />
+            <lightning:button class="slds-float_right" variant="neutral" label="Back to Course" onclick="{!c.showCourseInformation }" />            
         </div>                
+        <c:Module module="{!v.moduleRecord}" />
     </aura:if>
-
     
     <c:Spinner />    
     

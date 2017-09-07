@@ -1,7 +1,9 @@
 ({
-    doInit : function(component, event, helper){
+    doInit : function(component, event, helper){        
         var course = component.get('v.record');
-        component.set('v.join', course.showJoinBtn);        
+        var memberId = JSON.parse(window.localStorage.getItem('member')).Id;
+        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));        
+        component.set('v.join', courseCache[memberId][course.Id]);        
     },
     joinCourse : function(component, event, helper) {         
         var toastEvent = $A.get("e.force:showToast");
@@ -33,6 +35,9 @@
                     });
                     toastEvent.fire();                    
                     component.set('v.join', false);
+                    var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
+                    courseCache[memberId][courseId] = false;
+                    window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));                    
                 }else {
                     console.log('Failed with state: ' + state);
                 }

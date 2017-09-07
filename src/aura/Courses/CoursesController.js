@@ -6,22 +6,26 @@
         component.set('v.fieldset', fieldset);
         component.set('v.modulesFieldset', modulesFieldset);
         component.set('v.title', 'Courses');
+        window.localStorage.setItem('coursesStatus', '{}');
     },
     updateMember: function(component, event, helper){
         var member = event.getParam('member');        
-        component.set('v.member', member);        
+        component.set('v.member', member);                
         helper.loadCourses(component, event, helper);        
     },
     showCourse: function(component, event, helper){
-        var modulesRecord = event.getParam('record');      
+        var memberId = component.get('v.member').Id;        
+        var courseRecord = event.getParam('record');
+        var courseId = courseRecord.Id;
         var modulesList = [];
-        var modules = modulesRecord.modules;        
+        var modules = courseRecord.modules;        
+        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
         for(var i = 0; i < modules.length; i++){
             var newModule = modules[i].module;
             newModule.moduleResponses = modules[i].moduleResponses;
             newModule.numberOfAttempts = modules[i].numberOfAttempts;
-            newModule.isApproved = modules[i].isApproved;
-            newModule.showBtn = !modulesRecord.showJoinBtn;
+            newModule.isApproved = modules[i].isApproved;            
+            newModule.showBtn = !courseCache[memberId][courseId];
             modulesList.push(newModule);
         }                
         var courseName = event.getParam('courseName');
