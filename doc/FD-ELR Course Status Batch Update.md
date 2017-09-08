@@ -13,12 +13,14 @@ If no schedule job is set to Course Status changing, it must be created as follo
 1. Go to:   
 > Develop  
    |_> Apex Classes  
-2. Press the *Schedule Apex* button; 
+2. Press the *Schedule Apex* button;   
+![image](https://user-images.githubusercontent.com/26011197/30222834-a7dadbee-949e-11e7-92c0-618904925248.png)  
 3. Give the job a name, e.g., **_Course Status Update_**;
 4. Select the Apex Class: *CourseStatusBatchSchedule*;
 5. Set the frequency to *Weekly* and mark all days of the week;
 6. Define a *Start* date and an *End* date as well as the *Preferred Start Time*;
-7. Click *Save* button.
+7. Click *Save* button.  
+![image](https://user-images.githubusercontent.com/26011197/30222977-56fafd8e-949f-11e7-9c11-564c2d8754ac.png)  
 
 By setting this schedule job, the batch process will run every day at the defined Preferred Start Time, from the defined Start date up to the defined End date.
 
