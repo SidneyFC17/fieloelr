@@ -14,14 +14,14 @@
         var moduleWrapper = component.get('v.moduleWrapper');
         var moduleId = component.get('v.module').Id;
         var quizAnswer = JSON.parse(window.localStorage.getItem('moduleAnswer'))[moduleId];
-        var action = component.get('c.submitQuiz');
+        var action = component.get('c.submitQuiz');        
         action.setParams({
             'moduleWrapperJson': JSON.stringify(moduleWrapper),
             'quizAnswer': JSON.stringify(quizAnswer)
         })
         // Add callback behavior for when response is received
         action.setCallback(this, function(response) {
-        	var moduleResponseEvent = $A.get("e.c:ShowModuleResponse");            
+            var moduleResponseEvent = $A.get("e.c:ShowModuleResponse");            
             var state = response.getState();         
             var spinner = $A.get("e.c:ToggleSpinnerEvent");                
             if (component.isValid() && state === 'SUCCESS') {                    

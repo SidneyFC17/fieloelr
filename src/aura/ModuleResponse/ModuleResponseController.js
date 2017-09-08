@@ -1,7 +1,6 @@
 ({
-	doInit : function(component, event, helper) {        
+    doInit : function(component, event, helper) {        
         var moduleResponse = component.get('v.moduleResponse');                
-        debugger;
         var spinner = $A.get("e.c:ToggleSpinnerEvent");        
         if(spinner){
             spinner.setParam('show', true);
@@ -12,12 +11,13 @@
             'moduleResponseId': moduleResponse.Id
         })
         // Add callback behavior for when response is received
-        action.setCallback(this, function(response) {        	
+        action.setCallback(this, function(response) {           
             var state = response.getState();         
             var spinner = $A.get("e.c:ToggleSpinnerEvent");                
             if (component.isValid() && state === 'SUCCESS') {                    
                 var moduleResponse = JSON.parse(response.getReturnValue());                
-                debugger;
+                component.set('v.moduleResponseQuestions', moduleResponse);
+                helper.loadQuestionResponses(component);
             }else {
                 console.log('Failed with state: ' + state);
             }
@@ -30,5 +30,5 @@
         $A.enqueueAction(action);   
         
         
-	}
+    }
 })

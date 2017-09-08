@@ -1,4 +1,14 @@
 <aura:component controller="ModuleResponseController">
-    <aura:attribute name="moduleResponse" type="sObject" />
-	<aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    <aura:attribute name="moduleResponse" type="FieloELR__ModuleResponse__c" />
+    <aura:attribute name="moduleResponseQuestions" type="FieloELR__ModuleResponse__c" />
+    <aura:attribute name="showAnswers" type="Boolean" default="false" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    
+    <aura:if isTrue="{!v.showAnswers}">
+        <aura:iteration var="answer" items="{!v.answers}">
+            <c:Answer answer="{!answer.questionResponse}" type="{!answer.FieloELR__Type__c}" moduleId="{!v.module.Id}" />
+        </aura:iteration>
+    </aura:if>
+    
+    
 </aura:component>

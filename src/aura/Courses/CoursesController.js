@@ -19,7 +19,6 @@
         var courseId = courseRecord.Id;
         var modulesList = [];
         var modules = courseRecord.modules;
-        console.log(courseRecord);        
         var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
         for(var i = 0; i < modules.length; i++){
             var newModule = modules[i].module;

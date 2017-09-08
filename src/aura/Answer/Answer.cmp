@@ -1,0 +1,57 @@
+<aura:component >    
+    <aura:attribute name="question" type="FieloELR__Question__c" />
+    <aura:attribute name="answer" type="FieloELR__Question__c" />
+    
+    <aura:attribute name="moduleId" type="Id" />
+    <aura:attribute name="options" type="sObject[]" />
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="type" type="String" /> 
+    <aura:attribute name="renderQuestion" type="Boolean" default="false" />
+    
+    <aura:attribute name="matchingOptions" type="sObject" />
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    
+    <div class="question slds-p-top_large">
+        <aura:if isTrue="{!v.renderQuestion}">
+            <div class="slds-text-heading_small slds-text-align_left">{!v.title}</div>
+            <aura:if isTrue="{!v.type == 'Single Choice'}" >        
+                <aura:iteration items="{!v.options}" var="option">                
+                    <ui:inputRadio text="{!option.Id}" name="{!v.question.FieloELR__Question__c}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                
+                </aura:iteration>
+                
+            </aura:if>
+            <aura:if isTrue="{!v.type == 'Multiple Choice'}" >
+                <aura:iteration items="{!v.options}" var="option">
+                    <ui:inputCheckbox text="{!option.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                    
+                </aura:iteration>        
+            </aura:if>
+            <aura:if isTrue="{!v.type == 'Short Answer'}" >        
+                <lightning:input label="Write your answer" onchange="{!c.setAnswer}" value="{!v.answer}" />
+            </aura:if>
+            <aura:if isTrue="{!v.type == 'Statement'}" >
+                <aura:iteration items="{!v.options}" var="option">
+                    <ui:inputRadio name="{!v.question.Id}" text="{!option.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                                    
+                </aura:iteration>
+            </aura:if>
+            <aura:if isTrue="{!v.type == 'Matching Options'}" >
+                <table>
+                    <tbody>
+                        <aura:iteration items="{!v.options}" var="option" indexVar="index">
+                            <tr>                            
+                                <td>
+                                    <div class="slds-truncate" title="{!option.FieloELR__AnswerOptionText__c}">{!index + '- ' + option.FieloELR__AnswerOptionText__c}</div>
+                                </td>
+                                <td>                                           
+                                    <ui:inputText change="{!c.setAnswer}" class="matchingAnswer inline" label="{!option.FieloELR__MatchingText__c}" labelClass="inline slds-p-right_small" />       
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>            
+            </aura:if>
+        </aura:if>
+    </div>
+    
+    
+</aura:component>

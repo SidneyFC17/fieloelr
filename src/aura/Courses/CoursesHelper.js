@@ -1,6 +1,6 @@
 ({
     loadCourses : function(component, event, helper) {
-        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+        var spinner = $A.get("e.c:ToggleSpinnerEvent");
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -28,7 +28,6 @@
                         if(!courseCache[memberId]){
                             courseCache[memberId] = {};    
                         }
-                        console.log('step 2');
                         var showJoinBtn;                          
                         if (courseCache[memberId][courseId]) {                            
                             showJoinBtn = courseCache[memberId][courseId];                            
@@ -42,8 +41,7 @@
                     });
                     component.set('v.coursesList', coursesList);                                        
                     component.set('v.showCoursesList', false);
-                    component.set('v.showCoursesList', true); 
-                    console.log(coursesList);
+                    component.set('v.showCoursesList', true);                     
                 }else {
                     console.log('Failed with state: ' + state);
                 }

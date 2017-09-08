@@ -64,6 +64,7 @@
 		<members>SetAnswer</members>
 		<members>ShowModuleResponse</members>
 		<members>ModuleResponse</members>
+		<members>Answer</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<version>40.0</version>
