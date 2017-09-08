@@ -15,6 +15,7 @@ If no schedule job is set to Course Status changing, it must be created as follo
    |_> Apex Classes  
 2. Press the *Schedule Apex* button;   
 ![image](https://user-images.githubusercontent.com/26011197/30222834-a7dadbee-949e-11e7-92c0-618904925248.png)  
+
 3. Give the job a name, e.g., **_Course Status Update_**;
 4. Select the Apex Class: *CourseStatusBatchSchedule*;
 5. Set the frequency to *Weekly* and mark all days of the week;
@@ -38,7 +39,9 @@ To manually run the batch process that updates the course status, follow the bel
 7. Compare the results in the page to your execution info  
 7.1  If no errors were found, and the execution has found registers to update, it will indicate the total batch quantity (in this case 1) and the batches that were executed (in this case 1);
 ![image](https://user-images.githubusercontent.com/26011197/30215742-4c117cee-9487-11e7-9815-686661f3b3ee.png)  
+
 7.2 If the execution has found no errors and no registers to update, it will indicate that no batches were executed;  
 ![image](https://user-images.githubusercontent.com/26011197/30215794-724d5f90-9487-11e7-9f28-0edcdea65632.png)  
+
 7.3 If errors were found, it will show the errors.  
 ![image](https://user-images.githubusercontent.com/26011197/30215840-a13e4292-9487-11e7-9f9f-34e7ac924f93.png)
