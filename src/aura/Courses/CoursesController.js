@@ -34,9 +34,8 @@
             newModule.isApproved = modules[i].isApproved;            
             newModule.showBtn = !courseCache[memberId][courseId];
             modulesList.push(newModule);
-        }                
-        var courseName = event.getParam('courseName');
-        component.set('v.courseTitle', courseName);
+        }                        
+        component.set('v.courseTitle', courseRecord.Name);
         component.set('v.showCoursesList', false);        
         component.set('v.modules', modulesList);        
         component.set('v.showCourse', true);        

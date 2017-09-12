@@ -1,3 +1,3 @@
 <aura:event type="APPLICATION" description="Event template">
-    <aura:attribute name="moduleResponse" type="sObject"/>	        
+	<aura:attribute name="moduleResponse" type="sObject"/>	        
 </aura:event>

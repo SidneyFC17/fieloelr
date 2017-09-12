@@ -32,7 +32,7 @@
     
     <aura:handler event="c:TakeModuleEvent" action="{!c.takeModule}"/>
     
-    <aura:handler event="c:ShowModuleResponse" action="{!c.showModuleResponse}"/>
+    <aura:handler event="c:ShowModuleResponseEvent" action="{!c.showModuleResponse}"/>
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     

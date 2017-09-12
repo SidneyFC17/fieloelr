@@ -1,5 +1,0 @@
-<aura:component >
-    <aura:attribute name="record" type="String"/>
-    <aura:attribute name="name" type="String" />
-    <a onclick="{!c.showCourse}" > {!v.name}</a>
-</aura:component>

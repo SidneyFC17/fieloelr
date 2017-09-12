@@ -21,7 +21,7 @@
         })
         // Add callback behavior for when response is received
         action.setCallback(this, function(response) {
-            var moduleResponseEvent = $A.get("e.c:ShowModuleResponse");            
+            var moduleResponseEvent = $A.get("e.c:ShowModuleResponseEvent");            
             var state = response.getState();         
             var spinner = $A.get("e.c:ToggleSpinnerEvent");                
             if (component.isValid() && state === 'SUCCESS') {                    

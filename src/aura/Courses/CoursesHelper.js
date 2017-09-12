@@ -1,6 +1,5 @@
 ({
-    loadCourses : function(component, event, helper) {
-        debugger;
+    loadCourses : function(component, event, helper) {        
         var spinner = $A.get("e.c:ToggleSpinnerEvent");
         if(spinner){
             spinner.setParam('show', true);
@@ -10,8 +9,7 @@
         var fieldset = component.get('v.fieldset');
         fieldset = helper.getFieldset(fieldset).fieldset;
         var modulesFieldset = component.get('v.courseFieldset');
-        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset;
-        debugger;
+        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset;        
         if(member){            
             var action = component.get('c.getCourses');
             action.setParams({
