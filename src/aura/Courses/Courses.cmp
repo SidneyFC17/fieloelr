@@ -8,7 +8,7 @@
     <aura:attribute type="sObject" name="moduleResponse" />
     
     <aura:attribute type="FieloELR__Module__c[]" name="modules" />
-    <aura:attribute type="sObject[]" name="modulesFieldset" />
+    <aura:attribute type="sObject[]" name="courseFieldset" />
     <aura:attribute type="Boolean" name="showCourse" default="false" />
     
     <aura:attribute type="Boolean" name="showModule" default="false" />
@@ -19,8 +19,9 @@
     <aura:attribute type="String" name="config" />
     
     <aura:attribute type="String" name="title" default="" />
-    <aura:attribute type="String" name="layout" default="table"/>    
-    <aura:attribute type="String" name="whereClause" default="" />
+    <aura:attribute type="String" name="layout"/>    
+    <aura:attribute name="columns" type="String" />
+    <aura:attribute type="String" name="whereClause" default="" />    
     
     <aura:attribute type="String" name="courseTitle" default="" />
     
@@ -35,9 +36,12 @@
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     
+    <aura:attribute type="String" name="courseLayout"/>    
+    <aura:attribute name="courseColumns" type="String" />
+    
     <aura:if isTrue="{!v.showCoursesList}">
         <h3 class="slds-section-title--divider">{!v.title}</h3>        
-        <c:ListView layout="{!v.layout}" fieldset="{!v.fieldset}" records="{!v.coursesList}" />
+        <c:ListView layout="{!v.layout}" columns="{!v.columns}" fieldset="{!v.fieldset}" records="{!v.coursesList}" />
     </aura:if>
     
     <aura:if isTrue="{!v.showCourse}">        
@@ -46,7 +50,7 @@
             <lightning:button class="slds-float_right" variant="neutral" label="Back to Courses" onclick="{!c.showCoursesList }" />
         </div>
         
-        <c:ListView layout="{!v.layout}" fieldset="{!v.modulesFieldset}" records="{!v.modules}" />
+        <c:ListView layout="{!v.courseLayout}" columns="{!v.courseColumns}" fieldset="{!v.courseFieldset}" records="{!v.modules}" />
     </aura:if>
     
     <aura:if isTrue="{!v.showModule}">        

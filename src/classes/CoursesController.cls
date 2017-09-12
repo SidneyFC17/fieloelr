@@ -1,8 +1,8 @@
 public with sharing class CoursesController {
     @auraEnabled
-    public static String getCourses(FieloPLT__Member__c member, List<String> fieldset){
-        Set<String> fieldsCourse = new Set<String>(fieldset); 
-        Set<String> fieldsModule = new Set<String>{'Name','FieloELR__Description__c', 'FieloELR__ApprovalGrade__c'}; 
+    public static String getCourses(FieloPLT__Member__c member, List<String> coursesFieldset, List<String> modulesFieldset){
+        Set<String> fieldsCourse = new Set<String>(coursesFieldset); 
+        Set<String> fieldsModule = new Set<String>(modulesFieldset); 
         Set<String> fieldsCourseStatus = new Set<String>{'Name'};
         Set<String> fieldsModuleResponse = new Set<String>{'Name'};
         Id memberId = member.Id;

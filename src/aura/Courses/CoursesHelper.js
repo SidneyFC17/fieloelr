@@ -1,17 +1,23 @@
 ({
     loadCourses : function(component, event, helper) {
+        debugger;
         var spinner = $A.get("e.c:ToggleSpinnerEvent");
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
         }           
         var member = component.get('v.member');        
-        var fieldset = ['Name','FieloELR__Description__c'];
+        var fieldset = component.get('v.fieldset');
+        fieldset = helper.getFieldset(fieldset).fieldset;
+        var modulesFieldset = component.get('v.courseFieldset');
+        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset;
+        debugger;
         if(member){            
             var action = component.get('c.getCourses');
             action.setParams({
                 'member': member,
-                'fieldset': fieldset
+                'coursesFieldset': fieldset,
+                'modulesFieldset': modulesFieldset
             })
             // Add callback behavior for when response is received
             action.setCallback(this, function(response) {
@@ -64,5 +70,16 @@
             coursesCache[memberId] = {};            
         }
         window.localStorage.setItem('coursesCache', JSON.stringify(coursesCache));        
+    },
+    getFieldset : function(fieldset) {
+        var fields = {fieldset: ['Name'], subcomponents: []};
+        fieldset.forEach(function(field){
+            if(field.type != 'subcomponent'){
+                fields.fieldset.push(field.apiName);    
+            } else {
+                fields.subcomponents.push(field);    
+            }           
+        })      
+        return fields;
     }
 })

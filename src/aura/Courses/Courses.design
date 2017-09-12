@@ -1,0 +1,5 @@
+<design:component >
+    <design:attribute label="Configuration" name="config" description="Component Configuration" 
+default='{   "Fieldset": [{"apiName": "Name", "type": "subcomponent", "subcomponent": "ShowCourse", "label": "Name", "showLabel": true}, {"apiName": "FieloELR__Description__c", "type": "output", "label": "Description", "showLabel": true}, {"apiName": "JoinCourse", "type": "subcomponent", "subcomponent": "JoinCourse", "label": "Join Course", "showLabel": false}] ,   "Layout": "Table",   "Title": "Courses",   "Paging": true,   "Limit": 6, "Course": {"Fieldset": [{"apiName": "Name", "type": "output", "label": "Name", "showLabel": true}, {"apiName": "FieloELR__Description__c", "type": "output", "label": "Description", "showLabel": true}, {"apiName": "FieloELR__ApprovalGrade__c", "type": "output", "label": "Approval Grade", "showLabel": true}, {"apiName": "TakeModule", "type": "subcomponent", "subcomponent": "TakeModule", "label": "", "showLabel": false}], "Layout": "Table" }}'
+    	/>
+</design:component>
