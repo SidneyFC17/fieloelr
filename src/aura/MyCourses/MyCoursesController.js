@@ -1,12 +1,21 @@
 ({
-    doInit: function(component, event, helper){                
-        var fieldset = [{apiName: "Name", type: "subcomponent", subcomponent: "ShowCourse", label: "Name", showLabel: true}, {apiName: "FieloELR__Progress__c", type: "subcomponent", subcomponent: "ProgressBar", label: "Progress", showLabel: true}]
-        var modulesFieldset = [{apiName: "Name", type: "output", label: "Name", showLabel: true}, {apiName: "FieloELR__Description__c", type: "output", label: "Description", showLabel: true}, {apiName: "FieloELR__ApprovalGrade__c", type: "output", label: "Approval Grade", showLabel: true}];
-        component.set('v.title', 'My Courses');
-        component.set('v.modulesFieldset', modulesFieldset);
-        component.set('v.fieldset', fieldset);
+    doInit: function(component, event, helper){
+        var config = component.get('v.config');      
+        if(config){
+            config = JSON.parse(config);
+            var fieldset = config.Fieldset;
+            var courseFieldset = config.Course.Fieldset;
+            component.set('v.fieldset', fieldset);
+            component.set('v.courseFieldset', courseFieldset);
+            component.set('v.title', config.Title);        
+            component.set('v.layout', config.Layout.toLowerCase());        
+            component.set('v.columns', config.Columns);            
+            component.set('v.courseLayout', config.Course.Layout.toLowerCase());                    
+            component.set('v.courseColumns', config.Course.Columns);                      
+            window.localStorage.setItem('coursesStatus', '{}');            
+        }        
     },
-    updateMember: function(component, event, helper){
+    updateMember: function(component, event, helper){        
         var member = event.getParam('member');        
         component.set('v.member', member);        
         helper.loadCourses(component, event, helper);        
