@@ -506,7 +506,7 @@ global with sharing class CourseService {
 		for(Id courseId : cdKeysByCourse.keySet()){
 			List<String> listKeys = new List<String>(cdKeysByCourse.get(courseId));
 			listKeys.sort();
-			cdStringKeys.add(String.join(listKeys,''));
+			cdStringKeys.add(String.join(listKeys,','));
 		}
 		return cdStringKeys;
 	}
@@ -526,7 +526,7 @@ global with sharing class CourseService {
 		for(Id moduleId : mdKeysByCourse.keySet()){
 			List<String> listKeys = new List<String>(mdKeysByCourse.get(moduleId));
 			listKeys.sort();
-			mdStringKeys.add(String.join(listKeys,''));
+			mdStringKeys.add(String.join(listKeys,','));
 		}
 		return mdStringKeys;
 	}
