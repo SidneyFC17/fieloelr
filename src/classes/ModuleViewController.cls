@@ -258,7 +258,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 	}
 
 	@RemoteAction
-  	public static List<SObject> getRecords( String objectName, String fields, Integer offset, String orderBy, String dataFilters, Integer recordsPerPage ) {
+  	public static List<SObject> getRecords( String objectName, String fields, Integer offset, String orderBy, String dataFilters, Integer recordsPerPage, String whereClause ) {
 		String query = 'SELECT Id, ' + fields;
 		query += ' FROM ' + objectName;
 		query += getWhereCondition( dataFilters ); 
