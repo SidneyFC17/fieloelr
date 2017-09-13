@@ -27,6 +27,8 @@
                     var coursesWrapper = JSON.parse(response.getReturnValue());
                     var courseDependencies = {};                    
                     var coursesCompleted = {};
+                    var moduleDependencies = {};                    
+                    var modulesCompleted = {};
                     coursesWrapper.forEach(function(course){                        
                         var newCourse = course.course;
                         newCourse.courseStatus = course.courseStatus ;
@@ -44,6 +46,24 @@
                             window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));                            
                         }                                                
                         newCourse.modules = course.modules;
+                        newCourse.modules.forEach(function(module){
+                            var courseModule = module.module;
+                            if(courseModule.FieloELR__HasDependencies__c){
+                                moduleDependencies[courseModule.Id] = {disabled: true, dependencies: []};
+                                var dependencies = courseModule.FieloELR__KeyDependencies__c.split(',');
+                                dependencies.forEach(function(dep){
+                                    moduleDependencies[courseModule.Id].dependencies.push(dep.substr(0,15));
+                                })
+                            }                            
+                            if(module.numberOfAttempts > 0){                                
+                                modulesCompleted[courseModule.Id.substr(0,15)] = true;
+                            } else {
+                                modulesCompleted[courseModule.Id.substr(0,15)] = false;
+                            }
+                            
+                            
+                            
+                        })                        
                         coursesList.push(newCourse);
                         if(newCourse.FieloELR__HasDependencies__c){
                             courseDependencies[newCourse.Id] = {disabled: true, dependencies: []};
@@ -66,10 +86,23 @@
                         })
                         courseDependencies[id].disabled = !res;
                     }
+                    for(var id in moduleDependencies){
+                        var res = true;
+                        moduleDependencies[id].dependencies.forEach(function(dep){
+                            res = res && modulesCompleted[dep];
+                        })
+                        moduleDependencies[id].disabled = !res;
+                    }
                     coursesList.forEach(function(course){
                         if(courseDependencies[course.Id]){
                             course.disabled = courseDependencies[course.Id].disabled;
                         }
+                        course.modules.forEach(function(module){
+                            var courseModule = module.module;
+                            if(moduleDependencies[courseModule.Id]){
+                                courseModule.disabled = moduleDependencies[courseModule.Id].disabled;                                
+                            }
+                        })
                     })
                     component.set('v.coursesList', coursesList);                                        
                     component.set('v.showCoursesList', false);
