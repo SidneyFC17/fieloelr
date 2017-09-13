@@ -65,6 +65,18 @@
         <label>Type</label>
         <picklist>
             <picklistValues>
+                <fullName>Promotion</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Challenge</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Course</fullName>
                 <default>false</default>
             </picklistValues>
@@ -75,4 +87,12 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+    <label>Model</label>
+    <nameField>
+        <label>Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Models</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>
