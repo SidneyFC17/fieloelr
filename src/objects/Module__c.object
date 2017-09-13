@@ -301,7 +301,7 @@ TEXT(Course__r.Status__c) = &apos;Completed&apos;)
       )
    )</errorConditionFormula>
         <errorDisplayField>Course__c</errorDisplayField>
-        <errorMessage>On module creation, course cannot be active.</errorMessage>
+        <errorMessage>On module creation, course cannot be active, complete or scheduled</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>NoQuestionPoolIfWeightedQuestions</fullName>

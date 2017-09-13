@@ -73,14 +73,6 @@
         <value>The Course has been inactivated</value>
     </labels>
     <labels>
-        <fullName>DataSavedSuccessfully</fullName>
-        <categories>CourseStatusViewController.cls,CourseViewController.cls</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>DataSavedSuccessfully</shortDescription>
-        <value>Data was saved successfully</value>
-    </labels>
-    <labels>
         <fullName>False</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
@@ -310,7 +302,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateModuleEditableFields</shortDescription>
-        <value>An module with module responses cannot be deleted or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
+        <value>A module with module responses cannot be deleted or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
     </labels>
     <labels>
         <fullName>ValidateModuleResponseMemberApproved</fullName>
@@ -367,5 +359,5 @@
         <protected>true</protected>
         <shortDescription>ValidateQuestionResponseSubmit</shortDescription>
         <value>The question cannot be submitted because was already answered correct.</value>
-    </labels>F
+    </labels>
 </CustomLabels>
