@@ -25,8 +25,11 @@
                     var memberId = member.Id;                                     
                     var coursesList = [];
                     var coursesWrapper = JSON.parse(response.getReturnValue());
+                    var courseDependencies = {};                    
+                    var coursesCompleted = {};
                     coursesWrapper.forEach(function(course){                        
                         var newCourse = course.course;
+                        newCourse.courseStatus = course.courseStatus ;
                         var courseId = newCourse.Id;                                     
                         var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));                                                                        
                         if(!courseCache[memberId]){
@@ -36,13 +39,38 @@
                         if (courseCache[memberId][courseId]) {                            
                             showJoinBtn = courseCache[memberId][courseId];                            
                         } else {                            
-                            showJoinBtn = course.allowedForDependency && course.allowedForSegment && !course.courseStatus;
+                            showJoinBtn = !course.courseStatus;
                             courseCache[memberId][courseId] = showJoinBtn;
                             window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));                            
                         }                                                
                         newCourse.modules = course.modules;
                         coursesList.push(newCourse);
+                        if(newCourse.FieloELR__HasDependencies__c){
+                            courseDependencies[newCourse.Id] = {disabled: true, dependencies: []};
+                            var dependencies = newCourse.FieloELR__KeyDependencies__c.split(',');
+                            dependencies.forEach(function(dep){
+                                courseDependencies[newCourse.Id].dependencies.push(dep.substr(0,15));
+                            })
+                        }
+                        if(newCourse.courseStatus && newCourse.courseStatus.FieloELR__Progress__c == 100){
+                            
+                            coursesCompleted[newCourse.Id.substr(0,15)] = true;
+                        } else {
+                            coursesCompleted[newCourse.Id.substr(0,15)] = false;
+                        }
                     });
+                    for(var id in courseDependencies){
+                        var res = true;
+                        courseDependencies[id].dependencies.forEach(function(dep){
+                            res = res && coursesCompleted[dep];
+                        })
+                        courseDependencies[id].disabled = !res;
+                    }
+                    coursesList.forEach(function(course){
+                        if(courseDependencies[course.Id]){
+                            course.disabled = courseDependencies[course.Id].disabled;
+                        }
+                    })
                     component.set('v.coursesList', coursesList);                                        
                     component.set('v.showCoursesList', false);
                     component.set('v.showCoursesList', true);                     

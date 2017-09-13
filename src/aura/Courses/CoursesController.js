@@ -12,7 +12,7 @@
             component.set('v.columns', config.Columns);        
             component.set('v.courseLayout', config.Course.Layout.toLowerCase());        
             component.set('v.courseColumns', config.Course.Columns);      
-            window.localStorage.setItem('coursesStatus', '{}');            
+            window.localStorage.setItem('coursesStatus', '{}');
         }
     },
     updateMember: function(component, event, helper){
