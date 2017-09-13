@@ -4,3 +4,6 @@
 .THIS .inline{
     display: inline;
 }
+.THIS.disabled{
+    pointer-events:none;
+}

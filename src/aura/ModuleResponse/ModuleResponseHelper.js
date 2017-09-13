@@ -1,15 +1,20 @@
 ({
-	loadQuestionResponses : function(component) {
-        var questionsModule = {};
+    loadQuestionResponses : function(component) {
+        var questionsModule = [];
         var moduleResponse = component.get('v.moduleResponseQuestions');
         var questions = moduleResponse.questions;        
-
-        questions.forEach(function(ques){  
-            
-            var question = ques.question;
-            var questionResponse = ques.questionResponse;
-            questionsModule[question.Id] = {FieloELR__Type__c: question.FieloELR__Type__c, FieloELR__QuestionText__c: question.FieloELR__QuestionText__c, FieloELR__AnswerOptions__r: question.FieloELR__AnswerOptions__r, FieloELR__IsCorrect__c: questionResponse.FieloELR__IsCorrect__c, FieloELR__Answers__r: questionResponse.FieloELR__Answers__r.records};
-        })        
-        console.log(questionsModule);
-	}
+        questions.forEach(function(ques){            
+            var newQuestion = {};
+            newQuestion = ques.question;            
+            newQuestion.FieloELR__IsCorrect__c = ques.questionResponse.FieloELR__IsCorrect__c;                
+            if(newQuestion.FieloELR__Type__c == 'Short Answer'){
+                newQuestion.FieloELR__TextValue__c = ques.questionResponse.FieloELR__TextValue__c;
+            }else{
+                newQuestion.Answers = ques.questionResponse.FieloELR__Answers__r.records;               
+            }
+            questionsModule.push(newQuestion);
+        });      
+        component.set('v.questionsModule', questionsModule);
+        component.set('v.showAnswers', true);
+    }
 })

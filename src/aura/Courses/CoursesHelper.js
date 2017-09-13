@@ -55,15 +55,13 @@
                                     moduleDependencies[courseModule.Id].dependencies.push(dep.substr(0,15));
                                 })
                             }                            
-                            if(module.numberOfAttempts > 0){                                
+                            if(module.isApproved){                                
                                 modulesCompleted[courseModule.Id.substr(0,15)] = true;
                             } else {
                                 modulesCompleted[courseModule.Id.substr(0,15)] = false;
-                            }
+                            }                                                        
                             
-                            
-                            
-                        })                        
+                        })                             
                         coursesList.push(newCourse);
                         if(newCourse.FieloELR__HasDependencies__c){
                             courseDependencies[newCourse.Id] = {disabled: true, dependencies: []};

@@ -27,8 +27,6 @@
             }   
         });      
         // Send action off to be executed
-        $A.enqueueAction(action);   
-        
-        
+        $A.enqueueAction(action);
     }
 })

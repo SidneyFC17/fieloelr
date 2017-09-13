@@ -37,7 +37,7 @@
             }
             
         } else if (type == 'Short Answer') {
-            var answer = component.get('v.answer');
+            var answer = component.get('v.shortAnswer');
             moduleAnswer[moduleId][question] =  answer;
         } else if (type == 'Matching Options') {            
             var matchingOptions = component.get('v.matchingOptions');
