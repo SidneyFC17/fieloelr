@@ -73,20 +73,12 @@
         <value>The Course has been inactivated</value>
     </labels>
     <labels>
-        <fullName>DataSavedSuccessfully</fullName>
-        <categories>CourseStatusViewController.cls,CourseViewController.cls</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>DataSavedSuccessfully</shortDescription>
-        <value>Data was saved successfully</value>
-    </labels>
-    <labels>
-        <fullName>False</fullName>
+        <fullName>FALSE</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>False</shortDescription>
-        <value>False</value>
+        <shortDescription>FALSE</shortDescription>
+        <value>FALSE</value>
     </labels>
     <labels>
         <fullName>MatchingTextRequired</fullName>
@@ -161,12 +153,12 @@
         <value>Question Text is a required field</value>
     </labels>
     <labels>
-        <fullName>True</fullName>
+        <fullName>TRUE</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>True</shortDescription>
-        <value>True</value>
+        <shortDescription>TRUE</shortDescription>
+        <value>TRUE</value>
     </labels>
     <labels>
         <fullName>ValidateAnswerActiveModules</fullName>
@@ -182,7 +174,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateAnswerFormat</shortDescription>
-        <value>Answer Option is in the wrong format. It should be {""abc"":""xyz""}.</value>
+        <value>Answer Option is in the wrong format. It should be {""""abc"""":""""xyz""""}.</value>
     </labels>
     <labels>
         <fullName>ValidateAnswerQuestionResponses</fullName>
@@ -254,7 +246,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateCourseStatusErrorSubscriptionMode</shortDescription>
-        <value>The course status cannot be created if the subscription mode of the course is ""Automatic""</value>
+        <value>The course status cannot be created if the subscription mode of the course is """"Automatic""""</value>
     </labels>
     <labels>
         <fullName>ValidateMatchingText</fullName>
@@ -310,7 +302,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ValidateModuleEditableFields</shortDescription>
-        <value>An module with module responses cannot be deleted or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
+        <value>A module with module responses cannot be deleted or have any of the following attributes modified: Attempts Allowed, Approval Grade, Penalty Mode, Question Pool, Attempts Allowed Per Question and Weighted Questions.</value>
     </labels>
     <labels>
         <fullName>ValidateModuleResponseMemberApproved</fullName>
@@ -367,5 +359,5 @@
         <protected>true</protected>
         <shortDescription>ValidateQuestionResponseSubmit</shortDescription>
         <value>The question cannot be submitted because was already answered correct.</value>
-    </labels>F
+    </labels>
 </CustomLabels>
