@@ -53,5 +53,5 @@
 		<members>*</members>
 		<name>MatchingRules</name>
 	</types>
-	<version>40.0</version>
+	<version>36.0</version>
 </Package>
