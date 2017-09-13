@@ -1,19 +1,11 @@
 {
 			"type":"package",
-<<<<<<< HEAD
-			"version":"1.17",
-=======
 			"version":"1.19",
->>>>>>> develop
 			"name":"FieloELR",
 			"dependencies":[
 				{
 					"type":"package",
-<<<<<<< HEAD
-					"version":"1.26",
-=======
 					"version":"2.29.2",
->>>>>>> develop
 					"name":"FieloPLT"
 				}
 			]
