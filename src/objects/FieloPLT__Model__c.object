@@ -48,6 +48,7 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <deprecated>false</deprecated>
+    <description>A Model is a pre-configured, reusable Incentives and Programs pattern.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -56,6 +57,78 @@
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>FieloPLT__Category__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Category which groups different types of Models.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Choose a Category to group different types of Models.</inlineHelpText>
+        <label>Category</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Miscelaneas</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>FieloPLT__Description__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Model readable description.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Model readable description.</inlineHelpText>
+        <label>Description</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FieloPLT__Icon__c</fullName>
+        <defaultValue>&apos;fielosf-icon-grid&apos;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Model iconic representation.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the Model iconic representation.</inlineHelpText>
+        <label>Icon</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FieloPLT__JSON__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Model JSON representation.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the Model JSON representation.</inlineHelpText>
+        <label>JSON</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>FieloPLT__Library__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Library where the Model belongs to.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Library where the Model belongs to.</inlineHelpText>
+        <label>Library</label>
+        <referenceTo>FieloPLT__Library__c</referenceTo>
+        <relationshipLabel>Models</relationshipLabel>
+        <relationshipName>Models</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
     <fields>
         <fullName>FieloPLT__Type__c</fullName>
         <deprecated>false</deprecated>
