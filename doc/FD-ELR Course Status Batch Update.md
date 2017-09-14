@@ -23,7 +23,7 @@ If no schedule job is set to Course Status changing, it must be created as follo
 7. Click *Save* button.  
 ![image](https://user-images.githubusercontent.com/26011197/30222977-56fafd8e-949f-11e7-9c11-564c2d8754ac.png)  
 
-By setting this schedule job, the batch process will run every day at the defined Preferred Start Time, from the defined Start date up to the defined End date.
+By setting this schedule job, the batch process will run every day at the defined *Preferred Start Time*, from the defined *Start* date up to the defined *End* date.
 
 ### Manual Batch Execution
 To manually run the batch process that updates the course status, follow the below instructions:
