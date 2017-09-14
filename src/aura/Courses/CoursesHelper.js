@@ -1,6 +1,6 @@
 ({
     loadCourses : function(component, event, helper) {        
-        var spinner = $A.get("e.c:ToggleSpinnerEvent");
+        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    

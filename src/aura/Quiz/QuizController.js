@@ -14,7 +14,13 @@
         var moduleWrapper = component.get('v.moduleWrapper');
         var moduleId = component.get('v.module').Id;
         var quizAnswer = JSON.parse(window.localStorage.getItem('moduleAnswer'))[moduleId];
-        var action = component.get('c.submitQuiz');        
+        var action = component.get('c.submitQuiz');     
+        
+        moduleWrapper.questions.forEach(function(question){
+            question.FieloELR__AnswerOptions__r.records.forEach(function(answer){
+                delete answer.isSelected;
+            })
+        })
         action.setParams({
             'moduleWrapperJson': JSON.stringify(moduleWrapper),
             'quizAnswer': JSON.stringify(quizAnswer)
@@ -28,6 +34,7 @@
                 var moduleResponse = JSON.parse(response.getReturnValue());                
                 if(moduleResponseEvent){
                     moduleResponseEvent.setParam('moduleResponse', moduleResponse);
+                    moduleResponseEvent.setParam('view', false);
                     moduleResponseEvent.fire();
                 }                
             }else {

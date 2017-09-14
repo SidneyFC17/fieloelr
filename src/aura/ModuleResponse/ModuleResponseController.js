@@ -16,7 +16,7 @@
             var spinner = $A.get("e.c:ToggleSpinnerEvent");                
             if (component.isValid() && state === 'SUCCESS') {                    
                 var moduleResponse = JSON.parse(response.getReturnValue());                
-                component.set('v.moduleResponseQuestions', moduleResponse);
+                component.set('v.moduleResponseQuestions', moduleResponse);                
                 helper.loadQuestionResponses(component);
             }else {
                 console.log('Failed with state: ' + state);

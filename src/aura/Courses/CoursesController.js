@@ -53,12 +53,20 @@
     },
     showCourseInformation: function(component, event, helper){
         component.set('v.showModule', false); 
+        component.set('v.showModuleResponse', false); 
         component.set('v.showCourse', true); 
     },
     showModuleResponse: function(component, event, helper){
         var moduleResponse = event.getParam('moduleResponse');
+        var view = event.getParam('view');
+        component.set('v.viewAnswer', view);
         component.set('v.moduleResponse', moduleResponse);
+        component.set('v.showCourse', false); 
         component.set('v.showModule', false);
         component.set('v.showModuleResponse', true);
+    },
+    reloadCourses: function(component, event, helper){
+        helper.loadCourses(component, event, helper);
+        component.set('v.showModuleResponse', false);
     }
 })

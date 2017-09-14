@@ -11,7 +11,7 @@
             <c:Question question="{!question}" type="{!question.FieloELR__Type__c}" moduleId="{!v.module.Id}" />
         </aura:iteration>
     </aura:if>
-    <lightning:button variant="brand" onclick="{!c.submitAnswer}" label="Answer" />
+    <lightning:button variant="brand" onclick="{!c.submitAnswer}" label="Submit" />
     <aura:if isTrue="{!v.type == ''}">
         
     </aura:if>    

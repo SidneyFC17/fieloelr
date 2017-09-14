@@ -1,3 +1,4 @@
 <aura:event type="APPLICATION" description="Event template">
 	<aura:attribute name="moduleResponse" type="FieloELR__ModuleResponse__c"/>
+    <aura:attribute name="view" type="Boolean"/>
 </aura:event>

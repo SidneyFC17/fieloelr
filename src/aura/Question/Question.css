@@ -7,3 +7,22 @@
 .THIS.disabled{
     pointer-events:none;
 }
+
+.THIS.question[data-is-correct="true"]{
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.THIS.question[data-is-correct="false"]{
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.THIS.question.disabled{
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}

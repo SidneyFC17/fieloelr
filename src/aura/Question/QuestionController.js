@@ -9,10 +9,27 @@
             var options = {};
             var i = 0;
             question.FieloELR__AnswerOptions__r.records.forEach(function(option){
-               options[i] = option.Id; 
-               i++;
+                options[i] = option.Id; 
+                i++; 
             });
             component.set('v.matchingOptions', options);
+        }
+        if(component.get('v.mode') == 'view'){
+            component.set('v.isCorrect', question.FieloELR__IsCorrect__c);
+            component.set('v.className', 'disabled');
+            
+            if (type == 'Short Answer'){
+                component.set('v.shortAnswer', question.FieloELR__TextValue__c);
+            } else if (type == 'Matching Options'){
+                
+            } else {
+                question.Answers.forEach(function(answer){
+                    var id = answer.FieloELR__AnswerOption__c;
+                    question.FieloELR__AnswerOptions__r.records.forEach(function(ans){
+                        ans.isSelected = ans.Id == id ? true : false;
+                    })
+                })                
+            }            
         }
     },
     setAnswer: function(component, event, helper){

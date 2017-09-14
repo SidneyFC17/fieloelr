@@ -8,6 +8,7 @@
     <aura:if isTrue="{!v.showAnswers}">
         <aura:iteration var="question" items="{!v.questionsModule}">
             <c:Question question="{!question}" type="{!question.FieloELR__Type__c}" mode="view" />
-        </aura:iteration>                
+        </aura:iteration>
     </aura:if>
+
 </aura:component>

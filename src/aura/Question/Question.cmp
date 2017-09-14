@@ -8,21 +8,23 @@
     <aura:attribute name="shortAnswer" type="String" />
     <aura:attribute name="matchingOptions" type="sObject" />
     <aura:attribute name="mode" type="String" default="edit" />
+    <aura:attribute name="className" type="String" default="" />
+    <aura:attribute name="isCorrect" type="String" default="" />
     
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
-    <div class="{!v.mode == 'view' ? 'disabled question slds-p-top_large ' : 'question slds-p-top_large '}" data-is-correct="{!v.mode == 'view' ? v.question.FieloELR__IsCorrect__c : '' }">
+    <div class="{!v.className + ' question slds-p-top_large'}" data-is-correct="{!v.isCorrect}">
         <aura:if isTrue="{!v.renderQuestion}">
             <div class="slds-text-heading_small slds-text-align_left">{!v.title}</div>
             <aura:if isTrue="{!v.type == 'Single Choice'}" >        
                 <aura:iteration items="{!v.options}" var="option">                
-                    <ui:inputRadio text="{!option.Id}" name="{!v.question.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                
+                    <ui:inputRadio value="{!option.isSelected}" text="{!option.Id}" name="{!v.question.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                
                 </aura:iteration>
                 
             </aura:if>
             <aura:if isTrue="{!v.type == 'Multiple Choice'}" >
                 <aura:iteration items="{!v.options}" var="option">
-                    <ui:inputCheckbox text="{!option.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                    
+                    <ui:inputCheckbox value="{!option.isSelected}" text="{!option.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                    
                 </aura:iteration>        
             </aura:if>
             <aura:if isTrue="{!v.type == 'Short Answer'}" >        
@@ -30,7 +32,7 @@
             </aura:if>
             <aura:if isTrue="{!v.type == 'Statement'}" >
                 <aura:iteration items="{!v.options}" var="option">
-                    <ui:inputRadio name="{!v.question.Id}" text="{!option.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                                    
+                    <ui:inputRadio value="{!option.isSelected}" name="{!v.question.Id}" text="{!option.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                                    
                 </aura:iteration>
             </aura:if>
             <aura:if isTrue="{!v.type == 'Matching Options'}" >
