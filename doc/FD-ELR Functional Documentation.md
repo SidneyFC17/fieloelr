@@ -202,6 +202,8 @@ Depending on how the course period is configured, there are 3 (three) possible s
 :point_right: For courses in status *Scheduled*, the system automatically changes their status to *Active* as soon as the start date is reached.  
 :point_right: For courses in status *Active*, the system automatically changes their status to *Completed* as soon as the end date is over.  
 
+> For more information on how the system automatically changes the course status, see [*Course Status Batch Update*](https://github.com/Fielo-Apps/fieloelr/blob/master/doc/FD-ELR%20Course%20Status%20Batch%20Update.md).
+
 A course can be inactivated at any time. When inactivating a course, its status is set to *Inactive* and any of its fields can be edited.  
 In order to activate the course again, the same condition must be met: at least one active module. The final status after reactivation also depends on period dates.
 
