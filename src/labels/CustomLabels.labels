@@ -6,7 +6,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ActiveCourseCannotBeEdited</shortDescription>
-        <value>Active, complete or scheduled courses cannot be edited.</value>
+        <value>Active, completed or scheduled courses cannot be edited.</value>
     </labels>
     <labels>
         <fullName>ActiveModuleCannotBeEdited</fullName>
@@ -73,12 +73,12 @@
         <value>The Course has been inactivated</value>
     </labels>
     <labels>
-        <fullName>FALSE</fullName>
+        <fullName>False</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>FALSE</shortDescription>
-        <value>FALSE</value>
+        <shortDescription>False</shortDescription>
+        <value>False</value>
     </labels>
     <labels>
         <fullName>MatchingTextRequired</fullName>
@@ -153,12 +153,12 @@
         <value>Question Text is a required field</value>
     </labels>
     <labels>
-        <fullName>TRUE</fullName>
+        <fullName>True</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>TRUE</shortDescription>
-        <value>TRUE</value>
+        <shortDescription>True</shortDescription>
+        <value>True</value>
     </labels>
     <labels>
         <fullName>ValidateAnswerActiveModules</fullName>
