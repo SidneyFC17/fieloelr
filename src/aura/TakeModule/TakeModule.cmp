@@ -11,7 +11,7 @@
     </aura:if>  
     
     <aura:if isTrue="{!v.showModule}">
-    	<lightning:button variant="brand" onclick="{!c.showModule}" > View </lightning:button>
+        <lightning:button variant="brand" onclick="{!c.showModule}" > View </lightning:button>
     </aura:if>
     
 </aura:component>

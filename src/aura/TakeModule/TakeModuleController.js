@@ -4,7 +4,7 @@
         var moduleResponses = module.moduleResponses;
         if(moduleResponses && moduleResponses.length > 0){
             component.set('v.label', 'Re-take');
-            component.set('v.moduleResponse', moduleResponses[moduleResponses.length - 1]);
+            component.set('v.moduleResponse', moduleResponses[moduleResponses.length-1]);
             component.set('v.showModule', true);
         }
         component.set('v.takeModule', module.showBtn);
@@ -48,10 +48,12 @@
     },
     showModule: function(component){
         var moduleResponse = component.get('v.moduleResponse');
-        var moduleResponseEvent = $A.get("e.c:ShowModuleResponseEvent");
-        if(moduleResponseEvent){
+        var moduleResponseEvent = $A.get("e.c:ShowModuleResponseEvent");        
+        var moduleName = component.get('v.record').Name;
+        if(moduleResponseEvent){            
             moduleResponseEvent.setParam('moduleResponse', moduleResponse);
             moduleResponseEvent.setParam('view', true);
+            moduleResponseEvent.setParam('name', moduleName);
             moduleResponseEvent.fire();
         }                
     }

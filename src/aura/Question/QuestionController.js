@@ -23,10 +23,13 @@
             } else if (type == 'Matching Options'){
                 
             } else {
-                question.Answers.forEach(function(answer){
+                question.Answers.forEach(function(answer){                    
                     var id = answer.FieloELR__AnswerOption__c;
                     question.FieloELR__AnswerOptions__r.records.forEach(function(ans){
-                        ans.isSelected = ans.Id == id ? true : false;
+                        if(!ans.isSelected){
+                            ans.isSelected = ans.Id == id ? true : false;
+                        }
+
                     })
                 })                
             }            

@@ -59,6 +59,10 @@
     showModuleResponse: function(component, event, helper){
         var moduleResponse = event.getParam('moduleResponse');
         var view = event.getParam('view');
+        var moduleName = event.getParam('name');
+        if(moduleName){
+            component.set('v.moduleTitle', moduleName);
+        }
         component.set('v.viewAnswer', view);
         component.set('v.moduleResponse', moduleResponse);
         component.set('v.showCourse', false); 
