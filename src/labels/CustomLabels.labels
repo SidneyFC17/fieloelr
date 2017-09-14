@@ -6,7 +6,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ActiveCourseCannotBeEdited</shortDescription>
-        <value>Active courses cannot be edited.</value>
+        <value>Active, completed or scheduled courses cannot be edited.</value>
     </labels>
     <labels>
         <fullName>ActiveModuleCannotBeEdited</fullName>

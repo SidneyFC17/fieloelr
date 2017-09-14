@@ -271,13 +271,13 @@
     <validationRules>
         <fullName>IsActiveChangedWhenCourseIsActive</fullName>
         <active>true</active>
-        <description>The module &quot;IsActive&quot; field cannot be changed if the related course is active.</description>
+        <description>The module &quot;IsActive&quot; field cannot be changed if the related course is active, completed or scheduled.</description>
         <errorConditionFormula>AND( ISCHANGED( IsActive__c ) ,  OR(TEXT(Course__r.Status__c) = &apos;Active&apos;,
 TEXT(Course__r.Status__c) = &apos;Scheduled&apos;,
 TEXT(Course__r.Status__c) = &apos;Completed&apos;)
 )</errorConditionFormula>
         <errorDisplayField>IsActive__c</errorDisplayField>
-        <errorMessage>&quot;Active&quot; status cannot be changed if the related course is active.</errorMessage>
+        <errorMessage>&quot;Active&quot; status cannot be changed if the related course is active, completed or scheduled.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>ModuleNameNotNull</fullName>
@@ -301,7 +301,7 @@ TEXT(Course__r.Status__c) = &apos;Completed&apos;)
       )
    )</errorConditionFormula>
         <errorDisplayField>Course__c</errorDisplayField>
-        <errorMessage>On module creation, course cannot be active, complete or scheduled</errorMessage>
+        <errorMessage>On module creation, course cannot be active, completed or scheduled</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>NoQuestionPoolIfWeightedQuestions</fullName>
