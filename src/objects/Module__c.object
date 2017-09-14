@@ -277,7 +277,7 @@ TEXT(Course__r.Status__c) = &apos;Scheduled&apos;,
 TEXT(Course__r.Status__c) = &apos;Completed&apos;)
 )</errorConditionFormula>
         <errorDisplayField>IsActive__c</errorDisplayField>
-        <errorMessage>&quot;Active&quot; status cannot be changed if the related course is active.</errorMessage>
+        <errorMessage>&quot;Active&quot; status cannot be changed if the related course is active, completed or scheduled.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>ModuleNameNotNull</fullName>
@@ -301,7 +301,7 @@ TEXT(Course__r.Status__c) = &apos;Completed&apos;)
       )
    )</errorConditionFormula>
         <errorDisplayField>Course__c</errorDisplayField>
-        <errorMessage>On module creation, course cannot be active, complete or scheduled</errorMessage>
+        <errorMessage>On module creation, course cannot be active, completed or scheduled</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>NoQuestionPoolIfWeightedQuestions</fullName>
