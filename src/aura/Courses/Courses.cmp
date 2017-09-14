@@ -1,5 +1,7 @@
 <aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">  
     
+    <aura:attribute type="sObject" name="moduleContent" />
+    
     <aura:attribute type="Boolean" name="reloadCourses" default="true" />
     <aura:attribute type="Boolean" name="viewAnswer" default="false" />
     
@@ -62,7 +64,7 @@
                 <h3 class="slds-section-title--divider slds-float_left">{!v.moduleTitle}</h3>        
                 <lightning:button class="slds-float_right" variant="neutral" label="Back to Course" onclick="{!c.showCourseInformation }" />            
             </div>                
-            <c:Module module="{!v.moduleRecord}" />
+            <c:Module module="{!v.moduleRecord}" moduleContent="{!v.moduleContent}"/>
         </aura:if>
         
         <aura:if isTrue="{!v.showModuleResponse}">

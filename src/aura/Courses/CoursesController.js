@@ -11,7 +11,11 @@
             component.set('v.layout', config.Layout.toLowerCase());        
             component.set('v.columns', config.Columns);        
             component.set('v.courseLayout', config.Course.Layout.toLowerCase());        
-            component.set('v.courseColumns', config.Course.Columns);      
+            component.set('v.courseColumns', config.Course.Columns);
+            var module = config.Module;
+            if(module && module.Content){            
+                component.set('v.moduleContent', module.Content);                
+            }
             window.localStorage.setItem('coursesStatus', '{}');
         }
     },
