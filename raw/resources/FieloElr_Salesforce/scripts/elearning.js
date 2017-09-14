@@ -166,8 +166,6 @@
   };
 
   FieloELearning.prototype.hideRelatedColumn = function(element, fieldName) {
-    console.log('hideRelatedColumn');
-    console.log(element);
     var items = $(element)
       .find('.' + this.CssClasses_.RELATED_MODEL);
     var currentField = null;
