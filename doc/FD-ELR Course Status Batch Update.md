@@ -40,8 +40,8 @@ To manually run the batch process that updates the course status, follow the bel
 7.1  If no errors were found, and the execution has found registers to update, it will indicate the total batch quantity (in this case 1) and the batches that were executed (in this case 1);
 ![image](https://user-images.githubusercontent.com/26011197/30215742-4c117cee-9487-11e7-9815-686661f3b3ee.png)  
 
-7.2 If the execution has found no errors and no registers to update, it will indicate that no batches were executed;  
+   7.2 If the execution has found no errors and no registers to update, it will indicate that no batches were executed;  
 ![image](https://user-images.githubusercontent.com/26011197/30215794-724d5f90-9487-11e7-9f28-0edcdea65632.png)  
 
-7.3 If errors were found, it will show the errors.  
+   7.3 If errors were found, it will show the errors.  
 ![image](https://user-images.githubusercontent.com/26011197/30215840-a13e4292-9487-11e7-9f9f-34e7ac924f93.png)
