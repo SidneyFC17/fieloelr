@@ -3,7 +3,6 @@
         var question = component.get('v.question');        
         component.set('v.title', question.FieloELR__QuestionText__c);
         component.set('v.options', question.FieloELR__AnswerOptions__r.records);        
-        component.set('v.renderQuestion', true);
         var type = component.get('v.type');
         if (type == 'Matching Options') {
             var options = {};
@@ -21,7 +20,16 @@
             if (type == 'Short Answer'){
                 component.set('v.shortAnswer', question.FieloELR__TextValue__c);
             } else if (type == 'Matching Options'){
-                
+                var answers = {};
+                var matchingAnswer = [];
+                question.Answers.forEach(function(answer){                    
+                    answers[answer.FieloELR__AnswerOption__c] = answer.FieloELR__TextValue__c;
+                });                
+                question.FieloELR__AnswerOptions__r.records.forEach(function(ans){                    
+                    var newAnswer = ans.FieloELR__AnswerOptionText__c + ' -> ' + answers[ans.Id];
+                    matchingAnswer.push(newAnswer);
+                });                
+                component.set('v.matchingAnswer', matchingAnswer);
             } else {
                 question.Answers.forEach(function(answer){                    
                     var id = answer.FieloELR__AnswerOption__c;
@@ -29,11 +37,12 @@
                         if(!ans.isSelected){
                             ans.isSelected = ans.Id == id ? true : false;
                         }
-
+                        
                     })
                 })                
             }            
         }
+        component.set('v.renderQuestion', true);
     },
     setAnswer: function(component, event, helper){
         var answerLabel = event.getSource().get('v.label');

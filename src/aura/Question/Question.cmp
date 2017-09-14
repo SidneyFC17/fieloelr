@@ -10,7 +10,7 @@
     <aura:attribute name="mode" type="String" default="edit" />
     <aura:attribute name="className" type="String" default="" />
     <aura:attribute name="isCorrect" type="String" default="" />
-    
+    <aura:attribute name="matchingAnswer" type="String[]" />    
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     <div class="{!v.className + ' question slds-p-top_large'}" data-is-correct="{!v.isCorrect}">
@@ -36,20 +36,29 @@
                 </aura:iteration>
             </aura:if>
             <aura:if isTrue="{!v.type == 'Matching Options'}" >
-                <table>
-                    <tbody>
-                        <aura:iteration items="{!v.options}" var="option" indexVar="index">
-                            <tr>                            
-                                <td>
-                                    <div class="slds-truncate" title="{!option.FieloELR__AnswerOptionText__c}">{!index + '- ' + option.FieloELR__AnswerOptionText__c}</div>
-                                </td>
-                                <td>                                           
-                                    <ui:inputText change="{!c.setAnswer}" class="matchingAnswer inline" label="{!option.FieloELR__MatchingText__c}" labelClass="inline slds-p-right_small" />       
-                                </td>
-                            </tr>
-                        </aura:iteration>
-                    </tbody>
-                </table>            
+                <aura:if isTrue="{!v.mode == 'edit'}">
+                    <table>
+                        <tbody>
+                            <aura:iteration items="{!v.options}" var="option" indexVar="index">
+                                <tr>                            
+                                    <td>
+                                        <div class="slds-truncate" title="{!option.FieloELR__AnswerOptionText__c}">{!index + '- ' + option.FieloELR__AnswerOptionText__c}</div>
+                                    </td>
+                                    <td>                                           
+                                        <ui:inputText change="{!c.setAnswer}" class="matchingAnswer inline" label="{!option.FieloELR__MatchingText__c}" labelClass="inline slds-p-right_small" />       
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>            
+                </aura:if>
+                <aura:if isTrue="{!v.mode == 'view'}">                    
+                    <aura:iteration items="{!v.matchingAnswer}" var="answer">
+                        <div>
+                            {!answer}
+                        </div>                        
+                    </aura:iteration>
+                </aura:if>
             </aura:if>
         </aura:if>
     </div>
