@@ -166,6 +166,8 @@
   };
 
   FieloELearning.prototype.hideRelatedColumn = function(element, fieldName) {
+    console.log('hideRelatedColumn');
+    console.log(element);
     var items = $(element)
       .find('.' + this.CssClasses_.RELATED_MODEL);
     var currentField = null;
@@ -333,11 +335,17 @@
         $('#FieloELR__CourseDependency__cRelatedList')[0];
       if (courseDependencyRelated) {
         this.hideRelatedColumn(courseDependencyRelated, 'Name');
+        courseDependencyRelated.FieloRelatedRecords
+          .renderCallback_ =
+            this.hideRelatedColumn.bind(this, courseDependencyRelated, 'Name');
       }
       var moduleDependencyRelated =
         $('#FieloELR__ModuleDependency__cRelatedList')[0];
       if (moduleDependencyRelated) {
         this.hideRelatedColumn(moduleDependencyRelated, 'Name');
+        moduleDependencyRelated.FieloRelatedRecords
+          .renderCallback_ =
+            this.hideRelatedColumn.bind(this, moduleDependencyRelated, 'Name');
       }
 
       var saveAsModelForm =
