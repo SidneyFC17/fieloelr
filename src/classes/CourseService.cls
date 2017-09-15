@@ -1,4 +1,4 @@
-global with sharing class CourseService {
+global class CourseService {
 	
 	public static void activateCourses(Set<Id> courseIds){
 		Set<String> possibleStatus = new Set<String>{'Draft', 'Inactive'};
@@ -309,7 +309,7 @@ global with sharing class CourseService {
 											String orderBy) {
 		String queryCourseStatus = 'SELECT ' + String.join(new List<String>(fieldsCourseStatus), ',');
 		if(fieldsModuleResponse != null){
-			queryCourseStatus += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',') + ' FROM ModuleResponses__r WHERE Member__c =: memberId) ';
+			queryCourseStatus += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',') + ' FROM ModuleResponses__r WHERE Member__c =: memberId AND IsSubmitted__c = true) ';
 		}
 		queryCourseStatus += ' FROM CourseStatus__c WHERE Member__c =: memberId ';		
 		if (courseIds != null) {

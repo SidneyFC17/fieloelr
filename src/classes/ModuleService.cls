@@ -1,4 +1,4 @@
-global with sharing class ModuleService {
+global class ModuleService {
 	
 	global class ModuleWrapper{
 		global Module__c module {get; private set;}
@@ -17,8 +17,15 @@ global with sharing class ModuleService {
 	global static ModuleWrapper takeModule(Id moduleId, Id memberId, Set<String> fieldsModule, Set<String> fieldsQuestion, Set<String> fieldsAnswerOption) {
 		
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType});
-		ModuleResponse__c moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
-		uow.registerNew(moduleResponse);
+		ModuleResponse__c moduleResponse;
+		try{
+			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+			moduleResponse.NumberOfAttempt__c++;
+			uow.registerDirty(moduleResponse);
+		}catch(Exception e){
+			moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
+			uow.registerNew(moduleResponse);
+		}
 		uow.commitWork();
 
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
