@@ -37,7 +37,7 @@ To manually run the batch process that updates the course status, follow the bel
 5. Press *Execute* button;
 6. At the Org where the batch were executed, go to *Apex Jobs* page;
 7. Compare the results in the page to your execution info  
-7.1  If no errors were found, and the execution has found registers to update, it will indicate the total batch quantity (in this case 1) and the batches that were executed (in this case 1);
+   7.1  If no errors were found, and the execution has found registers to update, it will indicate the total batch quantity (in this case 1) and the batches that were executed (in this case 1);
 ![image](https://user-images.githubusercontent.com/26011197/30215742-4c117cee-9487-11e7-9815-686661f3b3ee.png)  
 
    7.2 If the execution has found no errors and no registers to update, it will indicate that no batches were executed;  
