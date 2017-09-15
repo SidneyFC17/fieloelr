@@ -1,4 +1,4 @@
-global with sharing class ModuleService {
+global class ModuleService {
 	
 	global class ModuleWrapper{
 		global Module__c module {get; private set;}

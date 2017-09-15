@@ -1,4 +1,4 @@
-global with sharing class QuestionService {
+global class QuestionService {
 
 	global class QuestionResponseWrapper{
 		public QuestionResponse__c questionResponse {get; set;}

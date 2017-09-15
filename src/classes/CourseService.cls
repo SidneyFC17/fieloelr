@@ -1,4 +1,4 @@
-global with sharing class CourseService {
+global class CourseService {
 	
 	public static void activateCourses(Set<Id> courseIds){
 		Set<String> possibleStatus = new Set<String>{'Draft', 'Inactive'};
