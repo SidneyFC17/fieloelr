@@ -2,12 +2,19 @@
     doInit : function(component, event, helper){        
         var module = component.get('v.record');       
         var moduleResponses = module.moduleResponses;
+        var attempsAllowed = module.attempsAllowed;
+        var numberAttemps = module.numberOfAttempts;
         if(moduleResponses && moduleResponses.length > 0){
             component.set('v.label', 'Re-take');
             component.set('v.moduleResponse', moduleResponses[moduleResponses.length-1]);
             component.set('v.showModule', true);
         }
-        component.set('v.takeModule', module.showBtn);
+        if(attempsAllowed && attempsAllowed == numberAttemps){
+            component.set('v.takeModule', false);
+        }else{
+            component.set('v.takeModule', module.showBtn);    
+        }
+        
     },
     takeModule: function(component, event, helper){
         var spinner = $A.get("e.c:ToggleSpinnerEvent");
