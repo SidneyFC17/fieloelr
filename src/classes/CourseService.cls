@@ -488,8 +488,7 @@ global class CourseService {
 	}
 
 	private static Set<String> getCDStringKeys(List<Course__c> courses, Id memberId){
-		String cdQuery = 'SELECT Course__c, Predecessor__c FROM CourseDependency__c WHERE Predecessor__c in 
-		(SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId AND Progress__c = 100';
+		String cdQuery = 'SELECT Course__c, Predecessor__c FROM CourseDependency__c WHERE Predecessor__c in SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId AND Progress__c = 100';
 		if(courses != null){
 			cdQuery += ') AND Course__c in : courses';
 		}else{
