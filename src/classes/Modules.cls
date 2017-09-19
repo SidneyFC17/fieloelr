@@ -138,6 +138,15 @@ public class Modules extends SObjectDomain {
 
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType, Question__c.SObjectType});
         updateCourses(activatedModules, inactivatedModules, uow);
+
+        //Remove dependencies from that module
+        if (!inactivatedModules.isEmpty()) {
+            removeModuleDependency(inactivatedModules, uow);
+        }
+
+        if (!activatedModules.isEmpty()) {
+            addModuleDependency(activatedModules, uow);
+        }
         //If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
         updateQuestions(new List<Module__c>(modulesToChangeQuestions), modulesToChangeCorrectWeight, modulesToChangeIncorrectWeight, modulesToChangePenaltyPerAttempt, uow);
         uow.commitWork();
@@ -184,6 +193,54 @@ public class Modules extends SObjectDomain {
 
         uow.registerDirty(coursesMap.values());
         Courses.validateAdminFields = false;
+    }
+
+    private void removeModuleDependency(List<Module__c> inactivatedModules, SObjectUnitOfWork uow) {
+        Set<Id> inactiveModulesIds = new Map<Id,Module__c>(inactivatedModules).keySet();
+        List<Module__c> modules = new ModulesSelector(new Set<String>{'Id','KeyDependencies__c'}).selectByPredecessor(inactiveModulesIds);
+
+        Set<String> keySetDependencies;
+        List<String> keyDependencies;
+        for(Module__c module: modules) {
+            keySetDependencies = new Set<String>(module.KeyDependencies__c.split(','));
+
+            for (Id key: keySetDependencies) {
+                if (inactiveModulesIds.contains(key)) {
+                    keySetDependencies.remove(key);
+                }
+            }
+            keyDependencies = new List<String>(keySetDependencies);
+            keyDependencies.sort();
+            module.KeyDependencies__c = String.join(keyDependencies,',');
+        } 
+        
+        uow.registerDirty(modules);
+    }
+
+    private void addModuleDependency(List<Module__c> activatedModules, SObjectUnitOfWork uow) {
+        Set<Id> activeModulesIds = new Map<Id,Module__c>(activatedModules).keySet();
+        List<ModuleDependency__c> mds = new ModuleDependenciesSelector(new Set<String>{'Predecessor__c','Module__c','Module__r.KeyDependencies__c'}).selectByPredecessor(activeModulesIds);
+
+        Set<String> keySetDependencies;
+        List<String> keyDependencies;
+        Map<Id,Module__c> modulesMap = new Map<Id,Module__c>();
+        for(ModuleDependency__c md: mds) {
+            keySetDependencies = new Set<String>(md.Module__r.KeyDependencies__c.split(','));
+
+            if (!keySetDependencies.contains(String.valueOf(md.Predecessor__c).substring(0, 15))) {
+                if (modulesMap.containsKey(md.Module__c)) {
+                    modulesMap.put(md.Module__c, md.Module__r);
+                }
+
+                keySetDependencies.add(String.valueOf(md.Predecessor__c).substring(0, 15));
+            
+                keyDependencies = new List<String>(keySetDependencies);
+                keyDependencies.sort();
+                modulesMap.get(md.Module__c).KeyDependencies__c = String.join(keyDependencies,',');
+            }
+        }
+        
+        uow.registerDirty(modulesMap.values());
     }
 
     private void updateQuestions(List<Module__c> modulesToChangeQuestions, Set<Id> modulesToChangeCorrectWeight, Set<Id> modulesToChangeIncorrectWeight, 

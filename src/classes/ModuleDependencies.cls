@@ -47,9 +47,10 @@ public class ModuleDependencies extends SObjectDomain {
         Set<Id> moduleIds = new Set<Id>();
         for(ModuleDependency__c moduledependency : moduleDependencies) {
             moduleIds.add(moduledependency.Module__c);
+            moduleIds.add(moduledependency.Predecessor__c);
         }
         Map<Id, Module__c> modulesMap = 
-                    new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id', 'HasDependencies__c', 'KeyDependencies__c'}).selectById(moduleIds));
+            new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id', 'IsActive__c','HasDependencies__c', 'KeyDependencies__c'}).selectById(moduleIds));
         Module__c module;
         String predecessor;
         List<String> Keys;
@@ -59,17 +60,19 @@ public class ModuleDependencies extends SObjectDomain {
             predecessor = String.valueOf(moduledependency.Predecessor__c).subString(0,15);
             if(Trigger.IsInsert) {
                 // Add key
-                if(String.IsBlank(module.KeyDependencies__c)) {
-                    module.KeyDependencies__c = predecessor;
-                } else {
-                    Keys = module.KeyDependencies__c.split(',');
-                    Keys.add(predecessor);
-                    Keys.sort();            
-                    module.KeyDependencies__c = String.join(Keys, ',');
-                }   
-                // If a module dependency is inserted and module has no dependencies yet, the attribute must be updated
-                if(!(module.HasDependencies__c)) {
-                    module.HasDependencies__c = true;
+                if (modulesMap.get(moduledependency.Predecessor__c).IsActive__c) {
+                    if(String.IsBlank(module.KeyDependencies__c)) {
+                        module.KeyDependencies__c = predecessor;
+                    } else {
+                        Keys = module.KeyDependencies__c.split(',');
+                        Keys.add(predecessor);
+                        Keys.sort();            
+                        module.KeyDependencies__c = String.join(Keys, ',');
+                    }
+                    // If a module dependency is inserted and module has no dependencies yet, the attribute must be updated
+                    if(!(module.HasDependencies__c)) {
+                        module.HasDependencies__c = true;
+                    }
                 }
             } else if(Trigger.IsDelete) {
                 if(!String.isBlank(module.KeyDependencies__c)){
