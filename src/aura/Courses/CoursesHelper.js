@@ -1,6 +1,6 @@
 ({
     loadCourses : function(component, event, helper) {        
-        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+        var spinner = $A.get("e.c:ToggleSpinnerEvent");
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -8,8 +8,14 @@
         var member = component.get('v.member');        
         var fieldset = component.get('v.fieldset');
         fieldset = helper.getFieldset(fieldset).fieldset;
+        if(fieldset != ''){
+             fieldset += ',FieloELR__SubscriptionMode__c';
+        }
         var modulesFieldset = component.get('v.courseFieldset');
-        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset;        
+        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset;
+        if(modulesFieldset != ''){
+            modulesFieldset += ',FieloELR__AttemptsAllowed__c';
+        }
         if(member){            
             var action = component.get('c.getCourses');
             action.setParams({
@@ -36,12 +42,12 @@
                         var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));                                                                        
                         if(!courseCache[memberId]){
                             courseCache[memberId] = {};    
-                        }
+                        }                        
                         var showJoinBtn;                          
                         if (courseCache[memberId][courseId]) {                            
                             showJoinBtn = courseCache[memberId][courseId];                            
                         } else {                            
-                            showJoinBtn = !course.courseStatus;
+                            showJoinBtn = !newCourse.courseStatus && newCourse.FieloELR__SubscriptionMode__c == 'Manual';
                             courseCache[memberId][courseId] = showJoinBtn;
                             window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));                            
                         }                                                
@@ -130,9 +136,11 @@
     },
     getFieldset : function(fieldset) {
         var fields = {fieldset: ['Name'], subcomponents: []};
-        fieldset.forEach(function(field){
+        fieldset.forEach(function(field){            
             if(field.type != 'subcomponent'){
-                fields.fieldset.push(field.apiName);    
+                if(field.apiName != 'Name'){
+                    fields.fieldset.push(field.apiName);        
+                }                
             } else {
                 fields.subcomponents.push(field);    
             }           

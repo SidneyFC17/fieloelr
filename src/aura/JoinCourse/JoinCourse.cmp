@@ -6,6 +6,5 @@
     
     <aura:if isTrue="{!v.join}">
         <lightning:button variant="brand" onclick="{!c.joinCourse}" > Join Course </lightning:button>
-    </aura:if>    
-    
+    </aura:if>            
 </aura:component>

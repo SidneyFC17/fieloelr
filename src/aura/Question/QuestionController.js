@@ -6,7 +6,7 @@
         var type = component.get('v.type');
         if (type == 'Matching Options') {
             var options = {};
-            var i = 0;
+            var i = 1;
             question.FieloELR__AnswerOptions__r.records.forEach(function(option){
                 options[i] = option.Id; 
                 i++; 

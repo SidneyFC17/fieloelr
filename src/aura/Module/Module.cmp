@@ -10,7 +10,7 @@
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     <aura:if isTrue="{!v.showContent}">        
         <div class="slds-text-align_center">
-        	<c:OutputField record="{!v.content}" type="{!v.moduleContent.type}" fieldName="{!v.contentFieldName}" />
+            <c:OutputField record="{!v.content}" type="{!v.moduleContent.type}" fieldName="{!v.contentFieldName}" />
         </div>        
     </aura:if>
     <c:Quiz questions="{!v.questions}" module="{!v.module.module}" moduleWrapper="{!v.module}"  />

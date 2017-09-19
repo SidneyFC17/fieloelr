@@ -42,7 +42,7 @@
                             <aura:iteration items="{!v.options}" var="option" indexVar="index">
                                 <tr>                            
                                     <td>
-                                        <div class="slds-truncate" title="{!option.FieloELR__AnswerOptionText__c}">{!index + '- ' + option.FieloELR__AnswerOptionText__c}</div>
+                                        <div class="slds-truncate" title="{!option.FieloELR__AnswerOptionText__c}">{!index+1 + '- ' + option.FieloELR__AnswerOptionText__c}</div>
                                     </td>
                                     <td>                                           
                                         <ui:inputText change="{!c.setAnswer}" class="matchingAnswer inline" label="{!option.FieloELR__MatchingText__c}" labelClass="inline slds-p-right_small" />       
