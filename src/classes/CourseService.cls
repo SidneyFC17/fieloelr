@@ -137,7 +137,7 @@ global class CourseService {
 			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsCourseDependency), ',') + ' FROM PredecessorCourses__r) ';
 		}
 		if(fieldsModule != null){
-			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r ORDER BY FieloELR__Order__c) ';
+			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r WHERE IsActive__c = true ORDER BY FieloELR__Order__c) ';
 		}
 		
 		queryCourses += ' FROM Course__c WHERE ';
@@ -398,6 +398,7 @@ global class CourseService {
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
 		fieldsModuleClone.add('FieloELR__HasDependencies__c');
 		fieldsModuleClone.add('FieloELR__KeyDependencies__c');
+		fieldsModuleClone.add('FieloELR__Course__c');
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
@@ -487,9 +488,10 @@ global class CourseService {
 	}
 
 	private static Set<String> getCDStringKeys(List<Course__c> courses, Id memberId){
-		String cdQuery = 'SELECT Course__c, Predecessor__c FROM CourseDependency__c WHERE Predecessor__c in (SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId AND Progress__c = 100';
+		String cdQuery = 'SELECT Course__c, Predecessor__c FROM CourseDependency__c WHERE Predecessor__c in 
+		(SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId AND Progress__c = 100';
 		if(courses != null){
-			cdQuery += ' AND Course__c in : courses) AND Course__c in : courses';
+			cdQuery += ') AND Course__c in : courses';
 		}else{
 			cdQuery += ')';
 		}
