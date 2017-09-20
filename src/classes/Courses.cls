@@ -50,8 +50,7 @@ public  class Courses extends SObjectDomain{
                 }
             }
         }
-
-   } 
+    } 
 
     public override void onBeforeDelete() {
         isDelete = true;
@@ -77,6 +76,109 @@ public  class Courses extends SObjectDomain{
                     coursesMap.get(((Module__c)deletedModules.get(dr.getId())).Course__c).addError(err.getMessage());
                 }
             }
+        }
+    }
+
+    public override void onAfterUpdate(Map<Id,SObject> existingRecords){
+        system.debug('onAfterUpdate');
+        List<Course__c> activatedCourses = new List<Course__c>();
+        List<Course__c> inactivatedCourses = new List<Course__c>();
+
+        Course__c oldCourse;
+
+        for(Course__c course : (List<Course__c>)records) {
+            oldCourse = (Course__c)(existingRecords.get(course.Id));
+
+            // Select only courses that are being activated
+            if(!(oldCourse.Status__c=='Active') && (course.Status__c=='Active' || course.Status__c=='Scheduled') ) {
+                activatedCourses.add(course);
+            }
+            // Select only courses that are being inactivated
+            if(oldCourse.Status__c=='Active' && !(course.Status__c=='Active')) {
+                inactivatedCourses.add(course);
+            }
+        }
+
+        if (!activatedCourses.isEmpty()) {
+            addCourseDependency(activatedCourses);
+        }
+
+        if (!inactivatedCourses.isEmpty()) {
+            removeCourseDependency(inactivatedCourses);
+        }
+    }
+
+    private void removeCourseDependency(List<Course__c> inactivatedCourses) {
+        System.debug('removeCourseDependency');
+        Set<Id> inactiveCoursesIds = new Map<Id,Course__c>(inactivatedCourses).keySet();
+        List<Course__c> courses = new CoursesSelector(new Set<String>{'Id','KeyDependencies__c'}).selectByPredecessor(inactiveCoursesIds);
+
+        Set<String> keySetDependencies;
+        List<String> keyDependencies;
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>();
+        for(Course__c course: courses) {
+            if (course.KeyDependencies__c != null) {
+                if (!coursesMap.containsKey(course.Id)) {
+                    coursesMap.put(course.Id, course);
+                }
+                keySetDependencies = new Set<String>(course.KeyDependencies__c.split(','));
+
+                for (String key: keySetDependencies) {
+                    if (inactiveCoursesIds.contains(key.substring(0,15))) {
+                        keySetDependencies.remove(key);
+                    }
+                }
+                keyDependencies = new List<String>(keySetDependencies);
+                keyDependencies.sort();
+                coursesMap.get(course.Id).KeyDependencies__c = String.join(keyDependencies,',');
+                coursesMap.get(course.Id).HasDependencies__c = coursesMap.get(course.Id).KeyDependencies__c != '' &&
+                    coursesMap.get(course.Id).KeyDependencies__c != null;
+            }
+            
+        } 
+        
+        if(!coursesMap.values().isEmpty()) {
+            SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+            uow.registerDirty(coursesMap.values());
+            uow.commitWork();
+        }
+    }
+
+    private void addCourseDependency(List<Course__c> activatedCourses) {
+        System.debug('addCourseDependency');
+        Set<Id> activatedCoursesIds = new Map<Id,Course__c>(activatedCourses).keySet();
+        List<CourseDependency__c> cds = new CourseDependenciesSelector(new Set<String>{'Predecessor__c','Course__c','Course__r.KeyDependencies__c'}).selectByPredecessor(activatedCoursesIds);
+
+        Set<String> keySetDependencies;
+        List<String> keyDependencies;
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>();
+        for(CourseDependency__c cd: cds) {
+            if (cd.Course__r.KeyDependencies__c == null) {
+                cd.Course__r.KeyDependencies__c = String.valueOf(cd.Predecessor__c).substring(0, 15);
+                cd.Course__r.HasDependencies__c = true;
+                coursesMap.put(cd.Course__c, cd.Course__r);
+            } else {
+                keySetDependencies = new Set<String>(cd.Course__r.KeyDependencies__c.split(','));
+
+                if (!keySetDependencies.contains(String.valueOf(cd.Predecessor__c).substring(0, 15))) {
+                    if (!coursesMap.containsKey(cd.Course__c)) {
+                        coursesMap.put(cd.Course__c, cd.Course__r);
+                    }
+
+                    keySetDependencies.add(String.valueOf(cd.Predecessor__c).substring(0, 15));
+                
+                    keyDependencies = new List<String>(keySetDependencies);
+                    keyDependencies.sort();
+                    coursesMap.get(cd.Course__c).KeyDependencies__c = String.join(keyDependencies,',');
+                    coursesMap.get(cd.Course__c).HasDependencies__c = true;
+                }
+            }
+        }
+        
+        if (!coursesMap.values().isEmpty()) {
+            SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
+            uow.registerDirty(coursesMap.values());
+            uow.commitWork();
         }
     }
 
