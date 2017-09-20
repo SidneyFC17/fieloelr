@@ -144,6 +144,7 @@ global class ModuleService {
 			
 			Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
 			fieldsQuestionClone.add('FieloELR__Type__c');
+			fieldsQuestionClone.add('FieloELR__Module__r.FieloELR__PenaltyMode__c');
 			String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
 			
 			Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);

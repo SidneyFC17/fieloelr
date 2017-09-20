@@ -62,6 +62,7 @@ global class QuestionService {
 			this.numberOfAttempts = questionResponses.size();
 			this.questionResponse = this.numberOfAttempts > 0 ? questionResponses.get(this.numberOfAttempts - 1) : null;
 			this.showDetailedAnswers = showDetailedAnswers;
+			setPartialGradeValue(questionResponses);
 			setAnswers();
 		}
 
@@ -71,6 +72,18 @@ global class QuestionService {
 			this.questionResponse = questionResponse;
 			this.showDetailedAnswers = false;
 			setAnswers();
+		}
+
+		private void setPartialGradeValue(List<QuestionResponse__c> questionResponses){
+			if (this.question.FieloELR__Module__r.FieloELR__PenaltyMode__c == 'Negative Weight') {
+				Decimal partialGradeValue = 0;
+				for(FieloELR__QuestionResponse__c qr:questionResponses) {
+					partialGradeValue += qr.PartialGradeValue__c;
+				}
+				if (!questionResponses.isEmpty()) {
+					this.questionResponse.PartialGradeValue__c = partialGradeValue;
+				}
+			}
 		}
 
 		private void setAnswers(){
