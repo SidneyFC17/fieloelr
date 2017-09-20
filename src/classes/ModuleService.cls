@@ -153,8 +153,10 @@ global class ModuleService {
 			Set<Id> questionIds = responsesByQuestion.keySet();
 			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
 
-			Boolean showDetailedAnswers = moduleResponse.IsApproved__c || moduleResponse.NumberOfAttempt__c == moduleResponse.Module__r.AttemptsAllowed__c;
+			Boolean showDetailedAnswers; 
 			for(Question__c question : Database.query(questionQuery)){
+				showDetailedAnswers =
+					responsesByQuestion.get(question.Id)[responsesByQuestion.get(question.Id).size()-1].IsCorrect__c;
 				moduleResponseWrapper.addQuestion(new QuestionService.QuestionResponseResult(question, responsesByQuestion.get(question.Id), showDetailedAnswers));
 			}
 		}
