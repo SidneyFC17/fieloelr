@@ -80,7 +80,6 @@ public  class Courses extends SObjectDomain{
     }
 
     public override void onAfterUpdate(Map<Id,SObject> existingRecords){
-        system.debug('onAfterUpdate');
         List<Course__c> activatedCourses = new List<Course__c>();
         List<Course__c> inactivatedCourses = new List<Course__c>();
 
@@ -109,7 +108,6 @@ public  class Courses extends SObjectDomain{
     }
 
     private void removeCourseDependency(List<Course__c> inactivatedCourses) {
-        System.debug('removeCourseDependency');
         Set<Id> inactiveCoursesIds = new Map<Id,Course__c>(inactivatedCourses).keySet();
         List<Course__c> courses = new CoursesSelector(new Set<String>{'Id','KeyDependencies__c'}).selectByPredecessor(inactiveCoursesIds);
 
@@ -145,7 +143,6 @@ public  class Courses extends SObjectDomain{
     }
 
     private void addCourseDependency(List<Course__c> activatedCourses) {
-        System.debug('addCourseDependency');
         Set<Id> activatedCoursesIds = new Map<Id,Course__c>(activatedCourses).keySet();
         List<CourseDependency__c> cds = new CourseDependenciesSelector(new Set<String>{'Predecessor__c','Course__c','Course__r.KeyDependencies__c'}).selectByPredecessor(activatedCoursesIds);
 
