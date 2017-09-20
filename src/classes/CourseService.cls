@@ -182,6 +182,7 @@ global class CourseService {
 			}
 		}
 
+		system.debug(queryCourses);
 		return Database.query(queryCourses);
 	}
 
@@ -197,10 +198,10 @@ global class CourseService {
 			return '';
 		}
 
-		Map<String,String> operatorsMap = new Map<String,String>{'eq'=>'=','gt'=>'>','in'=>''};
+		Map<String,String> operatorsMap = new Map<String,String>{'equals'=>'=','not equals'=>'!=','greater than'=>'>','greater or equal'=>'>=','less than'=>'<','less or equal'=>'<=','in'=>''};
 		Set<String> andoroperators = new Set<String>{'and','or'};
 		Set<String> nonQuotedTypes = new Set<String>{'DOUBLE','DATETIME','DATE','CURRENCY','INTEGER','BOOLEAN','PERCENT','TIME'};
-		Map<String,Schema.SObjectField> fieldsTypeMap = Course__c.getSObjectType().getDescribe().fields.getMap();
+		Map<String,Schema.SObjectField> fieldsTypeMap = Course__c.getSObjectType().getDescribe().fields.getMap();	
 		
 		if(!String.isBlank(filterWrappers[0].andOrOperator)){
 			throw new FieloPLT.FieloException('And_Or Operator for the first condition must be blank.');
@@ -237,16 +238,20 @@ global class CourseService {
 				throw new FieloPLT.FieloException('Field ' + filter.field + ' not found in object.');
 			}
 
-			if(String.isBlank(filter.operator) || !operatorsMap.containsKey(filter.operator)){
-				throw new FieloPLT.FieloException('Operator ' + filter.operator + ' not found.');
+			if(!String.isBlank(filter.operator)){
+				if(!operatorsMap.containsKey(filter.operator)){
+					throw new FieloPLT.FieloException('Operator ' + filter.operator + ' not found.');
+				}
+			}else{
+				filter.operator = 'equals';
 			}
 
-			if(!String.isBlank(filter.andOrOperator) && !andoroperators.contains(filter.andOrOperator)){
-				throw new FieloPLT.FieloException('And_Or Operator ' + filter.andOrOperator + ' not found.');
-			}
-
-			if(position != 0 && String.isBlank(filter.andOrOperator)){
-				throw new FieloPLT.FieloException('And_Or Operator must be null only for the first condition.');
+			if(!String.isBlank(filter.andOrOperator)){
+				if(!andoroperators.contains(filter.andOrOperator)){
+					throw new FieloPLT.FieloException('And_Or Operator ' + filter.andOrOperator + ' not found.');
+				}
+			}else if(position != 0){
+				filter.andOrOperator = 'and';
 			}
 
 			if(filter.operator == 'in' && filter.SubQueryFilter == null){
@@ -261,14 +266,14 @@ global class CourseService {
 				}
 			}
 			
-			if(filter.operator == 'eq' || filter.operator == 'gt'){
+			if(filter.operator != 'in'){
 				String fieldType = fieldsTypeMap.get(filter.field).getDescribe().getType().name();
 	            if(nonQuotedTypes.contains(fieldType)){
 	                whereCondition += filter.field + ' ' + operatorsMap.get(filter.operator) + ' ' + filter.value;
 	            } else {
 	                whereCondition += filter.field + ' ' + operatorsMap.get(filter.operator) + ' \'' + filter.value + '\'';
 	            }
-	        }else if(filter.operator == 'in'){
+	        }else{
 				hasInConditions = true;
 				if(deepLevel > 1){
 	        		throw new FieloPLT.FieloException('Subquery not supported inside another subquery');
@@ -286,6 +291,7 @@ global class CourseService {
 
 	        	whereCondition += filter.field + ' in (SELECT ' + filter.subQueryFilter.field + ' FROM ' + filter.subQueryFilter.objectName + ' WHERE ' + getWhereCondition(filter.subQueryFilter.filters, operatorsMap, andoroperators, nonQuotedTypes, fieldsTypeMapSubQuery) + ')';
 	        }
+	        position++;
 	    }
 
 	    if(hasOrConditions){
