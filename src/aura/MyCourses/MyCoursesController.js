@@ -3,15 +3,15 @@
         var config = component.get('v.config');      
         if(config){
             config = JSON.parse(config);
-            var fieldset = config.Fieldset;
-            var courseFieldset = config.Course.Fieldset;
+            var fieldset = config.fieldset;
+            var courseFieldset = config.Course.fieldset;
             component.set('v.fieldset', fieldset);
             component.set('v.courseFieldset', courseFieldset);
-            component.set('v.title', config.Title);        
-            component.set('v.layout', config.Layout.toLowerCase());        
-            component.set('v.columns', config.Columns);            
-            component.set('v.courseLayout', config.Course.Layout.toLowerCase());                    
-            component.set('v.courseColumns', config.Course.Columns);                      
+            component.set('v.title', config.title);        
+            component.set('v.layout', config.layout.toLowerCase());        
+            component.set('v.columns', config.columns);            
+            component.set('v.courseLayout', config.Course.layout.toLowerCase());                    
+            component.set('v.courseColumns', config.Course.columns);                      
             window.localStorage.setItem('coursesStatus', '{}');            
         }        
     },
