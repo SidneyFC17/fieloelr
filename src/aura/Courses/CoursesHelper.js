@@ -110,6 +110,7 @@
                     })
                     component.set('v.coursesList', coursesList);                                        
                     component.set('v.showCoursesList', false);
+                    component.set('v.showModuleResponse', false);
                     component.set('v.showCoursesList', true);                     
                 }else {
                     console.log('Failed with state: ' + state);
@@ -146,5 +147,31 @@
             }           
         })      
         return fields;
+    },
+    setCourseInfo: function(component, event, helper, courseInfo){        
+        var memberId = component.get('v.member').Id;
+        var courseRecord;
+        if(courseInfo){
+            courseRecord = courseInfo;   
+        } else {
+            courseRecord = event.getParam('record');    
+        }        
+        var courseId = courseRecord.Id;
+        var modulesList = [];
+        var modules = courseRecord.modules;
+        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
+        for(var i = 0; i < modules.length; i++){
+            var newModule = modules[i].module;
+            newModule.moduleResponses = modules[i].moduleResponses;
+            newModule.numberOfAttempts = modules[i].numberOfAttempts;
+            newModule.isApproved = modules[i].isApproved;            
+            newModule.showBtn = !courseCache[memberId][courseId];
+            modulesList.push(newModule);
+        }                        
+        component.set('v.courseTitle', courseRecord.Name);        
+        component.set('v.modules', modulesList);        
+        component.set('v.showCourse', true);
+        component.set('v.showCoursesList', false);        
+        window.localStorage.setItem('actualCourse', JSON.stringify(courseRecord));
     }
 })

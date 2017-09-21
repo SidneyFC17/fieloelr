@@ -13,8 +13,8 @@
             component.set('v.courseLayout', config.Course.layout.toLowerCase());        
             component.set('v.courseColumns', config.Course.columns);
             var module = config.Module;
-            if(module && module.Content){            
-                component.set('v.moduleContent', module.Content);                
+            if(module && module.content){            
+                component.set('v.moduleContent', module.content);                
             }
             window.localStorage.setItem('coursesStatus', '{}');
         }
@@ -24,25 +24,8 @@
         component.set('v.member', member);                
         helper.loadCourses(component, event, helper);        
     },
-    showCourse: function(component, event, helper){
-        var memberId = component.get('v.member').Id;        
-        var courseRecord = event.getParam('record');
-        var courseId = courseRecord.Id;
-        var modulesList = [];
-        var modules = courseRecord.modules;
-        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
-        for(var i = 0; i < modules.length; i++){
-            var newModule = modules[i].module;
-            newModule.moduleResponses = modules[i].moduleResponses;
-            newModule.numberOfAttempts = modules[i].numberOfAttempts;
-            newModule.isApproved = modules[i].isApproved;            
-            newModule.showBtn = !courseCache[memberId][courseId];
-            modulesList.push(newModule);
-        }                        
-        component.set('v.courseTitle', courseRecord.Name);
-        component.set('v.showCoursesList', false);        
-        component.set('v.modules', modulesList);        
-        component.set('v.showCourse', true);        
+    showCourse: function(component, event, helper, course){
+        helper.setCourseInfo(component, event, helper, false);
     },
     showCoursesList: function(component, event, helper){
         component.set('v.showCoursesList', true);        
@@ -74,7 +57,8 @@
         component.set('v.showModuleResponse', true);
     },
     reloadCourses: function(component, event, helper){
-        helper.loadCourses(component, event, helper);
-        component.set('v.showModuleResponse', false);
+        helper.loadCourses(component, event, helper);        
+        //var courseData = window.localStorage.getItem('actualCourse');
+        //helper.setCourseInfo(component, event, helper, JSON.parse(courseData));
     }
 })

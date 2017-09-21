@@ -9,13 +9,19 @@
     <aura:attribute name="matchingOptions" type="sObject" />
     <aura:attribute name="mode" type="String" default="edit" />
     <aura:attribute name="className" type="String" default="" />
-    <aura:attribute name="isCorrect" type="String" default="" />
-    <aura:attribute name="matchingAnswer" type="String[]" />    
+    <aura:attribute name="isCorrect" type="String" default="" />    
+    <aura:attribute name="matchingAnswer" type="String[]" />
+    <aura:attribute name="icon" type="String" />    
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
-    <div class="{!v.className + ' question slds-p-top_large'}" data-is-correct="{!v.isCorrect}">
+    <div class="{!v.className + ' question slds-p-top_large'}" >
         <aura:if isTrue="{!v.renderQuestion}">
-            <div class="slds-text-heading_small slds-text-align_left">{!v.title}</div>
+            <div>
+                <aura:if isTrue="{!v.mode == 'view'}">
+                    <lightning:icon iconName="{!v.isCorrect ? 'action:approval' : 'action:close'}" class="slds-float_right" size="small" />
+                </aura:if>                
+                <div class="slds-text-heading_small slds-text-align_left">{!v.title}</div>
+            </div>            
             <aura:if isTrue="{!v.type == 'Single Choice'}" >        
                 <aura:iteration items="{!v.options}" var="option">                
                     <ui:inputRadio value="{!option.isSelected}" text="{!option.Id}" name="{!v.question.Id}" label="{!option.FieloELR__AnswerOptionText__c}" click="{!c.setAnswer}"/>                
@@ -45,7 +51,7 @@
                                         <div class="slds-truncate" title="{!option.FieloELR__AnswerOptionText__c}">{!index+1 + '- ' + option.FieloELR__AnswerOptionText__c}</div>
                                     </td>
                                     <td>                                           
-                                        <ui:inputText change="{!c.setAnswer}" class="matchingAnswer inline" label="{!option.FieloELR__MatchingText__c}" labelClass="inline slds-p-right_small" />       
+                                        <ui:inputText change="{!c.setAnswer}" class="matchingAnswer inline" label="{!option.FieloELR__MatchingText__c}" labelClass="inline slds-p-right_small matchingOptionsLabel" />       
                                     </td>
                                 </tr>
                             </aura:iteration>

@@ -3,7 +3,7 @@
         var contentField = component.get('v.moduleContent');
         var moduleId = component.get('v.module').module.Id;        
         if(contentField){
-            contentField = contentField.Field;
+            contentField = contentField.field;
             component.set('v.contentFieldName', contentField);
             var getContent = component.get('c.getContent');            
             getContent.setParams({
