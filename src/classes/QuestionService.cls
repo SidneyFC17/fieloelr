@@ -96,6 +96,7 @@ global class QuestionService {
 					setShortAnswerDescription();
 				}else if(question.Type__c == 'Matching Options'){
 					setMatchingDescription();
+					setMatchingChosenAnswers();
 				}
 			}
 		}
@@ -133,7 +134,19 @@ global class QuestionService {
 					correctedOptions.add(answerOption.AnswerOptionText__c + ' -- ' + answerOption.MatchingText__c);
 				}
 			}
+			correctedOptions.sort();
 			this.correctedAnswers = String.join(correctedOptions,' , ');
+		}
+
+		private void setMatchingChosenAnswers(){
+			List<String> chosenOptions = new List<String>();
+			Map<Id,AnswerOption__c> answerOptionsMap = new Map<Id,AnswerOption__c>(question.AnswerOptions__r);
+
+			for(Answer__c answer : questionResponse.Answers__r){
+				chosenOptions.add(answerOptionsMap.get(answer.AnswerOption__c).AnswerOptionText__c + ' -- ' + answer.TextValue__c);
+			}
+			chosenOptions.sort();
+			this.questionResponse.FieloELR__TextValue__c = String.join(chosenOptions,' , ');
 		}
 	}
 

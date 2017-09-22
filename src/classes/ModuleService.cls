@@ -51,18 +51,20 @@ global class ModuleService {
 		List<Question__c> questions = Database.query(questionQuery);
 
 		if(fieldsAnswerOption != null){
+			Integer currentIndex;
+	    	string currentMatchingText;
+	    	Integer randomIndex;
 			for(Question__c q : questions){
-				if(q.Type__c == 'Matching'){
-					List<String> matchesOptions = new List<String>();
-					for(AnswerOption__c ao : q.AnswerOptions__r){
-						matchesOptions.add(ao.MatchingText__c);
-					}
-
-					for(AnswerOption__c ao : q.AnswerOptions__r){
-						Integer randomPosition = Math.floor(Math.random() * matchesOptions.size()).intValue();
-						ao.MatchingText__c = matchesOptions[randomPosition];
-						matchesOptions.remove(randomPosition);
-					}
+				// Shuffle Answer Options Matching Text
+				if(q.Type__c == 'Matching Options'){
+					currentIndex = q.AnswerOptions__r.size();
+					while (currentIndex != 0) {
+			    		randomIndex = Math.floor(Math.random() * currentIndex).intValue();
+			      		currentIndex -= 1;
+			      		currentMatchingText = q.AnswerOptions__r.get(currentIndex).MatchingText__c;
+			      		q.AnswerOptions__r.get(currentIndex).MatchingText__c = q.AnswerOptions__r.get(randomIndex).MatchingText__c;
+			      		q.AnswerOptions__r.get(randomIndex).MatchingText__c = currentMatchingText;
+			    	}
 				}
 			}
 		}
