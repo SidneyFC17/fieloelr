@@ -44,17 +44,27 @@ public with sharing class FormQuestionController {
     public String cFieldset{get;set;}
 
     public class Section {
-      public String Name{get;set;}
-      public List<List<FormField>> Rows{get;set;}
+        public String Name{get;set;}
+        public List<List<FormField>> Rows{get;set;}
+        public String CssClass{get;set;}
     }
+
     public class FormField {
-      public String Type{get;set;}
-      public String MetaField{get;set;}
-      public String Name{get;set;}
-      public String onchange{get;set;}
-      public String Label{get;set;}
-      public String Value{get;set;}
-      public String WhereCondition{get;set;}
+        public String Type{get;set;}
+        public String MetaField{get;set;}
+        public String Name{get;set;}
+        public String onchange{get;set;}
+        public String Label{get;set;}
+        public String Value{get;set;}
+        public String WhereCondition{get;set;}
+        public Boolean Required{get;set;}
+
+        public String getRequiredValue () {
+            if ( Required != null ) {
+                return Required ? 'true' : 'false';
+            }
+            return '';
+        }
     }
 
     public List<Section> sections { get {
