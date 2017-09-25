@@ -5,7 +5,7 @@ In the Courses Landing Page, click the New button and fill in the fields below:
  - **Program** - By default, this field is automatically filled with the program already chosen in the Program selector. If there is more than one program, the administrator can select another one. If the field is left in blank, it will be set automatically to the program already chosen in the Program selector.
  - **Segment** - Select in the left area the segments that must apply for the course, so that only members that match the conditions under the segments are eligible to join the course. After selecting each desired segment, press the right arrow.
  
-> At CMS, the course can be filtered by **Segment** by configuring it at the Courses component. The field *Filter By Segment* must be set to *true*.
+> At CMS, the course can be filtered by **Segment** by configuring it at the Courses component. The field *Filter By Segment* must be set to *true*. If so, only members who fall into the same course segment(s) will be able to view it on the site.
 
  - **Subscription Mode** - When selecting the *Manual* option, the member is required to subscribe the Course before taking any of its modules. Selecting *Automatic* option, allows the member to directly take any of the modules, respecting their dependencies. In case that the Automatic subscription mode is selected, the system automatically subscribes the member to the course.
 
@@ -196,6 +196,8 @@ Once all the needed modules were created, the administrator might want to change
 A module can be dependent of one or more other modules, this is, it could only be taken after member approval on the predecessors modules.  
 To determine which are the predecessors modules, the administrator goes to the Module details page and clicks the *New* button in the right upper corner of the Modules Dependencies related list. He can type part of the predecessor module name. The complete name of the module will be shown in the list. The administrator selects the module by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
+
+> At CMS, the course can be filtered by **Dependency** by configuring it at the Courses component. The field *Filter By Dependency* must be set to *true*. If so, the member will not view a course until he has approved its predecessor(s).
 
 ## 8. Activating  or Inactivating a Course
 To activate a course, there must be at least one active module for the course. The administrator goes to the Course details page, clicks the *Activate* button in the right upper corner of the page and confirm the message.  
