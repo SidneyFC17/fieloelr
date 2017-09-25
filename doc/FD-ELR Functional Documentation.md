@@ -11,6 +11,8 @@ In the Courses Landing Page, click the New button and fill in the fields below:
 
 > At CMS, the **Manual** subscription mode is represented by a *Join* action button for the course. The member cannot take a module before joining the course. For the **Automatic** subscription mode, the course has a *View* action button. The course is joined automatically when the member presses the *Take* button of the one of its modules. 
 
+> At CMS, we can also filter courses to be displayed depending if the member had already joined it (manually or automatically) or not. In the Courses component, when the field *Filter By Not Taken* is set to *true*, it means that the Courses list will display only the courses that the member has not joined yet.
+
  - **Description** - This field has a maximum limit of 255 characters.
  - **Start Date** - This field must be filled in if the course has a specific date to start. This date cannot be earlier than the current date.
  - **End Date** - This field must be filled in if the course has a specific date to finish. This date cannot be earlier than the current date nor earlier than the Start Date, if a period is defined.   
