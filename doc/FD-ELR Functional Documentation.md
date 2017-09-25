@@ -197,8 +197,6 @@ A module can be dependent of one or more other modules, this is, it could only b
 To determine which are the predecessors modules, the administrator goes to the Module details page and clicks the *New* button in the right upper corner of the Modules Dependencies related list. He can type part of the predecessor module name. The complete name of the module will be shown in the list. The administrator selects the module by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
 
-> At CMS, the course can be filtered by **Dependency** by configuring it at the Courses component. The field *Filter By Dependency* must be set to *true*. If so, the member will not view a course until he has approved its predecessor(s).
-
 ## 8. Activating  or Inactivating a Course
 To activate a course, there must be at least one active module for the course. The administrator goes to the Course details page, clicks the *Activate* button in the right upper corner of the page and confirm the message.  
 Depending on how the course period is configured, there are 3 (three) possible status to where the course can go:
@@ -218,6 +216,8 @@ In order to activate the course again, the same condition must be met: at least 
 A course can be dependent of one or more other courses, this is, it could only be joined after member approval on the predecessors courses.  
 To determine which are the predecessors courses, the administrator goes to the Course details page and clicks the *New* button in the right upper corner of the Courses Dependencies related list. He can type part of the predecessor course name. The complete name of the course will be shown in the list. The administrator selects the course by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
+
+> At CMS, the course can be filtered by **Dependency** by configuring it at the Courses component. The field *Filter By Dependency* must be set to *true*. If so, the member will not view a course until he has approved its predecessor(s).
 
 ## 10. Cloning Courses
 It may be interesting to have an already existing course structure used for another course and, to meet this need, we can clone a course.  
