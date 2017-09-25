@@ -195,7 +195,7 @@ Once all the needed modules were created, the administrator might want to change
 ## 7. Creating Module Dependencies
 A module can be dependent of one or more other modules, this is, it can only be taken after member approval on the predecessors modules.
 
-> At CMS, the *Take* action button will not be displayed for the module until the member have approved its predecessor(s).
+> At CMS, the *Take* action button will not be displayed for the module until the member had approved its predecessor(s).
 
 To determine which are the predecessors modules, the administrator goes to the Module details page and clicks the *New* button in the right upper corner of the Modules Dependencies related list. He can type part of the predecessor module name. The complete name of the module will be shown in the list. The administrator selects the module by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
