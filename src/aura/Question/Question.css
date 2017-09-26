@@ -1,0 +1,36 @@
+.THIS .inline{
+    display: inline;
+}
+.THIS.disabled{
+    pointer-events:none;
+}
+
+.THIS.question.disabled{
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.THIS input[type="checkbox"]{
+    float: left;
+    margin-right: 5px;
+    margin-top: 3px;
+}
+
+.THIS input[type="radio"]{
+    float:left;
+    margin-top:4px;
+}
+
+.THIS .matchingAnswer{
+    float:left;
+    margin-right:5px;
+    max-width: 30px;
+    padding: 0 5px;
+    text-align:center;
+}
+
+.THIS .matchingOptionsLabel{
+    vertical-align: -webkit-baseline-middle;        
+}

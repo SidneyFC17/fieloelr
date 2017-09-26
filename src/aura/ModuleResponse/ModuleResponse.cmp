@@ -1,0 +1,17 @@
+<aura:component controller="ModuleResponseController">
+    <aura:attribute name="moduleResponse" type="FieloELR__ModuleResponse__c" />
+    <aura:attribute name="questionsModule" type="sObject[]" />
+    <aura:attribute name="moduleResponseQuestions" type="FieloELR__ModuleResponse__c" />
+    <aura:attribute name="showAnswers" type="Boolean" default="false" />
+    <aura:attribute name="responseMessage" type="String" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+    <aura:if isTrue="{!v.showAnswers}">
+        <div class="slds-text-heading_large responseMessage" data-is-approved="{!v.moduleResponseQuestions.moduleResponse.FieloELR__IsApproved__c}">
+            {!v.responseMessage}
+        </div>
+        <aura:iteration var="question" items="{!v.questionsModule}">
+            <c:Question question="{!question}" type="{!question.FieloELR__Type__c}" mode="view" />
+        </aura:iteration>
+    </aura:if>
+</aura:component>
