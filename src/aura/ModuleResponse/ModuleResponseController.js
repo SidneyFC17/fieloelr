@@ -22,7 +22,7 @@
                 if(moduleResponse.moduleResponse.FieloELR__IsApproved__c){
                     message = $A.get("$Label.c.Approved");
                 } else {
-                    message = $A.get("$Label.c.NotApproved");
+                    message = $A.get("$Label.c.TryAgain");
                 }
                 component.set('v.responseMessage', message);
             }else {
