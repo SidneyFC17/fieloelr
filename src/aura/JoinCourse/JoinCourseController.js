@@ -31,7 +31,8 @@
                 if (component.isValid() && state === 'SUCCESS') {                    
                     toastEvent.setParams({
                         "title": "Thanks for joining " + courseName + "!",
-                        "message": "Now you can complete it"
+                        "message": "Now you can complete it",
+                        "type": "success"
                     });
                     toastEvent.fire();                    
                     component.set('v.join', false);
