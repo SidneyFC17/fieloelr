@@ -8,8 +8,10 @@ public with sharing class TakeModuleController {
             Set<String> fieldsAnswerOption = new Set<String>{'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c'}; 
             FieloELR.ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(moduleId, memberId, fieldsModule, fieldsQuestion, fieldsAnswerOption);                               
             return JSON.serialize(moduleWrapper);              
-        }catch(Exception e){
-            return e.getMessage();
-        }        
+   } catch(DMLException e) {
+          return e.getDMLMessage(0);
+        } catch(Exception e){
+          return e.getMessage();
+        }     
     }
 }

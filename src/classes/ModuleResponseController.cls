@@ -7,8 +7,10 @@ public with sharing class ModuleResponseController {
             Set<String> fieldsAnswerOption = new Set<String>{'Name','FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c'}; 
             FieloELR.ModuleService.ModuleResponseResult mrWrapper = FieloELR.ModuleService.getModuleResponse(moduleResponseId, fieldsModuleResponse, fieldsQuestion, fieldsAnswerOption);
             return JSON.serialize(mrWrapper);              
-        }catch(Exception e){
-            return e.getMessage();        
-        }
+   } catch(DMLException e) {
+          return e.getDMLMessage(0);
+        } catch(Exception e){
+          return e.getMessage();
+        }     
     }
 }
