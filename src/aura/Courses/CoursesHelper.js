@@ -110,6 +110,8 @@
                     })
                     component.set('v.coursesList', coursesList);                                        
                     component.set('v.showCoursesList', false);
+                    component.set('v.showCourse', false);
+                    component.set('v.showModule', false);                                        
                     component.set('v.showModuleResponse', false);
                     component.set('v.showCoursesList', true);                     
                 }else {

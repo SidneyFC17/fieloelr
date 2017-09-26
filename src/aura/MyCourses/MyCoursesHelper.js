@@ -33,6 +33,7 @@
                     })
                     component.set('v.myCourses', myCourses); 
                     component.set('v.showMyCourses', false);
+                    component.set('v.showCourse', false);                    
                     component.set('v.showMyCourses', true);
                 }else {
                     console.log('Failed with state: ' + state);
