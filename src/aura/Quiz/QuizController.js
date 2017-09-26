@@ -58,7 +58,7 @@
             }   
             toastEvent.setParams({
                 "title": "Error!",
-                "message": "You must complete all the questions",
+                "message": $A.get("$Label.c.CompleteAllQuestions"),
                 "type": "error"
             });
             toastEvent.fire();

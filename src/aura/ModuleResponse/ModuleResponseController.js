@@ -20,9 +20,9 @@
                 component.set('v.moduleResponseQuestions', moduleResponse);                
                 helper.loadQuestionResponses(component);
                 if(moduleResponse.moduleResponse.FieloELR__IsApproved__c){
-                    message = '¡Felicitaciones!¡Aprobaste!';
+                    message = $A.get("$Label.c.Approved");
                 } else {
-                    message = '¡No Aprobaste!';
+                    message = $A.get("$Label.c.NotApproved");
                 }
                 component.set('v.responseMessage', message);
             }else {
