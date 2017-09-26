@@ -48,7 +48,7 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <deprecated>false</deprecated>
-    <description>Actions that grant Points, Badges o Rewards to Members in exchange of a specific actions performed.</description>
+    <description>Actions that grant Points, Badges or Rewards to Members in exchange of performing specific activities.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableEnhancedLookup>false</enableEnhancedLookup>

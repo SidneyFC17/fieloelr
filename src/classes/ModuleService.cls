@@ -17,8 +17,15 @@ global class ModuleService {
 	global static ModuleWrapper takeModule(Id moduleId, Id memberId, Set<String> fieldsModule, Set<String> fieldsQuestion, Set<String> fieldsAnswerOption) {
 		
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType});
-		ModuleResponse__c moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
-		uow.registerNew(moduleResponse);
+		ModuleResponse__c moduleResponse;
+		try{
+			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+			moduleResponse.NumberOfAttempt__c++;
+			uow.registerDirty(moduleResponse);
+		}catch(Exception e){
+			moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
+			uow.registerNew(moduleResponse);
+		}
 		uow.commitWork();
 
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
@@ -44,18 +51,20 @@ global class ModuleService {
 		List<Question__c> questions = Database.query(questionQuery);
 
 		if(fieldsAnswerOption != null){
+			Integer currentIndex;
+	    	string currentMatchingText;
+	    	Integer randomIndex;
 			for(Question__c q : questions){
-				if(q.Type__c == 'Matching'){
-					List<String> matchesOptions = new List<String>();
-					for(AnswerOption__c ao : q.AnswerOptions__r){
-						matchesOptions.add(ao.MatchingText__c);
-					}
-
-					for(AnswerOption__c ao : q.AnswerOptions__r){
-						Integer randomPosition = Math.floor(Math.random() * matchesOptions.size()).intValue();
-						ao.MatchingText__c = matchesOptions[randomPosition];
-						matchesOptions.remove(randomPosition);
-					}
+				// Shuffle Answer Options Matching Text
+				if(q.Type__c == 'Matching Options'){
+					currentIndex = q.AnswerOptions__r.size();
+					while (currentIndex != 0) {
+			    		randomIndex = Math.floor(Math.random() * currentIndex).intValue();
+			      		currentIndex -= 1;
+			      		currentMatchingText = q.AnswerOptions__r.get(currentIndex).MatchingText__c;
+			      		q.AnswerOptions__r.get(currentIndex).MatchingText__c = q.AnswerOptions__r.get(randomIndex).MatchingText__c;
+			      		q.AnswerOptions__r.get(randomIndex).MatchingText__c = currentMatchingText;
+			    	}
 				}
 			}
 		}
@@ -137,6 +146,7 @@ global class ModuleService {
 			
 			Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
 			fieldsQuestionClone.add('FieloELR__Type__c');
+			fieldsQuestionClone.add('FieloELR__Module__r.FieloELR__PenaltyMode__c');
 			String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
 			
 			Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
@@ -146,8 +156,10 @@ global class ModuleService {
 			Set<Id> questionIds = responsesByQuestion.keySet();
 			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
 
-			Boolean showDetailedAnswers = moduleResponse.IsApproved__c || moduleResponse.NumberOfAttempt__c == moduleResponse.Module__r.AttemptsAllowed__c;
+			Boolean showDetailedAnswers; 
 			for(Question__c question : Database.query(questionQuery)){
+				showDetailedAnswers =
+					responsesByQuestion.get(question.Id)[responsesByQuestion.get(question.Id).size()-1].IsCorrect__c;
 				moduleResponseWrapper.addQuestion(new QuestionService.QuestionResponseResult(question, responsesByQuestion.get(question.Id), showDetailedAnswers));
 			}
 		}

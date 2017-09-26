@@ -35,9 +35,10 @@ public class CourseDependencies extends SObjectDomain{
         Set<Id> courseIds = new Set<Id>();
         for(CourseDependency__c coursedependency : courseDependencies) {
             courseIds.add(coursedependency.Course__c);
+            courseIds.add(coursedependency.Predecessor__c);
         }
         Map<Id, Course__c> coursesMap = 
-                    new Map<Id, Course__c>(new CoursesSelector(new Set<String> {'Id', 'HasDependencies__c', 'KeyDependencies__c'}).selectById(courseIds));
+                    new Map<Id, Course__c>(new CoursesSelector(new Set<String> {'Id', 'HasDependencies__c', 'KeyDependencies__c','Status__c'}).selectById(courseIds));
         Course__c course;
         String predecessor;
         List<String> Keys;
@@ -47,17 +48,19 @@ public class CourseDependencies extends SObjectDomain{
             predecessor = String.valueOf(coursedependency.Predecessor__c).subString(0,15);
             if(Trigger.IsInsert) {
                 // Add key
-                if(String.IsBlank(course.KeyDependencies__c)) {
-                    course.KeyDependencies__c = predecessor;
-                } else {
-                    Keys = course.KeyDependencies__c.split(',');
-                    Keys.add(predecessor);
-                    Keys.sort();            
-                    course.KeyDependencies__c = String.join(Keys, ',');
-                }   
-                // If a course dependency is inserted and course has no dependencies yet, the attribute must be updated
-                if(!(course.HasDependencies__c)) {
-                    course.HasDependencies__c = true;
+                if (coursesMap.get(coursedependency.Predecessor__c).Status__c == 'Active') {
+                    if(String.IsBlank(course.KeyDependencies__c)) {
+                        course.KeyDependencies__c = predecessor;
+                    } else {
+                        Keys = course.KeyDependencies__c.split(',');
+                        Keys.add(predecessor);
+                        Keys.sort();            
+                        course.KeyDependencies__c = String.join(Keys, ',');
+                    }   
+                    // If a course dependency is inserted and course has no dependencies yet, the attribute must be updated
+                    if(!(course.HasDependencies__c)) {
+                        course.HasDependencies__c = true;
+                    }
                 }
             } else if(Trigger.IsDelete) {
                 if(!String.isBlank(course.KeyDependencies__c)){

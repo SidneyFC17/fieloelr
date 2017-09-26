@@ -62,6 +62,7 @@ global class QuestionService {
 			this.numberOfAttempts = questionResponses.size();
 			this.questionResponse = this.numberOfAttempts > 0 ? questionResponses.get(this.numberOfAttempts - 1) : null;
 			this.showDetailedAnswers = showDetailedAnswers;
+			setPartialGradeValue(questionResponses);
 			setAnswers();
 		}
 
@@ -71,6 +72,18 @@ global class QuestionService {
 			this.questionResponse = questionResponse;
 			this.showDetailedAnswers = false;
 			setAnswers();
+		}
+
+		private void setPartialGradeValue(List<QuestionResponse__c> questionResponses){
+			if (this.question.FieloELR__Module__r.FieloELR__PenaltyMode__c == 'Negative Weight') {
+				Decimal partialGradeValue = 0;
+				for(FieloELR__QuestionResponse__c qr:questionResponses) {
+					partialGradeValue += qr.PartialGradeValue__c;
+				}
+				if (!questionResponses.isEmpty()) {
+					this.questionResponse.PartialGradeValue__c = partialGradeValue;
+				}
+			}
 		}
 
 		private void setAnswers(){
@@ -83,6 +96,7 @@ global class QuestionService {
 					setShortAnswerDescription();
 				}else if(question.Type__c == 'Matching Options'){
 					setMatchingDescription();
+					setMatchingChosenAnswers();
 				}
 			}
 		}
@@ -120,7 +134,19 @@ global class QuestionService {
 					correctedOptions.add(answerOption.AnswerOptionText__c + ' -- ' + answerOption.MatchingText__c);
 				}
 			}
+			correctedOptions.sort();
 			this.correctedAnswers = String.join(correctedOptions,' , ');
+		}
+
+		private void setMatchingChosenAnswers(){
+			List<String> chosenOptions = new List<String>();
+			Map<Id,AnswerOption__c> answerOptionsMap = new Map<Id,AnswerOption__c>(question.AnswerOptions__r);
+
+			for(Answer__c answer : questionResponse.Answers__r){
+				chosenOptions.add(answerOptionsMap.get(answer.AnswerOption__c).AnswerOptionText__c + ' -- ' + answer.TextValue__c);
+			}
+			chosenOptions.sort();
+			this.questionResponse.FieloELR__TextValue__c = String.join(chosenOptions,' , ');
 		}
 	}
 

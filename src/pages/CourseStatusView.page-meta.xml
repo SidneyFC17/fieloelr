@@ -6,12 +6,7 @@
     <label>CourseStatusView</label>
     <packageVersions>
         <majorNumber>2</majorNumber>
-        <minorNumber>22</minorNumber>
+        <minorNumber>29</minorNumber>
         <namespace>FieloPLT</namespace>
-    </packageVersions>
-    <packageVersions>
-        <majorNumber>1</majorNumber>
-        <minorNumber>7</minorNumber>
-        <namespace>sf_com_apps</namespace>
     </packageVersions>
 </ApexPage>

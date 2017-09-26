@@ -137,7 +137,7 @@ global class CourseService {
 			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsCourseDependency), ',') + ' FROM PredecessorCourses__r) ';
 		}
 		if(fieldsModule != null){
-			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r ORDER BY FieloELR__Order__c) ';
+			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsModule), ',') + ' FROM Modules__r WHERE IsActive__c = true ORDER BY FieloELR__Order__c) ';
 		}
 		
 		queryCourses += ' FROM Course__c WHERE ';
@@ -182,6 +182,7 @@ global class CourseService {
 			}
 		}
 
+		system.debug(queryCourses);
 		return Database.query(queryCourses);
 	}
 
@@ -197,10 +198,10 @@ global class CourseService {
 			return '';
 		}
 
-		Map<String,String> operatorsMap = new Map<String,String>{'eq'=>'=','gt'=>'>','in'=>''};
+		Map<String,String> operatorsMap = new Map<String,String>{'equals'=>'=','not equals'=>'!=','greater than'=>'>','greater or equal'=>'>=','less than'=>'<','less or equal'=>'<=','in'=>''};
 		Set<String> andoroperators = new Set<String>{'and','or'};
 		Set<String> nonQuotedTypes = new Set<String>{'DOUBLE','DATETIME','DATE','CURRENCY','INTEGER','BOOLEAN','PERCENT','TIME'};
-		Map<String,Schema.SObjectField> fieldsTypeMap = Course__c.getSObjectType().getDescribe().fields.getMap();
+		Map<String,Schema.SObjectField> fieldsTypeMap = Course__c.getSObjectType().getDescribe().fields.getMap();	
 		
 		if(!String.isBlank(filterWrappers[0].andOrOperator)){
 			throw new FieloPLT.FieloException('And_Or Operator for the first condition must be blank.');
@@ -237,16 +238,20 @@ global class CourseService {
 				throw new FieloPLT.FieloException('Field ' + filter.field + ' not found in object.');
 			}
 
-			if(String.isBlank(filter.operator) || !operatorsMap.containsKey(filter.operator)){
-				throw new FieloPLT.FieloException('Operator ' + filter.operator + ' not found.');
+			if(!String.isBlank(filter.operator)){
+				if(!operatorsMap.containsKey(filter.operator)){
+					throw new FieloPLT.FieloException('Operator ' + filter.operator + ' not found.');
+				}
+			}else{
+				filter.operator = 'equals';
 			}
 
-			if(!String.isBlank(filter.andOrOperator) && !andoroperators.contains(filter.andOrOperator)){
-				throw new FieloPLT.FieloException('And_Or Operator ' + filter.andOrOperator + ' not found.');
-			}
-
-			if(position != 0 && String.isBlank(filter.andOrOperator)){
-				throw new FieloPLT.FieloException('And_Or Operator must be null only for the first condition.');
+			if(!String.isBlank(filter.andOrOperator)){
+				if(!andoroperators.contains(filter.andOrOperator)){
+					throw new FieloPLT.FieloException('And_Or Operator ' + filter.andOrOperator + ' not found.');
+				}
+			}else if(position != 0){
+				filter.andOrOperator = 'and';
 			}
 
 			if(filter.operator == 'in' && filter.SubQueryFilter == null){
@@ -261,14 +266,14 @@ global class CourseService {
 				}
 			}
 			
-			if(filter.operator == 'eq' || filter.operator == 'gt'){
+			if(filter.operator != 'in'){
 				String fieldType = fieldsTypeMap.get(filter.field).getDescribe().getType().name();
 	            if(nonQuotedTypes.contains(fieldType)){
 	                whereCondition += filter.field + ' ' + operatorsMap.get(filter.operator) + ' ' + filter.value;
 	            } else {
 	                whereCondition += filter.field + ' ' + operatorsMap.get(filter.operator) + ' \'' + filter.value + '\'';
 	            }
-	        }else if(filter.operator == 'in'){
+	        }else{
 				hasInConditions = true;
 				if(deepLevel > 1){
 	        		throw new FieloPLT.FieloException('Subquery not supported inside another subquery');
@@ -286,6 +291,7 @@ global class CourseService {
 
 	        	whereCondition += filter.field + ' in (SELECT ' + filter.subQueryFilter.field + ' FROM ' + filter.subQueryFilter.objectName + ' WHERE ' + getWhereCondition(filter.subQueryFilter.filters, operatorsMap, andoroperators, nonQuotedTypes, fieldsTypeMapSubQuery) + ')';
 	        }
+	        position++;
 	    }
 
 	    if(hasOrConditions){
@@ -309,7 +315,7 @@ global class CourseService {
 											String orderBy) {
 		String queryCourseStatus = 'SELECT ' + String.join(new List<String>(fieldsCourseStatus), ',');
 		if(fieldsModuleResponse != null){
-			queryCourseStatus += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',') + ' FROM ModuleResponses__r WHERE Member__c =: memberId) ';
+			queryCourseStatus += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',') + ' FROM ModuleResponses__r WHERE Member__c =: memberId AND IsSubmitted__c = true) ';
 		}
 		queryCourseStatus += ' FROM CourseStatus__c WHERE Member__c =: memberId ';		
 		if (courseIds != null) {
@@ -398,6 +404,7 @@ global class CourseService {
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
 		fieldsModuleClone.add('FieloELR__HasDependencies__c');
 		fieldsModuleClone.add('FieloELR__KeyDependencies__c');
+		fieldsModuleClone.add('FieloELR__Course__c');
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
@@ -487,9 +494,9 @@ global class CourseService {
 	}
 
 	private static Set<String> getCDStringKeys(List<Course__c> courses, Id memberId){
-		String cdQuery = 'SELECT Course__c, Predecessor__c FROM CourseDependency__c WHERE Predecessor__c in (SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId AND Progress__c = 100';
+		String cdQuery = 'SELECT Course__c, Predecessor__c FROM CourseDependency__c WHERE Predecessor__c in SELECT Course__c FROM CourseStatus__c WHERE Member__c =: memberId AND Progress__c = 100';
 		if(courses != null){
-			cdQuery += ' AND Course__c in : courses) AND Course__c in : courses';
+			cdQuery += ') AND Course__c in : courses';
 		}else{
 			cdQuery += ')';
 		}

@@ -66,7 +66,7 @@
         <label>Category</label>
         <picklist>
             <picklistValues>
-                <fullName>Miscelaneas</fullName>
+                <fullName>Miscellaneous</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -134,7 +134,7 @@
         <deprecated>false</deprecated>
         <description>Model type (Incentives - Promotion, Challenge - or Program).</description>
         <externalId>false</externalId>
-        <inlineHelpText>Choose the Model type.</inlineHelpText>
+        <inlineHelpText>Choose the Model type (Incentives - Promotion, Challenge - or Program).</inlineHelpText>
         <label>Type</label>
         <picklist>
             <picklistValues>
@@ -153,7 +153,6 @@
                 <fullName>Course</fullName>
                 <default>false</default>
             </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
             <sorted>false</sorted>
         </picklist>
         <required>true</required>

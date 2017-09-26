@@ -152,4 +152,16 @@ public with sharing class ModulesSelector extends SObjectSelector {
     public List<AggregateResult> selectByCourseGroupByCourse(Set<Id> courseIds) {
         return [SELECT MAX(Order__c) orderNumber, Course__c FROM Module__c WHERE Course__c in : courseIds GROUP BY Course__c];
     }
+
+    public List<Module__c> selectByPredecessor(Set<Id> recordIds) {
+        return (List<Module__c>) Database.query(String.format(
+                'SELECT {0} ' +               
+                  'FROM {1} ' +
+                  'WHERE Id IN (SELECT Module__c FROM ModuleDependency__c WHERE Predecessor__c IN :recordIds)' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }

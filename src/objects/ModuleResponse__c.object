@@ -183,6 +183,14 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>SubmitDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Submit Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
     <gender>Feminine</gender>
     <label>Module Response</label>
     <nameField>

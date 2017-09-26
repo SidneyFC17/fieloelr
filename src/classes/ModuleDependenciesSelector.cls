@@ -37,4 +37,16 @@ public with sharing class ModuleDependenciesSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
     }
+
+    public List<ModuleDependency__c> selectByPredecessor(Set<Id> moduleIds) {
+        return (List<ModuleDependency__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Predecessor__c IN :moduleIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }
