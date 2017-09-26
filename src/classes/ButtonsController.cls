@@ -4,13 +4,13 @@ public with sharing class ButtonsController {
     public String cRecordId{get;set;}
 
     @remoteAction
-    public static RemoteActionResult executeAction(String recordIds, String className, String parameters){
+    public static FieloPLT.RemoteActionResult executeAction(String recordIds, String className, String parameters){
       /*RemoteActionResult result = new RemoteActionResult();        
       result.addMessage(new RemoteActionResult.RemoteActionMessage(ApexPages.SEVERITY.Info, 'remote ok'));
       return result;*/
 
       Type t = Type.forName(className);
-      ButtonActionInterface reflectionInstance = (ButtonActionInterface)t.newInstance();
+      FieloPLT.ButtonActionInterface reflectionInstance = (FieloPLT.ButtonActionInterface)t.newInstance();
       return reflectionInstance.executeAction(recordIds.split(','), parameters);
     }
 

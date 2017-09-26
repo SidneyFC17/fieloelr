@@ -12,6 +12,7 @@
 	<div class="fielosf fielosf-elearning fielosf-course-view">
 		<!-- STANDARD Header  -->
 		<c:BackendHeaderRecord firstHeading="{!$ObjectType[objectName].labelPlural}"
+			prefix="FieloELR"
 			secondHeading="{!record['name']}"
 			icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/{!viewSettings.FieloPLT__Icon__c}"
 			helpUrl="http://documentation.fielo.com/docs/promotion"
@@ -60,13 +61,14 @@
           <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
             icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
             sObjectName="{!rel.FieloPLT__TargetObject__c}"
-            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Course__c.Id}'}"
-            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+            dataFilters="{!rel.FieloPLT__DataFilters__c}"
+            parameters="{!rel.FieloPLT__DataFilters__c}"
             fieldset="{!rel.FieloPLT__Fieldset__c}"
             buttons="{!rel.FieloPLT__Buttons__c}"
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            rendered="{!rel.FieloPLT__Visibility__c}"
             />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
             	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Module__c' && relForm.FieloPLT__Type__c = 'Edit'}">
@@ -96,19 +98,20 @@
         </apex:panelGroup>
 
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__CourseDependency__c'}">
-          <c:RelatedList namespace="FieloELR" 
-          	relatedId="FieloELR__CourseDependency__cRelatedList"
-          	heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
-            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
-            sObjectName="{!rel.FieloPLT__TargetObject__c}"
-            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Course__c.Id}'}"
-            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
-            fieldset="{!rel.FieloPLT__Fieldset__c}"
-            buttons="{!rel.FieloPLT__Buttons__c}"
-            tools="{!rel.FieloPLT__Tools__c}"
-            actions="{!rel.FieloPLT__Actions__c}"
-            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
-            />
+          	<c:RelatedList namespace="FieloELR" 
+	          	relatedId="FieloELR__CourseDependency__cRelatedList"
+	          	heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
+	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
+	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
+	            dataFilters="{!rel.FieloPLT__DataFilters__c}"
+            	parameters="{!rel.FieloPLT__DataFilters__c}"
+	            fieldset="{!rel.FieloPLT__Fieldset__c}"
+	            buttons="{!rel.FieloPLT__Buttons__c}"
+	            tools="{!rel.FieloPLT__Tools__c}"
+	            actions="{!rel.FieloPLT__Actions__c}"
+	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+	            rendered="{!rel.FieloPLT__Visibility__c}"
+	            />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
             	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__CourseDependency__c' && relForm.FieloPLT__Type__c = 'Edit'}">
             		<c:Form namespace="FieloELR" formId="FieloELR__CourseDependency__cForm"
@@ -132,27 +135,29 @@
 	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
 	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
-	            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Course__c.Id}'}"
-	            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+	            dataFilters="{!rel.FieloPLT__DataFilters__c}"
+            	parameters="{!rel.FieloPLT__DataFilters__c}"
 	            fieldset="{!rel.FieloPLT__Fieldset__c}"
 	            buttons="{!rel.FieloPLT__Buttons__c}"
 	            tools="{!rel.FieloPLT__Tools__c}"
 	            actions="{!rel.FieloPLT__Actions__c}"
 	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
 	            nameField="FieloELR__Member__r.Name"
+	            rendered="{!rel.FieloPLT__Visibility__c}"
 	            />
         </apex:panelGroup>
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__CourseDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Module__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__CourseStatus__c'}">
 	        <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 	            icon="{!URLFOR($Resource.FieloSalesforce_Backend)}/lightning/icons/standard-sprite/svg/symbols.svg#product"
 	            sObjectName="{!rel.FieloPLT__TargetObject__c}"
-	            dataFilters="{'{!rel.FieloPLT__TargetField__c}':'{!Course__c.Id}'}"
-	            parameters="{'{!rel.FieloPLT__TargetField__c}':'{!record.Id}'}"
+	            dataFilters="{!rel.FieloPLT__DataFilters__c}"
+            	parameters="{!rel.FieloPLT__DataFilters__c}"
 	            fieldset="{!rel.FieloPLT__Fieldset__c}"
 	            buttons="{!rel.FieloPLT__Buttons__c}"
 	            tools="{!rel.FieloPLT__Tools__c}"
 	            actions="{!rel.FieloPLT__Actions__c}"
 	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+	            rendered="{!rel.FieloPLT__Visibility__c}"
 	            />
         </apex:panelGroup>
     </apex:repeat>

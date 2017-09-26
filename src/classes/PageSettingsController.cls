@@ -26,7 +26,6 @@ public with sharing abstract class PageSettingsController {
         return hasDetail;
     }
 
-
 /* 
     Constructor para los Views
 */
@@ -53,6 +52,9 @@ public with sharing abstract class PageSettingsController {
                   }
                 }
             }
+            if(!relatedAdditionalFields.isEmpty()){
+                fieldList.addAll(relatedAdditionalFields);
+            }
         }
         return fieldList;
     } set ;}
@@ -71,34 +73,173 @@ public with sharing abstract class PageSettingsController {
         public String andOrOperator;
     }
 
+    private Set<String> relatedAdditionalFields = new Set<String>();
+
+    private Map<String,Schema.SObjectField> objectFieldsMap {get{
+        if(objectFieldsMap == null){
+            objectFieldsMap = ((sObject)Type.forName(objectName).newInstance()).getSObjectType().getDescribe().fields.getMap();
+        }
+        return objectFieldsMap;
+    } set;} 
+
     private String getVisibility(String jsonCondition, SObject record){
         List<FilterWrapper> filterWrappers;
         try{
-            system.debug(jsonCondition);
             filterWrappers = (List<FilterWrapper>)JSON.deserialize(jsonCondition, List<FilterWrapper>.class);
         }catch(Exception e){
             throw new FieloPLT.FieloException('JSON wrong format');
         }
         
         String condition = '';
+        Integer counter = 0;
         for(FilterWrapper filter : filterWrappers){
-            condition += String.valueOf(filterResult(record.get(filter.field), filter.operator, filter.value)) + ' ' + filter.andOrOperator + ' ';
+            if(String.isBlank(filter.andOrOperator) && counter > 0){
+                filter.andOrOperator = 'AND';
+            }else if(String.isNotBlank(filter.andOrOperator) && counter == 0 || filter.andOrOperator == null){
+                filter.andOrOperator = '';
+            }
+            if(filter.operator == null){
+                filter.operator = 'equals';
+            }
+            condition += ' ' + filter.andOrOperator + ' ' + String.valueOf(filterResult(record, filter.field, filter.operator, filter.value));
+            counter++;
         }
+        condition = '(' + condition.subString(2,condition.length()) + ')';
 
+        system.debug(condition);
         return validateConditional(condition);
     }
 
-    private Boolean filterResult(Object recordValue, String operator, Object compareValue){
+    /*private Boolean filterResult(Object recordValue, String operator, Object compareValue){
         if(operator == 'eq'){
             return recordValue == compareValue;
-        }/*else if(operator == 'gt'){
+        }else if(operator == 'gt'){
             return recordValue > compareValue;
         }else if(operator == 'lt'){
             return recordValue < compareValue;
-        }*/else if(operator == 'neq'){
+        }else if(operator == 'neq'){
             return recordValue != compareValue;
         }
         return false;
+    }*/
+
+    public String getType(String typeValue){
+        if ( typeValue == 'Date' || typeValue == 'DateTime'  ) return 'Date';
+        if ( typeValue == 'Double' || typeValue == 'Integer' || typeValue == 'Phone' || typeValue == 'PERCENT' || typeValue == 'Currency' ) return 'Number';
+        if ( typeValue == 'anytype' || typeValue == 'String' || typeValue == 'email' || typeValue == 'base64' || typeValue == 'TEXTAREA') return 'Text';
+        if ( typeValue == 'PICKLIST' ) return  'List';
+        if ( typeValue == 'REFERENCE' ) return  'Reference';
+        if ( typeValue == 'BOOLEAN' ) return  'Boolean';
+        return typeValue;
+    }
+
+    public Boolean filterResult(SObject record, String fieldName, String operator, Object compareValue){
+        String[] fieldNameSplited = fieldName.split('\\.');
+        Object valueObject = null;
+
+        SObject relationObject = record;
+        Integer index = 0;
+        for(; index < fieldNameSplited.size() - 1; index++){
+            relationObject = relationObject.getSObject(fieldNameSplited[index].removeEnd('Id'));
+            if(relationObject == null)
+                return false;
+        }
+
+        valueObject = relationObject.get(fieldNameSplited[index]);
+
+        String fieldType = getType(String.valueOf(objectFieldsMap.get(fieldName).getDescribe().getType()));
+        if( fieldType == 'Date' ){
+            Date fieldValue = null;
+
+            if(valueObject != null){
+                try{
+                    fieldValue = DateTime.valueOf( valueObject ).dateGMT();
+                }catch(Exception e){
+                    fieldValue = Date.valueOf(valueObject);
+                }
+            }
+
+            Date value = Date.valueOf(compareValue);
+            
+            //Date value = c.DateValue__c;
+            if ((operator == 'equals' &&  fieldValue != value) || 
+               (operator == 'not equals' &&  fieldValue == value) || 
+               ((operator != 'equals' && operator != 'not equals') && fieldValue == null && value != null || fieldValue != null && value == null) || 
+               ((operator != 'equals' && operator != 'not equals') && (fieldValue == null && value == null) ||
+               (operator == 'greater or equal' &&  fieldValue < value) || 
+               (operator == 'less or equal' &&  fieldValue > value) || 
+               (operator == 'greater than' &&  fieldValue <= value) || 
+               (operator == 'less than' &&  fieldValue >= value) )){
+                return false;
+            }
+        } else if ( fieldType == 'Number' ) {
+            Double fieldValue = null;
+            if( valueObject != null ){
+                fieldValue = Double.valueOf( valueObject );
+            }
+
+            Double value = Double.valueOf(compareValue);
+            
+            //Caso Nulos
+            if(fieldValue == null || value == null){
+                if( (operator == 'equals' && fieldValue != value) || (operator == 'not equals' && fieldValue == value) || (operator == 'greater or equal' || operator == 'less or equal' || operator == 'greater than' || operator == 'less than') ) {
+                    return false;
+                }
+            }
+
+            if ( (operator == 'equals' &&  fieldValue != value) || (operator == 'not equals' &&  fieldValue == value) || (operator == 'greater or equal' &&  fieldValue < value) || (operator == 'less or equal' &&  fieldValue > value) || (operator == 'greater than' &&  fieldValue <= value) || (operator == 'less than' &&  fieldValue >= value) )
+                return false;
+        } else if ( fieldType == 'Boolean' ) {
+            if(valueObject == null){
+                return false;
+            }
+            Boolean fieldValue = Boolean.valueOf( valueObject );
+            Boolean value = Boolean.valueOf(compareValue);
+            
+            if ( (operator == 'equals' &&  fieldValue != value) || (operator == 'not equals' &&  fieldValue == value)  )
+                return false;
+        } else {
+            String fieldValue = '';
+            if(valueObject != null){
+                fieldValue = String.valueOf( valueObject );
+            }
+            String value = (String)compareValue;
+
+            if(fieldValue == null) fieldValue = '';
+            if(value == null) value = '';
+
+            List<String> valor = value.split(',');
+            Boolean aux = true;
+            for(String val : valor){
+                if(val.startsWith(' ')){
+                    val = val.replaceFirst(' ','');
+                }
+
+                if ( (operator == 'equals' &&  (fieldValue != val) ) || (operator == 'greater or equal' &&  (fieldValue < val) ) || (operator == 'less or equal' &&  (fieldValue > val) ) || (operator == 'greater than' &&  (fieldValue <= val) ) || (operator == 'less than' &&  (fieldValue >= val) ) || (operator == 'contains' && (!fieldValue.contains(val)) )
+                || (operator == 'not equals' &&  fieldValue == val) || (operator == 'not contains' && fieldValue.contains(val))){
+                    aux = false;
+                }else{
+                    aux = true;
+                    break;
+                }
+
+                if(fieldType == 'REFERENCE'){//esto está para comparar Id's y que sean los dos de 15, ya que si uno es de 15 y el otro de 18 va a parecer que son distintos cuando en realidad son lo mismo
+                    if(operator == 'equals'){
+                        fieldValue = String.isBlank(fieldValue) ? '' : fieldValue.substring(0 ,15);
+                        val = String.isBlank(val) ? '' : val.substring(0 ,15);
+                        aux = fieldValue == val;
+                    }else if(operator == 'not equals'){
+                        aux = fieldValue != val;
+                    }
+                }
+
+            }
+            if(aux == false){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static String validateConditional(String conditional){
@@ -169,10 +310,8 @@ public with sharing abstract class PageSettingsController {
                     if(!String.isBlank(relPS.FieloPLT__Actions__c)){
                         relPS.FieloPLT__Actions__c = PageSettingsController.replaceFormula(relPS.FieloPLT__Actions__c, null);
                     }
-                    system.debug(relPS.FieloPLT__DataFilters__c);
                     if(!String.isBlank(relPS.FieloPLT__DataFilters__c)){
                         relPS.FieloPLT__DataFilters__c = PageSettingsController.replaceFormula(relPS.FieloPLT__DataFilters__c, record);
-                        system.debug(relPS.FieloPLT__DataFilters__c);
                     } else {                        
                         relPS.FieloPLT__DataFilters__c = '{\'' + relPS.FieloPLT__TargetField__c + '\':\'' +  record.Id + '\'}';
                     }
@@ -291,6 +430,7 @@ public with sharing abstract class PageSettingsController {
                             p.FieloPLT__Icon__c = 'action-sprite/svg/symbols.svg#goal';
                         }                       
                         relatedPS.add(p);
+
                     } else if ( p.FieloPLT__Type__c == 'Edit'  ) {
                         hasEditForm = true;
                         if ( p.FieloPLT__Sections__c != null ) {
@@ -439,6 +579,11 @@ public with sharing abstract class PageSettingsController {
                         } else {
                             r.FieloPLT__Actions__c = '{"Label": "' + Label.Edit + '", "Type": "Action", "Action": "Edit", "ObjectName" : "' + r.FieloPLT__TargetObject__c + '" }' + (String.isBlank(r.FieloPLT__Actions__c)?'':',' + r.FieloPLT__Actions__c);
                         }
+                    }
+                }
+                if ( !String.isBlank(r.FieloPLT__Visibility__c) ) {
+                    for(FilterWrapper fw : (List<FilterWrapper>)JSON.deserialize(r.FieloPLT__Visibility__c, List<FilterWrapper>.class)){
+                        relatedAdditionalFields.add(fw.field.toLowerCase());
                     }
                 }
                 // TODO: Ver si los fieldset de related necesitan
@@ -604,26 +749,48 @@ public with sharing abstract class PageSettingsController {
 
     public static List<FieloPLT__PageSettings__c> getPageSettings( List<String> settingType, List<String> recordTypes, String objectName ) {
         
-        String query = 'SELECT FieloPLT__DataFilters__c, FieloPLT__Visibility__c, Name, FieloPLT__IsActive__c, FieloPLT__Library__r.Name, FieloPLT__Icon__c, FieloPLT__OrderBy__c, FieloPLT__StandardRelated__c, FieloPLT__StandardActions__c, FieloPLT__Type__c, FieloPLT__RecordType__c, FieloPLT__Sections__c, FieloPLT__Fieldset__c, FieloPLT__TargetObject__c, FieloPLT__TargetField__c, FieloPLT__Tools__c, FieloPLT__Buttons__c, FieloPLT__Actions__c FROM FieloPLT__PageSettings__c ';
-        // WHERE CONDITION 
-        query += ' WHERE FieloPLT__isActive__c = true AND FieloPLT__Type__c IN :settingType  AND FieloPLT__Object__c = :objectName  ';
+        List<FieloPLT__PageSettings__c> listPageSettings = new List<FieloPLT__PageSettings__c>();
 
-        FieloPLT__Program__c activeProgram = ProgramService.getActiveProgram();
-        Id programId;
-        if ( activeProgram != null  ) {
-            programId = activeProgram.Id;
-            query += ' AND ( FieloPLT__Program__c = :programId OR FieloPLT__Program__c = null )';
+        Id programId = ProgramService.getActiveProgram().Id;
+
+        Set<String> profiles = new Set<String>();
+        for(PermissionSetAssignment psAssignment: [SELECT Id, PermissionSetId, PermissionSet.Name FROM PermissionSetAssignment WHERE AssigneeId =: UserInfo.getUserId()]){
+            profiles.add(psAssignment.PermissionSet.Name);
         }
+        Profile profileRecord = [SELECT Name FROM Profile WHERE Id =: UserInfo.getProfileId()];
+        profiles.add(profileRecord.Name);
+
+        Set<Id> pageSettingsIds = new Set<Id>();
+        if(!recordTypes.isEmpty()){
+            for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND (FieloPLT__RecordType__c = null OR FieloPLT__RecordType__c IN: recordTypes)]){
+                pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
+            }
+        }else{
+            for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND FieloPLT__RecordType__c = null]){
+                pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
+            }            
+        }
+        
+        String query = 'SELECT FieloPLT__DataFilters__c, FieloPLT__Visibility__c, Name, FieloPLT__IsActive__c, FieloPLT__Library__r.Name, FieloPLT__Icon__c, FieloPLT__OrderBy__c, FieloPLT__StandardRelated__c, FieloPLT__StandardActions__c, FieloPLT__Type__c, FieloPLT__RecordType__c, FieloPLT__Sections__c, FieloPLT__Fieldset__c, FieloPLT__TargetObject__c, FieloPLT__TargetField__c, FieloPLT__Tools__c, FieloPLT__Buttons__c, FieloPLT__Actions__c, (SELECT Id FROM FieloPLT__PageSettingsAssignments__r LIMIT 1) FROM FieloPLT__PageSettings__c ';
+        // WHERE CONDITION 
+        query += ' WHERE FieloPLT__isActive__c = true AND FieloPLT__Type__c IN: settingType AND FieloPLT__Object__c =: objectName  ';
 
         if ( recordTypes.isEmpty() ) {
-            // ORDER BY & LIMIT 
-            query += ' AND FieloPLT__RecordType__c = null ORDER BY FieloPLT__Type__c, FieloPLT__Order__c LIMIT 100 ';             
-        } else {
-            query += 'AND ( FieloPLT__RecordType__c IN :recordTypes  OR FieloPLT__RecordType__c = null )';
-            // ORDER BY & LIMIT 
-            query += ' ORDER BY FieloPLT__Type__c, FieloPLT__RecordType__c, FieloPLT__Order__c LIMIT 100 ';           
+            query += ' ORDER BY FieloPLT__Type__c, FieloPLT__Order__c LIMIT 100 ';
+        }else{
+             query += ' ORDER BY FieloPLT__Type__c, FieloPLT__RecordType__c, FieloPLT__Order__c LIMIT 100 ';
         }
-        return Database.query(query);        
+
+        for(FieloPLT__PageSettings__c pageSetting: Database.query(query)){
+            if(pageSetting.FieloPLT__PageSettingsAssignments__r.isEmpty()){
+                listPageSettings.add(pageSetting);
+            }else if(pageSettingsIds.contains(pageSetting.Id)){
+                listPageSettings.add(pageSetting);
+            }            
+        }
+        return listPageSettings;
+        //return Database.query(query);
+
     }
 
 }
