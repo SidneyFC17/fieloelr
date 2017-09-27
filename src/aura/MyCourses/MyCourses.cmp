@@ -13,7 +13,7 @@
     <aura:attribute type="String" name="courseTitle" default="" />
     
     <aura:handler event="c:ShowCourseEvent" action="{!c.showCourse}"/>
-    <aura:handler event="c:UpdateMemberEvent" action="{!c.updateMember}"/>
+    <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>        
     
     <aura:attribute type="String" name="config" access="global"/>
