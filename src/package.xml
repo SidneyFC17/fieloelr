@@ -59,19 +59,7 @@
 		<name>MatchingRules</name>
 	</types>
 	<types>
-		<members>MyCourses</members>
-		<members>ShowModule</members>
-		<members>UpdateCourseEvent</members>
-		<members>Module</members>
-		<members>TakeModuleEvent</members>
-		<members>Question</members>
-		<members>Quiz</members>
-		<members>SetAnswer</members>
-		<members>ShowModuleResponse</members>
-		<members>ModuleResponse</members>
-		<members>Answer</members>
-		<members>ShowModuleResponseEvent</members>
-		<members>ModuleCheck</members>
+		<members>*</members>		
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<version>40.0</version>
