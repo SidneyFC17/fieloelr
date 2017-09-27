@@ -210,7 +210,6 @@ mod(
                 <sorted>false</sorted>
             </valueSetDefinition>
         </valueSet>
-        <restrictedPicklist>true</restrictedPicklist>
         <required>true</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
