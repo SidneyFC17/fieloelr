@@ -53,9 +53,6 @@
 		<members>*</members>
 		<name>MatchingRules</name>
 	</types>
-<<<<<<< HEAD
-	<version>36.0</version>
-=======
 	<types>
 		<members>MyCourses</members>
 		<members>ShowModule</members>
@@ -73,5 +70,4 @@
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<version>40.0</version>
->>>>>>> feature/lightningComponents
 </Package>
