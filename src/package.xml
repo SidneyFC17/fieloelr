@@ -29,9 +29,6 @@
 		<name>CustomLabels</name>
 	</types>
 	<types>
-		<members>FieloPLT__Tracker__c</members>
-		<members>FieloPLT__Transaction__c</members>
-		<members>FieloPLT__Model__c</members>
 		<members>Answer__c</members>
 		<members>AnswerOption__c</members>
 		<members>CourseDependency__c</members>
@@ -44,6 +41,14 @@
 		<members>QuestionResponse__c</members>
 		<members>Question__c</members>
 		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>FieloPLT__Transaction__c.CourseStatus__c</members>
+		<members>FieloPLT__Transaction__c.ModuleResponse__c</members>
+		<members>FieloPLT__Tracker__c.CourseStatus__c</members>
+		<members>FieloPLT__Tracker__c.ModuleResponse__c</members>
+		<members>FieloPLT__Model__c.FieloPLT__Type__c</members>
+		<name>CustomField</name>
 	</types>
 	<types>
 		<members>*</members>

@@ -173,8 +173,8 @@
                 </value>
                 <sorted>false</sorted>
             </valueSetDefinition>
-            <restrictedPicklist>true</restrictedPicklist>
         </valueSet>
+        <restrictedPicklist>true</restrictedPicklist>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
