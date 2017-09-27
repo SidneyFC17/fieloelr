@@ -1,4 +1,4 @@
-<aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+<aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     <aura:attribute type="Boolean" name="showMyCourses" default="false"/>
     <aura:attribute type="String" name="title" />
@@ -16,7 +16,7 @@
     <aura:handler event="c:UpdateMemberEvent" action="{!c.updateMember}"/>
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>        
     
-    <aura:attribute type="String" name="config" />
+    <aura:attribute type="String" name="config" access="global"/>
     
     <aura:attribute type="String" name="courseLayout"/>    
     <aura:attribute name="courseColumns" type="String" />    
