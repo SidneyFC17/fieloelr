@@ -4,9 +4,4 @@
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <label>QuestionView</label>
-    <packageVersions>
-        <majorNumber>2</majorNumber>
-        <minorNumber>29</minorNumber>
-        <namespace>FieloPLT</namespace>
-    </packageVersions>
 </ApexPage>
