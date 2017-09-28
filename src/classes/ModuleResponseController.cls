@@ -8,9 +8,9 @@ public with sharing class ModuleResponseController {
             FieloELR.ModuleService.ModuleResponseResult mrWrapper = FieloELR.ModuleService.getModuleResponse(moduleResponseId, fieldsModuleResponse, fieldsQuestion, fieldsAnswerOption);
             return JSON.serialize(mrWrapper);              
    } catch(DMLException e) {
-          return e.getDMLMessage(0);
+           throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
-          return e.getMessage();
+             throw new AuraHandledException(e.getMessage());
         }     
     }
 }

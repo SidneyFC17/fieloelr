@@ -9,9 +9,10 @@ public with sharing class TakeModuleController {
             FieloELR.ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(moduleId, memberId, fieldsModule, fieldsQuestion, fieldsAnswerOption);                               
             return JSON.serialize(moduleWrapper);              
    } catch(DMLException e) {
-          return e.getDMLMessage(0);
+          throw new AuraHandledException(e.getDMLMessage(0));
+
         } catch(Exception e){
-          return e.getMessage();
+          throw new AuraHandledException(e.getMessage());
         }     
     }
 }

@@ -21,7 +21,8 @@
     },
     updateMember: function(component, event, helper){
         var member = event.getParam('member');        
-        component.set('v.member', member);                
+        component.set('v.member', member);       
+        window.localStorage.setItem('member', JSON.stringify(member));         
         helper.loadCourses(component, event, helper);        
     },
     showCourse: function(component, event, helper, course){
