@@ -37,5 +37,15 @@ public with sharing class CourseDependenciesSelector extends SObjectSelector{
                     getOrderBy() } ));
     }
 
-
+    public List<CourseDependency__c> selectByPredecessor(Set<Id> recordIds) {
+        return (List<CourseDependency__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Predecessor__c IN :recordIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
 }

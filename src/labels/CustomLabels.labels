@@ -32,6 +32,13 @@
         <shortDescription>AnswerOptionTextRequired</shortDescription>
         <value>Answer Option Text is a required field</value>
     </labels>
+     <labels>
+        <fullName>Approved</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approved</shortDescription>
+        <value>¡Good Job!¡You Passed!</value>
+    </labels>
     <labels>
         <fullName>ChooseQuestionType</fullName>
         <categories>questionWizard.js</categories>
@@ -47,6 +54,13 @@
         <protected>true</protected>
         <shortDescription>Clone</shortDescription>
         <value>Clone</value>
+    </labels>
+    <labels>
+        <fullName>CompleteAllQuestions</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Complete All Questions</shortDescription>
+        <value>You must complete all the questions</value>
     </labels>
     <labels>
         <fullName>CourseActivated</fullName>
@@ -71,6 +85,13 @@
         <protected>true</protected>
         <shortDescription>CourseInactivated</shortDescription>
         <value>The Course has been inactivated</value>
+    </labels>
+    <labels>
+        <fullName>Join</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Join</shortDescription>
+        <value>Thanks for joining</value>
     </labels>
     <labels>
         <fullName>False</fullName>
@@ -159,6 +180,13 @@
         <protected>true</protected>
         <shortDescription>True</shortDescription>
         <value>True</value>
+    </labels>
+    <labels>
+        <fullName>TryAgain</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Try Again</shortDescription>
+        <value>Sorry ¡Try Again!</value>
     </labels>
     <labels>
         <fullName>ValidateAnswerActiveModules</fullName>

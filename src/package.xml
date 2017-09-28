@@ -29,9 +29,6 @@
 		<name>CustomLabels</name>
 	</types>
 	<types>
-		<members>FieloPLT__Tracker__c</members>
-		<members>FieloPLT__Transaction__c</members>
-		<members>FieloPLT__Model__c</members>
 		<members>Answer__c</members>
 		<members>AnswerOption__c</members>
 		<members>CourseDependency__c</members>
@@ -46,6 +43,14 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>FieloPLT__Transaction__c.CourseStatus__c</members>
+		<members>FieloPLT__Transaction__c.ModuleResponse__c</members>
+		<members>FieloPLT__Tracker__c.CourseStatus__c</members>
+		<members>FieloPLT__Tracker__c.ModuleResponse__c</members>
+		<members>FieloPLT__Model__c.FieloPLT__Type__c</members>
+		<name>CustomField</name>
+	</types>
+	<types>
 		<members>*</members>
 		<name>StaticResource</name>
 	</types>
@@ -53,5 +58,9 @@
 		<members>*</members>
 		<name>MatchingRules</name>
 	</types>
-	<version>36.0</version>
+	<types>
+		<members>*</members>		
+		<name>AuraDefinitionBundle</name>
+	</types>
+	<version>40.0</version>
 </Package>

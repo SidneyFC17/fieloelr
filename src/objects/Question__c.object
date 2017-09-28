@@ -180,30 +180,36 @@ mod(
         <fullName>Type__c</fullName>
         <externalId>false</externalId>
         <label>Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Multiple Choice</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Single Choice</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Short Answer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Statement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Matching Options</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
+        <valueSet>
+            <valueSetDefinition>
+                <value>
+                    <fullName>Multiple Choice</fullName>
+                    <default>false</default>
+                    <label>Multiple Choice</label>
+                </value>
+                <value>
+                    <fullName>Single Choice</fullName>
+                    <default>false</default>
+                    <label>Single Choice</label>
+                </value>
+                <value>
+                    <fullName>Short Answer</fullName>
+                    <default>false</default>
+                    <label>Short Answer</label>
+                </value>
+                <value>
+                    <fullName>Statement</fullName>
+                    <default>false</default>
+                    <label>Statement</label>
+                </value>
+                <value>
+                    <fullName>Matching Options</fullName>
+                    <default>false</default>
+                    <label>Matching Options</label>
+                </value>
+                <sorted>false</sorted>
+            </valueSetDefinition>
+        </valueSet>
         <required>true</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>

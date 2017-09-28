@@ -4,8 +4,15 @@ In the Courses Landing Page, click the New button and fill in the fields below:
  - **Course Name** - This field has a maximum limit of 80 characters.
  - **Program** - By default, this field is automatically filled with the program already chosen in the Program selector. If there is more than one program, the administrator can select another one. If the field is left in blank, it will be set automatically to the program already chosen in the Program selector.
  - **Segment** - Select in the left area the segments that must apply for the course, so that only members that match the conditions under the segments are eligible to join the course. After selecting each desired segment, press the right arrow.
+ 
+> At CMS, the courses can be filtered by **Segment** by configuring it at the Courses component. The field *Filter By Segment* must be set to *true*. If so, only members who fall into the same course segment(s) will be able to view it on the site.
+
  - **Subscription Mode** - When selecting the *Manual* option, the member is required to subscribe the Course before taking any of its modules. Selecting *Automatic* option, allows the member to directly take any of the modules, respecting their dependencies. In case that the Automatic subscription mode is selected, the system automatically subscribes the member to the course.
- > At CMS, the **Manual** subscription mode will is represented by a Join action button for the course. If the member tries to take a module before joining the course, he will receive a message. For the **Automatic** subscription mode, the course has a View action button. The course is joined automatically when the member presses the *Take* button of the one of its modules. 
+
+> At CMS, the **Manual** subscription mode is represented by a *Join* action button for the course. The member cannot take a module before joining the course. For the **Automatic** subscription mode, the course has a *View* action button. The course is joined automatically when the member presses the *Take* button of the one of its modules. 
+
+> At CMS, we can also filter courses to be displayed depending if the member had already joined it (manually or automatically) or not. In the Courses component, when the field *Filter By Not Taken* is set to *true*, it means that the Courses list will display only the courses that the member has not joined yet.
+
  - **Description** - This field has a maximum limit of 255 characters.
  - **Start Date** - This field must be filled in if the course has a specific date to start. This date cannot be earlier than the current date.
  - **End Date** - This field must be filled in if the course has a specific date to finish. This date cannot be earlier than the current date nor earlier than the Start Date, if a period is defined.   
@@ -188,7 +195,10 @@ It's possible to edit questions and answer options when the module is inactive, 
 Once all the needed modules were created, the administrator might want to change the order that was automatically given to them. In the Module details page, a button named *Reorder* can be found. When clicking this button, by dragging the modules and dropping them in the desired position, the administrator sets the order that the modules will be displayed in the course.
 
 ## 7. Creating Module Dependencies
-A module can be dependent of one or more other modules, this is, it could only be taken after member approval on the predecessors modules.  
+A module can be dependent of one or more other modules, this is, it can only be taken after member approval on the predecessors modules.
+
+> At CMS, the *Take* action button will not be displayed for the module until the member had approved its predecessor(s).
+
 To determine which are the predecessors modules, the administrator goes to the Module details page and clicks the *New* button in the right upper corner of the Modules Dependencies related list. He can type part of the predecessor module name. The complete name of the module will be shown in the list. The administrator selects the module by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
 
@@ -211,6 +221,8 @@ In order to activate the course again, the same condition must be met: at least 
 A course can be dependent of one or more other courses, this is, it could only be joined after member approval on the predecessors courses.  
 To determine which are the predecessors courses, the administrator goes to the Course details page and clicks the *New* button in the right upper corner of the Courses Dependencies related list. He can type part of the predecessor course name. The complete name of the course will be shown in the list. The administrator selects the course by clicking its name and presses the *Save* button.  
 This action must be repeated for each dependency.
+
+> At CMS, the course can be filtered by **Dependency** by configuring it at the Courses component. The field *Filter By Dependency* must be set to *true*. If so, the member will not view a course until he has approved its predecessor(s).
 
 ## 10. Cloning Courses
 It may be interesting to have an already existing course structure used for another course and, to meet this need, we can clone a course.  

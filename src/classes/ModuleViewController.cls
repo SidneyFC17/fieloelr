@@ -134,6 +134,35 @@ public with sharing class ModuleViewController extends PageSettingsController {
         return JSON.serialize(section);
     }
 
+    public FieloPLT__PageSettings__c getPageSettings(String pageSetingsName, String defaultSection) {
+        String query = 'SELECT ';
+        query += String.join(new List<String>(Schema.describeSObjects(
+            new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet()), ',');
+        query += ' FROM FieloPLT__PageSettings__c';
+        query += ' WHERE Name = :pageSetingsName AND FieloPLT__IsActive__c = true' ;
+        query += ' LIMIT 1';
+        List<sObject> result = Database.query(query);
+        if (result.isEmpty()) {
+        	return new FieloPLT__PageSettings__c(
+        		FieloPLT__Sections__c = defaultSection
+        	);
+        } else {
+        	return (FieloPLT__PageSettings__c) result.get(0);
+        }
+    }
+
+    public FieloPLT__PageSettings__c manageQuestionPS {get{
+    	if (manageQuestionPS== null) {
+    		manageQuestionPS = getPageSettings('Module (Question Manage) > Edit',
+    			'{\'Name\':\'Module Setup\',' +
+    			'\'Rows\':[[{\'Name\':\'FieloELR__PenaltyMode__c\',\'Type\':\'radio\'},{\'Name\':\'FieloELR__AttemptsAllowedPerQuestion__c\',\'Type\':\'picklist\'},'+
+    			'{\'Name\':\'FieloELR__QuestionPool__c\',\'Type\':\'input\'}],[{\'Name\':\'FieloELR__ShuffleQuestions__c\',\'Type\':\'checkbox\'},' +
+    			'{\'Name\':\'FieloELR__WeightedQuestions__c\',\'Type\':\'checkbox\'}]]}'
+    		);
+    	}
+        return manageQuestionPS;
+    }set;}
+
 	@RemoteAction
   	public static RemoteActionResult save( Module__c record, List<String> nullFields) {
 		Savepoint sp;
@@ -305,14 +334,24 @@ public with sharing class ModuleViewController extends PageSettingsController {
 	public class Section {
         public String Name{get;set;}
         public List<List<FormField>> Rows{get;set;}
+        public String CssClass{get;set;}
     }
 
     public class FormField {
         public String Type{get;set;}
+        public String MetaField{get;set;}
         public String Name{get;set;}
         public String onchange{get;set;}
         public String Label{get;set;}
         public String Value{get;set;}
         public String WhereCondition{get;set;}
+        public Boolean Required{get;set;}
+
+        public String getRequiredValue () {
+            if ( Required != null ) {
+                return Required ? 'true' : 'false';
+            }
+            return '';
+        }
     }
 }

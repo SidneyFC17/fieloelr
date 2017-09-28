@@ -1,0 +1,39 @@
+<aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute type="FieloPLT__Member__c" name="member" />
+    <aura:attribute type="Boolean" name="showMyCourses" default="false"/>
+    <aura:attribute type="String" name="title" />
+    <aura:attribute type="String" name="layout" default="table" />
+    <aura:attribute type="sObject[]" name="fieldset" default="[]" />
+    <aura:attribute type="sObject[]" name="myCourses" default="[]" />
+    
+    <aura:attribute type="FieloELR__Module__c[]" name="modules" />
+    <aura:attribute type="sObject[]" name="courseFieldset" />
+    <aura:attribute type="Boolean" name="showCourse" default="false" />
+    
+    <aura:attribute type="String" name="courseTitle" default="" />
+    
+    <aura:handler event="c:ShowCourseEvent" action="{!c.showCourse}"/>
+    <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>        
+    
+    <aura:attribute type="String" name="config" access="global"/>
+    
+    <aura:attribute type="String" name="courseLayout"/>    
+    <aura:attribute name="courseColumns" type="String" />    
+    
+    <aura:if isTrue="{!v.showMyCourses}">       
+        <h3 class="slds-section-title--divider">{!v.title}</h3>
+        <c:ListView layout="{!v.layout}" columns="{!v.columns}" fieldset="{!v.fieldset}" records="{!v.myCourses}" />
+    </aura:if>
+    
+        <aura:if isTrue="{!v.showCourse}">        
+        <div>
+            <h3 class="slds-section-title--divider slds-float_left">{!v.courseTitle}</h3>        
+            <lightning:button class="slds-float_right" variant="neutral" label="Back to Courses" onclick="{!c.showCoursesList }" />
+        </div>
+        
+        <c:ListView layout="{!v.courseLayout}" columns="{!v.courseColumns}" fieldset="{!v.courseFieldset}" records="{!v.modules}" />
+    </aura:if>
+    
+    <c:Spinner />   
+</aura:component>

@@ -1,0 +1,88 @@
+<aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >  
+    
+    <aura:attribute type="sObject" name="moduleContent" />
+    
+    <aura:attribute type="Boolean" name="reloadCourses" default="true" />
+    <aura:attribute type="Boolean" name="viewAnswer" default="false" />
+    
+    <aura:attribute type="Boolean" name="showCoursesList" default="false" />
+    <aura:attribute type="FieloELR__Course__c[]" name="courses" />
+    <aura:attribute type="FieloELR__Course__c[]" name="coursesList" />
+    
+    <aura:attribute type="Boolean" name="showModuleResponse" default="false" />
+    <aura:attribute type="sObject" name="moduleResponse" />
+    
+    <aura:attribute type="FieloELR__Module__c[]" name="modules" />
+    <aura:attribute type="sObject[]" name="courseFieldset" />
+    <aura:attribute type="Boolean" name="showCourse" default="false" />
+    
+    <aura:attribute type="Boolean" name="showModule" default="false" />
+    <aura:attribute type="sObject" name="moduleRecord" default="" />
+    <aura:attribute type="String" name="moduleTitle" default="" />
+    
+    <aura:attribute type="sObject[]" name="fieldset" />
+    <aura:attribute type="String" name="config" access="global" />
+    
+    <aura:attribute type="String" name="title" default="" />
+    <aura:attribute type="String" name="layout"/>    
+    <aura:attribute name="columns" type="String" />
+    <aura:attribute type="String" name="whereClause" default="" />    
+    
+    <aura:attribute type="String" name="courseTitle" default="" />
+    
+    <aura:attribute type="FieloPLT__Member__c" name="member" />
+    
+    <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
+    <aura:handler event="c:ShowCourseEvent" action="{!c.showCourse}"/>
+    
+    <aura:handler event="c:TakeModuleEvent" action="{!c.takeModule}"/>
+    
+    <aura:handler event="c:ShowModuleResponseEvent" action="{!c.showModuleResponse}"/>
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    
+    <aura:attribute type="String" name="courseLayout"/>    
+    <aura:attribute name="courseColumns" type="String" />
+    
+    <aura:if isTrue="{!v.reloadCourses}">
+        <aura:if isTrue="{!v.showCoursesList}">
+            <h3 class="slds-section-title--divider">{!v.title}</h3>        
+            <c:ListView layout="{!v.layout}" columns="{!v.columns}" fieldset="{!v.fieldset}" records="{!v.coursesList}" />
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showCourse}">        
+            <div class="slds-clearfix">
+                <h3 class="slds-section-title--divider slds-float_left">{!v.courseTitle}</h3>        
+                <lightning:button class="slds-float_right" variant="neutral" label="Back to Courses" onclick="{!c.showCoursesList }" />
+            </div>
+            
+            <c:ListView layout="{!v.courseLayout}" columns="{!v.courseColumns}" fieldset="{!v.courseFieldset}" records="{!v.modules}" />
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showModule}">        
+            <div class="slds-clearfix">
+                <h3 class="slds-section-title--divider slds-float_left">{!v.moduleTitle}</h3>        
+                <lightning:button class="slds-float_right" variant="neutral" label="Back to Course" onclick="{!c.showCourseInformation }" />            
+            </div>                
+            <c:Module module="{!v.moduleRecord}" moduleContent="{!v.moduleContent}"/>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showModuleResponse}">
+            <div class="slds-clearfix slds-p-bottom--small">
+                <h3 class="slds-section-title--divider slds-float_left">{!v.moduleTitle}</h3>        
+                <aura:if isTrue="{!v.viewAnswer}">
+                    <lightning:button class="slds-float_right" variant="neutral" label="Back to Course" onclick="{!c.showCourseInformation }" />            
+                </aura:if>    
+                <aura:if isTrue="{!!v.viewAnswer}">
+                    <lightning:button class="slds-float_right" variant="neutral" label="Back to Courses" onclick="{!c.reloadCourses }" />            
+                </aura:if>                                
+            </div>                
+            <c:ModuleResponse moduleResponse="{!v.moduleResponse}" />       
+        </aura:if>
+        
+        <c:Spinner />            
+    </aura:if>
+    
+    
+    
+</aura:component>

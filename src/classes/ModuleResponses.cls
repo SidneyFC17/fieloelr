@@ -187,6 +187,7 @@ public class ModuleResponses extends SObjectDomain {
             //Add only submitted records.
             if( moduleResp.IsSubmitted__c ){
                 if( !((ModuleResponse__c)existingRecords.get(moduleResp.Id)).IsSubmitted__c){
+                    moduleResp.SubmitDate__c = System.now();
                     submittedRecords.add(moduleResp);
                 }
             }
