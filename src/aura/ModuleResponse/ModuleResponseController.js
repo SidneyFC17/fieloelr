@@ -1,7 +1,7 @@
 ({
     doInit : function(component, event, helper) {        
         var moduleResponse = component.get('v.moduleResponse');                
-        var spinner = $A.get("e.c:ToggleSpinnerEvent");        
+        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");        
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -11,10 +11,11 @@
             'moduleResponseId': moduleResponse.Id
         })
         // Add callback behavior for when response is received
-        action.setCallback(this, function(response) {           
+        action.setCallback(this, function(response) { 
+            var toastEvent = $A.get("e.force:showToast");
             var message;
             var state = response.getState();         
-            var spinner = $A.get("e.c:ToggleSpinnerEvent");                
+            var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");                
             if (component.isValid() && state === 'SUCCESS') {                    
                 var moduleResponse = JSON.parse(response.getReturnValue());                
                 component.set('v.moduleResponseQuestions', moduleResponse);                
@@ -26,7 +27,13 @@
                 }
                 component.set('v.responseMessage', message);
             }else {
-                console.log('Failed with state: ' + state);
+                var errorMsg = response.getError()[0].message;
+                toastEvent.setParams({
+                    "title": errorMsg,
+                    "message": " ",
+                    "type": "error"
+                });
+                toastEvent.fire(); 
             }
             if(spinner){
                 spinner.setParam('show', false);

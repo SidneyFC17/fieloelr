@@ -154,22 +154,26 @@
         <fullName>PenaltyMode__c</fullName>
         <externalId>false</externalId>
         <label>Penalty Mode</label>
-        <picklist>
-            <picklistValues>
-                <fullName>None</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Percent Decrease</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Negative Weight</fullName>
-                <default>false</default>
-            </picklistValues>
-            <restrictedPicklist>true</restrictedPicklist>
-            <sorted>false</sorted>
-        </picklist>
+        <valueSet>
+            <valueSetDefinition>
+                <value>
+                    <fullName>None</fullName>
+                    <default>false</default>
+                    <label>None</label>
+                </value>
+                <value>
+                    <fullName>Percent Decrease</fullName>
+                    <default>false</default>
+                    <label>Percent Decrease</label>
+                </value>
+                <value>
+                    <fullName>Negative Weight</fullName>
+                    <default>false</default>
+                    <label>Negative Weight</label>
+                </value>
+                <sorted>false</sorted>
+            </valueSetDefinition>
+        </valueSet>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>

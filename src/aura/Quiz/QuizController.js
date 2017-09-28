@@ -6,7 +6,7 @@
         window.localStorage.setItem('moduleAnswer', JSON.stringify(answer));
     },
     submitAnswer : function(component, event, helper) {        
-        var spinner = $A.get("e.c:ToggleSpinnerEvent");        
+        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");        
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -29,9 +29,10 @@
             })
             // Add callback behavior for when response is received
             action.setCallback(this, function(response) {
-                var moduleResponseEvent = $A.get("e.c:ShowModuleResponseEvent");            
+                var toastEvent = $A.get("e.force:showToast");
+                var moduleResponseEvent = $A.get("e.FieloELR:ShowModuleResponseEvent");            
                 var state = response.getState();         
-                var spinner = $A.get("e.c:ToggleSpinnerEvent");                
+                var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");                
                 if (component.isValid() && state === 'SUCCESS') {                    
                     var moduleResponse = JSON.parse(response.getReturnValue());                
                     if(moduleResponseEvent){
@@ -40,7 +41,13 @@
                         moduleResponseEvent.fire();
                     }                
                 }else {
-                    console.log('Failed with state: ' + state);
+                    var errorMsg = response.getError()[0].message;
+                    toastEvent.setParams({
+                        "title": errorMsg,
+                        "message": " ",
+                        "type": "error"
+                    });
+                    toastEvent.fire(); 
                 }
                 if(spinner){
                     spinner.setParam('show', false);
@@ -51,7 +58,7 @@
             $A.enqueueAction(action);               
         } else {
             var toastEvent = $A.get("e.force:showToast");
-            var spinner = $A.get("e.c:ToggleSpinnerEvent");                
+            var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");                
             if(spinner){
                 spinner.setParam('show', false);
                 spinner.fire();    

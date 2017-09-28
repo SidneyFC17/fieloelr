@@ -39,10 +39,10 @@ public with sharing class QuizController {
         FieloELR__ModuleResponse__c submittedMResponse = FieloELR.ModuleService.submitModuleResponse (moduleResponse, questionWrappers);
         return JSON.serialize(submittedMResponse);      
         } catch(DMLException e) {
-          return e.getDMLMessage(0);
+          throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
-          return e.getMessage();
-        }       
+          throw new AuraHandledException(e.getMessage());
+        }     
     }
 
     

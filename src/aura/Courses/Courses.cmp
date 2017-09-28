@@ -1,4 +1,4 @@
-<aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">  
+<aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >  
     
     <aura:attribute type="sObject" name="moduleContent" />
     
@@ -21,7 +21,7 @@
     <aura:attribute type="String" name="moduleTitle" default="" />
     
     <aura:attribute type="sObject[]" name="fieldset" />
-    <aura:attribute type="String" name="config" />
+    <aura:attribute type="String" name="config" access="global" />
     
     <aura:attribute type="String" name="title" default="" />
     <aura:attribute type="String" name="layout"/>    
@@ -32,7 +32,7 @@
     
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     
-    <aura:handler event="c:UpdateMemberEvent" action="{!c.updateMember}"/>
+    <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
     <aura:handler event="c:ShowCourseEvent" action="{!c.showCourse}"/>
     
     <aura:handler event="c:TakeModuleEvent" action="{!c.takeModule}"/>

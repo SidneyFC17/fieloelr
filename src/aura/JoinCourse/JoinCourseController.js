@@ -2,7 +2,8 @@
     doInit : function(component, event, helper){        
         var course = component.get('v.record');
         var memberId = JSON.parse(window.localStorage.getItem('member')).Id;
-        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));        
+        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));  
+        
         component.set('v.join', courseCache[memberId][course.Id]);        
     },
     joinCourse : function(component, event, helper) {         
@@ -13,7 +14,7 @@
         var memberId = JSON.parse(window.localStorage.getItem('member')).Id;
         
         if(memberId && courseId){       
-            var spinner = $A.get("e.c:ToggleSpinnerEvent");
+            var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
             if(spinner){
                 spinner.setParam('show', true);
                 spinner.fire();    
@@ -26,7 +27,7 @@
             // Add callback behavior for when response is received
             joinCourseAction.setCallback(this, function(response) {
                 var course = component.get('v.record');
-                var spinner = $A.get("e.c:ToggleSpinnerEvent");
+                var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
                     var joinLabel = $A.get("$Label.c.Join");
@@ -41,7 +42,14 @@
                     courseCache[memberId][courseId] = false;
                     window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));                    
                 }else {
-                    console.log('Failed with state: ' + state);
+                    var errorMsg = response.getError()[0].message;
+                    toastEvent.setParams({
+                        "title": errorMsg,
+                        "message": " ",
+                        "type": "error"
+                    });
+                    toastEvent.fire(); 
+                    
                 }
                 if(spinner){
                     spinner.setParam('show', false);
