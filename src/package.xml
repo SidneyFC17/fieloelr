@@ -62,5 +62,5 @@
 		<members>*</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
-	<version>36.0</version>
+	<version>40.0</version>
 </Package>
