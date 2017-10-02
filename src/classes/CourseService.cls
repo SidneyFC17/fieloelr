@@ -168,7 +168,7 @@ global class CourseService {
 		}	
 	
 		if(String.isNotBlank(dynamicFilter)){
-			queryCourses += ' AND ' + getDynamicWhereCondition(dynamicFilter);
+			queryCourses += ' AND ' + FilterService.getDynamicWhereCondition(dynamicFilter, 'FieloELR__Course__c', '');
 		}
 
 		if( String.isNotBlank(orderBy) ){
@@ -186,7 +186,7 @@ global class CourseService {
 		return Database.query(queryCourses);
 	}
 
-	private static String getDynamicWhereCondition(String jsonCondition){
+	/*private static String getDynamicWhereCondition(String jsonCondition){
 		List<FilterWrapper> filterWrappers;
 		try{
 			filterWrappers = (List<FilterWrapper>)JSON.deserializeStrict(jsonCondition, List<FilterWrapper>.class);
@@ -209,31 +209,17 @@ global class CourseService {
 
 		deepLevel = 0;
 		return getWhereCondition(filterWrappers, operatorsMap, andoroperators, nonQuotedTypes, fieldsTypeMap);
-	}
+	}*/
 
-	private class FilterWrapper{
-		public String field;
-		public String value;
-		public String operator;
-		public String andOrOperator;
-		public SubQueryFilter subQueryFilter;
-	}
-
-	private class SubQueryFilter{
-		public String field;
-		public String objectName;
-		public List<FilterWrapper> filters;
-	}
-
-	private static Integer deepLevel = 0;
-	private static String getWhereCondition(List<FilterWrapper> filterWrappers, Map<String,String> operatorsMap, Set<String> andoroperators, Set<String> nonQuotedTypes, Map<String,Schema.SObjectField> fieldsTypeMap){
+	/*private static Integer deepLevel = 0;
+	private static String getWhereCondition(List<FilterService.FilterWrapper> filterWrappers, Map<String,String> operatorsMap, Set<String> andoroperators, Set<String> nonQuotedTypes, Map<String,Schema.SObjectField> fieldsTypeMap){
 		deepLevel++;
 		String whereCondition = '';
 		Integer position = 0;
 		Boolean hasOrConditions = false;
 		Boolean hasInConditions = false;
 
-		for(FilterWrapper filter : filterWrappers){
+		for(FilterService.FilterWrapper filter : filterWrappers){
 			if(String.isBlank(filter.field) || !fieldsTypeMap.containsKey(filter.field)){
 				throw new FieloPLT.FieloException('Field ' + filter.field + ' not found in object.');
 			}
@@ -303,7 +289,7 @@ global class CourseService {
     	}else{
     		return whereCondition;
     	}
-	}
+	}*/
 
 	//active courses
 	global static List<CourseStatus__c> getCourseStatus(Set<String> fieldsCourseStatus,
