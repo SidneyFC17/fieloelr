@@ -21,9 +21,9 @@
                 component.set('v.moduleResponseQuestions', moduleResponse);                
                 helper.loadQuestionResponses(component);
                 if(moduleResponse.moduleResponse.FieloELR__IsApproved__c){
-                    message = $A.get("$Label.c.Approved");
+                    message = $A.get("$Label.FieloELR.Approved");
                 } else {
-                    message = $A.get("$Label.c.TryAgain");
+                    message = $A.get("$Label.FieloELR.TryAgain");
                 }
                 component.set('v.responseMessage', message);
             }else {

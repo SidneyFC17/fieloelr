@@ -99,10 +99,12 @@ public  class Courses extends SObjectDomain{
         }
 
         if (!activatedCourses.isEmpty()) {
+            validateAdminFields = false;
             addCourseDependency(activatedCourses);
         }
 
         if (!inactivatedCourses.isEmpty()) {
+            validateAdminFields = false;
             removeCourseDependency(inactivatedCourses);
         }
     }
