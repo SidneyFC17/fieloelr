@@ -30,7 +30,7 @@
                 var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
-                    var joinLabel = $A.get("$Label.c.Join");
+                    var joinLabel = $A.get("$Label.FieloELR.Join");
                     toastEvent.setParams({
                         "title": joinLabel + " " + courseName + "!",
                         "message": " ",

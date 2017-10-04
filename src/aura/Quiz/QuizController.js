@@ -65,7 +65,7 @@
             }   
             toastEvent.setParams({
                 "title": "Error!",
-                "message": $A.get("$Label.c.CompleteAllQuestions"),
+                "message": $A.get("$Label.FieloELR.CompleteAllQuestions"),
                 "type": "error"
             });
             toastEvent.fire();
