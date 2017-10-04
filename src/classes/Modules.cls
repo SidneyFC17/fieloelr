@@ -141,10 +141,12 @@ public class Modules extends SObjectDomain {
 
         //Remove dependencies from that module
         if (!inactivatedModules.isEmpty()) {
+            validateAdminFields = false;
             removeModuleDependency(inactivatedModules);
         }
 
         if (!activatedModules.isEmpty()) {
+            validateAdminFields = false;
             addModuleDependency(activatedModules);
         }
         //If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
