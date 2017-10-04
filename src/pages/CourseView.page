@@ -9,6 +9,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </head>
 <body>
+
+	<!-- Se ponen para que se agreguen al paquete, las llamadas desde un controlador de lightning components no las agregan solas -->
+    <div style="display:none">
+        {!$Label.TryAgain}
+        {!$Label.Approved}
+        {!$Label.Join}
+        {!$Label.CompleteAllQuestions}
+    </div>
+
 	<div class="fielosf fielosf-elearning fielosf-course-view">
 		<!-- STANDARD Header  -->
 		<c:BackendHeaderRecord firstHeading="{!$ObjectType[objectName].labelPlural}"
