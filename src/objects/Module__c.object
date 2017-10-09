@@ -124,14 +124,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>HasDependencies__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Has Dependencies</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>Image__c</fullName>
         <externalId>false</externalId>
         <label>Image</label>
@@ -140,6 +132,14 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HasDependencies__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has Dependencies</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>IsActive__c</fullName>
@@ -174,21 +174,26 @@
         <fullName>PenaltyMode__c</fullName>
         <externalId>false</externalId>
         <label>Penalty Mode</label>
-        <picklist>
-            <picklistValues>
-                <fullName>None</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Percent Decrease</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Negative Weight</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <valueSet>
+            <valueSetDefinition>
+                <value>
+                    <fullName>None</fullName>
+                    <default>false</default>
+                    <label>None</label>
+                </value>
+                <value>
+                    <fullName>Percent Decrease</fullName>
+                    <default>false</default>
+                    <label>Percent Decrease</label>
+                </value>
+                <value>
+                    <fullName>Negative Weight</fullName>
+                    <default>false</default>
+                    <label>Negative Weight</label>
+                </value>
+                <sorted>false</sorted>
+            </valueSetDefinition>
+        </valueSet>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
