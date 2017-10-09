@@ -40,6 +40,13 @@
 			/>
 		</apex:panelGroup>
 
+		<c:PhotoUpload record="{!record}" 
+          folderName="FieloPLT__FieloImages" 
+          fieldName="FieloELR__Image__c" 
+          externalURLName="FieloELR__ExternalURL__c" 
+          sObjectName="{!objectName}"
+        />
+
 		<apex:repeat value="{!relatedSettings}" var="rel">
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__Question__c'}">
           <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
@@ -187,7 +194,7 @@
 	      </apex:panelGroup>
 	    </apex:repeat>
 	</div>
-	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionManage','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
+	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloFileUpload','FieloPhotoUpload','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionManage','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
 	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
 	<script>
 		if(typeof BackEndJSSettings == 'undefined') {
@@ -203,6 +210,8 @@
 		BackEndJSSettings.LABELS.True = '{!$Label.fieloelr__True}';
 		BackEndJSSettings.LABELS.False = '{!$Label.fieloelr__False}';
 	</script>
+	<link class="user" href="{!URLFOR($Resource.FieloSalesforce_Backend, 'cropper/cropper.css')}" rel="stylesheet" type="text/css"></link>
+	<script src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'cropper/cropper.min.js')}" type="text/javascript"></script>
 </body>
 </html>
 </apex:page>
