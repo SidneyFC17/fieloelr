@@ -95,6 +95,26 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>ExternalURL__c</fullName>
+        <externalId>false</externalId>
+        <label>External URL</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Image__c</fullName>
+        <externalId>false</externalId>
+        <label>Image</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>KeyDependencies__c</fullName>
         <externalId>false</externalId>
         <label>Key Dependencies</label>

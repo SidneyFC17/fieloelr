@@ -90,13 +90,17 @@ global class QuestionService {
 			if(question.Type__c != 'Short Answer'){
 				setAnswerWrappers(this.questionResponse.Answers__r);
 			}
+
+			//Set in memory the value of the TextValue Field.
+			if(question.Type__c == 'Matching Options'){
+				setMatchingChosenAnswers();
+			}
 			
 			if(this.showDetailedAnswers){
 				if(question.Type__c == 'Short Answer'){
 					setShortAnswerDescription();
 				}else if(question.Type__c == 'Matching Options'){
 					setMatchingDescription();
-					setMatchingChosenAnswers();
 				}
 			}
 		}
