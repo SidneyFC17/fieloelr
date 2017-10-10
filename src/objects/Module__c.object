@@ -114,6 +114,26 @@
         <type>TextArea</type>
     </fields>
     <fields>
+        <fullName>ExternalURL__c</fullName>
+        <externalId>false</externalId>
+        <label>External URL</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Image__c</fullName>
+        <externalId>false</externalId>
+        <label>Image</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>HasDependencies__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>

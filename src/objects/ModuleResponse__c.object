@@ -105,7 +105,7 @@
         <fullName>IsApproved__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <label>Is Approved</label>
+        <label>Passed</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
