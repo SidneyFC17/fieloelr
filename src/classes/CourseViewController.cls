@@ -225,6 +225,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 
         	String courseJSON = ExportService.exportCourses(new List<Id>{record.Id});
         	SObjectUnitOfWork uow = ExportService.importData(courseJSON, new List<ExportService.MultiSegmentRelation>());
+        	Map<String,Schema.SObjectField> fieldMap = record.getSObjectType().getDescribe().fields.getMap();
 
         	record.put('Id',null);
 
@@ -233,7 +234,14 @@ public with sharing class CourseViewController extends PageSettingsController {
                 if ( courses.size() > 0 ) {
                     for(String fieldName: record.getPopulatedFieldsAsMap().keySet()) {
                     	if (fieldName != 'Id') {
-                    		courses.get(0).put(fieldName, record.get(fieldName));
+                    		if (String.valueOf(fieldMap.get(fieldName).getDescribe().getType()) == 'DOUBLE') {
+                    			courses.get(0).put(fieldName, 
+                    				record.get(fieldName) instanceof String ?
+                    					Decimal.valueOf((String)record.get(fieldName)):
+                    					Decimal.valueOf((Double)record.get(fieldName)));
+                    		} else {
+                    			courses.get(0).put(fieldName, record.get(fieldName));
+                    		}
                     	}
 					}
 					courses.get(0).Status__c = 'Draft';
