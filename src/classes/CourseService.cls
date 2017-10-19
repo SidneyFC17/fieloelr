@@ -56,15 +56,23 @@ global class CourseService {
                 FieloPLT__Model__c selectModel = [SELECT Id, FieloPLT__Icon__c, Name, FieloPLT__Description__c, FieloPLT__JSON__c, FieloPLT__Type__c, FieloPLT__Category__c FROM FieloPLT__Model__c WHERE FieloPLT__Type__c = 'Course' AND ID = :modelId ];
                 List<ExportService.MultiSegmentRelation> multiSegmentRelations = new List<ExportService.MultiSegmentRelation>();
                 SObjectUnitOfWork uow = ExportService.importData( selectModel.FieloPLT__JSON__c, multiSegmentRelations);
-
+                Map<String,Schema.SObjectField> fieldMap = record.getSObjectType().getDescribe().fields.getMap();
+                
             	// Si no vienen promotions da un error, sino le setea el name a la primera
                 if ( uow.m_newListByType.containsKey('FieloELR__Course__c') ) {
                     List<Course__c> courses = (List<Course__c>) uow.m_newListByType.get('FieloELR__Course__c');
                     if ( courses.size() > 0 ) {
                         for(String fieldName: record.getPopulatedFieldsAsMap().keySet()) {
                         	if (fieldName != 'Id') {
-                        		courses.get(0).put(fieldName, record.get(fieldName));
-                        	}
+	                    		if (String.valueOf(fieldMap.get(fieldName).getDescribe().getType()) == 'DOUBLE') {
+	                    			courses.get(0).put(fieldName, 
+	                    				record.get(fieldName) instanceof String ?
+	                    					Decimal.valueOf((String)record.get(fieldName)):
+	                    					Decimal.valueOf((Double)record.get(fieldName)));
+	                    		} else {
+	                    			courses.get(0).put(fieldName, record.get(fieldName));
+	                    		}
+	                    	}
 						}
 
                         ExportService.saveData(uow, null);
