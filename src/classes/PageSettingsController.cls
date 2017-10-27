@@ -67,20 +67,15 @@ public with sharing abstract class PageSettingsController {
     } set; }
 
     private class FilterWrapper{
-        public String field;
-        public String value;
-        public String operator;
         public String andOrOperator;
+        public String openPars;
+        public String field;
+        public String operator;
+        public String value;
+        public String closePars;
     }
 
     private Set<String> relatedAdditionalFields = new Set<String>();
-
-    private Map<String,Schema.SObjectField> objectFieldsMap {get{
-        if(objectFieldsMap == null){
-            objectFieldsMap = ((sObject)Type.forName(objectName).newInstance()).getSObjectType().getDescribe().fields.getMap();
-        }
-        return objectFieldsMap;
-    } set;} 
 
     private String getVisibility(String jsonCondition, SObject record){
         List<FilterWrapper> filterWrappers;
@@ -91,37 +86,36 @@ public with sharing abstract class PageSettingsController {
         }
         
         String condition = '';
-        Integer counter = 0;
+        Integer pos = 0;
         for(FilterWrapper filter : filterWrappers){
-            if(String.isBlank(filter.andOrOperator) && counter > 0){
-                filter.andOrOperator = 'AND';
-            }else if(String.isNotBlank(filter.andOrOperator) && counter == 0 || filter.andOrOperator == null){
-                filter.andOrOperator = '';
+            if(filter.andOrOperator == null && pos != 0){
+            	filter.andOrOperator = 'and';
+            }else if(pos == 0){
+            	filter.andOrOperator = '';
             }
-            if(filter.operator == null){
-                filter.operator = 'equals';
+            filter.andOrOperator = filter.andOrOperator.touppercase();
+
+            if(String.isBlank(filter.operator)){
+            	filter.operator = 'equals';
             }
-            condition += ' ' + filter.andOrOperator + ' ' + String.valueOf(filterResult(record, filter.field, filter.operator, filter.value));
-            counter++;
+
+            if(filter.openPars == null){
+            	filter.openPars = '';
+            }
+
+            if(filter.closePars == null){
+            	filter.closePars = '';
+            }
+
+
+            condition += ' ' + filter.andOrOperator + ' ' + filter.openPars + String.valueOf(filterResult(record, filter.field, filter.operator, filter.value)) + filter.closePars;
+            pos++;
         }
         condition = '(' + condition.subString(2,condition.length()) + ')';
 
         system.debug(condition);
         return validateConditional(condition);
     }
-
-    /*private Boolean filterResult(Object recordValue, String operator, Object compareValue){
-        if(operator == 'eq'){
-            return recordValue == compareValue;
-        }else if(operator == 'gt'){
-            return recordValue > compareValue;
-        }else if(operator == 'lt'){
-            return recordValue < compareValue;
-        }else if(operator == 'neq'){
-            return recordValue != compareValue;
-        }
-        return false;
-    }*/
 
     public String getType(String typeValue){
         if ( typeValue == 'Date' || typeValue == 'DateTime'  ) return 'Date';
@@ -131,6 +125,17 @@ public with sharing abstract class PageSettingsController {
         if ( typeValue == 'REFERENCE' ) return  'Reference';
         if ( typeValue == 'BOOLEAN' ) return  'Boolean';
         return typeValue;
+    }
+
+    private Map<String,Map<String,Schema.SObjectField>> objectsMap;
+    private Map<String,Schema.SObjectField> getObjectFieldsMap(String objectName){
+    	if(objectsMap == null){
+    		objectsMap = new Map<String,Map<String,Schema.SObjectField>>();
+    	}
+    	if(!objectsMap.containsKey(objectName)){
+    		objectsMap.put(objectName, ((sObject)Type.forName(objectName).newInstance()).getSObjectType().getDescribe().fields.getMap());
+    	}
+		return objectsMap.get(objectName);
     }
 
     public Boolean filterResult(SObject record, String fieldName, String operator, Object compareValue){
@@ -145,9 +150,10 @@ public with sharing abstract class PageSettingsController {
                 return false;
         }
 
+        String objectName = relationObject.getSObjectType().getDescribe().getName();
         valueObject = relationObject.get(fieldNameSplited[index]);
 
-        String fieldType = getType(String.valueOf(objectFieldsMap.get(fieldName).getDescribe().getType()));
+        String fieldType = getType(String.valueOf(getObjectFieldsMap(objectName).get(fieldNameSplited[index]).getDescribe().getType()));
         if( fieldType == 'Date' ){
             Date fieldValue = null;
 
@@ -315,11 +321,6 @@ public with sharing abstract class PageSettingsController {
                     } else {                        
                         relPS.FieloPLT__DataFilters__c = '{\'' + relPS.FieloPLT__TargetField__c + '\':\'' +  record.Id + '\'}';
                     }
-                    if(!String.isBlank(relPS.FieloPLT__Visibility__c)){
-                        relPS.FieloPLT__Visibility__c = getVisibility(relPS.FieloPLT__Visibility__c, record);
-                    } else {                        
-                        relPS.FieloPLT__Visibility__c = 'true';
-                    }
                 }
             }
             relatedSettings = relatedPS;
@@ -417,93 +418,97 @@ public with sharing abstract class PageSettingsController {
             Map<String, Boolean> skipDefault = new Map<String, Boolean>();
 
             for ( FieloPLT__PageSettings__c p : settings ) {
-                if ( !skipDefault.containsKey( p.FieloPLT__Type__c) ) {
-                    skipDefault.put(p.FieloPLT__Type__c, !String.isBlank(p.FieloPLT__RecordType__c) );
-                }
-                if ( !String.isBlank(p.FieloPLT__RecordType__c) || !skipDefault.get(p.FieloPLT__Type__c) ) {
-                    if ( p.FieloPLT__Type__c == 'Related' && String.isNotBlank(p.FieloPLT__TargetObject__c) ) {
-                        if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
-                            relatedObjects.add(p.FieloPLT__TargetObject__c);
-                        }
-                        // Icono por default de las related
-                        if ( String.isBlank( p.FieloPLT__Icon__c )  ) {
-                            p.FieloPLT__Icon__c = 'action-sprite/svg/symbols.svg#goal';
-                        }                       
-                        relatedPS.add(p);
+                if(String.isBlank(p.FieloPLT__Visibility__c) || getVisibility(p.FieloPLT__Visibility__c, record) == 'true'){
+                    if ( !skipDefault.containsKey( p.FieloPLT__Type__c) ) {
+                        skipDefault.put(p.FieloPLT__Type__c, !String.isBlank(p.FieloPLT__RecordType__c) );
+                    }
+                    if ( !String.isBlank(p.FieloPLT__RecordType__c) || !skipDefault.get(p.FieloPLT__Type__c) ) {
+                        if ( p.FieloPLT__Type__c == 'Related' && String.isNotBlank(p.FieloPLT__TargetObject__c) ) {
+                            if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
+                                relatedObjects.add(p.FieloPLT__TargetObject__c);
+                            }
+                            // Icono por default de las related
+                            if ( String.isBlank( p.FieloPLT__Icon__c )  ) {
+                                p.FieloPLT__Icon__c = 'action-sprite/svg/symbols.svg#goal';
+                            }                       
+                            relatedPS.add(p);
 
-                    } else if ( p.FieloPLT__Type__c == 'Edit'  ) {
-                        hasEditForm = true;
-                        if ( p.FieloPLT__Sections__c != null ) {
-                            editPS.FieloPLT__Sections__c += (editPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c;
-                        }               
-                    } else if ( p.FieloPLT__Type__c == 'Detail'  ) {
-                        hasDetail = true;
-                        if ( ! String.isBlank(p.FieloPLT__Sections__c )  ) {
-                            detailPS.FieloPLT__Sections__c += (detailPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c;
-                        }           
-                    } else { // View
-                        if ( ! String.isBlank( p.FieloPLT__Icon__c )  ) {
-                            viewPS.FieloPLT__Icon__c = p.FieloPLT__Icon__c;
+                        } else if ( p.FieloPLT__Type__c == 'Edit'  ) {
+                            hasEditForm = true;
+                            if ( p.FieloPLT__Sections__c != null ) {
+                                editPS.FieloPLT__Sections__c += (editPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c;
+                            }               
+                        } else if ( p.FieloPLT__Type__c == 'Detail'  ) {
+                            hasDetail = true;
+                            if ( ! String.isBlank(p.FieloPLT__Sections__c )  ) {
+                                detailPS.FieloPLT__Sections__c += (detailPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c;
+                            }           
+                        } else { // View
+                            if ( ! String.isBlank( p.FieloPLT__Icon__c )  ) {
+                                viewPS.FieloPLT__Icon__c = p.FieloPLT__Icon__c;
+                            }
+                            if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
+                                viewActions = p.FieloPLT__StandardActions__c;
+                            }                                               
+                            if ( ! String.isBlank(p.FieloPLT__Fieldset__c ) ) {
+                                viewPS.FieloPLT__Fieldset__c += (viewPS.FieloPLT__Fieldset__c == '') ? p.FieloPLT__Fieldset__c : ',' + p.FieloPLT__Fieldset__c;
+                            }
+                            if ( ! String.isBlank(p.FieloPLT__Buttons__c) ) {
+                                viewPS.FieloPLT__Buttons__c += (viewPS.FieloPLT__Buttons__c == '' ) ? p.FieloPLT__Buttons__c : ',' + p.FieloPLT__Buttons__c;
+                            }
+                            if ( ! String.isBlank(p.FieloPLT__Tools__c)  ) {
+                                viewPS.FieloPLT__Tools__c += (viewPS.FieloPLT__Tools__c == '') ? p.FieloPLT__Tools__c : ',' + p.FieloPLT__Tools__c;
+                            }
+                            if ( ! String.isBlank( p.FieloPLT__StandardRelated__c )  ) {
+                                standardRelated.addAll( p.FieloPLT__StandardRelated__c.split(';') );
+                            }                       
                         }
-                        if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
-                            viewActions = p.FieloPLT__StandardActions__c;
-                        }                                               
-                        if ( ! String.isBlank(p.FieloPLT__Fieldset__c ) ) {
-                            viewPS.FieloPLT__Fieldset__c += (viewPS.FieloPLT__Fieldset__c == '') ? p.FieloPLT__Fieldset__c : ',' + p.FieloPLT__Fieldset__c;
-                        }
-                        if ( ! String.isBlank(p.FieloPLT__Buttons__c) ) {
-                            viewPS.FieloPLT__Buttons__c += (viewPS.FieloPLT__Buttons__c == '' ) ? p.FieloPLT__Buttons__c : ',' + p.FieloPLT__Buttons__c;
-                        }
-                        if ( ! String.isBlank(p.FieloPLT__Tools__c)  ) {
-                            viewPS.FieloPLT__Tools__c += (viewPS.FieloPLT__Tools__c == '') ? p.FieloPLT__Tools__c : ',' + p.FieloPLT__Tools__c;
-                        }
-                        if ( ! String.isBlank( p.FieloPLT__StandardRelated__c )  ) {
-                            standardRelated.addAll( p.FieloPLT__StandardRelated__c.split(';') );
-                        }                       
                     }
                 }
             }
 
         } else {
             for ( FieloPLT__PageSettings__c p : settings ) {
-                if ( p.FieloPLT__Type__c == 'Related' && String.isNotBlank(p.FieloPLT__TargetObject__c)  ) {
-                    if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
-                        relatedObjects.add(p.FieloPLT__TargetObject__c);
+                if(String.isBlank(p.FieloPLT__Visibility__c) || getVisibility(p.FieloPLT__Visibility__c, record) == 'true'){
+                    if ( p.FieloPLT__Type__c == 'Related' && String.isNotBlank(p.FieloPLT__TargetObject__c)  ) {
+                        if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
+                            relatedObjects.add(p.FieloPLT__TargetObject__c);
+                        }
+                        // Icono por default de las related
+                        if ( String.isBlank( p.FieloPLT__Icon__c )  ) {
+                            p.FieloPLT__Icon__c = 'action-sprite/svg/symbols.svg#goal';
+                        }
+                        relatedPS.add(p);
+                    } else if ( p.FieloPLT__Type__c == 'Edit'  ) {
+                        hasEditForm = true;                 
+                        if ( ! String.isBlank(p.FieloPLT__Sections__c) ) {
+                            editPS.FieloPLT__Sections__c += (editPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c;
+                        }           
+                    } else if ( p.FieloPLT__Type__c == 'Detail'  ) {
+                        hasDetail = true;
+                        if ( ! String.isBlank(p.FieloPLT__Sections__c) ) {
+                            detailPS.FieloPLT__Sections__c += (detailPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c; 
+                        }               
+                    } else {
+                        if ( ! String.isBlank( p.FieloPLT__Icon__c )  ) {
+                            viewPS.FieloPLT__Icon__c = p.FieloPLT__Icon__c;
+                        }                   
+                        if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
+                            viewActions = p.FieloPLT__StandardActions__c;
+                        }
+                        if ( ! String.isBlank(p.FieloPLT__Fieldset__c) ) {
+                            viewPS.FieloPLT__Fieldset__c += (viewPS.FieloPLT__Fieldset__c == '') ? p.FieloPLT__Fieldset__c : ',' + p.FieloPLT__Fieldset__c;
+                        }
+                        if ( ! String.isBlank(p.FieloPLT__Buttons__c)  ) {
+                            viewPS.FieloPLT__Buttons__c += (viewPS.FieloPLT__Buttons__c == '') ? p.FieloPLT__Buttons__c : ',' + p.FieloPLT__Buttons__c;
+                        }
+                        if ( ! String.isBlank(p.FieloPLT__Tools__c) ) {
+                            viewPS.FieloPLT__Tools__c += (viewPS.FieloPLT__Tools__c == '') ? p.FieloPLT__Tools__c : ',' + p.FieloPLT__Tools__c;
+                        }
+                        if ( ! String.isBlank( p.FieloPLT__StandardRelated__c )  ) {
+                            standardRelated.addAll( p.FieloPLT__StandardRelated__c.split(';') );
+                        }                                           
                     }
-                    // Icono por default de las related
-                    if ( String.isBlank( p.FieloPLT__Icon__c )  ) {
-                        p.FieloPLT__Icon__c = 'action-sprite/svg/symbols.svg#goal';
-                    }
-                    relatedPS.add(p);
-                } else if ( p.FieloPLT__Type__c == 'Edit'  ) {
-                    hasEditForm = true;                 
-                    if ( ! String.isBlank(p.FieloPLT__Sections__c) ) {
-                        editPS.FieloPLT__Sections__c += (editPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c;
-                    }           
-                } else if ( p.FieloPLT__Type__c == 'Detail'  ) {
-                    hasDetail = true;
-                    if ( ! String.isBlank(p.FieloPLT__Sections__c) ) {
-                        detailPS.FieloPLT__Sections__c += (detailPS.FieloPLT__Sections__c == '') ? p.FieloPLT__Sections__c : ',' + p.FieloPLT__Sections__c; 
-                    }               
-                } else {
-                    if ( ! String.isBlank( p.FieloPLT__Icon__c )  ) {
-                        viewPS.FieloPLT__Icon__c = p.FieloPLT__Icon__c;
-                    }                   
-                    if ( ! String.isBlank( p.FieloPLT__StandardActions__c )  ) {
-                        viewActions = p.FieloPLT__StandardActions__c;
-                    }
-                    if ( ! String.isBlank(p.FieloPLT__Fieldset__c) ) {
-                        viewPS.FieloPLT__Fieldset__c += (viewPS.FieloPLT__Fieldset__c == '') ? p.FieloPLT__Fieldset__c : ',' + p.FieloPLT__Fieldset__c;
-                    }
-                    if ( ! String.isBlank(p.FieloPLT__Buttons__c)  ) {
-                        viewPS.FieloPLT__Buttons__c += (viewPS.FieloPLT__Buttons__c == '') ? p.FieloPLT__Buttons__c : ',' + p.FieloPLT__Buttons__c;
-                    }
-                    if ( ! String.isBlank(p.FieloPLT__Tools__c) ) {
-                        viewPS.FieloPLT__Tools__c += (viewPS.FieloPLT__Tools__c == '') ? p.FieloPLT__Tools__c : ',' + p.FieloPLT__Tools__c;
-                    }
-                    if ( ! String.isBlank( p.FieloPLT__StandardRelated__c )  ) {
-                        standardRelated.addAll( p.FieloPLT__StandardRelated__c.split(';') );
-                    }                                           
                 }
             }
         }
@@ -560,24 +565,24 @@ public with sharing abstract class PageSettingsController {
              
                     if ( opciones.contains('New') &&  mapDescribes.get(r.FieloPLT__TargetObject__c).isCreateable() ){
                         if ( mapForms.containsKey(r.FieloPLT__TargetObject__c + 'New')  ) {
-                            r.FieloPLT__Buttons__c = '{"Label": "' + Label.New + '", "Type": "Modal", "Action": "' + r.FieloPLT__TargetObject__c + 'FormNew" }' + (String.isBlank(r.FieloPLT__Buttons__c)?'':','+ r.FieloPLT__Buttons__c);
+                            r.FieloPLT__Buttons__c = '{"Label": "' + Label.FieloPLT.New + '", "Type": "Modal", "Action": "' + r.FieloPLT__TargetObject__c + 'FormNew" }' + (String.isBlank(r.FieloPLT__Buttons__c)?'':','+ r.FieloPLT__Buttons__c);
                         } else if ( mapForms.containsKey(r.FieloPLT__TargetObject__c)  ) {
-                            r.FieloPLT__Buttons__c = '{"Label": "' + Label.New + '", "Type": "Modal", "Action": "' + r.FieloPLT__TargetObject__c + 'Form" }' + (String.isBlank(r.FieloPLT__Buttons__c)?'':','+ r.FieloPLT__Buttons__c);
+                            r.FieloPLT__Buttons__c = '{"Label": "' + Label.FieloPLT.New + '", "Type": "Modal", "Action": "' + r.FieloPLT__TargetObject__c + 'Form" }' + (String.isBlank(r.FieloPLT__Buttons__c)?'':','+ r.FieloPLT__Buttons__c);
                         } else {                            
-                            r.FieloPLT__Buttons__c = '{"Label": "' + Label.New + '", "Type": "Action", "Action": "New", "ObjectName" : "' + r.FieloPLT__TargetObject__c + '" }' + (String.isBlank(r.FieloPLT__Buttons__c)?'':',' + r.FieloPLT__Buttons__c) ;
+                            r.FieloPLT__Buttons__c = '{"Label": "' + Label.FieloPLT.New + '", "Type": "Action", "Action": "New", "ObjectName" : "' + r.FieloPLT__TargetObject__c + '" }' + (String.isBlank(r.FieloPLT__Buttons__c)?'':',' + r.FieloPLT__Buttons__c) ;
                         }
                     }
 
                     if ( opciones.contains('Delete') &&  mapDescribes.get(r.FieloPLT__TargetObject__c).isDeletable()){
-                        r.FieloPLT__Actions__c = '{"Label": "' + Label.Delete + '", "Type": "Remote", "Action": "FieloPLT.RelatedListController.deleteRecord", "CssClass": "slds-button--destructive", "Confirm":true }' + (String.isBlank(r.FieloPLT__Actions__c)?'':',' + r.FieloPLT__Actions__c) ;
+                        r.FieloPLT__Actions__c = '{"Label": "' + Label.FieloPLT.Delete + '", "Type": "Remote", "Action": "FieloPLT.RelatedListController.deleteRecord", "CssClass": "slds-button--destructive", "Confirm":true }' + (String.isBlank(r.FieloPLT__Actions__c)?'':',' + r.FieloPLT__Actions__c) ;
                         //r.Actions__c = '{"Label": "' + Label.Delete + '", "Type": "Action", "Action": "Delete", "ObjectName" : "' + r.TargetObject__c + '" }' + (String.isBlank(r.Actions__c)?'':',') + r.Actions__c;
                     }                                   
 
                     if ( opciones.contains('Edit') &&  mapDescribes.get(r.FieloPLT__TargetObject__c).isUpdateable() ){
                         if ( mapForms.containsKey(r.FieloPLT__TargetObject__c) ) {
-                            r.FieloPLT__Actions__c = '{"Label": "' + Label.Edit + '", "Type": "Modal", "Action": "' + r.FieloPLT__TargetObject__c + 'Form" }' + (String.isBlank(r.FieloPLT__Actions__c)?'':',' + r.FieloPLT__Actions__c) ;
+                            r.FieloPLT__Actions__c = '{"Label": "' + Label.FieloPLT.Edit + '", "Type": "Modal", "Action": "' + r.FieloPLT__TargetObject__c + 'Form" }' + (String.isBlank(r.FieloPLT__Actions__c)?'':',' + r.FieloPLT__Actions__c) ;
                         } else {
-                            r.FieloPLT__Actions__c = '{"Label": "' + Label.Edit + '", "Type": "Action", "Action": "Edit", "ObjectName" : "' + r.FieloPLT__TargetObject__c + '" }' + (String.isBlank(r.FieloPLT__Actions__c)?'':',' + r.FieloPLT__Actions__c);
+                            r.FieloPLT__Actions__c = '{"Label": "' + Label.FieloPLT.Edit + '", "Type": "Action", "Action": "Edit", "ObjectName" : "' + r.FieloPLT__TargetObject__c + '" }' + (String.isBlank(r.FieloPLT__Actions__c)?'':',' + r.FieloPLT__Actions__c);
                         }
                     }
                 }
@@ -608,32 +613,32 @@ public with sharing abstract class PageSettingsController {
                 //if ( hasEditForm ) {
                 //  viewPS.Buttons__c = '{"Label": "' + Label.Clone + '", "Type": "Modal", "Parameters": "{ \'cloneId\': \'' + record.Id + '\' }", "Action": "' + objectName + 'Form" }' + (String.isBlank(viewPS.Buttons__c)?'':',') + viewPS.Buttons__c;
                 //} else {
-                    viewPS.FieloPLT__Buttons__c = '{"Label": "' + Label.Clone + '", "Type": "Action", "Action": "Clone", "ObjectName" : "' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Buttons__c)?'':',' + viewPS.FieloPLT__Buttons__c);
+                    viewPS.FieloPLT__Buttons__c = '{"Label": "' + Label.FieloPLT.Clone + '", "Type": "Action", "Action": "Clone", "ObjectName" : "' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Buttons__c)?'':',' + viewPS.FieloPLT__Buttons__c);
                 //} 
             }
 
             if ( opciones.contains('Settings') ){
-                viewPS.FieloPLT__Tools__c = '{"Label": "' + 'Settings' + '", "Type": "Link", "Action": "/apex/FieloPLT__PageSettingsView?objectName=' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Tools__c)?'':',') + viewPS.FieloPLT__Tools__c;
+                viewPS.FieloPLT__Tools__c = '{"Label": "' + Label.FieloPLT.Settings + '", "Type": "Link", "Action": "/apex/FieloPLT__PageSettingsView?objectName=' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Tools__c)?'':',') + viewPS.FieloPLT__Tools__c;
 
             }
 
             //if ( opciones.contains('Edit') && describeObject.isUpdateable()){
             if ( opciones.contains('Edit') && describeObjectResult.isUpdateable()){
                 if ( hasEditForm ) {
-                    viewPS.FieloPLT__Buttons__c = '{"Label": "' + Label.Edit + '", "Type": "Modal", "Action": "' + objectName + 'Form" }' + (String.isBlank(viewPS.FieloPLT__Buttons__c)?'':',') + viewPS.FieloPLT__Buttons__c;
+                    viewPS.FieloPLT__Buttons__c = '{"Label": "' + Label.FieloPLT.Edit + '", "Type": "Modal", "Action": "' + objectName + 'Form" }' + (String.isBlank(viewPS.FieloPLT__Buttons__c)?'':',') + viewPS.FieloPLT__Buttons__c;
                 } else {
-                    viewPS.FieloPLT__Buttons__c = '{"Label": "' + Label.Edit + '", "Type": "Action", "Action": "Edit", "ObjectName" : "' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Buttons__c)?'':',') + viewPS.FieloPLT__Buttons__c;
+                    viewPS.FieloPLT__Buttons__c = '{"Label": "' + Label.FieloPLT.Edit + '", "Type": "Action", "Action": "Edit", "ObjectName" : "' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Buttons__c)?'':',') + viewPS.FieloPLT__Buttons__c;
                 }               
             }
 
             //if ( opciones.contains('Delete') && describeObject.isDeletable()){
             if ( opciones.contains('Delete') && describeObjectResult.isDeletable()){
 //              viewPS.Tools__c = '{"Label": "' + Label.Delete + '", "CssClass": "slds-button--destructive fielosf-button__delete", "Confirm": true, "Type": "Remote", "Action": "FieloPLT.BackendHeaderRecordController.deleteRecord" }' + (String.isBlank(viewPS.Tools__c)?'':',') + viewPS.Tools__c;
-                viewPS.FieloPLT__Tools__c = '{"Label": "' + Label.Delete + '", "CssClass": "slds-button--destructive fielosf-button__delete", "Confirm": true, "Type": "Action", "Action": "Delete", "ObjectName" : "' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Tools__c)?'':',') + viewPS.FieloPLT__Tools__c;
+                viewPS.FieloPLT__Tools__c = '{"Label": "' + Label.FieloPLT.Delete + '", "CssClass": "slds-button--destructive fielosf-button__delete", "Confirm": true, "Type": "Action", "Action": "Delete", "ObjectName" : "' + objectName + '" }' + (String.isBlank(viewPS.FieloPLT__Tools__c)?'':',') + viewPS.FieloPLT__Tools__c;
             }
 
             if ( opciones.contains('View') ){
-                viewPS.FieloPLT__Tools__c = '{"Label": "' + Label.View + '", "Type": "Link", "Action": "/' + record.Id + '?nooverride=1" }' + (String.isBlank(viewPS.FieloPLT__Tools__c)?'':',' + viewPS.FieloPLT__Tools__c);
+                viewPS.FieloPLT__Tools__c = '{"Label": "' + Label.FieloPLT.View + '", "Type": "Link", "Action": "/' + record.Id + '?nooverride=1" }' + (String.isBlank(viewPS.FieloPLT__Tools__c)?'':',' + viewPS.FieloPLT__Tools__c);
             }                                   
 
         }
@@ -666,7 +671,7 @@ public with sharing abstract class PageSettingsController {
         String labelValue;
 
         if ( PageSettingsController.mapLabels == null ) {
-            PageSettingsController.mapLabels = new Map<String, String> { 'Edit' => Label.Edit, 'Delete' => Label.Delete, 'New' => Label.New };          
+            PageSettingsController.mapLabels = new Map<String, String> { 'Edit' => Label.FieloPLT.Edit, 'Delete' => Label.FieloPLT.Delete, 'New' => Label.FieloPLT.New };          
         }
 
         if ( PageSettingsController.mapLabels.containsKey(labelName) ) {
@@ -748,10 +753,16 @@ public with sharing abstract class PageSettingsController {
     }
 
     public static List<FieloPLT__PageSettings__c> getPageSettings( List<String> settingType, List<String> recordTypes, String objectName ) {
-        
+
         List<FieloPLT__PageSettings__c> listPageSettings = new List<FieloPLT__PageSettings__c>();
 
-        Id programId = ProgramService.getActiveProgram().Id;
+        //Id programId = ProgramService.getActiveProgram().Id;
+
+        FieloPLT__Program__c activeProgram = ProgramService.getActiveProgram();
+        Id programId = null;
+        if ( activeProgram != null  ) {
+            programId = activeProgram.Id;
+        }
 
         Set<String> profiles = new Set<String>();
         for(PermissionSetAssignment psAssignment: [SELECT Id, PermissionSetId, PermissionSet.Name FROM PermissionSetAssignment WHERE AssigneeId =: UserInfo.getUserId()]){

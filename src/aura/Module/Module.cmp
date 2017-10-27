@@ -13,6 +13,7 @@
         <div class="slds-text-align_center">
             <c:OutputField record="{!v.content}" type="{!v.contentType}" fieldName="{!v.contentFieldName}" />
         </div>        
+        <h3 class="slds-section-title--divider">Questions</h3>
     </aura:if>
     <c:Quiz questions="{!v.questions}" module="{!v.module.module}" moduleWrapper="{!v.module}"  />
     
