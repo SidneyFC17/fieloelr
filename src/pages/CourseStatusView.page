@@ -43,7 +43,6 @@
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
-            rendered="{!rel.FieloPLT__Visibility__c}"
             />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
             	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__ModuleResponse__c' && relForm.FieloPLT__Type__c = 'Edit'}">

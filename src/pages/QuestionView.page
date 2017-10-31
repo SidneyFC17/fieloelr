@@ -54,7 +54,6 @@
 	            actions="{!rel.FieloPLT__Actions__c}"
 	            dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
 	            showPaginator="true"
-	            rendered="{!rel.FieloPLT__Visibility__c}"
 	            />
 		</apex:repeat>
 		<apex:repeat value="{!relatedFormsSettings}" var="relForm">
