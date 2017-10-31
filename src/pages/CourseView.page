@@ -85,7 +85,6 @@
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
-            rendered="{!rel.FieloPLT__Visibility__c}"
             />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
                 <apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Module__c' && relForm.FieloPLT__Type__c = 'Edit'}">
@@ -127,7 +126,6 @@
                 tools="{!rel.FieloPLT__Tools__c}"
                 actions="{!rel.FieloPLT__Actions__c}"
                 dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
-                rendered="{!rel.FieloPLT__Visibility__c}"
                 />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
                 <apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__CourseDependency__c' && relForm.FieloPLT__Type__c = 'Edit'}">
@@ -160,7 +158,6 @@
                 actions="{!rel.FieloPLT__Actions__c}"
                 dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
                 nameField="FieloELR__Member__r.Name"
-                rendered="{!rel.FieloPLT__Visibility__c}"
                 />
         </apex:panelGroup>
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__CourseDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Module__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__CourseStatus__c'}">
@@ -174,7 +171,6 @@
                 tools="{!rel.FieloPLT__Tools__c}"
                 actions="{!rel.FieloPLT__Actions__c}"
                 dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
-                rendered="{!rel.FieloPLT__Visibility__c}"
                 />
         </apex:panelGroup>
     </apex:repeat>
