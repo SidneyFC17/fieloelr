@@ -13,9 +13,5 @@
     </aura:if>
     <div class="slds-p-top--small">
         <lightning:button variant="brand" onclick="{!c.submitAnswer}" label="Submit" />
-    </div>
-    
-    <aura:if isTrue="{!v.type == ''}">
-        
-    </aura:if>    
+    </div>    
 </aura:component>

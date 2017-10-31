@@ -1,4 +1,4 @@
-<design:component >
+<design:component label="Fielo ELR - My Courses">
     <design:attribute label="Configuration" name="config" description="Component Configuration" 
 default='{   "fieldset": [{"apiName": "Name", "type": "subcomponent", "subcomponent": "FieloELR:ShowRecord", "event": "FieloELR:ShowCourseEvent", "label": "Name", "showLabel": true}, {"apiName": "FieloELR__Progress__c", "type": "subcomponent", "subcomponent": "FieloELR:ProgressBar", "layout": "bar", "label": "Progress", "showLabel": true}] ,   "layout": "Table",   "title": "My Courses",   "paging": true,   "limit": 6, "Course": {"fieldset": [{"apiName": "Name", "type": "output", "label": "Name", "showLabel": true}, {"apiName": "FieloELR__Description__c", "type": "output", "label": "Description", "showLabel": true}, {"apiName": "FieloELR__ApprovalGrade__c", "type": "output", "label": "Approval Grade", "showLabel": true}, {"apiName": "Name", "type": "subcomponent", "subcomponent": "FieloELR:ModuleCheck", "label": "Approved", "showLabel": true}], "layout": "Table" }}'
     	/>
