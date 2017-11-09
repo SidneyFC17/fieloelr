@@ -3,7 +3,7 @@
 */
 public with sharing class CourseLandingController extends PageSettingsSetController {
 
-	public String currentView {get;set;}
+    public String currentView {get;set;}
     public FieloPLT__PageSettings__c newCourse {get;set;}
     public FieloPLT__PageSettings__c landingCourse {get;set;}
     public static String secondaryParameters {get;set;}
@@ -16,8 +16,8 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
         return currentProgram;
     }set;}
 
-	public CourseLandingController() {
-		if( currentProgram != null ){
+    public CourseLandingController() {
+        if( currentProgram != null ){
             String standardTools  = '';
             String standardButtons = '';
 
@@ -43,7 +43,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
                 currentView = 'Draft';
             }
         }
-	}
+    }
 
     public class Section {
         public String Name{get;set;}
@@ -153,14 +153,14 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             //TODO Change to ELR Create API
 
             if ( String.isBlank( modelId )  ) {
-	            if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
-	                insert record;
-	            }else{
-	                throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-	            }
-	        } else {
-	            CourseService.createFromModel( record, modelId );
-	        }
+                if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
+                    insert record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+            } else {
+                /*CourseService.*/createFromModel( record, modelId );
+            }
 
 
             //TODO Crear Label DataSavedSuccessfully
@@ -181,6 +181,10 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
         }
 
         return result;
+    }
+
+    private static void createFromModel(Course__c record, Id modelId){
+        CourseService.createFromModel( record, modelId );
     }
 
     @RemoteAction
