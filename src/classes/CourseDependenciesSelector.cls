@@ -1,4 +1,4 @@
-public with sharing class CourseDependenciesSelector extends SObjectSelector{
+public class CourseDependenciesSelector extends SObjectSelector{
     
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {

@@ -1,4 +1,4 @@
-public with sharing class QuestionsSelector extends SObjectSelector {
+public class QuestionsSelector extends SObjectSelector {
 
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
