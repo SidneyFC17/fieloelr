@@ -1,4 +1,4 @@
-public with sharing class SegmentService {
+public class SegmentService {
 	//metodo para mover a segment service
     //recibe lista (así se puede ordenar y querear más fácil) de Id's, y devuelve el metasegment indicado, puede llegar a ser uno nuevo
     public static Id getMetaSegmentId(List<String> selected, Id programId){

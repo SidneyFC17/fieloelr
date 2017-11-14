@@ -1,4 +1,4 @@
-public with sharing class ModuleResponsesSelector extends SObjectSelector {
+public class ModuleResponsesSelector extends SObjectSelector {
 
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
