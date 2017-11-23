@@ -1,4 +1,4 @@
-public with sharing class CoursesSelector extends SObjectSelector{
+public class CoursesSelector extends SObjectSelector{
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
                 Course__c.Id,

@@ -233,7 +233,6 @@
       "FieloPLT__Object__c" : "FieloELR__CourseStatus__c",
       "FieloPLT__OrderBy__c" : "FieloELR__Date__c",
       "FieloPLT__Order__c" : 1,
-      "FieloPLT__Sections__c" : "{ \t\"Name\":\"Information\", \t\"Rows\": \t[ \t\t[ \t\t\t{\"Name\":\"Name\",\"Type\":\"input\"} \t\t], \t\t[ \t\t\t{\"Name\":\"FieloELR__CourseStatus__c\",\"Type\":\"lookup\"} \t\t], \t\t[ {\"Name\":\"FieloELR__Date__c\",\"Type\":\"input\"},\t \t\t{\"Name\":\"FieloELR__GradePercent__c\",\"Type\":\"input\"} \t\t], \t\t[ {\"Name\":\"FieloELR__IsApproved__c\",\"Type\":\"checkbox\"}, {\"Name\":\"FieloELR__IsSubmitted__c\",\"Type\":\"checkbox\"}, \t\t], \t\t[ {\"Name\":\"FieloELR__NumberOfAttempt__c\",\"Type\":\"input\"},\t\t\t {\"Name\":\"FieloELR__NumberOFApprove__c\",\"Type\":\"picklist\"} \t\t] \t] }",
       "FieloPLT__TargetField__c" : "FieloELR__CourseStatus__c",
       "FieloPLT__TargetObject__c" : "FieloELR__ModuleResponse__c",
       "FieloPLT__Type__c" : "Related"
@@ -257,7 +256,6 @@
       "FieloPLT__Fieldset__c" : "{\"Name\":\"FieloELR__Question__r.Name\"}, {\"Name\":\"FieloELR__IsCorrect__c\"},  {\"Name\":\"FieloELR__IsSubmitted__c\"},  {\"Name\":\"FieloELR__PartialGradeValue__c\"},  {\"Name\":\"FieloELR__NumberOfAttempt__c\"}",
       "FieloPLT__Object__c" : "FieloELR__ModuleResponse__c",
       "FieloPLT__OrderBy__c" : "FieloELR__Question__c",
-      "FieloPLT__Sections__c" : "{ \t\"Name\":\"Information\", \t\"Rows\": \t[ \t\t[ \t\t\t{\"Name\":\"Name\",\"Type\":\"input\"} \t\t], \t\t[ {\"Name\":\"FieloELR__ModuleStatus__c\",\"Type\":\"lookup\"}, {\"Name\":\"FieloELR__Question__c\",\"Type\":\"lookup\"} \t\t], \t\t[ {\"Name\":\"FieloELR__IsCorrect__c\",\"Type\":\"checkbox\"}, {\"Name\":\"FieloELR__IsSubmitted__c\",\"Type\":\"checkbox\"}, \t\t], \t\t[ {\"Name\":\"FieloELR__PartialGradeValue__c\",\"Type\":\"input\"},\t\t\t {\"Name\":\"FieloELR__NumberOfAttempt__c\",\"Type\":\"input\"} \t\t] \t] }",
       "FieloPLT__TargetField__c" : "FieloELR__ModuleResponse__c",
       "FieloPLT__TargetObject__c" : "FieloELR__QuestionResponse__c",
       "FieloPLT__Type__c" : "Related"

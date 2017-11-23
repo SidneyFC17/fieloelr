@@ -1,4 +1,4 @@
-public with sharing class FilterService {
+public class FilterService {
 	
 	public static String getDynamicWhereCondition(String jsonCondition, String objectName, String prefix){
         List<FilterWrapper> filterWrappers;

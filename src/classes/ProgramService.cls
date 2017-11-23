@@ -1,4 +1,4 @@
-public with sharing class ProgramService {
+public class ProgramService {
 	private static Map<Id, FieloPLT__Program__c> programMap;
 	
 	public static FieloPLT__Program__c getActiveProgram(){

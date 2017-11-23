@@ -32,4 +32,28 @@ public with sharing class CoursesController {
         }  
     }
     
+    @auraEnabled
+    public static map<String, String> getCourseLabels(){
+        map<String, String> mapFieldLabels = new map<String, String>();
+
+        for(Schema.SObjectField sfield: Course__c.sObjectType.getDescribe().fields.getMap().Values()){
+            Schema.Describefieldresult dfield = sfield.getDescribe();
+            mapFieldLabels.put(dfield.getName(), dfield.getLabel());
+        }
+
+        return mapFieldLabels;
+    }
+
+    @auraEnabled
+    public static map<String, String> getModuleLabels(){
+        map<String, String> mapFieldLabels = new map<String, String>();
+
+        for(Schema.SObjectField sfield: Module__c.sObjectType.getDescribe().fields.getMap().Values()){
+            Schema.Describefieldresult dfield = sfield.getDescribe();
+            mapFieldLabels.put(dfield.getName(), dfield.getLabel());
+        }
+
+        return mapFieldLabels;
+    }
+
 }

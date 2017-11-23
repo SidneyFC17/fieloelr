@@ -11,8 +11,9 @@
     <aura:attribute type="Boolean" name="showCourse" default="false" />
     
     <aura:attribute type="String" name="courseTitle" default="" />
+        
+    <aura:handler name="showRecord" event="c:ShowRecordEvent" action="{!c.showCourse}"/>
     
-    <aura:handler event="c:ShowCourseEvent" action="{!c.showCourse}"/>
     <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>        
     

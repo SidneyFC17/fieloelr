@@ -1,4 +1,4 @@
-public with sharing class MembersSelector extends SObjectSelector{
+public class MembersSelector extends SObjectSelector{
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
                 FieloPLT__Member__c.Id,
