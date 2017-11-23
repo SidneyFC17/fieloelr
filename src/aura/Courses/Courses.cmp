@@ -33,7 +33,9 @@
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     
     <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
-    <aura:handler event="c:ShowCourseEvent" action="{!c.showCourse}"/>
+    
+    
+    <aura:handler name="showRecord" event="c:ShowRecordEvent" action="{!c.showCourse}"/>
     
     <aura:handler event="c:TakeModuleEvent" action="{!c.takeModule}"/>
     
