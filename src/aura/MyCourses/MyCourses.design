@@ -14,7 +14,7 @@ default='{
       "type": "subcomponent",
       "subcomponent": "FieloELR:ProgressBar",
       "layout": "bar",
-      "label": {"type": "text":"value":"Progress"},
+      "label": {"type": "text","value":"Progress"},
       "showLabel": true
     }
   ],
@@ -56,5 +56,5 @@ default='{
     "layout": "Table"
   }
 }'
-    	/>
+      />
 </design:component>
