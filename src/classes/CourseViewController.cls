@@ -235,10 +235,14 @@ public with sharing class CourseViewController extends PageSettingsController {
                     for(String fieldName: record.getPopulatedFieldsAsMap().keySet()) {
                     	if (fieldName != 'Id') {
                     		if (String.valueOf(fieldMap.get(fieldName).getDescribe().getType()) == 'DOUBLE') {
-                    			courses.get(0).put(fieldName, 
-                    				record.get(fieldName) instanceof String ?
-                    					Decimal.valueOf((String)record.get(fieldName)):
-                    					Decimal.valueOf((Double)record.get(fieldName)));
+                    			if (record.get(fieldName) != null) {
+	                    			courses.get(0).put(fieldName, 
+	                    				record.get(fieldName) instanceof String ?
+	                    					Decimal.valueOf((String)record.get(fieldName)):
+	                    					Decimal.valueOf((Double)record.get(fieldName)));
+                    			} else {
+                    				courses.get(0).put(fieldName, null);
+                    			}
                     		} else {
                     			courses.get(0).put(fieldName, record.get(fieldName));
                     		}
