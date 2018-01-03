@@ -8,8 +8,7 @@ private class TestCreateCourseDependency {
 
 	private static FieloELR__CourseDependency__c courseDepen1 = new FieloELR__CourseDependency__c();
 
-	@testSetup
-	static void setup(){
+	@testSetup static void setup(){
 
 		//////PROGRAMS
 		listProg = MockUpFactory.createPrograms('program', 2);
@@ -47,9 +46,10 @@ private class TestCreateCourseDependency {
 		insert listCourseDepen;
 	}
 	
-	@isTest
-	static void ELR_0002_FB() {
-		
+	/*	TEST-1681
+		Create Course Dependency - (OK)
+	*/
+	@isTest static void ELR_0002_FB() {
 		courseDepen1.FieloELR__Course__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 2' LIMIT 1].Id;
 		courseDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 1' LIMIT 1].Id;
 		listCourseDepen.add(courseDepen1);
@@ -61,34 +61,46 @@ private class TestCreateCourseDependency {
 		System.assertEquals(1, listCourseDepen.size());
 	}
 	
-	@isTest
-	static void ELR_0002_FA1() {
-		
+	/*	TEST-1682
+		Create Course Dependency
+		- Validations
+		- Course field is null (NOK)
+	*/
+	@isTest static void ELR_0002_FA1() {
 		courseDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 1' LIMIT 1].Id;
 		listCourseDepen.add(courseDepen1);
 
 		try{
     		insert listCourseDepen;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('Attempt to de-reference a null object'));
+			System.debug(d.getMessage());
+			System.assert(d.getMessage().Contains(Label.CourseRequiredField));
 		}
 	}
 	
-	@isTest
-	static void ELR_0002_FA2() {
-		
+	/*	TEST-1683
+		Create Course Dependency
+		- Validations
+		- Predecessor field is null (NOK)
+	*/
+	@isTest static void ELR_0002_FA2() {
 		courseDepen1.FieloELR__Course__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 2' LIMIT 1].Id;
 		listCourseDepen.add(courseDepen1);
 
 		try{
     		insert listCourseDepen;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('Attempt to de-reference a null object'));
+			System.debug(d.getMessage());
+			System.assert(d.getMessage().Contains(Label.PredecessorRequired));
 		}
 	}
 
-	@isTest
-	static void ELR_0002_FA3() {
+	/*	TEST-1684
+		Create Course Dependency
+		- Validations
+		- Course and Predecessor are the same (NOK)
+	*/
+	@isTest static void ELR_0002_FA3() {
 		
 		courseDepen1.FieloELR__Course__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 1' LIMIT 1].Id;
 		courseDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 1' LIMIT 1].Id;
@@ -101,8 +113,12 @@ private class TestCreateCourseDependency {
 		}
 	}
 
-	@isTest
-	static void ELR_0002_FA4() {
+	/*	TEST-1685
+		Create Course Dependency
+		- Validations
+		- Course and Predecessor are not related to the same program (NOK)
+	*/
+	@isTest static void ELR_0002_FA4() {
 		
 		courseDepen1.FieloELR__Course__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 3' LIMIT 1].Id;
 		courseDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 1' LIMIT 1].Id;
@@ -115,8 +131,12 @@ private class TestCreateCourseDependency {
 		}
 	}
 
-	@isTest
-	static void ELR_0002_FA5(){
+	/*	TEST-1686
+		Create Course Dependency
+		- Validations
+		- There is already a course dependency with the same courses (NOK)
+	*/
+	@isTest	static void ELR_0002_FA5(){
 
 		courseDepen1.FieloELR__Course__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 4' LIMIT 1].Id;
 		courseDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 3' LIMIT 1].Id;
@@ -129,8 +149,11 @@ private class TestCreateCourseDependency {
 		}
 	}
 
-	@isTest
-	static void ELR_0002_FA6(){
+	/*	TEST-1687
+		Create Course Dependency
+		- Edit a course dependency (OK)
+	*/
+	@isTest	static void ELR_0002_FA6(){
 
 		courseDepen1 = [SELECT Id FROM FieloELR__CourseDependency__c WHERE FieloELR__Course__r.FieloELR__Description__c = 'Course 4' LIMIT 1];
 		courseDepen1.FieloELR__Course__c = [SELECT Id FROM FieloELR__Course__c WHERE FieloELR__Description__c = 'Course 5' LIMIT 1].Id;

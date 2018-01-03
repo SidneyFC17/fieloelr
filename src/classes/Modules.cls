@@ -143,11 +143,13 @@ public class Modules extends SObjectDomain {
         if (!inactivatedModules.isEmpty()) {
             validateAdminFields = false;
             removeModuleDependency(inactivatedModules);
+            validateAdminFields = true;
         }
 
         if (!activatedModules.isEmpty()) {
             validateAdminFields = false;
             addModuleDependency(activatedModules);
+            validateAdminFields = true;
         }
         //If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
         updateQuestions(new List<Module__c>(modulesToChangeQuestions), modulesToChangeCorrectWeight, modulesToChangeIncorrectWeight, modulesToChangePenaltyPerAttempt, uow);
@@ -330,7 +332,7 @@ public class Modules extends SObjectDomain {
             if(module.Questions__r.isEmpty()){
                 modulesMap.get(module.Id).addError(Label.ValidateModuleActive);
             }else if(modulesMap.get(module.Id).QuestionPool__c != null && modulesMap.get(module.Id).QuestionPool__c > module.Questions__r.size()){
-                modulesMap.get(module.Id).addError('The question pool value cannot be greater than the number of questions.');
+                modulesMap.get(module.Id).addError(Label.QuestionPoolGreaterThenQuestionNumber);
             }
         }
     }
@@ -342,7 +344,9 @@ public class Modules extends SObjectDomain {
         List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String>{'FieloELR__IsActive__c','FieloELR__Course__r.FieloELR__Status__c'}).selectByIdHavingModuleResponses(modulesMap.KeySet()); 
         for(Module__c module : modulesWithResponse) {
             if(module.FieloELR__IsActive__c && module.FieloELR__Course__r.FieloELR__Status__c == 'Active'){
-                addError(modulesMap.get(module.Id), 'Cannot delete or update an active module from an active course.');
+                if(!Courses.isDelete) {
+                    addError(modulesMap.get(module.Id), Label.CannotDeleteActiveModuleInActiveCourse);
+                }
             }else if (!module.ModuleResponses__r.isEmpty()) {
                 addError(modulesMap.get(module.Id), Label.ValidateModuleEditableFields);
             }

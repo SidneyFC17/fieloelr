@@ -129,7 +129,9 @@ private class TestCreateCourse{
         insert courseStatus;
     }
 
-//Methods
+    /*  TEST-1662
+        Create Course - (OK)
+    */
     @isTest
     static void ELR_0001_FB1(){
 
@@ -139,22 +141,32 @@ private class TestCreateCourse{
         System.assertEquals('Draft',courses.get(0).FieloELR__Status__c);
     }
 
-
-    @isTest
-    static void ELR_0001_FA1(){
-        courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
+    /*  TEST-1663
+        Create Course
+        - Validations
+        - The Program is not filled (NOK)
+    */
+    @isTest static void ELR_0001_FA1(){
+        courses = new List<FieloELR__Course__c>{
+            new FieloELR__Course__c(Name = 'TestName')
+        };
 
         try{
             insert courses.get(0);
         }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains('You must select a Program'));
-            }
+            System.assert(e.getMessage().Contains('You must select a Program'));
+        }
     }
 
-
-    @isTest
-    static void ELR_0001_FA2(){
-        courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
+    /*  TEST-1664
+        Create Course
+        - Validations
+        - The segment is not from the same program (NOK)
+    */
+    @isTest static void ELR_0001_FA2(){
+        courses = new List<FieloELR__Course__c>{
+            new FieloELR__Course__c(Name = 'TestName')
+        };
 
         courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram0' LIMIT 1].id;
         courses.get(0).FieloELR__Segment__c = [SELECT Id FROM FieloPLT__Segment__c WHERE Name = 'testSegment1' LIMIT 1 ].id;
@@ -162,258 +174,297 @@ private class TestCreateCourse{
         try{
             insert courses.get(0);
         }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains('Segment must be on the same program.'));
-           }
-        
+            System.assert(e.getMessage().Contains('Segment must be on the same program.'));
+        }
     }
 
+    /*  TEST-1667
+        Create Course
+        - Edit a Draft Course - (OK)
+    */
+    @isTest static void ELR_0001_FA8() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 1' LIMIT 1];
+        
+        System.assertEquals('Draft', courses.get(0).FieloELR__Status__c);
+        
+        courses.get(0).FieloELR__Order__c = 3;
 
-    @isTest
-    static void ELR_0001_FA3(){
+        update courses.get(0);
+
+        System.assertEquals(3, courses.get(0).FieloELR__Order__c);
+        System.assertEquals('Draft', courses.get(0).FieloELR__Status__c);
+    }
+
+    /*  TEST-1668
+        Create Course
+        - Subscription Mode is null - (OK)
+    */
+    @isTest static void ELR_0001_FA6() {
+        FieloELR__Course__c course = new FieloELR__Course__c();
+        course.Name = 'Course SubscriptionLess';
+        course.FieloELR__Program__c = [SELECT Id, Name FROM FieloPLT__Program__c LIMIT 1].Id;
+        course.FieloELR__Description__c = 'Description';
+        course.FieloELR__Segment__c = [SELECT Id, Name From FieloPLT__Segment__c WHERE FieloPLT__Program__c = :course.FieloELR__Program__c LIMIT 1].Id;
+
+        insert course;
+
+        System.assert(course.Id != null);
+        System.assertEquals('Manual', [SELECT Id, Name, FieloELR__SubscriptionMode__c FROM FieloELR__Course__c WHERE Id = :course.Id].FieloELR__SubscriptionMode__c);
+    }
+
+    /*  TEST-1669
+        Create Course
+        - Validations
+        - Edit an active course (NOK)
+    */
+    @isTest static void ELR_0001_FA9() {
         courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 1' LIMIT 1];
         
         courses.get(0).FieloELR__Status__c = 'Active';
         
+        FieloELR.Courses.validateAdminFields = false;
         update courses.get(0);
+        FieloELR.Courses.validateAdminFields = true;
+
+        courses = [SELECT Id, Name, FieloELR__Status__c, FieloELR__SubscriptionMode__c FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1];
 
         System.assertEquals('Active', courses.get(0).FieloELR__Status__c);
-        
+        System.assertEquals('Manual', courses.get(0).FieloELR__SubscriptionMode__c);
+
+        courses.get(0).FieloELR__SubscriptionMode__c = 'Automatic';
+
+        try{
+            update courses.get(0);
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+        }
+
+        System.assertEquals('Manual', [SELECT Id, Name, FieloELR__SubscriptionMode__c FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1].FieloELR__SubscriptionMode__c);
     }
 
+    /*  TEST-1670
+        Create Course
+        - Delete a Draft Course (OK)
+    */
+    @isTest static void ELR_0001_FA11() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 1' LIMIT 1];
+        
+        System.assertEquals('Draft', courses.get(0).FieloELR__Status__c);
 
-    @isTest
-        static void ELR_0001_FA4(){
-            courses = [SELECT Id,Name,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 0' LIMIT 1];
-            
-            courses.get(0).FieloELR__Status__c = 'Active';
-            
-            try{
-                update courses.get(0);
-            }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains('To activate a course, it must have at least one active related module.'));
-             }
-        }
+        delete courses.get(0);
 
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1];
 
-    /*@isTest
-        static void ELR_0001_FA5(){
-                courses = [SELECT Name,FieloELR__SubscriptionMode__c,FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 2'];
-                courses.get(0).FieloELR__SubscriptionMode__c = 'Automatic';
+        System.assertEquals(0, courses.size());
+    }
 
-                update courses.get(0);
+    /*  TEST-1671
+        Create Course
+        - Delete an inactive course with no related course status - (OK)
+    */
+    @isTest static void ELR_0001_FA14() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 1' LIMIT 1];
+        
+        System.assertEquals('Draft', courses.get(0).FieloELR__Status__c);
 
-                courses = [SELECT FieloELR__SubscriptionMode__c FROM FieloELR__Course__c WHERE Name = 'Course 2'];
+        courses.get(0).FieloELR__Status__c = 'Active';
 
-                System.assertEquals('Automatic', courses.get(0).FieloELR__SubscriptionMode__c);
-        } 
+        FieloELR.Courses.validateAdminFields = false;
+        update courses.get(0);
+        FieloELR.Courses.validateAdminFields = true;
 
+        System.assertEquals('Active', [Select Id, Name, FieloELR__Status__c FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1].FieloELR__Status__c);
 
-    @isTest
-        static void ELR_0001_FA6(){
-            courses = [SELECT Id,FieloELR__Status__c,FieloELR__Program__c FROM FieloELR__Course__c WHERE Name =  'Course 2'];
-            courses.get(0).Name = 'newName';
-            
+        courses.get(0).FieloELR__Status__c = 'Inactive';
+
+        FieloELR.Courses.validateAdminFields = false;
+        update courses.get(0);
+        FieloELR.Courses.validateAdminFields = true;
+
+        System.assertEquals('Inactive', [Select Id, Name, FieloELR__Status__c FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1].FieloELR__Status__c);
+
+        delete courses.get(0);
+
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1];
+
+        System.assertEquals(0, courses.size());
+    }
+
+    /*  TEST-1672
+        Create Course
+        - Validations
+        - Delete an inactive course with related course status (NOK)
+    */
+    @isTest static void ELR_0001_FA15() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 3' LIMIT 1];
+        
+        System.assertEquals('Active', courses.get(0).FieloELR__Status__c);
+
+        courses.get(0).FieloELR__Status__c = 'Inactive';
+
+        FieloELR.Courses.validateAdminFields = false;
+        update courses.get(0);
+        FieloELR.Courses.validateAdminFields = true;
+
+        try{
+            delete courses.get(0);
+        } catch (Exception e) {}
+
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 3' LIMIT 1];
+
+        System.assertEquals(1, courses.size());
+    }
+
+    /*  TEST-1673
+        Create Course
+        - Validations
+        - Edit the program of a course (NOK)
+    */
+    @isTest static void ELR_0001_FA7() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c,FieloELR__Program__c, FieloELR__Program__r.Name FROM FieloELR__Course__c WHERE Name = 'Course 1' LIMIT 1];
+        
+        System.assertEquals('Draft', courses.get(0).FieloELR__Status__c);
+        System.assertEquals('testProgram0', courses.get(0).FieloELR__Program__r.Name);
+
+        Id programId = courses.get(0).FieloELR__Program__c;
+
+        courses.get(0).FieloELR__Program__c = [Select Id, Name FROM FieloPLT__Program__c WHERE Name = 'testProgram1' LIMIT 1].Id;
+
+        try{
             update courses.get(0);
+        } catch(Exception e) {}
 
-            courses = [SELECT Name FROM FieloELR__Course__c WHERE Name = 'newName'];
+        System.assertEquals('testProgram0', [SELECT Id, FieloELR__Program__r.Name FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1].FieloELR__Program__r.Name);
+    }
 
-            System.assertEquals('newName', courses.get(0).Name);
+    /*  TEST-1676
+        Create Course
+        - Delete an active course with no related course status - (OK)
+    */
+    @isTest static void ELR_0001_FA12() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 1' LIMIT 1];
+        
+        System.assertEquals('Draft', courses.get(0).FieloELR__Status__c);
+
+        courses.get(0).FieloELR__Status__c = 'Active';
+
+        FieloELR.Courses.validateAdminFields = false;
+        update courses.get(0);
+        FieloELR.Courses.validateAdminFields = true;
+
+        System.assertEquals('Active', [Select Id, Name, FieloELR__Status__c FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id LIMIT 1].FieloELR__Status__c);
+
+        delete courses.get(0);
+
+        courses = [SELECT Id, Name FROM FieloELR__Course__c WHERE Id = :courses.get(0).Id];
+
+        System.assertEquals(0, courses.size());
+    }
+
+    /*  TEST-1677
+        Create Course
+        - Validations
+        - Delete an active course with related course status - (NOK)
+    */
+    @isTest static void ELR_0001_FA13() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 3' LIMIT 1];
+        
+        System.assertEquals('Active', courses.get(0).FieloELR__Status__c);
+
+        try{
+            delete courses.get(0);
+        } catch (Exception e) {}
+
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 3' LIMIT 1];
+
+        System.assertEquals(1, courses.size());
+    }
+
+    /*  TEST-1680
+        Create Course
+        - Edit an Inactive Course - (OK)
+    */
+    @isTest static void ELR_0001_FA10() {
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__Order__c, FieloELR__ActiveModules__c FROM FieloELR__Course__c WHERE Name = 'Course 3' LIMIT 1];
+        
+        System.assertEquals('Active', courses.get(0).FieloELR__Status__c);
+
+        courses.get(0).FieloELR__Status__c = 'Inactive';
+
+        FieloELR.Courses.validateAdminFields = false;
+        update courses.get(0);
+        FieloELR.Courses.validateAdminFields = true;
+
+        System.assertNotEquals(99,courses.get(0).FieloELR__Order__c);
+
+        courses.get(0).FieloELR__Order__c = 99;
+
+        update courses.get(0);
+
+        courses = [SELECT Id,FieloELR__Status__c,FieloELR__Order__c FROM FieloELR__Course__c WHERE Name = 'Course 3' LIMIT 1];
+
+        System.assertEquals(99, courses.get(0).FieloELR__Order__c);
+    }
+
+    /*  TEST-1760
+        Create Course
+        - Validations
+        - Start date is earlier than the current date - (NOK)
+    */
+    @isTest static void ELR_0001_FA3() {
+        courses = new List<FieloELR__Course__c>{
+            new FieloELR__Course__c(Name = 'TestName')
+        };
+        FieloPLT__Segment__c segment = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Segment__c WHERE Name = 'testSegment0' LIMIT 1];
+        courses.get(0).FieloELR__Program__c = segment.FieloPLT__Program__c;
+        courses.get(0).FieloELR__Segment__c = segment.Id;
+        courses.get(0).FieloELR__StartDate__c = Date.today() - 10;
+
+        try{
+            insert courses;
+        }catch(System.Dmlexception e){
+            System.assert(e.getMessage().Contains('Start Date and End Date must be equal or greater than today date.'));
         }
+    }
 
-    @isTest
-        static void ELR_0001_FA7(){
-            courses = [SELECT Id,FieloELR__Status__c FROM FieloELR__Course__c WHERE Name =  'Course 3'];
-            courses.get(0).Name = 'newTestName';
+    /*  TEST-1761
+        Create Course
+        - Validations
+        - End date is earlier than the current date - (NOK)
+    */
+    @isTest static void ELR_0001_FA4(){
+        courses = new List<FieloELR__Course__c>{
+            new FieloELR__Course__c(Name = 'TestName')
+        };
+        FieloPLT__Segment__c segment = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Segment__c WHERE Name = 'testSegment0' LIMIT 1];
+        courses.get(0).FieloELR__Program__c = segment.FieloPLT__Program__c;
+        courses.get(0).FieloELR__Segment__c = segment.Id;
+        courses.get(0).FieloELR__EndDate__c = Date.today() - 10;
 
-            update courses.get(0);
-
-            courses = [SELECT Name FROM FieloELR__Course__c WHERE Name = 'newTestName'];
-            System.assertEquals('newTestName', courses.get(0).Name);
+        try{
+            insert courses;
+        }catch(System.Dmlexception e){
+            System.assert(e.getMessage().Contains('Start Date and End Date must be equal or greater than today date.'));
         }
+    } 
 
-
-    @isTest
-        static void ELR_0001_FA8(){
-            courses = [SELECT Id,FieloELR__Status__c,FieloELR__Description__c FROM FieloELR__Course__c WHERE Name =  'Course 3'];
-            courses.get(0).FieloELR__Description__c = 'new Course Description';
-            
-            update courses.get(0);
-
-            courses = [SELECT FieloELR__Description__c FROM FieloELR__Course__c WHERE Name = 'Course 3'];
-            System.assertEquals('new Course Description',courses.get(0).FieloELR__Description__c);
+    /*  TEST-1762
+        Create Course
+        - Validations
+        - Start date is later than the end date - (NOK)
+    */
+    @isTest static void ELR_0001_FA21(){
+        courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
+        FieloPLT__Segment__c segment = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Segment__c WHERE Name = 'testSegment0' LIMIT 1];
+        courses.get(0).FieloELR__Program__c = segment.FieloPLT__Program__c;
+        courses.get(0).FieloELR__Segment__c = segment.Id;
+        courses.get(0).FieloELR__EndDate__c = Date.today() + 10;
+        courses.get(0).FieloELR__StartDate__c = Date.today() + 20;
+        
+        try{
+            insert courses;
+        }catch(System.Dmlexception e){
+            System.assert(e.getMessage().Contains('Start Date cannot be greater than End Date'));
         }
-
-
-    @isTest
-        static void ELR_0001_FA9(){
-            courses = [SELECT Id,FieloELR__Status__c,FieloELR__SubscriptionMode__c FROM FieloELR__Course__c WHERE Name = 'Course 3'];           
-            courses.get(0).FieloELR__SubscriptionMode__c = 'Automatic';
-
-            try{
-                update courses.get(0);  
-            }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains('Cannot edit the Subscription Mode of an active Course already associated to a member.'));
-             }    
-                    
-        }*/
-
-
-    /*@isTest
-        static void ELR_0001_FA10(){
-            courses = [SELECT Id,FieloELR__Program__c FROM FieloELR__Course__c WHERE Name ='Course 3'];
-            courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram0' LIMIT 1].id;
-
-            try{
-                update courses.get(0); 
-               }catch(System.DmlException e){
-                    System.assert(e.getMessage().Contains('Cannot change the program from the course.'));
-                }
-            
-        }
-
-
-    @isTest 
-        static void ELR_0001_FA11(){
-            courses = [SELECT Id,FieloELR__Segment__c FROM FieloELR__Course__c WHERE Name ='Course 3'];
-            courses.get(0).FieloELR__Segment__c = [SELECT Id FROM FieloPLT__Segment__c WHERE Name = 'testSegment0' LIMIT 1].id;
-
-            try{
-                update courses.get(0);
-            }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains('Cannot edit the Segment of an active Course already associated to a member.'));
-             }
-        }
-
-
-    @isTest
-        static void ELR_0001_FA12(){
-            courses = [SELECT Id,FieloELR__StartDate__c FROM FieloELR__Course__c WHERE Name = 'Course 3'];
-            courses.get(0).FieloELR__StartDate__c = Date.today() + 10;
-
-            try{
-                update courses.get(0);
-            }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains(' Cannot edit the Start Date of an active Course already associated to a member.'));
-             }
-        }
-
-
-    @isTest
-        static void ELR_0001_FA13(){
-            courses = [SELECT Id,FieloELR__EndDate__c FROM FieloELR__Course__c WHERE Name = 'Course 3'];
-            courses.get(0).FieloELR__EndDate__c = Date.today() + 10;
-
-            try{
-                update courses.get(0);
-            }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains('Cannot edit the End Date of an active Course already associated to a member.'));
-             }
-        } 
-
-
-    @isTest
-        static void ELR_0001_FA14(){
-          courses = [SELECT Id FROM FieloELR__Course__c WHERE Name = 'Course 2'];
-
-          delete courses;
-          
-          courses = [SELECT Id FROM FieloELR__Course__c WHERE Name = 'Course 2'];
-          
-          System.assertEquals(0, courses.size());
-        } 
-
-    @isTest
-        static void ELR_0001_FA15(){
-            courses = [SELECT Id FROM FieloELR__Course__c WHERE Name = 'Course 3'];
-
-            try{
-                delete courses;
-            }catch(System.DmlException e){
-                System.assert(e.getMessage().Contains('Cannot delete an active Course with already associated to a member.'));
-            }
-        } */
-
-    /*@isTest
-        static void ELR_0001_FA16(){
-            courses = [SELECT Id,FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 2'];
-
-            courses.get(0).FieloELR__Status__c = 'Inactive';
-
-            update courses;
-
-            courses = [SELECT FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 2'];
-            
-
-            System.assertEquals('Inactive', courses.get(0).FieloELR__Status__c);
-        }
-
-    @isTest 
-        static void ELR_0001_FA17(){
-            courses  = [SELECT Id, FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 3'];
-
-            courses.get(0).FieloELR__Status__c = 'Inactive';
-
-            update courses;
-
-            courses = [SELECT FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 3'];
-
-            System.assertEquals('Inactive', courses.get(0).FieloELR__Status__c);
-        }*/
-
-    @isTest
-        static void ELR_0001_FA18(){
-            courses = [SELECT Id,FieloELR__Status__c FROM FieloELR__Course__c WHERE Name = 'Course 4'];
-            
-            courses.get(0).FieloELR__Description__c = 'newDescription';
-
-            update courses;
-
-            courses = [SELECT FieloELR__Description__c FROM FieloELR__Course__c WHERE Name = 'Course 4'];
-
-            System.assertEquals('newDescription',courses.get(0).FieloELR__Description__c);
-        } 
-
-    @isTest
-        static void  ELR_0001_FA19(){
-            courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
-            courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram0' LIMIT 1].id;
-            courses.get(0).FieloELR__Segment__c = [SELECT Id FROM FieloPLT__Segment__c WHERE Name = 'testSegment0' LIMIT 1 ].id;
-            courses.get(0).FieloELR__StartDate__c = Date.today() - 10;
-
-            try{
-                insert courses;
-                }catch(System.Dmlexception e){
-                    System.assert(e.getMessage().Contains('Start Date and End Date must be equal or greater than today date.'));
-                }
-        }
-
-    @isTest
-        static void ELR_0001_FA20(){
-            courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
-            courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram1' LIMIT 1].id;
-            courses.get(0).FieloELR__Segment__c = [SELECT Id FROM FieloPLT__Segment__c WHERE Name = 'testSegment1' LIMIT 1 ].id;
-            courses.get(0).FieloELR__EndDate__c = Date.today() - 10;
-
-            try{
-                insert courses;
-                }catch(System.Dmlexception e){
-                    System.assert(e.getMessage().Contains('Start Date and End Date must be equal or greater than today date.'));
-                }
-            
-        } 
-
-    @isTest
-        static void ELR_0001_FA21(){
-            courses = new List<FieloELR__Course__c>{new FieloELR__Course__c(Name = 'TestName')};
-            courses.get(0).FieloELR__Program__c = [SELECT Id FROM FieloPLT__Program__c WHERE Name = 'testProgram1' LIMIT 1].id;
-            courses.get(0).FieloELR__Segment__c = [SELECT Id FROM FieloPLT__Segment__c WHERE Name = 'testSegment1' LIMIT 1 ].id;
-            courses.get(0).FieloELR__EndDate__c = Date.today() + 10;
-            courses.get(0).FieloELR__StartDate__c = Date.today() + 20;
-            
-            try{
-                insert courses;
-            }catch(System.Dmlexception e){
-                System.assert(e.getMessage().Contains('Start Date cannot be greater than End Date'));
-            }
-        }             
+    }
 }

@@ -53,49 +53,49 @@ private class TestCreateAnswerResponse {
 
 		/////QUESTIONS
 		FieloELR__Question__c question1 = new FieloELR__Question__c();
-		question1.Name = 'question1';
+		question1.Name = 'statement 1';
 		question1.FieloELR__Module__c = listMod.get(0).Id;
 		question1.FieloELR__QuestionText__c = 'How are you?';
 		question1.FieloELR__Type__c = 'Statement';
 		listQuest.add(question1);
 
 		FieloELR__Question__c question2 = new FieloELR__Question__c();
-		question2.Name = 'question2';
+		question2.Name = 'single choice 1';
 		question2.FieloELR__Module__c = listMod.get(0).Id;
 		question2.FieloELR__QuestionText__c = 'How are you?';
 		question2.FieloELR__Type__c = 'Single Choice';
 		listQuest.add(question2);
 
 		FieloELR__Question__c question3 = new FieloELR__Question__c();
-		question3.Name = 'question3';
+		question3.Name = 'multiple choice 1';
 		question3.FieloELR__Module__c = listMod.get(0).Id;
 		question3.FieloELR__QuestionText__c = 'How are you?';
 		question3.FieloELR__Type__c = 'Multiple Choice';
 		listQuest.add(question3);
 
 		FieloELR__Question__c question4 = new FieloELR__Question__c();
-		question4.Name = 'question4';
+		question4.Name = 'matching options 1';
 		question4.FieloELR__Module__c = listMod.get(0).Id;
 		question4.FieloELR__QuestionText__c = 'How are you?';
 		question4.FieloELR__Type__c = 'Matching Options';
 		listQuest.add(question4);
 
 		FieloELR__Question__c question5 = new FieloELR__Question__c();
-		question5.Name = 'question5';
+		question5.Name = 'statement 2';
 		question5.FieloELR__Module__c = listMod.get(0).Id;
 		question5.FieloELR__QuestionText__c = 'How are you?';
 		question5.FieloELR__Type__c = 'Statement';
 		listQuest.add(question5);
 
 		FieloELR__Question__c question6 = new FieloELR__Question__c();
-		question6.Name = 'question6';
+		question6.Name = 'single choice 2';
 		question6.FieloELR__Module__c = listMod.get(0).Id;
 		question6.FieloELR__QuestionText__c = 'How are you?';
 		question6.FieloELR__Type__c = 'Single Choice';
 		listQuest.add(question6);
 
 		FieloELR__Question__c question7 = new FieloELR__Question__c();
-		question7.Name = 'question7';
+		question7.Name = 'multiple choice 2';
 		question7.FieloELR__Module__c = listMod.get(0).Id;
 		question7.FieloELR__QuestionText__c = 'How are you?';
 		question7.FieloELR__Type__c = 'Multiple Choice';
@@ -244,33 +244,14 @@ private class TestCreateAnswerResponse {
         update listQuestResp;
 	}
 	
-	@isTest
-	static void ELR_0009_FB(){
-
-		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question1' LIMIT 1].Id;
-		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question1' LIMIT 1].Id;
-		listAnsResp.add(answer1);
-
-		answer2.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question2' LIMIT 1].Id;
-		answer2.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question2' LIMIT 1].Id;
-		listAnsResp.add(answer2);
-
-		answer3.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = false AND FieloELR__Question__r.Name = 'question3' LIMIT 1].Id;
-		answer3.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question3' LIMIT 1].Id;
-		listAnsResp.add(answer3);
-
-		insert listAnsResp;
-
-		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE Id IN :listAnsResp LIMIT 3];
-
-		System.assertEquals(3, listAnsResp.size());
-	}
-
-	@isTest
-	static void ELR_0009_FA1(){
-
-		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = true AND FieloELR__Question__r.Name = 'question3' LIMIT 1].Id;
-		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question3' LIMIT 1].Id;
+	/*	TEST-1806
+		Create Answer
+		- Validations
+		- The “Question Response” is submitted (NOK)
+	*/
+	@isTest	static void ELR_0009_FA1(){
+		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = true AND FieloELR__Question__r.Name = 'multiple choice 1' LIMIT 1].Id;
+		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='multiple choice 1' LIMIT 1].Id;
 		listAnsResp.add(answer1);
 
 		try{
@@ -280,10 +261,13 @@ private class TestCreateAnswerResponse {
 		}
 	}
 
-	@isTest
-	static void ELR_0009_FA2(){
+	/*	TEST-1807
+		Create Answer
+		- Related question type is “Matching Options” (OK)
+	*/
+	@isTest	static void ELR_0009_FA2(){
 
-		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question4' LIMIT 1].Id;
+		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'matching options 1' LIMIT 1].Id;
 		listAnsResp.add(answer1);
 
 		insert listAnsResp;
@@ -293,10 +277,14 @@ private class TestCreateAnswerResponse {
 		System.assertEquals(1, listAnsResp.size());
 	}
 
-	@isTest
-	static void ELR_0009_FA3(){
+	/*	TEST-1808
+		Create Answer
+		- Validations
+		- The “Answer Option” is null (NOK)
+	*/
+	@isTest	static void ELR_0009_FA3(){
 
-		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question1' LIMIT 1].Id;
+		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'statement 1' LIMIT 1].Id;
 
 		listAnsResp.add(answer1);
 
@@ -307,11 +295,14 @@ private class TestCreateAnswerResponse {
 		}
 	}
 
-	@isTest
-	static void ELR_0009_FA4(){
-
-		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question1' LIMIT 1].Id;
-		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question2' LIMIT 1].Id;
+	/*	TEST-1809
+		Create Answer
+		- Validations
+		- The “Answer Option” and the “Question Response” don’t belong to the same question (NOK)
+	*/
+	@isTest	static void ELR_0009_FA4(){
+		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'statement 1' LIMIT 1].Id;
+		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='single choice 1' LIMIT 1].Id;
 
 		listAnsResp.add(answer1);
 
@@ -322,19 +313,22 @@ private class TestCreateAnswerResponse {
 		}
 	}
 
-	@isTest
-	static void ELR_0009_FA5(){
-
-		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question5' LIMIT 1].Id;
-		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question5' LIMIT 1].Id;
+	/*	TEST-1810
+		Create Answer
+		- Validations
+		- There is already an Answer with the same question response and answer option (NOK)
+	*/
+	@isTest	static void ELR_0009_FA5(){
+		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'statement 2' LIMIT 1].Id;
+		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='statement 2' LIMIT 1].Id;
 		listAnsResp.add(answer1);
 
-		answer2.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question6' LIMIT 1].Id;
-		answer2.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question6' LIMIT 1].Id;
+		answer2.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'single choice 2' LIMIT 1].Id;
+		answer2.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='single choice 2' LIMIT 1].Id;
 		listAnsResp.add(answer2);
 
-		answer3.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question7' LIMIT 1].Id;
-		answer3.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question7' LIMIT 1].Id;
+		answer3.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'multiple choice 2' LIMIT 1].Id;
+		answer3.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='multiple choice 2' LIMIT 1].Id;
 		listAnsResp.add(answer3);
 
 		try{
@@ -344,10 +338,12 @@ private class TestCreateAnswerResponse {
 		}
 	}
 
-	@isTest
-	static void ELR_0009_FA6(){
-
-		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE FieloELR__QuestionResponse__r.FieloELR__Question__r.Name = 'question5' LIMIT 1];
+	/*	TEST-1811
+		Create Answer
+		- Delete answer when the related question response is not submitted (OK)
+	*/
+	@isTest	static void ELR_0009_FA6(){
+		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE FieloELR__QuestionResponse__r.FieloELR__Question__r.Name = 'statement 2' LIMIT 1];
 
 		delete listAnsResp.get(0);
 
@@ -356,10 +352,13 @@ private class TestCreateAnswerResponse {
     	System.assertEquals(0, listAnsResp.size());
 	}
 
-	@isTest
-	static void ELR_0009_FA7(){
-
-		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE FieloELR__QuestionResponse__r.FieloELR__Question__r.Name = 'question3' LIMIT 1];
+	/*	TEST-1812
+		Create Answer
+		- Validations
+		- Delete answer when the related question response is submitted (NOK)
+	*/
+	@isTest	static void ELR_0009_FA7(){
+		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE FieloELR__QuestionResponse__r.FieloELR__Question__r.Name = 'multiple choice 1' LIMIT 1];
 
 		try{
     		delete listAnsResp.get(0);
@@ -368,17 +367,45 @@ private class TestCreateAnswerResponse {
 		}
 	}
 
-	@isTest
-	static void ELR_0009_FA8(){
+	/*	TEST-1813
+		Create Answer
+		- Validations
+		- Edit answer (NOK)
+	*/
+	@isTest	static void ELR_0009_FA8(){
+		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE FieloELR__QuestionResponse__r.FieloELR__Question__r.Name = 'statement 2' LIMIT 1];
 
-		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE FieloELR__QuestionResponse__r.FieloELR__Question__r.Name = 'question5' LIMIT 1];
-
-		listAnsResp.get(0).FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='question7' LIMIT 1].Id;
+		listAnsResp.get(0).FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='multiple choice 2' LIMIT 1].Id;
 
 		try{
     		update listAnsResp.get(0);
 		}catch(System.DmlException d){
 			System.assert(d.getMessage().Contains('An answer cannot be edited.'));
 		}
+	}
+
+	/*	TEST-1805
+		Create Answer
+		- Related question type is not “Matching Options” (OK)
+	*/
+	@isTest	static void ELR_0009_FB(){
+
+		answer1.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'statement 1' LIMIT 1].Id;
+		answer1.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='statement 1' LIMIT 1].Id;
+		listAnsResp.add(answer1);
+
+		answer2.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'single choice 1' LIMIT 1].Id;
+		answer2.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='single choice 1' LIMIT 1].Id;
+		listAnsResp.add(answer2);
+
+		answer3.FieloELR__QuestionResponse__c = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = false AND FieloELR__Question__r.Name = 'multiple choice 1' LIMIT 1].Id;
+		answer3.FieloELR__AnswerOption__c = [SELECT Id FROM FieloELR__AnswerOption__c WHERE FieloELR__Question__r.Name ='multiple choice 1' LIMIT 1].Id;
+		listAnsResp.add(answer3);
+
+		insert listAnsResp;
+
+		listAnsResp = [SELECT Id FROM FieloELR__Answer__c WHERE Id IN :listAnsResp LIMIT 3];
+
+		System.assertEquals(3, listAnsResp.size());
 	}
 }

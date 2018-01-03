@@ -68,7 +68,14 @@ public class AnswerOptions extends SObjectDomain {
 			questions.add(answerOption.Question__c);
 	    }
 
-		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithQuestionResponses(questions));
+		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__c', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithQuestionResponses(questions));
+
+        Set<Id> moduleResponses = new Set<Id>();
+        for (Question__c question: questionsMap.values()) {
+            moduleResponses.add(question.Module__c);
+        }
+
+        Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector().selectByIdHavingModuleResponses(moduleResponses));
 
 	    for(AnswerOption__c answerOption : answerOptions) {
 
@@ -91,10 +98,16 @@ public class AnswerOptions extends SObjectDomain {
 	    	}
 
     		if( !questionsMap.get(answerOption.Question__c).QuestionsResponses__r.isEmpty()){
-    			if(Trigger.isDelete || Trigger.isInsert) {
+    			if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
     				answerOption.addError(Label.ValidateAnswerActiveModules);
     			}
     		}
+
+            if (!modulesMap.get(questionsMap.get(answerOption.Question__c).Module__c).ModuleResponses__r.isEmpty()) {
+                if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
+                    answerOption.addError(Label.ValidateAnswerActiveModules);
+                }
+            }
 	    }
     }
 
