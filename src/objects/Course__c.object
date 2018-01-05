@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -53,9 +49,10 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>false</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>false</enableSharing>
     <enableStreamingApi>false</enableStreamingApi>
@@ -87,14 +84,6 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>HasDependencies__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Has Dependencies</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>ExternalURL__c</fullName>
         <externalId>false</externalId>
         <label>External URL</label>
@@ -103,6 +92,14 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HasDependencies__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has Dependencies</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Image__c</fullName>
@@ -171,8 +168,12 @@
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
         <label>Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
+                <sorted>false</sorted>
                 <value>
                     <fullName>Draft</fullName>
                     <default>false</default>
@@ -188,19 +189,19 @@
                     <default>false</default>
                     <label>Inactive</label>
                 </value>
-                <sorted>false</sorted>
             </valueSetDefinition>
         </valueSet>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>SubscriptionMode__c</fullName>
         <externalId>false</externalId>
         <label>Subscription Mode</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
+                <sorted>false</sorted>
                 <value>
                     <fullName>Manual</fullName>
                     <default>false</default>
@@ -211,12 +212,8 @@
                     <default>false</default>
                     <label>Automatic</label>
                 </value>
-                <sorted>false</sorted>
             </valueSetDefinition>
         </valueSet>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
     </fields>
     <gender>Masculine</gender>
     <label>Course</label>
@@ -282,7 +279,7 @@ ISPICKVAL( Status__c , &quot;Completed&quot;))
     </validationRules>
     <validationRules>
         <fullName>StartDateEndDateGreaterToday</fullName>
-        <active>true</active>
+        <active>false</active>
         <description>Start Date and End Date should be greater than Today date</description>
         <errorConditionFormula>OR(ISNEW(), NOT(ISNEW()) &amp;&amp; (ISCHANGED(StartDate__c) || ISCHANGED(EndDate__c))) &amp;&amp; 
 
@@ -300,4 +297,5 @@ AND(!ISNULL( StartDate__c ), !ISNULL( EndDate__c )) &amp;&amp;  StartDate__c  &g
         <errorDisplayField>StartDate__c</errorDisplayField>
         <errorMessage>Start Date cannot be greater than End Date</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

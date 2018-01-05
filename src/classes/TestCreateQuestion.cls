@@ -7,108 +7,95 @@ private class TestCreateQuestion{
     private static List<FieloPLT__Segment__c> segments;
     private static List<FieloELR__Course__c> courses;
 
-	@testSetup
-    	static void setup(){ 
-    	programs = MockUpFactory.createPrograms('testProgram', 2);
+	@testSetup static void setup() {
+    	List<FieloELR__Course__c> courses = new List<FieloELR__Course__c>();            
+        List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();
+        List<FieloPLT__Program__c> programs;
+        List<FieloPLT__Segment__c> segments;
+        List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
+        List<FieloELR__AnswerOption__c> answersOpList = new List<FieloELR__AnswerOption__c>();            
+        List<FieloELR__Answer__c> answersList = new List<FieloELR__Answer__c>();
+
+        programs = MockUpFactory.createPrograms('Default', 1);
         insert programs;
 
-        //Segments
-        segments = MockUpFactory.createSegments('testSegment',2,'Dynamic');
-        segments.get(0).FieloPLT__Program__c = programs.get(0).id;
-        segments.get(1).FieloPLT__Program__c = programs.get(1).id;
+        segments = MockUpFactory.createSegments('Segment',1,'Manual');
         insert segments;
 
-    	//Courses 
-        courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 3);
-        courses.get(0).FieloELR__Description__c = 'aTestCourse';
-
+        courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 1);
         insert courses;
 
-    	//Module
-        FieloELR__Module__c moduleTest = new FieloELR__Module__c();
-        moduleTest.Name = 'testModule';
-        moduleTest.FieloELR__Course__c = courses.get(0).id;
-        moduleTest.FieloELR__ApprovalGrade__c = 0;
-        moduleTest.FieloELR__QuestionPool__c = 2;
-        modules.add(moduleTest);
+        members = MockUpFactory.createMembers(programs.get(0).id, 1);
+        insert members;
 
-        //active module
-        FieloELR__Module__c moduleTest1 = new FieloELR__Module__c();
-        moduleTest1.Name = 'testModule1';
-        moduleTest1.FieloELR__Course__c = courses.get(1).id;
-        moduleTest1.FieloELR__ApprovalGrade__c = 0;
+        FieloPLT__MemberSegment__c memberSegment = new FieloPLT__MemberSegment__c(
+            FieloPLT__Segment__c = segments.get(0).Id,
+            FieloPLT__Member__c = members.get(0).Id
+        );
+        insert memberSegment;
 
-        modules.add(moduleTest1);
-        
-        //module with penaltymode = 'none'
-        FieloELR__Module__c moduleTest2 = new FieloELR__Module__c();
-        moduleTest2.Name = 'testModule2';
-        moduleTest2.FieloELR__Course__c = courses.get(1).id;
-        moduleTest2.FieloELR__ApprovalGrade__c = 0;
-        moduleTest2.FieloELR__PenaltyMode__c = 'None';
-        moduleTest2.FieloELR__QuestionPool__c = 2;
-        modules.add(moduleTest2);
+        //Module
+        modules.add(new Module__c(Name = 'Basic', Course__c = courses.get(0).id, ApprovalGrade__c = 0, AttemptsAllowed__c = 2, AttemptsAllowedPerQuestion__c = 2, PenaltyMode__c = 'None'));
 
-        FieloELR__Module__c moduleTest3 = new FieloELR__Module__c();
-        moduleTest3.Name = 'testModule3';
-        moduleTest3.FieloELR__Course__c = courses.get(1).id;
-        moduleTest3.FieloELR__ApprovalGrade__c = 0;
-        moduleTest3.FieloELR__WeightedQuestions__c = true;
-        modules.add(moduleTest3);
-
-        FieloELR__Module__c moduleTest4 = new FieloELR__Module__c();
-        moduleTest4.Name = 'testModule4';
-        moduleTest4.FieloELR__Course__c = courses.get(1).id;
-        moduleTest4.FieloELR__ApprovalGrade__c = 0;
-        moduleTest4.FieloELR__WeightedQuestions__c = false;
-        modules.add(moduleTest4);
         insert modules;
 
-    	//Question
-    	FieloELR__Question__c question1 = new FieloELR__Question__c();
-        question1.Name = 'question0';
-        question1.FieloELR__Module__c = modules.get(0).Id;
-        question1.FieloELR__QuestionText__c = 'How are you?';
-        question1.FieloELR__Type__c = 'Short Answer';
-        questions.add(question1);
-
-        FieloELR__Question__c question2 = new FieloELR__Question__c();
-        question2.Name = 'question1';
-        question2.FieloELR__Module__c = modules.get(1).Id;
-        question2.FieloELR__QuestionText__c = 'How are you?';
-        question2.FieloELR__Type__c = 'Short Answer';
-        questions.add(question2);
-
-        //question to delete
-        FieloELR__Question__c question3 = new FieloELR__Question__c();
-        question3.Name = 'question3';
-        question3.FieloELR__Module__c = modules.get(3).Id;
-        question3.FieloELR__QuestionText__c = 'How are you?';
-        question3.FieloELR__Type__c = 'Short Answer';
-        question3.FieloELR__CorrectWeight__c = 1;
-        question3.FieloELR__IncorrectWeight__c = 0;
-        question3.FieloELR__Order__c = 1;
-        question3.FieloELR__PenaltyPerAttempt__c = 0;
-        questions.add(question3);
+        //Basic Module Questions
+        questions.add(new Question__c(Name = 'Q1', Module__c = modules.get(0).Id, QuestionText__c = 'Which one is the most popular programming language?', Type__c = 'Short Answer'));
+        questions.add(new Question__c(Name = 'Q2', Module__c = modules.get(0).Id, QuestionText__c = 'Acronymn for Personal Computer', Type__c = 'Short Answer'));
+        questions.add(new Question__c(Name = 'Q3', Module__c = modules.get(0).Id, QuestionText__c = 'Name one Family-C programming language?', Type__c = 'Short Answer'));
+        questions.add(new Question__c(Name = 'Q4', Module__c = modules.get(0).Id, QuestionText__c = 'C++ is more performatic than java', Type__c = 'Short Answer'));
 
         insert questions;
 
-        //Answer
-        FieloELR__AnswerOption__c answers1 = new FieloELR__AnswerOption__c();
-        answers1.FieloELR__Question__c = questions.get(0).Id;
-        answers1.FieloELR__IsCorrect__c = true;
-        answers1.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-        answers.add(answers1);
+        // Answers Q1 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = false, AnswerOptionText__c = 'JavaScript'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = false, AnswerOptionText__c = 'javascript'));
 
-        FieloELR__AnswerOption__c answers2 = new FieloELR__AnswerOption__c();
-        answers2.FieloELR__Question__c = questions.get(1).Id;
-        answers2.FieloELR__IsCorrect__c = true;
-        answers2.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-        answers.add(answers2);
-        insert answers;
+        // Answers Q2 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'PC'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'pc'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'p.c.'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'P.C.'));
 
-        modules.get(1).FieloELR__IsActive__c = true;
+        // Answers Q3 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'C++'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'c++'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Java'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'java'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'PHP'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'php'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Python'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'python'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Objective-C'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'objective-c'));
+
+        // Answers Q4 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(3).Id, IsCorrect__c = true, AnswerOptionText__c = 'True'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(3).Id, IsCorrect__c = true, AnswerOptionText__c = 'true'));
+
+        insert answersOpList;
+
+        //Set Module Active
+        modules.get(0).IsActive__c = true;
         update modules;
+
+        //Set Course Active
+        courses.get(0).Status__c = 'Active';
+        update courses;
+
+        //Course Status
+        FieloELR__CourseStatus__c courseStatusTest = new FieloELR__CourseStatus__c();
+        courseStatusTest.FieloELR__Course__c = courses.get(0).id;
+        courseStatusTest.FieloELR__Member__c = members.get(0).id;
+        courseStatus.add(courseStatusTest);
+        insert courseStatus;
+
+        //Module Response
+        FieloELR__ModuleResponse__c moduleResponseTest = new FieloELR__ModuleResponse__c();
+        moduleResponseTest.FieloELR__Module__c = modules.get(0).id;
+        moduleResponseTest.FieloELR__Member__c = members.get(0).id;
+        moduleResponses.add(moduleResponseTest);
+        insert moduleResponses;
 	}
 
 	@isTest

@@ -29,6 +29,23 @@ public  class Courses extends SObjectDomain{
         }
     }
 
+    public override void onValidate() {
+        if(validateAdminFields){
+            for(Course__c course : (List<Course__c>)records){
+                if (course.StartDate__c != null) {
+                    if (course.StartDate__c < System.today()) {
+                        course.addError(Label.CourseFutureDatesNotAllowed);
+                    }
+                }
+                if (course.EndDate__c != null) {
+                    if (course.EndDate__c < System.today()) {
+                        course.addError(Label.CourseFutureDatesNotAllowed);
+                    }
+                }
+            }
+        }
+    }
+
     public override void onValidate(Map<Id,SObject> existingRecords) {
         if(validateAdminFields){
             //before update
@@ -47,6 +64,18 @@ public  class Courses extends SObjectDomain{
                     (oldCourse.Status__c == 'Scheduled' && course.Status__c == 'Scheduled') ||
                     (oldCourse.Status__c == 'Completed' && course.Status__c == 'Completed')) {
                     addError(course, Label.ActiveCourseCannotBeEdited);
+                }
+
+                // Date validation
+                if (course.StartDate__c != null) {
+                    if (course.StartDate__c < System.today()) {
+                        addError(course, Label.CourseFutureDatesNotAllowed);
+                    }
+                }
+                if (course.EndDate__c != null) {
+                    if (course.EndDate__c < System.today()) {
+                        addError(course, Label.CourseFutureDatesNotAllowed);
+                    }
                 }
             }
         }

@@ -1,361 +1,417 @@
 @isTest
 private class TestCreateQuestionResponse {
-	private static List<FieloELR__QuestionResponse__c> questionResponses = new List<FieloELR__QuestionResponse__c>();
+    private static List<FieloELR__QuestionResponse__c> questionResponses = new List<FieloELR__QuestionResponse__c>();
     private static List<FieloELR__ModuleResponse__c> moduleResponses = new List<FieloELR__ModuleResponse__c>();
-	@testSetup
-    	static void setup(){
-    		List<FieloELR__Course__c> courses = new List<FieloELR__Course__c>();
-    		List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
-    		List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();
-    		List<FieloPLT__Program__c> programs;
-    		List<FieloPLT__Segment__c> segments;
-			List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
-			List<FieloELR__AnswerOption__c> answersList = new List<FieloELR__AnswerOption__c>();
-			List<FieloELR__CourseStatus__c> courseStatus = new List<FieloELR__CourseStatus__c>();
+    private static List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
+    private static List<FieloELR__CourseStatus__c> courseStatus = new List<FieloELR__CourseStatus__c>();
 
-			programs = MockUpFactory.createPrograms('testProgram', 2);
-       		insert programs;
+    @testSetup static void setup(){
+        List<FieloELR__Course__c> courses = new List<FieloELR__Course__c>();            
+        List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();
+        List<FieloPLT__Program__c> programs;
+        List<FieloPLT__Segment__c> segments;
+        List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
+        List<FieloELR__AnswerOption__c> answersOpList = new List<FieloELR__AnswerOption__c>();            
+        List<FieloELR__Answer__c> answersList = new List<FieloELR__Answer__c>();
 
-       		segments = MockUpFactory.createSegments('testSegment',2,'Dynamic');
-        	segments.get(0).FieloPLT__Program__c = programs.get(0).id;
-        	segments.get(1).FieloPLT__Program__c = programs.get(1).id;
-        	insert segments;
+        programs = MockUpFactory.createPrograms('Default', 1);
+        insert programs;
 
-			courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 3);
-        	courses.get(0).FieloELR__Description__c = 'aTestCourse';
-            
-            courses.get(1).FieloELR__Program__c = programs.get(1).id;
-            courses.get(1).FieloELR__Segment__c = segments.get(1).id;
+        segments = MockUpFactory.createSegments('Segment',1,'Manual');
+        insert segments;
 
-            courses.get(2).FieloELR__Program__c = programs.get(1).id;
-            courses.get(2).FieloELR__Segment__c = segments.get(1).id;
-        	insert courses;
+        courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 1);
+        insert courses;
 
-    		members = MockUpFactory.createMembers(programs.get(0).id, 3);
-            members.get(1).FieloPLT__Program__c = programs.get(1).id;
-            members.get(2).FieloPLT__Program__c = programs.get(1).id;
-    		insert members;
+        members = MockUpFactory.createMembers(programs.get(0).id, 1);
+        insert members;
 
+        FieloPLT__MemberSegment__c memberSegment = new FieloPLT__MemberSegment__c(
+            FieloPLT__Segment__c = segments.get(0).Id,
+            FieloPLT__Member__c = members.get(0).Id
+        );
+        insert memberSegment;
 
-    		//Module
-    		FieloELR__Module__c moduleTest1 = new FieloELR__Module__c();
-        	moduleTest1.Name = 'testModule1';
-        	moduleTest1.FieloELR__Course__c = courses.get(0).id;
-       		moduleTest1.FieloELR__ApprovalGrade__c = 0;
-        	modules.add(moduleTest1);
+        //Module
+        modules.add(new Module__c(Name = 'Basic', Course__c = courses.get(0).id, ApprovalGrade__c = 0, AttemptsAllowed__c = 2, AttemptsAllowedPerQuestion__c = 2, PenaltyMode__c = 'None'));
+        modules.add(new Module__c(Name = 'Advanced', Course__c = courses.get(0).id, ApprovalGrade__c = 0, AttemptsAllowed__c = 2, AttemptsAllowedPerQuestion__c = 2, PenaltyMode__c = 'None'));
 
-            FieloELR__Module__c moduleTest2 = new FieloELR__Module__c();
-            moduleTest2.Name = 'testModule2';
-            moduleTest2.FieloELR__Course__c = courses.get(1).id;
-            moduleTest2.FieloELR__ApprovalGrade__c = 0;
-            modules.add(moduleTest2);
+        insert modules;
 
-            FieloELR__Module__c moduleTest3 = new FieloELR__Module__c();
-            moduleTest3.Name = 'testModule3';
-            moduleTest3.FieloELR__Course__c = courses.get(1).id;
-            moduleTest3.FieloELR__ApprovalGrade__c = 0;
-            moduleTest3.FieloELR__AttemptsAllowedPerQuestion__c = 1;
-             modules.add(moduleTest3);
+        //Basic Module Questions
+        questions.add(new Question__c(Name = 'Q1', Module__c = modules.get(0).Id, QuestionText__c = 'Which one is the most popular programming language?', Type__c = 'Single Choice'));
+        questions.add(new Question__c(Name = 'Q2', Module__c = modules.get(0).Id, QuestionText__c = 'Acronymn for Personal Computer', Type__c = 'Short Answer'));
+        questions.add(new Question__c(Name = 'Q3', Module__c = modules.get(0).Id, QuestionText__c = 'Which of the following are Family-C programming languages?', Type__c = 'Multiple Choice'));
+        questions.add(new Question__c(Name = 'Q4', Module__c = modules.get(0).Id, QuestionText__c = 'C++ is more performatic than java', Type__c = 'Statement'));
+        questions.add(new Question__c(Name = 'Q5', Module__c = modules.get(0).Id, QuestionText__c = 'Match statement with its meaning', Type__c = 'Matching Options'));
+        //Advanced Module Questions
+        questions.add(new Question__c(Name = 'Q1', Module__c = modules.get(1).Id, QuestionText__c = 'Which one is the least popular programming language?', Type__c = 'Single Choice'));
 
-            FieloELR__Module__c moduleTest4 = new FieloELR__Module__c();
-            moduleTest4.Name = 'testModule4';
-            moduleTest4.FieloELR__Course__c = courses.get(2).id;
-            moduleTest4.FieloELR__ApprovalGrade__c = 0;
-            moduleTest4.FieloELR__AttemptsAllowedPerQuestion__c = 1;
-            modules.add(moduleTest4);
-            insert modules;
+        insert questions;
 
-        	//Question
-        	FieloELR__Question__c question1 = new FieloELR__Question__c();
-        	question1.Name = 'question0';
-        	question1.FieloELR__Module__c = modules.get(0).Id;
-        	question1.FieloELR__QuestionText__c = 'How are you?';
-        	question1.FieloELR__Type__c = 'Short Answer';
-        	questions.add(question1);
+        // Answers Q1 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = false, AnswerOptionText__c = 'Java'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = false, AnswerOptionText__c = 'C++'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = false, AnswerOptionText__c = 'SQL'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = false, AnswerOptionText__c = 'PHP'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = true, AnswerOptionText__c = 'JavaScript'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = false, AnswerOptionText__c = 'HTML'));
 
-            FieloELR__Question__c question2 = new FieloELR__Question__c();
-            question2.Name = 'question1';
-            question2.FieloELR__Module__c = modules.get(1).Id;
-            question2.FieloELR__QuestionText__c = 'How are you?';
-            question2.FieloELR__Type__c = 'Short Answer';
-            questions.add(question2);
+        // Answers Q2 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'PC'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'pc'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'p.c.'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'P.C.'));
 
-            FieloELR__Question__c question3 = new FieloELR__Question__c();
-            question3.Name = 'question2';
-            question3.FieloELR__Module__c = modules.get(1).Id;
-            question3.FieloELR__QuestionText__c = 'How are you?';
-            question3.FieloELR__Type__c = 'Short Answer';
-            questions.add(question3);
+        // Answers Q3 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'C++'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Java'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'PHP'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Python'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Objective-C'));
 
-            FieloELR__Question__c question4 = new FieloELR__Question__c();
-            question4.Name = 'question3';
-            question4.FieloELR__Module__c = modules.get(2).Id;
-            question4.FieloELR__QuestionText__c = 'How are you?';
-            question4.FieloELR__Type__c = 'Short Answer';
-            questions.add(question4);
+        // Answers Q4 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(3).Id, IsCorrect__c = true, AnswerOptionText__c = 'True'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(3).Id, IsCorrect__c = false, AnswerOptionText__c = 'False'));
 
-            FieloELR__Question__c question5 = new FieloELR__Question__c();
-            question5.Name = 'question4';
-            question5.FieloELR__Module__c = modules.get(3).Id;
-            question5.FieloELR__QuestionText__c = 'How are you?';
-            question5.FieloELR__Type__c = 'Short Answer';
-            questions.add(question5);
-            insert questions;
+        // Answers Q5 - Basic
+        answersOpList.add(new AnswerOption__c( Question__c = questions.get(4).Id, IsCorrect__c = true, AnswerOptionText__c = 'if', MatchingText__c = 'conditional'));
+        answersOpList.add(new AnswerOption__c( Question__c = questions.get(4).Id, IsCorrect__c = true, AnswerOptionText__c = 'for', MatchingText__c = 'loop'));
+        answersOpList.add(new AnswerOption__c( Question__c = questions.get(4).Id, IsCorrect__c = true, AnswerOptionText__c = 'while', MatchingText__c = 'loop'));
+        answersOpList.add(new AnswerOption__c( Question__c = questions.get(4).Id, IsCorrect__c = true, AnswerOptionText__c = 'break', MatchingText__c = 'exit loop'));
 
-        	//Answer
-        	FieloELR__AnswerOption__c answersOp1 = new FieloELR__AnswerOption__c();
-        	answersOp1.FieloELR__Question__c = questions.get(0).Id;
-        	answersOp1.FieloELR__IsCorrect__c = true;
-        	answersOp1.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-        	answersList.add(answersOp1);
+        // Answers Q1 - Advanced
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(5).Id, IsCorrect__c = false, AnswerOptionText__c = 'Java'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(5).Id, IsCorrect__c = false, AnswerOptionText__c = 'C++'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(5).Id, IsCorrect__c = false, AnswerOptionText__c = 'SQL'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(5).Id, IsCorrect__c = false, AnswerOptionText__c = 'PHP'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(5).Id, IsCorrect__c = true, AnswerOptionText__c = 'Haskell'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(5).Id, IsCorrect__c = false, AnswerOptionText__c = 'HTML'));
 
-            FieloELR__AnswerOption__c answersOp2 = new FieloELR__AnswerOption__c();
-            answersOp2.FieloELR__Question__c = questions.get(1).Id;
-            answersOp2.FieloELR__IsCorrect__c = true;
-            answersOp2.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-            answersList.add(answersOp2);
+        insert answersOpList;
 
-            FieloELR__AnswerOption__c answersOp3 = new FieloELR__AnswerOption__c();
-            answersOp3.FieloELR__Question__c = questions.get(2).Id;
-            answersOp3.FieloELR__IsCorrect__c = true;
-            answersOp3.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-            answersList.add(answersOp3);
+        //Set Module Active
+        modules.get(0).IsActive__c = true;
+        update modules;
 
-            FieloELR__AnswerOption__c answersOp4 = new FieloELR__AnswerOption__c();
-            answersOp4.FieloELR__Question__c = questions.get(3).Id;
-            answersOp4.FieloELR__IsCorrect__c = true;
-            answersOp4.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-            answersList.add(answersOp4);
+        //Set Course Active
+        courses.get(0).Status__c = 'Active';
+        update courses;
 
+        //Course Status
+        FieloELR__CourseStatus__c courseStatusTest = new FieloELR__CourseStatus__c();
+        courseStatusTest.FieloELR__Course__c = courses.get(0).id;
+        courseStatusTest.FieloELR__Member__c = members.get(0).id;
+        courseStatus.add(courseStatusTest);
+        insert courseStatus;
 
-            FieloELR__AnswerOption__c answersOp5 = new FieloELR__AnswerOption__c();
-            answersOp5.FieloELR__Question__c = questions.get(4).Id;
-            answersOp5.FieloELR__IsCorrect__c = true;
-            answersOp5.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-            answersList.add(answersOp5);
-        	insert answersList;
+        //Module Response
+        FieloELR__ModuleResponse__c moduleResponseTest = new FieloELR__ModuleResponse__c();
+        moduleResponseTest.FieloELR__Module__c = modules.get(0).id;
+        moduleResponseTest.FieloELR__Member__c = members.get(0).id;
+        moduleResponses.add(moduleResponseTest);
+        insert moduleResponses;
+    }
 
-
-            //Set Module Active
-        	modules.get(0).FieloELR__IsActive__c = true;
-            modules.get(1).FieloELR__IsActive__c = true;
-            modules.get(2).FieloELR__IsActive__c = true;
-            modules.get(3).FieloELR__IsActive__c = true;
-        	update modules;
-            //Set Course Active
-        	courses.get(0).FieloELR__Status__c = 'Active';
-            courses.get(1).FieloELR__Status__c = 'Active';
-            courses.get(2).FieloELR__Status__c = 'Active';
-        	update courses;
-
-            //Course Status
-            FieloELR__CourseStatus__c courseStatusTest = new FieloELR__CourseStatus__c();
-            courseStatusTest.FieloELR__Course__c = courses.get(0).id;
-            courseStatusTest.FieloELR__Member__c = members.get(0).id;
-            courseStatus.add(courseStatusTest);
-            
-            FieloELR__CourseStatus__c courseStatusTest2 = new FieloELR__CourseStatus__c();
-            courseStatusTest2.FieloELR__Course__c = courses.get(1).id;
-            courseStatusTest2.FieloELR__Member__c = members.get(1).id;
-            courseStatus.add(courseStatusTest2);
-
-            FieloELR__CourseStatus__c courseStatusTest3 = new FieloELR__CourseStatus__c();
-            courseStatusTest3.FieloELR__Course__c = courses.get(2).id;
-            courseStatusTest3.FieloELR__Member__c = members.get(2).id;
-            courseStatus.add(courseStatusTest3);
-            insert courseStatus;
-
-
-            //Module Response
-            FieloELR__ModuleResponse__c moduleResponseTest = new FieloELR__ModuleResponse__c();
-            moduleResponseTest.FieloELR__Module__c = modules.get(0).id;
-            moduleResponseTest.FieloELR__Member__c = members.get(0).id;
-            moduleResponses.add(moduleResponseTest);
-
-            FieloELR__ModuleResponse__c moduleResponseTest2 = new FieloELR__ModuleResponse__c();
-            moduleResponseTest2.FieloELR__Module__c = modules.get(1).id;
-            moduleResponseTest2.FieloELR__Member__c = members.get(1).id;
-            moduleResponses.add(moduleResponseTest2);
-            
-
-            FieloELR__ModuleResponse__c moduleResponseTest3 = new FieloELR__ModuleResponse__c();
-            moduleResponseTest3.FieloELR__Module__c = modules.get(3).id;
-            moduleResponseTest3.FieloELR__Member__c = members.get(2).id;
-            moduleResponses.add(moduleResponseTest3);
-
-            FieloELR__ModuleResponse__c moduleResponseTest4 = new FieloELR__ModuleResponse__c();
-            moduleResponseTest4.FieloELR__Module__c = modules.get(2).id;
-            moduleResponseTest4.FieloELR__Member__c = members.get(1).id;
-            moduleResponses.add(moduleResponseTest4);
-            insert moduleResponses;
-
-            moduleResponses.get(0).FieloELR__IsSubmitted__c = true;
-            moduleResponses.get(2).FieloELR__IsSubmitted__c = true;
-            update moduleResponses.get(0);
-            update moduleResponses.get(2);
-
-            //Question Response
-            FieloELR__QuestionResponse__c questionResponseTest = new FieloELR__QuestionResponse__c();
-            questionResponseTest.FieloELR__Question__c = questions.get(1).id;
-            questionResponseTest.FieloELR__ModuleResponse__c = moduleResponses.get(1).id;
-            questionResponses.add(questionResponseTest);
-
-            FieloELR__QuestionResponse__c questionResponseTest2 = new FieloELR__QuestionResponse__c();
-            questionResponseTest2.FieloELR__Question__c = questions.get(4).id;
-            questionResponseTest2.FieloELR__ModuleResponse__c = moduleResponses.get(2).id;
-            questionResponses.add(questionResponseTest2);
-            insert questionResponses;
-            
-            //Answer
-            FieloELR__Answer__c answer = new FieloELR__Answer__c();
-            answer.FieloELR__AnswerOption__c = answersList.get(1).id;
-            answer.FieloELR__QuestionResponse__c = questionResponses.get(0).id;
-            answer.FieloELR__TextValue__c = 'Esta es correcta';
-            insert answer;
-
-            questionResponses.get(1).FieloELR__IsSubmitted__c = true;
-            update questionResponses.get(1);
-
-    	}
-
-
-	@isTest static void ELR_0008_FB() {
-        questionResponses = new List<FieloELR__QuestionResponse__c>{new FieloELR__QuestionResponse__c(FieloELR__Question__c = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question2' LIMIT 1].id,
-        FieloELR__ModuleResponse__c = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c  = false LIMIT 1].id)};
+    /*  TEST-1795
+        Create Question Response (OK)
+    */
+    @isTest static void ELR_0008_FB() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
         
-        insert questionResponses; 
-
-        questionResponses = [SELECT FieloELR__NumberOfAttempt__c FROM FieloELR__QuestionResponse__c WHERE Id =:questionResponses.get(0).id];
-
-        System.assertEquals(1,questionResponses.get(0).FieloELR__NumberOfAttempt__c);
-
-    } 
-	
-
-    @isTest static void ELR_0008_FA1(){
-        questionResponses = new List<FieloELR__QuestionResponse__c>{new FieloELR__QuestionResponse__c(FieloELR__Question__c = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question0' LIMIT 1].id,
-        FieloELR__ModuleResponse__c = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c = true AND FieloELR__Module__r.Name = 'testModule1'].id)};
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));    
+        }
         
         insert questionResponses;
 
-        System.assertEquals(false , questionResponses.get(0).FieloELR__ModuleResponse__r.FieloELR__IsSubmitted__c);
+        System.assertEquals(5, questionResponses.size());
 
-    }
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id];
 
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(1, qr.NumberOfAttempt__c);
+        }
 
-    @isTest static void ELR_0008_FA2(){
-        questionResponses = new List<FieloELR__QuestionResponse__c>{new FieloELR__QuestionResponse__c(FieloELR__ModuleResponse__c = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c  = false LIMIT 1].id)};
+    } 
+    
+    /*  TEST-1796
+        Create Question Response
+        - Validations
+        - The related module response is submitted (NOK)
+    */
+    @isTest static void ELR_0008_FA1() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
         
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));
+        }
+        insert questionResponses;
+
+        System.assertEquals(5, questionResponses.size());
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+
+        update moduleResponses;
+
+        questionResponses.clear();
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));    
+        }
         try{
-            insert questionResponses;
-        }catch(System.DmlException e){
-            //no validation to assert
-            System.assert(e.getMessage().Contains('Attempt to de-reference a null object'));
+            insert questionResponses;        
+        } catch (Exception e) {
+            System.assert(e.getMessage().Contains(Label.ValidateQuestionResponseInsert));
+        }
+
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c, ModuleResponse__r.IsSubmitted__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.ModuleResponse__r.IsSubmitted__c);
+        }
+
+        System.assertEquals(5, questionResponses.size());
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(1, qr.NumberOfAttempt__c);
         }
     }
 
+    /*  TEST-1797
+        Create Question Response
+        - Validations
+        - Question field is null (NOK)
+    */
+    @isTest static void ELR_0008_FA2() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c Where Module__r.Name = 'Basic' LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
 
-    @isTest static void ELR_0008_FA3(){
-        questionResponses = new List<FieloELR__QuestionResponse__c>{new FieloELR__QuestionResponse__c(FieloELR__Question__c = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question0' LIMIT 1].id,
-        FieloELR__ModuleResponse__c = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c  = false LIMIT 1].id)};
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(ModuleResponse__c = moduleResponses.get(0).Id));    
+        }
         
+        String errorMsg = '';
         try{
             insert questionResponses;
         }catch(System.DmlException e){
-            System.assert(e.getMessage().Contains(' The related question doesn\'t belong to this module.'));
-        } 
-
-    }
-
-
-    @isTest static void ELR_0008_FA4(){
-        questionResponses = new List<FieloELR__QuestionResponse__c>{new FieloELR__QuestionResponse__c(FieloELR__Question__c = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question3' LIMIT 1].id,
-        FieloELR__ModuleResponse__c = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule3' LIMIT 1].id)};
-
-        FieloELR__QuestionResponse__c newQuestTest = new FieloELR__QuestionResponse__c();
-        newQuestTest.FieloELR__Question__c = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question3' LIMIT 1].id;
-        newQuestTest.FieloELR__ModuleResponse__c  = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule3' LIMIT 1].id;
-       
-       questionResponses.add(newQuestTest);
-
-       try{
-            insert questionResponses;
-        }catch(System.Dmlexception e){
-            System.assert(e.getMessage().Contains('You have reached the limit of attempts for this question.'));
+            errorMsg = e.getMessage();
         }
 
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.Contains(Label.QuestionFieldRequired));
     }
 
+    /*  TEST-1798
+        Create Question Response
+        - Validations
+        - Related question does not belong to the related module (NOK)
+    */
+    @isTest static void ELR_0008_FA3() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c LIMIT 1];
+        questions = [SELECT Id FROM Question__c];
+        
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));
+        }
+        
+        System.assertEquals(6, questionResponses.size());
 
-    @isTest static void ELR_0008_FA5(){
-        questionResponses = [SELECT Id,FieloELR__IsSubmitted__c FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question0' LIMIT 1];
+        String errorMsg = '';
+        try {
+            insert questionResponses;
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
 
-        delete questionResponses;
+        System.debug(errorMsg);
 
-        questionResponses = [SELECT Id,FieloELR__IsSubmitted__c FROM FieloELR__QuestionResponse__c WHERE FieloELR__Question__r.Name = 'question0' LIMIT 1];
+        System.assert(errorMsg.Contains('The related question doesn') && errorMsg.Contains('belong to this module'));
+    }
+
+    /*  TEST-1799
+        Create Question Response
+        - Validations
+        - The Number of Attempt is greater than the “Attempts Allowed per Question” of the related module (NOK)
+    */
+    @isTest static void ELR_0008_FA4() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
+        
+        for(Integer i=1; i<=3; i++) {
+            for (Question__c q: questions) {
+                questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));    
+            }
+        }
+
+        System.assertEquals(15, questionResponses.size());
+
+        String errorMsg = '';
+        try{
+            insert questionResponses;
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.assert(errorMsg.contains(' You have reached the limit of attempts for this question'));
+
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id];
+
         System.assertEquals(0, questionResponses.size());
     }
 
-
-    @isTest static void ELR_0008_FA6(){
-        questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = true];
+    /*  TEST-1800
+        Create Question Response
+        - Delete a question response not submitted (OK)
+    */
+    @isTest static void ELR_0008_FA5() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
         
-        try{
-            delete questionResponses;
-        }catch(System.Dmlexception e){    
-            System.assert(e.getMessage().Contains('Cannot delete question responses from a module that was already submitted.'));
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));    
         }
 
+        System.assertEquals(5, questionResponses.size());
+
+        insert questionResponses;
+
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id];
+
+        delete questionResponses.get(0);
+
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id];
+
+        System.assertEquals(4, questionResponses.size());
     }
 
+    /*  TEST-1801
+        Create Question Response
+        - Delete a question response already submitted (NOK)
+    */
+    @isTest static void ELR_0008_FA6() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
+        
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));
+        }
+        insert questionResponses;
 
-    @isTest static void ELR_0008_FA7(){
-        questionResponses = [SELECT Id,FieloELR__Question__c FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = false];
-        questionResponses.get(0).FieloELR__Question__c = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question1'].id;
+        System.assertEquals(5, questionResponses.size());
 
-        update questionResponses;
+        moduleResponses.get(0).IsSubmitted__c = true;
 
-        questionResponses = [SELECT FieloELR__Question__r.Name FROM FieloELR__QuestionResponse__c];
+        update moduleResponses;
 
-        System.assertEquals('question1', questionResponses.get(0).FieloELR__Question__r.Name);
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id];
 
-
-        questionResponses = [SELECT Id,FieloELR__TextValue__c FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = false];
-        questionResponses.get(0).FieloELR__TextValue__c = 'newTextValue';
-
-        update questionResponses;
-
-        questionResponses = [SELECT FieloELR__TextValue__c FROM FieloELR__QuestionResponse__c];
-
-        System.assertEquals('newTextValue',questionResponses.get(0).FieloELR__TextValue__c);
-
-    }
-
-
-    @isTest static void ELR_0008_FA8(){
-        questionResponses = [SELECT Id,FieloELR__IsSubmitted__c,FieloELR__TextValue__c FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = true];
-        questionResponses.get(0).FieloELR__TextValue__c = 'aNewText';
-
+        String errorMsg = '';
         try{
-            update questionResponses;
-        }catch(System.Dmlexception e){
-            System.assert(e.getMessage().Contains('Cannot modify a question response already submitted'));
-        } 
-
+            delete questionResponses.get(0);
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+        System.assert(errorMsg.contains('Cannot delete question responses from a module that was already submitted.'));
     }
 
+    /*  TEST-1802
+        Create Question Response
+        - Edit a question response not submitted (OK)
+    */
+    @isTest static void ELR_0008_FA7() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
+        
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));
+        }
+        insert questionResponses;
 
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id AND Question__r.Type__c = 'Short Answer'];
+
+        questionResponses.get(0).TextValue__c = 'PC';
+
+        update questionResponses.get(0);
+
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id AND Question__r.Type__c = 'Short Answer'];
+
+        System.assertEquals('PC', questionResponses.get(0).TextValue__c);
+    }
+
+    /*  TEST-1803
+        Create Question Response
+        - Edit the question response already submitted (NOK)
+    */
+    @isTest static void ELR_0008_FA8() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c];
+        
+        for (Question__c q: questions) {
+            questionResponses.add( new QuestionResponse__c(Question__c = q.Id, ModuleResponse__c = moduleResponses.get(0).Id));
+        }
+        insert questionResponses;
+
+        System.assertEquals(5, questionResponses.size());
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+
+        update moduleResponses;
+
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id AND Question__r.Type__c = 'Short Answer'];
+
+        questionResponses.get(0).TextValue__c = 'PC';
+
+        String errorMsg = '';
+        try{
+            update questionResponses.get(0);
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+        
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('Cannot modify a question response already submitted'));
+    }
+    
+    /*  TEST-1804
+        Create Question Response
+        - Submit the question response when there is already a correct question response for the related question (NOK)
+    */
     @isTest static void ELR_0008_FA10(){
-        questionResponses = [SELECT Id,FieloELR__IsSubmitted__c FROM FieloELR__QuestionResponse__c WHERE FieloELR__IsSubmitted__c = true];
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :moduleResponses.get(0).Module__c AND Type__c = 'Short Answer'];
+        
+        questionResponses.add( new QuestionResponse__c(Question__c = questions.get(0).Id, ModuleResponse__c = moduleResponses.get(0).Id));
 
-        questionResponses.get(0).FieloELR__IsSubmitted__c = false;
+        questionResponses.get(0).TextValue__c = 'PC';
+        
+        insert questionResponses;
 
+        System.assertEquals(1, questionResponses.size());
+
+        questionResponses.get(0).IsSubmitted__c = true;
+
+        update questionResponses;
+
+        questionResponses.clear();
+        questionResponses.add( new QuestionResponse__c(Question__c = questions.get(0).Id, ModuleResponse__c = moduleResponses.get(0).Id));
+
+        questionResponses.get(0).TextValue__c = 'PC';
+
+        insert questionResponses;
+
+        questionResponses.get(0).IsSubmitted__c = true;
+
+        String errorMsg = '';
         try{
             update questionResponses;
-        }catch(System.Dmlexception e){
-            System.assert(e.getMessage().Contains( 'Cannot modify a question response already submitted'));
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
         }
-        
-    }
 
+        System.assert(errorMsg.contains(Label.ValidateQuestionResponseSubmit));
+    }
 }
