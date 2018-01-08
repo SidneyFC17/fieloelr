@@ -1,6 +1,7 @@
 public class ModuleResponses extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
     public static Boolean validateAdminFields = true;
+    public static SObjectUnitOfWork questionResponseUOW;
 
     public ModuleResponses(List<ModuleResponse__c> records) {
         super(records);
@@ -203,6 +204,23 @@ public class ModuleResponses extends SObjectDomain {
         List<ModuleResponse__c> approvedRecords = new List<ModuleResponse__c>();
         Map<Id,ModuleResponse__c> mapExistingRecordsToProcess = new Map<Id,ModuleResponse__c>();
 
+        // Submit Unsubmited Question Responses
+        if (questionResponseUOW != null) {
+            try {
+                QuestionResponses.validateAdminFields = false;
+                validateAdminFields = false;
+                questionResponseUOW.commitWork();
+                validateAdminFields = true;
+                QuestionResponses.validateAdminFields = true;
+                QuestionResponses.disableSubmit = false;
+            } catch (Exception e) {
+                validateAdminFields = true;
+                QuestionResponses.validateAdminFields = true;
+                QuestionResponses.disableSubmit = false;
+                throw e;
+            }
+        }
+
         for(ModuleResponse__c record : (List<ModuleResponse__c>)records){
             if(!processedIds.contains(record.Id)){
                 recordsToProcess.add(record);
@@ -257,21 +275,17 @@ public class ModuleResponses extends SObjectDomain {
             QuestionResponses.disableSubmit = true;
             Map<Id,String> mapErrors = QuestionResponses.setIsCorrect(unsubmitedQuestionResponses.values());
 
-            SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
+            questionResponseUOW = new SObjectUnitOfWork(new List<Schema.SObjectType>{QuestionResponse__c.SObjectType});
             for(Id qrId : unsubmitedQuestionResponses.keySet()){
             //for(QuestionResponse__c questionResponse : unsubmitedQuestionResponses.keySet()){
                 QuestionResponse__c questionResponse = unsubmitedQuestionResponses.get(qrId);
                 if(!mapErrors.containsKey(qrId)){
                     questionResponse.IsSubmitted__c = true;
-                    uow.registerDirty(questionResponse);
+                    questionResponseUOW.registerDirty(questionResponse);
                 }else{
                     addError(moduleResponsesMap.get(questionResponse.ModuleResponse__c),mapErrors.get(qrId));
                 }
             }
-            QuestionResponses.validateAdminFields = false;
-            uow.commitWork();
-            QuestionResponses.validateAdminFields = true;
-            QuestionResponses.disableSubmit = false;
         }
 
         Set<String> mrKeys = new Set<String>();
