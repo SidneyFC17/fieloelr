@@ -19,6 +19,7 @@
       "Name" : "Course Status",
       "FieloPLT__Date__c" : "CreatedDate",
       "FieloPLT__LookupFromTransaction__c" : "FieloELR__CourseStatus__c",
+      "FieloPLT__LookupfromTracker__c" : "FieloELR__CourseStatus__c",
       "FieloPLT__Object__c" : "FieloELR__CourseStatus__c",
       "actions" : [ {
         "Name" : "Course Status > FieloELR__Member__c",
