@@ -1,5 +1,6 @@
 public class ModuleResponses extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
+    public static Set<Id> approvedIds = new Set<Id>();
     public static Boolean validateAdminFields = true;
     public static SObjectUnitOfWork questionResponseUOW;
 
@@ -200,6 +201,7 @@ public class ModuleResponses extends SObjectDomain {
     }
 
     public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
+        System.debug('onAfterUpdate');
         List<ModuleResponse__c> recordsToProcess = new List<ModuleResponse__c>();
         List<ModuleResponse__c> approvedRecords = new List<ModuleResponse__c>();
         Map<Id,ModuleResponse__c> mapExistingRecordsToProcess = new Map<Id,ModuleResponse__c>();
@@ -226,9 +228,11 @@ public class ModuleResponses extends SObjectDomain {
                 recordsToProcess.add(record);
                 mapExistingRecordsToProcess.put(record.Id,(ModuleResponse__c)existingRecords.get(record.Id));                
                 processedIds.add(record.Id);
-                
+            }
+            if(!approvedIds.contains(record.Id)) {
                 if(record.IsApproved__c && !((ModuleResponse__c)existingRecords.get(record.Id)).IsApproved__c){
                     approvedRecords.add(record);
+                    approvedIds.add(record.Id);
                 }
             }
         }
@@ -253,6 +257,7 @@ public class ModuleResponses extends SObjectDomain {
     }
 
     public void setGradeAndApprovalFlag(List<ModuleResponse__c> records) {
+        System.debug('setGradeAndApprovalFlag');
         Map<Id,ModuleResponse__c> moduleResponsesMap = new Map<Id,ModuleResponse__c>(records);
         Set<Id> moduleIds = new Set<Id>();
         for(ModuleResponse__c moduleResponse: records) {
@@ -334,6 +339,7 @@ public class ModuleResponses extends SObjectDomain {
     }
 
     private static void calculateCourseStatusProgress(List<ModuleResponse__c> records, Boolean isUpdate) {
+        System.debug('calculateCourseStatusProgress');
         //store module Ids and mr keys
         Set<Id> moduleIds = new Set<Id>();
         Set<String> mrKeys = new Set<String>();
@@ -408,6 +414,7 @@ public class ModuleResponses extends SObjectDomain {
                     uow.registerDirty(cs);
                 }
             }
+            System.debug(JSON.serializePretty(cs));
         }
 
         Boolean validateAdminFields = CourseStatus.validateAdminFields;
