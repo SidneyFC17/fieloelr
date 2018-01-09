@@ -51,47 +51,48 @@ public class Modules extends SObjectDomain {
     }    
 
     public override void onValidate(Map<Id,SObject> existingRecords) {
+        if(validateAdminFields){
+            if (!isDelete) {
+                List<Module__c> activatedModules = new List<Module__c>();
+                List<Module__c> updatedModules = new List<Module__c>();
+                Module__c oldModule;
 
-        if(validateAdminFields && !isDelete){
-            List<Module__c> activatedModules = new List<Module__c>();
-            List<Module__c> updatedModules = new List<Module__c>();
-            Module__c oldModule;
+                for(Module__c module : (List<Module__c>)records) {
 
-            for(Module__c module : (List<Module__c>)records) {
+                    oldModule = (Module__c)(existingRecords.get(module.Id));
 
-                oldModule = (Module__c)(existingRecords.get(module.Id));
-
-                // Select only modules that are being activated
-                if(!(oldModule.IsActive__c) && module.IsActive__c) {
-                    activatedModules.add(module);
+                    // Select only modules that are being activated
+                    if(!(oldModule.IsActive__c) && module.IsActive__c) {
+                        activatedModules.add(module);
+                    }
+                    // When Active, no field can be edited
+                    if(oldModule.IsActive__c && module.IsActive__c) {
+                        addError(module, Label.ActiveModuleCannotBeEdited);
+                    }
+                    /* 
+                        Check if any of these fields were modified:
+                        IsActive / Attempts Allowed / Approval Grade / Penalty Mode
+                        Question Pool / Attempts Allowed per question / Weighted questions
+                    */
+                    else if(oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
+                        oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
+                        oldModule.PenaltyMode__c != module.PenaltyMode__c || 
+                        oldModule.QuestionPool__c != module.QuestionPool__c || 
+                        oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
+                        oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
+                        updatedModules.add(module);
+                    }
                 }
-                // When Active, no field can be edited
-                if(oldModule.IsActive__c && module.IsActive__c) {
-                    addError(module, Label.ActiveModuleCannotBeEdited);
-                }
-                /* 
-                    Check if any of these fields were modified:
-                    IsActive / Attempts Allowed / Approval Grade / Penalty Mode
-                    Question Pool / Attempts Allowed per question / Weighted questions
-                */
-                else if(oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
-                    oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
-                    oldModule.PenaltyMode__c != module.PenaltyMode__c || 
-                    oldModule.QuestionPool__c != module.QuestionPool__c || 
-                    oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
-                    oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
-                    updatedModules.add(module);
-                }
+
+                // When the module is changed to active, must validate that has at least one question.
+                checkQuestions(activatedModules);
+
+                // If the Module is active, has at least 1 related Module response, and any of the following fields was modified the Module cannot be edited or deleted 
+                checkModule(updatedModules);
+
+                // When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
+                checkAnswers(activatedModules);
             }
-
-            // When the module is changed to active, must validate that has at least one question.
-            checkQuestions(activatedModules);
-
-            // If the Module is active, has at least 1 related Module response, and any of the following fields was modified the Module cannot be edited or deleted 
-            checkModule(updatedModules);
-
-            // When the module is activated, should verify, for the question types "statement" and "single choice", that it has a correct answer.
-            checkAnswers(activatedModules);
         }
     }
 
@@ -143,11 +144,13 @@ public class Modules extends SObjectDomain {
         if (!inactivatedModules.isEmpty()) {
             validateAdminFields = false;
             removeModuleDependency(inactivatedModules);
+            validateAdminFields = true;
         }
 
         if (!activatedModules.isEmpty()) {
             validateAdminFields = false;
             addModuleDependency(activatedModules);
+            validateAdminFields = true;
         }
         //If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
         updateQuestions(new List<Module__c>(modulesToChangeQuestions), modulesToChangeCorrectWeight, modulesToChangeIncorrectWeight, modulesToChangePenaltyPerAttempt, uow);
@@ -330,7 +333,7 @@ public class Modules extends SObjectDomain {
             if(module.Questions__r.isEmpty()){
                 modulesMap.get(module.Id).addError(Label.ValidateModuleActive);
             }else if(modulesMap.get(module.Id).QuestionPool__c != null && modulesMap.get(module.Id).QuestionPool__c > module.Questions__r.size()){
-                modulesMap.get(module.Id).addError('The question pool value cannot be greater than the number of questions.');
+                modulesMap.get(module.Id).addError(Label.QuestionPoolGreaterThenQuestionNumber);
             }
         }
     }
@@ -342,7 +345,9 @@ public class Modules extends SObjectDomain {
         List<Module__c> modulesWithResponse = new ModulesSelector(new Set<String>{'FieloELR__IsActive__c','FieloELR__Course__r.FieloELR__Status__c'}).selectByIdHavingModuleResponses(modulesMap.KeySet()); 
         for(Module__c module : modulesWithResponse) {
             if(module.FieloELR__IsActive__c && module.FieloELR__Course__r.FieloELR__Status__c == 'Active'){
-                addError(modulesMap.get(module.Id), 'Cannot delete or update an active module from an active course.');
+                if(!Courses.isDelete) {
+                    addError(modulesMap.get(module.Id), Label.CannotDeleteActiveModuleInActiveCourse);
+                }
             }else if (!module.ModuleResponses__r.isEmpty()) {
                 addError(modulesMap.get(module.Id), Label.ValidateModuleEditableFields);
             }

@@ -9,9 +9,7 @@ private class TestCreateModuleDependency {
 
 	private static FieloELR__ModuleDependency__c modDepen1 = new FieloELR__ModuleDependency__c();
 
-	@testSetup
-	static void setup(){
-
+	@testSetup static void setup() {
 		//////PROGRAMS
 		listProg = MockUpFactory.createPrograms('program', 1);
 
@@ -69,9 +67,10 @@ private class TestCreateModuleDependency {
 		insert listModDepen;
 	}
 	
-	@isTest
-	static void ELR_0004_FB() {
-
+	/*	TEST-1731
+		Create Module Dependency - (OK)
+	*/
+	@isTest static void ELR_0004_FB() {
 		modDepen1.FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module1' LIMIT 1].Id;
 		modDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module2' LIMIT 1].Id;
 		listModDepen.add(modDepen1);
@@ -83,9 +82,12 @@ private class TestCreateModuleDependency {
 		System.assertEquals(1, listModDepen.size());
 	}
 	
-	@isTest
-	static void ELR_0004_FA1() {
-		
+	/*	TEST-1732
+		Create Module Dependency
+		- Validations
+		- Module field is null (NOK)
+	*/
+	@isTest static void ELR_0004_FA1() {
 		modDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module2' LIMIT 1].Id;
 		listModDepen.add(modDepen1);
 
@@ -96,22 +98,28 @@ private class TestCreateModuleDependency {
 		}
 	}
 	
-	@isTest
-	static void ELR_0004_FA2() {
-		
+	/*	TEST-1733
+		Create Module Dependency
+		- Validations
+		- Predecessor field is null (NOK)
+	*/
+	@isTest static void ELR_0004_FA2() {
 		modDepen1.FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module2' LIMIT 1].Id;
 		listModDepen.add(modDepen1);
 
     	try{
     		insert listModDepen;
-		}catch(System.DmlException d){
+		} catch(System.DmlException d) {
 			System.assert(d.getMessage().Contains('Both modules must belong to the same course.'));
 		}
 	}
 
-	@isTest
-	static void ELR_0004_FA3(){
-
+	/*	TEST-1734
+		Create Module Dependency
+		- Validations
+		- Module and Predecessor are the same (NOK)
+	*/
+	@isTest static void ELR_0004_FA3() {
 		modDepen1.FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module1' LIMIT 1].Id;
 		modDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module1' LIMIT 1].Id;
 		listModDepen.add(modDepen1);
@@ -123,37 +131,49 @@ private class TestCreateModuleDependency {
 		}
 	}
 
-	@isTest
-	static void ELR_0004_FA4(){
-
+	/*	TEST-1735
+		Create Module Dependency
+		- Validations
+		- Module and Predecessor are not related to the same course (NOK)
+	*/
+	@isTest static void ELR_0004_FA4(){
 		modDepen1.FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module1' LIMIT 1].Id;
 		modDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module3' LIMIT 1].Id;
 		listModDepen.add(modDepen1);
 
+		String errorMsg = '';
 		try{
     		insert listModDepen;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('Both modules must belong to the same course.'));
+			errorMsg = d.getMessage();
 		}
+		System.assert(errorMsg.Contains('Both modules must belong to the same course.'));
 	}
 
-	@isTest
-	static void ELR_0004_FA5() {
-
+	/*	TEST-1736
+		Create Module Dependency
+		- Validations
+		- There is already a module dependency with the same modules (NOK)
+	*/
+	@isTest static void ELR_0004_FA5() {
 		modDepen1.FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module3' LIMIT 1].Id;
 		modDepen1.FieloELR__Predecessor__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module4' LIMIT 1].Id;
 		listModDepen.add(modDepen1);
 
+		String errorMsg = '';
 		try{
     		insert listModDepen;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('This module dependency already exists.'));
+			errorMsg = d.getMessage();
 		}
+		System.assert(errorMsg.Contains('This module dependency already exists.'));
 	}
 
-	@isTest
-	static void ELR_0004_FA6(){
-
+	/*	TEST-1737
+		Create Module Dependency
+		- Edit a module dependency (OK)
+	*/
+	@isTest static void ELR_0004_FA6(){
 		listModDepen = [SELECT Id, FieloELR__Module__c FROM FieloELR__ModuleDependency__c WHERE FieloELR__Module__r.Name = 'module3' LIMIT 1];
 		listModDepen.get(0).FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'module5' LIMIT 1].Id;
 
