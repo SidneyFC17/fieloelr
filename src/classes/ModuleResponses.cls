@@ -226,12 +226,13 @@ public class ModuleResponses extends SObjectDomain {
                 recordsToProcess.add(record);
                 mapExistingRecordsToProcess.put(record.Id,(ModuleResponse__c)existingRecords.get(record.Id));                
                 processedIds.add(record.Id);
-
+                
                 if(record.IsApproved__c && !((ModuleResponse__c)existingRecords.get(record.Id)).IsApproved__c){
                     approvedRecords.add(record);
                 }
             }
         }
+
         if(!recordsToProcess.isEmpty()){
             FieloPLT.SObjectService.processRecords(recordsToProcess, mapExistingRecordsToProcess);
         }

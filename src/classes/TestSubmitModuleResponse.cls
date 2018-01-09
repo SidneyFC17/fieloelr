@@ -121,7 +121,9 @@ private class TestSubmitModuleResponse {
 
 		moduleResponses.get(0).IsSubmitted__c = true;
 
+        FieloELR.ModuleResponses.validateAdminFields = false;
 		update moduleResponses;
+        FieloELR.ModuleResponses.validateAdminFields = true;
 
         questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
         moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
@@ -136,6 +138,8 @@ private class TestSubmitModuleResponse {
         System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
         System.assert(moduleResponses.get(0).NumberofApprove__c > 0);
 
+        System.assertEquals(1, courseStatus.get(0).ApprovedModules__c);        
+
         System.assert(courseStatus.get(0).ApprovedModules__c > 0);
         System.assert(courseStatus.get(0).Progress__c != 0);
     }
@@ -149,7 +153,9 @@ private class TestSubmitModuleResponse {
         courseStatus = [SELECT Id FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
 
         moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
         update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
 
         questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
         moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
@@ -207,7 +213,9 @@ private class TestSubmitModuleResponse {
 
         moduleResponses.get(0).IsSubmitted__c = true;
 
+        FieloELR.CourseStatus.validateAdminFields = false;
         update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
 
         questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
         moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
@@ -304,7 +312,9 @@ private class TestSubmitModuleResponse {
         courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
 
         moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
         update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
 
         questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
         moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
@@ -402,7 +412,9 @@ private class TestSubmitModuleResponse {
         courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
 
         moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
         update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
 
         questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
         moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
@@ -437,7 +449,9 @@ private class TestSubmitModuleResponse {
 
 
         moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
         update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
 
         questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
         moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
@@ -469,7 +483,9 @@ private class TestSubmitModuleResponse {
         update questionResponses;
 
         moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
         update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
 
         questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
         moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
