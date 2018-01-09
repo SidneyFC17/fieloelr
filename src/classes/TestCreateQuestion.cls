@@ -3,6 +3,8 @@ private class TestCreateQuestion{
 	private static List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
 	private static List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
     private static List<FieloELR__AnswerOption__c> answers = new List<FieloELR__AnswerOption__c>();
+    private static List<CourseStatus__c> courseStatus = new List<CourseStatus__c>();
+    private static List<ModuleResponses__c> moduleResponses = new List<ModuleResponses__c>();
     private static List<FieloPLT__Program__c> programs;
     private static List<FieloPLT__Segment__c> segments;
     private static List<FieloELR__Course__c> courses;
@@ -13,8 +15,10 @@ private class TestCreateQuestion{
         List<FieloPLT__Program__c> programs;
         List<FieloPLT__Segment__c> segments;
         List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
-        List<FieloELR__AnswerOption__c> answersOpList = new List<FieloELR__AnswerOption__c>();            
+        List<FieloELR__AnswerOption__c> answersOpList = new List<FieloELR__AnswerOption__c>();
         List<FieloELR__Answer__c> answersList = new List<FieloELR__Answer__c>();
+        
+
 
         programs = MockUpFactory.createPrograms('Default', 1);
         insert programs;
