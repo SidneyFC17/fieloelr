@@ -4,7 +4,7 @@ private class TestCreateQuestion{
 	private static List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
     private static List<FieloELR__AnswerOption__c> answers = new List<FieloELR__AnswerOption__c>();
     private static List<CourseStatus__c> courseStatus = new List<CourseStatus__c>();
-    private static List<ModuleResponses__c> moduleResponses = new List<ModuleResponses__c>();
+    private static List<ModuleResponse__c> moduleResponses = new List<ModuleResponse__c>();
     private static List<FieloPLT__Program__c> programs;
     private static List<FieloPLT__Segment__c> segments;
     private static List<FieloELR__Course__c> courses;
