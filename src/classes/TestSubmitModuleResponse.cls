@@ -1,363 +1,691 @@
 @isTest
 private class TestSubmitModuleResponse {
-		private static List<FieloELR__ModuleResponse__c> moduleRespList = new List<FieloELR__ModuleResponse__c>();
-		private static List<FieloELR__QuestionResponse__c> questionResponses = new List<FieloELR__QuestionResponse__c>();
-		private static List<FieloELR__CourseStatus__c> courseStatus = new List<FieloELR__CourseStatus__c>();
 
-	@testSetup
-		static void setup(){
-            List<FieloELR__Course__c> courses = new List<FieloELR__Course__c>();            
-            List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
-            List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();
-            List<FieloPLT__Program__c> programs;
-            List<FieloPLT__Segment__c> segments;
-            List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
-            List<FieloELR__AnswerOption__c> answersOpList = new List<FieloELR__AnswerOption__c>();            
-            List<FieloELR__Answer__c> answersList = new List<FieloELR__Answer__c>();
+    private static List<FieloELR__QuestionResponse__c> questionResponses = new List<FieloELR__QuestionResponse__c>();
+    private static List<FieloELR__Answer__c> answers = new List<FieloELR__Answer__c>();
+    private static List<FieloELR__ModuleResponse__c> moduleResponses = new List<FieloELR__ModuleResponse__c>();
+    private static List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
+    private static List<FieloELR__CourseStatus__c> courseStatus = new List<FieloELR__CourseStatus__c>();
 
-            programs = MockUpFactory.createPrograms('testProgram', 1);
-            insert programs;
+	@testSetup static void setup(){
+        List<FieloELR__Course__c> courses = new List<FieloELR__Course__c>();            
+        List<FieloPLT__Member__c> members = new List<FieloPLT__Member__c>();
+        List<FieloPLT__Program__c> programs;
+        List<FieloPLT__Segment__c> segments;
+        List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
+        List<FieloELR__AnswerOption__c> answersOpList = new List<FieloELR__AnswerOption__c>();            
+        List<FieloELR__Answer__c> answersList = new List<FieloELR__Answer__c>();
 
-            segments = MockUpFactory.createSegments('testSegment',1,'Dynamic');
-            insert segments;
+        programs = MockUpFactory.createPrograms('Default', 1);
+        insert programs;
 
-            courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 2);
-            insert courses;
+        segments = MockUpFactory.createSegments('Segment',1,'Manual');
+        insert segments;
 
-            members = MockUpFactory.createMembers(programs.get(0).id, 1);
-            insert members;
+        courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 1);
+        insert courses;
 
+        members = MockUpFactory.createMembers(programs.get(0).id, 1);
+        insert members;
 
-            //Module
-            FieloELR__Module__c moduleTest1 = new FieloELR__Module__c();
-            moduleTest1.Name = 'testModule1';
-            moduleTest1.FieloELR__Course__c = courses.get(0).id;
-            moduleTest1.FieloELR__ApprovalGrade__c = 0;
-            moduleTest1.FieloELR__AttemptsAllowed__c = 2;
-            moduleTest1.FieloELR__AttemptsAllowedPerQuestion__c = 2;
-            moduleTest1.FieloELR__PenaltyMode__c = 'None';
-            moduleTest1.FieloELR__QuestionPool__c = 1;
-            modules.add(moduleTest1);
+        FieloPLT__MemberSegment__c memberSegment = new FieloPLT__MemberSegment__c(
+            FieloPLT__Segment__c = segments.get(0).Id,
+            FieloPLT__Member__c = members.get(0).Id
+        );
+        insert memberSegment;
 
-            FieloELR__Module__c moduleTest2 = new FieloELR__Module__c();
-            moduleTest2.Name = 'testModule2';
-            moduleTest2.FieloELR__Course__c = courses.get(0).id;
-            moduleTest2.FieloELR__ApprovalGrade__c = 1;
-            moduleTest2.FieloELR__AttemptsAllowed__c = 1;
-            moduleTest2.FieloELR__AttemptsAllowedPerQuestion__c = 2;
-            modules.add(moduleTest2);
-            
+        //Module
+        modules.add(new Module__c(Name = 'Basic', Course__c = courses.get(0).id, ApprovalGrade__c = 75, AttemptsAllowed__c = 2, AttemptsAllowedPerQuestion__c = 2, PenaltyMode__c = 'None'));
 
-            FieloELR__Module__c moduleTest3 = new FieloELR__Module__c();
-            moduleTest3.Name = 'testModule3';
-            moduleTest3.FieloELR__Course__c = courses.get(1).id;
-            moduleTest3.FieloELR__ApprovalGrade__c = 0;
-            moduleTest3.FieloELR__AttemptsAllowed__c = 1;
-            moduleTest3.FieloELR__AttemptsAllowedPerQuestion__c = 1;
-            moduleTest3.FieloELR__PenaltyMode__c = 'None';
-            moduleTest3.FieloELR__QuestionPool__c = 1;
-            modules.add(moduleTest3);
-            insert modules;
+        insert modules;
 
+        //Basic Module Questions
+        questions.add(new Question__c(Name = 'Q1', Module__c = modules.get(0).Id, QuestionText__c = 'Which one is the most popular programming language?', Type__c = 'Short Answer'));
+        questions.add(new Question__c(Name = 'Q2', Module__c = modules.get(0).Id, QuestionText__c = 'Acronymn for Personal Computer', Type__c = 'Short Answer'));
+        questions.add(new Question__c(Name = 'Q3', Module__c = modules.get(0).Id, QuestionText__c = 'Name one Family-C programming language?', Type__c = 'Short Answer'));
+        questions.add(new Question__c(Name = 'Q4', Module__c = modules.get(0).Id, QuestionText__c = 'C++ is more performatic than java', Type__c = 'Short Answer'));
 
-            //Question
-            FieloELR__Question__c question1 = new FieloELR__Question__c();
-            question1.Name = 'question0';
-            question1.FieloELR__Module__c = modules.get(0).Id;
-            question1.FieloELR__QuestionText__c = 'How are you?';
-            question1.FieloELR__Type__c = 'Short Answer';
-            questions.add(question1);
+        insert questions;
 
-            FieloELR__Question__c question2 = new FieloELR__Question__c();
-            question2.Name = 'question1';
-            question2.FieloELR__Module__c = modules.get(1).Id;
-            question2.FieloELR__QuestionText__c = 'How are you?';
-            question2.FieloELR__Type__c = 'Short Answer';
-            questions.add(question2);
+        // Answers Q1 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = true, AnswerOptionText__c = 'JavaScript'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(0).Id, IsCorrect__c = true, AnswerOptionText__c = 'javascript'));
 
-            FieloELR__Question__c question3 = new FieloELR__Question__c();
-            question3.Name = 'question3';
-            question3.FieloELR__Module__c = modules.get(2).Id;
-            question3.FieloELR__QuestionText__c = 'How are you?';
-            question3.FieloELR__Type__c = 'Short Answer';
-            questions.add(question3);
-            insert questions;
+        // Answers Q2 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'PC'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'pc'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'p.c.'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(1).Id, IsCorrect__c = true, AnswerOptionText__c = 'P.C.'));
 
-            //Answer
-            FieloELR__AnswerOption__c answersOp1 = new FieloELR__AnswerOption__c();
-            answersOp1.FieloELR__Question__c = questions.get(0).Id;
-            answersOp1.FieloELR__IsCorrect__c = true;
-            answersOp1.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-            answersOpList.add(answersOp1);
+        // Answers Q3 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'C++'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'c++'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Java'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'java'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'PHP'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'php'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Python'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'python'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'Objective-C'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(2).Id, IsCorrect__c = true, AnswerOptionText__c = 'objective-c'));
 
-            FieloELR__AnswerOption__c answersOp2 = new FieloELR__AnswerOption__c();
-            answersOp2.FieloELR__Question__c = questions.get(1).Id;
-            answersOp2.FieloELR__IsCorrect__c = true;
-            answersOp2.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-            answersOpList.add(answersOp2);
+        // Answers Q4 - Basic
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(3).Id, IsCorrect__c = true, AnswerOptionText__c = 'True'));
+        answersOpList.add(new AnswerOption__c(Question__c = questions.get(3).Id, IsCorrect__c = true, AnswerOptionText__c = 'true'));
 
-            FieloELR__AnswerOption__c answersOp3 = new FieloELR__AnswerOption__c();
-            answersOp3.FieloELR__Question__c = questions.get(2).Id;
-            answersOp3.FieloELR__IsCorrect__c = true;
-            answersOp3.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-            answersOpList.add(answersOp3);
-            insert answersOpList;
+        insert answersOpList;
 
+        //Set Module Active
+        modules.get(0).IsActive__c = true;
+        update modules;
 
-            //Set Module Active
-            modules.get(0).FieloELR__IsActive__c = true;
-            modules.get(1).FieloELR__IsActive__c = true;
-            modules.get(2).FieloELR__IsActive__c = true;
-            update modules;
+        //Set Course Active
+        courses.get(0).Status__c = 'Active';
+        update courses;
 
-            //Set Course Active
-            courses.get(0).FieloELR__Status__c = 'Active';
-            courses.get(1).FieloELR__Status__c = 'Active';
-            update courses;
+        //Course Status
+        courseStatus.add(new CourseStatus__c(Course__c = courses.get(0).id, Member__c = members.get(0).id));
 
-            //Course Status
-            FieloELR__CourseStatus__c courseStatusTest = new FieloELR__CourseStatus__c();
-            courseStatusTest.FieloELR__Course__c = courses.get(0).id;
-            courseStatusTest.FieloELR__Member__c = members.get(0).id;
-            courseStatus.add(courseStatusTest);
+        insert courseStatus;
 
-            FieloELR__CourseStatus__c courseStatusTest2 = new FieloELR__CourseStatus__c();
-            courseStatusTest2.FieloELR__Course__c = courses.get(1).id;
-            courseStatusTest2.FieloELR__Member__c = members.get(0).id;
-            courseStatus.add(courseStatusTest2);
-            insert courseStatus;
+        //Module Response
+        moduleResponses.add(new ModuleResponse__c(Module__c = modules.get(0).Id, Member__c = members.get(0).id));
 
-            //Module Response
-            FieloELR__ModuleResponse__c moduleResponseTest = new FieloELR__ModuleResponse__c();
-            moduleResponseTest.FieloELR__Module__c = modules.get(0).id;
-            moduleResponseTest.FieloELR__Member__c = members.get(0).id;
-            moduleRespList.add(moduleResponseTest);
+        insert moduleResponses;
 
-            FieloELR__ModuleResponse__c moduleResponseTest1 = new FieloELR__ModuleResponse__c();
-            moduleResponseTest1.FieloELR__Module__c = modules.get(1).id;
-            moduleResponseTest1.FieloELR__Member__c = members.get(0).id;
-            moduleRespList.add(moduleResponseTest1);
+        for (Question__c q: questions) {
+            questionResponses.add(
+                new QuestionResponse__c(
+                    Question__c = q.Id,
+                    ModuleResponse__c = moduleResponses.get(0).Id
+                )
+            );
+            for (AnswerOption__c ao: answersOpList) {
+                if (ao.Question__c == q.Id && ao.IsCorrect__c) {
+                    questionResponses.get(questionResponses.size()-1).TextValue__c = ao.AnswerOptionText__c;
+                    break;
+                }
+            }
+        }
 
-            FieloELR__ModuleResponse__c moduleResponseTest2 = new FieloELR__ModuleResponse__c();
-            moduleResponseTest2.FieloELR__Module__c = modules.get(2).id;
-            moduleResponseTest2.FieloELR__Member__c = members.get(0).id;
-            moduleRespList.add(moduleResponseTest2);
-            insert moduleRespList;
-
-            //Question Response
-            FieloELR__QuestionResponse__c questionResponseTest = new FieloELR__QuestionResponse__c();
-            questionResponseTest.FieloELR__Question__c = questions.get(0).id;
-            questionResponseTest.FieloELR__ModuleResponse__c = moduleRespList.get(0).id;
-            questionResponses.add(questionResponseTest);
-
-            FieloELR__QuestionResponse__c questionResponseTest2 = new FieloELR__QuestionResponse__c();
-            questionResponseTest2.FieloELR__Question__c = questions.get(1).id;
-            questionResponseTest2.FieloELR__ModuleResponse__c = moduleRespList.get(1).id;
-            questionResponses.add(questionResponseTest2);
-
-            FieloELR__QuestionResponse__c questionResponseTest3 = new FieloELR__QuestionResponse__c();
-            questionResponseTest3.FieloELR__Question__c = questions.get(2).id;
-            questionResponseTest3.FieloELR__ModuleResponse__c = moduleRespList.get(2).id;
-            questionResponses.add(questionResponseTest3);
-            insert questionResponses;
-            
-            //Answer
-            FieloELR__Answer__c answer = new FieloELR__Answer__c();
-            answer.FieloELR__AnswerOption__c = answersOpList.get(0).id;
-            answer.FieloELR__QuestionResponse__c = questionResponses.get(0).id;
-            answer.FieloELR__TextValue__c = 'Esta es correcta';
-            answersList.add(answer);
-            
-            FieloELR__Answer__c answer2 = new FieloELR__Answer__c();
-            answer2.FieloELR__AnswerOption__c = answersOpList.get(1).id;
-            answer2.FieloELR__QuestionResponse__c = questionResponses.get(1).id;
-            answer2.FieloELR__TextValue__c = 'Esta no es correcta';
-            answersList.add(answer2);
-
-            FieloELR__Answer__c answer3 = new FieloELR__Answer__c();
-            answer3.FieloELR__AnswerOption__c = answersOpList.get(2).id;
-            answer3.FieloELR__QuestionResponse__c = questionResponses.get(2).id;
-            answer3.FieloELR__TextValue__c = 'Esta no es correcta';
-            answersList.add(answer3);
-            insert answersList;
-	     }
+        insert questionResponses;
+	}
 	
-
+    /*  TEST-1830
+        Submit Module Response
+        - Module response is approved when there are unsubmitted related question responses and the Question Pool is “null” (OK)
+    */
 	@isTest static void ELR_0010_FB() {
-		moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule1' LIMIT 1];
-		questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-		courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
+		moduleResponses = [SELECT Id, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+		courseStatus = [SELECT Id, ApprovedModules__c, Progress__c FROM CourseStatus__c LIMIT 1];
 
-		moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
+		moduleResponses.get(0).IsSubmitted__c = true;
 
-		update moduleRespList;
+        FieloELR.ModuleResponses.validateAdminFields = false;
+		update moduleResponses;
+        FieloELR.ModuleResponses.validateAdminFields = true;
 
-		questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-		moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__TotalValue__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-		courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c,FieloELR__Course__r.FieloELR__ActiveModules__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT Id, ApprovedModules__c, Progress__c FROM CourseStatus__c LIMIT 1];
 
-		System.assertEquals(true, questionResponses.get(0).FieloELR__IsSubmitted__c);
-		System.assert(questionResponses.get(0).FieloELR__PartialGradeValue__c != null);
-		
-            System.assert(moduleRespList.get(0).FieloELR__GradeValue__c >= questionResponses.get(0).FieloELR__PartialGradeValue__c);
-		System.assert(moduleRespList.get(0).FieloELR__GradePercent__c == moduleRespList.get(0).FieloELR__GradeValue__c / moduleRespList.get(0).FieloELR__Module__r.FieloELR__TotalValue__c);
-            System.assertEquals(true, moduleRespList.get(0).FieloELR__IsApproved__c);
-		System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c > 0);
-		
-            System.assert(courseStatus.get(0).FieloELR__ApprovedModules__c > 0);
-		System.assert(courseStatus.get(0).FieloELR__Progress__c != 0);     
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
+
+        System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
+        System.assert(moduleResponses.get(0).NumberofApprove__c > 0);
+
+        System.assertEquals(1, courseStatus.get(0).ApprovedModules__c);        
+
+        System.assert(courseStatus.get(0).ApprovedModules__c > 0);
+        System.assert(courseStatus.get(0).Progress__c != 0);
+    }
+
+    /*  TEST-1831
+        Submit Module Response
+        - Module response is approved when all the related question responses were submitted and the Question Pool is “null” (OK)
+    */
+    @isTest static void ELR_0010_FA1() {
+        moduleResponses = [SELECT Id FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT Id FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
+        update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
+
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
+
+        System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
+        
+        Decimal totalValue = moduleResponses.get(0).Module__r.QuestionPool__c == null ? moduleResponses.get(0).Module__r.TotalValue__c : moduleResponses.get(0).Module__r.QuestionPool__c;
+
+        System.assertEquals(moduleResponses.get(0).GradePercent__c, ((moduleResponses.get(0).GradeValue__c / totalValue) * 100).setScale(2));
+        
+        System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
+        
+        System.assert(courseStatus.get(0).ApprovedModules__c > 0);
+
+        System.assert(courseStatus.get(0).Progress__c != 0);
+    }
+
+    /*  TEST-1832
+        Submit Module Response
+        - Module response is not approved when there are unsubmitted related question responses and the Question Pool is “null” (OK)
+    */
+    @isTest static void ELR_0010_FA2() {
+        moduleResponses = [SELECT Id, Module__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id, Question__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        courseStatus = [SELECT Id FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        Set<Id> questionIds = new Set<Id>();
+
+        for (QuestionResponse__c qr: questionResponses) {
+            questionIds.add(qr.Question__c);
+        }
+
+        delete questionResponses;
+
+        questionResponses = new List<QuestionResponse__c>();
+        questionResponses.clear();
+        for (Id questionId: questionIds) {
+            questionResponses.add(
+                new QuestionResponse__c(
+                    Question__c = questionId,
+                    ModuleResponse__c = moduleResponses.get(0).Id,
+                    TextValue__c = 'Wrong Answer'
+                )
+            );
+        }
+
+        insert questionResponses;
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+
+        FieloELR.CourseStatus.validateAdminFields = false;
+        update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
+
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
+
+        System.assertEquals(false, moduleResponses.get(0).IsApproved__c);
+        System.assert(moduleResponses.get(0).NumberofApprove__c == 0);
+        System.assert(courseStatus.get(0).Progress__c == 0);
       }
 
+    /*  TEST-1833
+        Submit Module Response
+        - Module response is approved when there are unsubmitted related question responses and the Question Pool is not “null” (OK)
+    */
+    @isTest static void ELR_0010_FA3() {
+        // Adding Question Pool
+        List<Module__c> modules = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic' LIMIT 1];
+        List<Course__c> courses = [SELECT Id FROM Course__c WHERE Id = :modules.get(0).Course__c LIMIT 1];
+        List<Question__c> questions = [SELECT Id, (SELECT Id, IsCorrect__c, AnswerOptionText__c, Question__c FROM AnswerOptions__r WHERE IsCorrect__c = true) FROM Question__c Where Module__c = :modules.get(0).Id];
+        List<CourseStatus__c> courseStatus = [SELECT Id FROM CourseStatus__c WHERE Course__c = :modules.get(0).Course__c LIMIT 1];
+        moduleResponses = [SELECT Id, Member__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id LIMIT 1];
 
-      @isTest static void ELR_0010_FA1(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule1' LIMIT 1];
-            questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-            courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        String memberId = moduleResponses.get(0).Member__c;
 
-            moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
-            update moduleRespList;
+        delete questionResponses;
+        delete moduleResponses;
+        delete courseStatus;
 
-            questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-            moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__TotalValue__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-            courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c,FieloELR__Course__r.FieloELR__ActiveModules__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
-            
-            System.assert(moduleRespList.get(0).FieloELR__GradeValue__c >= questionResponses.get(0).FieloELR__PartialGradeValue__c);
-            System.assert(moduleRespList.get(0).FieloELR__GradePercent__c == moduleRespList.get(0).FieloELR__GradeValue__c / moduleRespList.get(0).FieloELR__Module__r.FieloELR__TotalValue__c);
-            System.assertEquals(true, moduleRespList.get(0).FieloELR__IsApproved__c);
-            
-            System.assert(courseStatus.get(0).FieloELR__ApprovedModules__c > 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c != 0);
-      }
+        modules.get(0).IsActive__c = false;
+        courses.get(0).Status__c = 'Inactive';
+
+        FieloELR.Courses.validateAdminFields = false;
+        FieloELR.Modules.validateAdminFields = false;
+
+        update courses;
+        update modules;
+
+        modules.get(0).QuestionPool__c = 4;
+
+        update modules;
+        
+        modules.get(0).IsActive__c = true;
+        courses.get(0).Status__c = 'Active';
+
+        update modules;
+        update courses;
+
+        FieloELR.Courses.validateAdminFields = true;
+        FieloELR.Modules.validateAdminFields = true;
+
+        // Recreate
+        courseStatus = new List<CourseStatus__c>();
+        moduleResponses = new List<ModuleResponse__c>();
+        questionResponses = new List<QuestionResponse__c>();
+
+        //Course Status
+        courseStatus.add(new CourseStatus__c(Course__c = courses.get(0).id, Member__c = memberId));
+
+        insert courseStatus;
+
+        //Module Response
+        moduleResponses.add(new ModuleResponse__c(Module__c = modules.get(0).Id, Member__c = memberId));
+
+        insert moduleResponses;
+
+        List<FieloELR__AnswerOption__c> answersOpList = new List<FieloELR__AnswerOption__c>();
+        for (Question__c q: questions) {
+            questionResponses.add(
+                new QuestionResponse__c(
+                    Question__c = q.Id,
+                    ModuleResponse__c = moduleResponses.get(0).Id
+                )
+            );
+            answersOpList = q.AnswerOptions__r;
+            for (AnswerOption__c ao: answersOpList) {
+                if (ao.Question__c == q.Id && ao.IsCorrect__c) {
+                    questionResponses.get(questionResponses.size()-1).TextValue__c = ao.AnswerOptionText__c;
+                    break;
+                }
+            }
+        }
+
+        insert questionResponses;
+
+        moduleResponses = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleResponses.get(0).id LIMIT 1];
+        courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
+        update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
+
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
+
+        System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
+        
+        Decimal totalValue = moduleResponses.get(0).Module__r.QuestionPool__c == null ? moduleResponses.get(0).Module__r.TotalValue__c : moduleResponses.get(0).Module__r.QuestionPool__c;
+
+        System.assertEquals(moduleResponses.get(0).GradePercent__c, ((moduleResponses.get(0).GradeValue__c / totalValue) * 100).setScale(2));
+        
+        System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
+        
+        System.assert(courseStatus.get(0).ApprovedModules__c > 0);
+
+        System.assert(courseStatus.get(0).Progress__c != 0);
+    }
+
+    /*  TEST-1834
+        Submit Module Response
+        - Module response is not approved when there are unsubmitted related question responses and the Question Pool is not “null” (OK)
+    */
+    @isTest static void ELR_0010_FA4() {
+        // Adding Question Pool
+        List<Module__c> modules = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic' LIMIT 1];
+        List<Course__c> courses = [SELECT Id FROM Course__c WHERE Id = :modules.get(0).Course__c LIMIT 1];
+        List<Question__c> questions = [SELECT Id, (SELECT Id, IsCorrect__c, AnswerOptionText__c, Question__c FROM AnswerOptions__r WHERE IsCorrect__c = true) FROM Question__c Where Module__c = :modules.get(0).Id];
+        List<CourseStatus__c> courseStatus = [SELECT Id FROM CourseStatus__c WHERE Course__c = :modules.get(0).Course__c LIMIT 1];
+        moduleResponses = [SELECT Id, Member__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id LIMIT 1];
+
+        String memberId = moduleResponses.get(0).Member__c;
+
+        delete questionResponses;
+        delete moduleResponses;
+        delete courseStatus;
+
+        modules.get(0).IsActive__c = false;
+        courses.get(0).Status__c = 'Inactive';
+
+        FieloELR.Courses.validateAdminFields = false;
+        FieloELR.Modules.validateAdminFields = false;
+
+        update courses;
+        update modules;
+
+        modules.get(0).QuestionPool__c = 4;
+
+        update modules;
+        
+        modules.get(0).IsActive__c = true;
+        courses.get(0).Status__c = 'Active';
+
+        update modules;
+        update courses;
+
+        FieloELR.Courses.validateAdminFields = true;
+        FieloELR.Modules.validateAdminFields = true;
+
+        // Recreate
+        courseStatus = new List<CourseStatus__c>();
+        moduleResponses = new List<ModuleResponse__c>();
+        questionResponses = new List<QuestionResponse__c>();
+
+        //Course Status
+        courseStatus.add(new CourseStatus__c(Course__c = courses.get(0).id, Member__c = memberId));
+
+        insert courseStatus;
+
+        //Module Response
+        moduleResponses.add(new ModuleResponse__c(Module__c = modules.get(0).Id, Member__c = memberId));
+
+        insert moduleResponses;
+
+        for (Question__c q: questions) {
+            questionResponses.add(
+                new QuestionResponse__c(
+                    Question__c = q.Id,
+                    ModuleResponse__c = moduleResponses.get(0).Id,
+                    TextValue__c = 'Wrong Answer'
+                )
+            );
+        }
+
+        insert questionResponses;
+
+        moduleResponses = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleResponses.get(0).id LIMIT 1];
+        courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
+        update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
+
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
+
+        System.assertEquals(false, moduleResponses.get(0).IsApproved__c);
+        System.assert(moduleResponses.get(0).NumberofApprove__c == 0);
+        System.assert(courseStatus.get(0).Progress__c == 0);
+    }
+
+    /*  TEST-1835
+        Submit Module Response
+        - Module response is not approved when all the related question responses were submitted and the Question Pool is “null” (OK)
+    */
+    @isTest static void ELR_0010_FA5() {
+        moduleResponses = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            qr.TextValue__c = 'Wrong Answer';
+            qr.IsSubmitted__c = true;
+        }
+
+        update questionResponses;
 
 
-      @isTest static void ELR_0010_FA2(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule2' LIMIT 1];
-            questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-            courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
+        update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
 
-            moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
-            update moduleRespList;
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
 
-            questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-            moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__TotalValue__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-            courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c,FieloELR__Course__r.FieloELR__ActiveModules__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
 
-            System.debug(moduleRespList.get(0).FieloELR__IsApproved__c);
+        System.assertEquals(false, moduleResponses.get(0).IsApproved__c);
+        System.assert(moduleResponses.get(0).NumberofApprove__c == 0);
+        System.assert(courseStatus.get(0).Progress__c == 0);
+    }
 
-            System.assert(questionResponses.get(0).FieloELR__PartialGradeValue__c != null);
-            System.assertEquals(false, moduleRespList.get(0).FieloELR__IsApproved__c);
-            System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c == 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c == 0);
-      }
+    /*  TEST-1836
+        Submit Module Response
+        - Module response is approved when all the related question responses were submitted and the Question Pool is not “null” (OK)
+    */
+    @isTest static void ELR_0010_FA6() {
+        moduleResponses = [SELECT Id FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT Id FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            qr.IsSubmitted__c = true;
+        }
+        update questionResponses;
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+        FieloELR.CourseStatus.validateAdminFields = false;
+        update moduleResponses;
+        FieloELR.CourseStatus.validateAdminFields = true;
+
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
+
+        System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
+        
+        Decimal totalValue = moduleResponses.get(0).Module__r.QuestionPool__c == null ? moduleResponses.get(0).Module__r.TotalValue__c : moduleResponses.get(0).Module__r.QuestionPool__c;
+
+        System.assertEquals(moduleResponses.get(0).GradePercent__c, ((moduleResponses.get(0).GradeValue__c / totalValue) * 100).setScale(2));
+        
+        System.assertEquals(true, moduleResponses.get(0).IsApproved__c);
+        
+        System.assert(courseStatus.get(0).ApprovedModules__c > 0);
+
+        System.assert(courseStatus.get(0).Progress__c != 0);
+    }
+
+    /*  TEST-1837
+        Submit Module Response
+        - Module response is not approved when all the related question responses were submitted and the Question Pool is not “null” (OK)
+    */
+    @isTest static void ELR_0010_FA7() {
+        // Adding Question Pool
+        List<Module__c> modules = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic' LIMIT 1];
+        List<Course__c> courses = [SELECT Id FROM Course__c WHERE Id = :modules.get(0).Course__c LIMIT 1];
+        List<Question__c> questions = [SELECT Id, (SELECT Id, IsCorrect__c, AnswerOptionText__c, Question__c FROM AnswerOptions__r WHERE IsCorrect__c = true) FROM Question__c Where Module__c = :modules.get(0).Id];
+        List<CourseStatus__c> courseStatus = [SELECT Id FROM CourseStatus__c WHERE Course__c = :modules.get(0).Course__c LIMIT 1];
+        moduleResponses = [SELECT Id, Member__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id LIMIT 1];
+
+        String memberId = moduleResponses.get(0).Member__c;
+
+        delete questionResponses;
+        delete moduleResponses;
+        delete courseStatus;
+
+        modules.get(0).IsActive__c = false;
+        courses.get(0).Status__c = 'Inactive';
+
+        FieloELR.Courses.validateAdminFields = false;
+        FieloELR.Modules.validateAdminFields = false;
+
+        update courses;
+        update modules;
+
+        modules.get(0).QuestionPool__c = 4;
+
+        update modules;
+        
+        modules.get(0).IsActive__c = true;
+        courses.get(0).Status__c = 'Active';
+
+        update modules;
+        update courses;
+
+        FieloELR.Courses.validateAdminFields = true;
+        FieloELR.Modules.validateAdminFields = true;
+
+        // Recreate
+        courseStatus = new List<CourseStatus__c>();
+        moduleResponses = new List<ModuleResponse__c>();
+        questionResponses = new List<QuestionResponse__c>();
+
+        //Course Status
+        courseStatus.add(new CourseStatus__c(Course__c = courses.get(0).id, Member__c = memberId));
+
+        insert courseStatus;
+
+        //Module Response
+        moduleResponses.add(new ModuleResponse__c(Module__c = modules.get(0).Id, Member__c = memberId));
+
+        insert moduleResponses;
+
+        for (Question__c q: questions) {
+            questionResponses.add(
+                new QuestionResponse__c(
+                    Question__c = q.Id,
+                    ModuleResponse__c = moduleResponses.get(0).Id,
+                    TextValue__c = 'Wrong Answer',
+                    IsSubmitted__c = true
+                )
+            );
+        }
+
+        insert questionResponses;
+
+        moduleResponses = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleResponses.get(0).id LIMIT 1];
+        courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
+
+        moduleResponses.get(0).IsSubmitted__c = true;
+        update moduleResponses;
+
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
+
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assertEquals(true, qr.IsSubmitted__c);
+            System.assert(qr.PartialGradeValue__c != null);
+        }
+
+        System.assertEquals(false, moduleResponses.get(0).IsApproved__c);
+        System.assert(moduleResponses.get(0).NumberofApprove__c == 0);
+        System.assert(courseStatus.get(0).Progress__c == 0);
+    }
+
+    /*  TEST-1955
+        Submit Module Response
+        - Validations
+        - Related course is not active (NOK)
+    */
+    @isTest static void ELR_0010_FA8() {
+        //Inactivate Course
+        List<Module__c> modules = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic' LIMIT 1];
+        List<Course__c> courses = [SELECT Id FROM Course__c WHERE Id = :modules.get(0).Course__c LIMIT 1];
+
+        courses.get(0).Status__c = 'Inactivate';
+
+        FieloELR.Courses.validateAdminFields = false;
+        update courses;
+        FieloELR.Courses.validateAdminFields = true;
+
+        moduleResponses = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
+
+        update questionResponses;
 
 
-      @isTest static void ELR_0010_FA3(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule1' LIMIT 1];
-            questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-            courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
+        moduleResponses.get(0).IsSubmitted__c = true;
 
-            moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
+        try {
+            update moduleResponses;
+        } catch (Exception e) {}
 
-            update moduleRespList;
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, IsSubmitted__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
 
-            questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-            moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__QuestionPool__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-            courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c,FieloELR__Course__r.FieloELR__ActiveModules__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(false, qr.IsSubmitted__c);
+            System.assertEquals(false, qr.IsSubmitted__c);
+        }
 
-            System.assertEquals(true, questionResponses.get(0).FieloELR__IsSubmitted__c);
-            System.assert(questionResponses.get(0).FieloELR__PartialGradeValue__c != null);
-            
-            System.assert(moduleRespList.get(0).FieloELR__GradeValue__c >= questionResponses.get(0).FieloELR__PartialGradeValue__c);
-            System.assert(moduleRespList.get(0).FieloELR__GradePercent__c == moduleRespList.get(0).FieloELR__GradeValue__c / moduleRespList.get(0).FieloELR__Module__r.FieloELR__QuestionPool__c);
-            System.assertEquals(true, moduleRespList.get(0).FieloELR__IsApproved__c);
-            System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c > 0);
-            
-            System.assert(courseStatus.get(0).FieloELR__ApprovedModules__c > 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c != 0);     
-      }
+        System.assertEquals(false, moduleResponses.get(0).IsApproved__c);
+        System.assertEquals(false, moduleResponses.get(0).IsSubmitted__c);
+    }
 
+    /*  TEST-1956
+        Submit Module Response
+        - Validations
+        - Related module is not active (NOK)
+    */
+    @isTest static void ELR_0010_FA9() {
+        //Inactivate Course
+        List<Module__c> modules = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic' LIMIT 1];
+        List<Course__c> courses = [SELECT Id FROM Course__c WHERE Id = :modules.get(0).Course__c LIMIT 1];
 
-      @isTest static void ELR_0010_FA4(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule3' LIMIT 1];
-            questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-            courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        courses.get(0).Status__c = 'Inactivate';
+        modules.get(0).IsActive__c = false;
 
-            moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
-            update moduleRespList;
+        FieloELR.Courses.validateAdminFields = false;
+        FieloELR.Modules.validateAdminFields = false;
+        update courses;
+        update modules;
+        FieloELR.Modules.validateAdminFields = true;
+        FieloELR.Courses.validateAdminFields = true;
 
-            questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-            moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__TotalValue__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-            courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c,FieloELR__Course__r.FieloELR__ActiveModules__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        moduleResponses = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'Basic' LIMIT 1];
+        questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
 
-            System.assert(questionResponses.get(0).FieloELR__PartialGradeValue__c != null);
-            System.assertEquals(false, moduleRespList.get(0).FieloELR__IsApproved__c);
-            System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c == 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c == 0); 
-      }
-
-
-      @isTest static void ELR_0010_FA5(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule2' LIMIT 1];
-            questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-            courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
-
-            moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
-            update moduleRespList;
-
-            questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-            moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__TotalValue__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-            courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c,FieloELR__Course__r.FieloELR__ActiveModules__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 1'];
-
-            System.assert(questionResponses.get(0).FieloELR__PartialGradeValue__c != null);
-            System.assertEquals(false, moduleRespList.get(0).FieloELR__IsApproved__c);
-            System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c == 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c == 0); 
-            
-            System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c == 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c == 0);   
-      }
+        update questionResponses;
 
 
-      @isTest static void ELR_0010_FA6(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule1' LIMIT 1];
-            questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-            courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
+        moduleResponses.get(0).IsSubmitted__c = true;
 
-            moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
-            update moduleRespList;
+        try {
+            update moduleResponses;
+        } catch (Exception e) {}
 
-            questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-            moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__QuestionPool__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-            courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c,FieloELR__Course__r.FieloELR__ActiveModules__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
-            
-            System.assert(moduleRespList.get(0).FieloELR__GradeValue__c >= questionResponses.get(0).FieloELR__PartialGradeValue__c);
-            System.assert(moduleRespList.get(0).FieloELR__GradePercent__c == moduleRespList.get(0).FieloELR__GradeValue__c / moduleRespList.get(0).FieloELR__Module__r.FieloELR__QuestionPool__c);
-            System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c > 0);
-            System.assertEquals(true, moduleRespList.get(0).FieloELR__IsApproved__c);
-            
-            System.assert(courseStatus.get(0).FieloELR__ApprovedModules__c > 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c != 0);
-      }
+        questionResponses = [SELECT Id, IsSubmitted__c, PartialGradeValue__c FROM QuestionResponse__c WHERE ModuleResponse__r.Id =: moduleResponses.get(0).id];
+        moduleResponses = [SELECT Id, IsApproved__c, IsSubmitted__c, NumberofApprove__c, GradeValue__c, GradePercent__c, Module__r.TotalValue__c, Module__r.QuestionPool__c FROM ModuleResponse__c WHERE Module__r.Name = 'Basic' LIMIT 1];
+        courseStatus = [SELECT ApprovedModules__c, Progress__c, Course__r.ActiveModules__c FROM CourseStatus__c WHERE Course__r.Name = 'Course 0'];
 
+        for (QuestionResponse__c qr: questionResponses) {
+            System.assertEquals(false, qr.IsSubmitted__c);
+            System.assertEquals(false, qr.IsSubmitted__c);
+        }
 
-      @isTest static void ELR_0010_FA7(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__r.Name = 'testModule3' LIMIT 1];
-            questionResponses = [SELECT Id FROM FieloELR__QuestionResponse__c WHERE FieloELR__ModuleResponse__r.Id =: moduleRespList.get(0).id LIMIT 1];
-            courseStatus = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
-
-            moduleRespList.get(0).FieloELR__IsSubmitted__c = true;
-            update moduleRespList;
-
-            questionResponses = [SELECT FieloELR__IsSubmitted__c,FieloELR__PartialGradeValue__c FROM FieloELR__QuestionResponse__c WHERE Id =: questionResponses.get(0).id];
-            moduleRespList = [SELECT FieloELR__GradeValue__c,FieloELR__GradePercent__c,FieloELR__Module__r.FieloELR__QuestionPool__c,FieloELR__IsApproved__c,FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponse__c];
-            courseStatus = [SELECT FieloELR__ApprovedModules__c,FieloELR__Progress__c FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.Name = 'Course 0'];
-
-            System.assert(questionResponses.get(0).FieloELR__PartialGradeValue__c != null);
-            System.assertEquals(false, moduleRespList.get(0).FieloELR__IsApproved__c);
-            System.assert(moduleRespList.get(0).FieloELR__NumberofApprove__c == 0);
-            
-            System.assert(courseStatus.get(0).FieloELR__ApprovedModules__c == 0);
-            System.assert(courseStatus.get(0).FieloELR__Progress__c == 0); 
-      }
-
+        System.assertEquals(false, moduleResponses.get(0).IsApproved__c);
+        System.assertEquals(false, moduleResponses.get(0).IsSubmitted__c);
+    }
 }

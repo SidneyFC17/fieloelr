@@ -1,15 +1,15 @@
 @isTest
 private class TestCreateQuestion{
-	private static List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
-	private static List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
+    private static List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
+    private static List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
     private static List<FieloELR__AnswerOption__c> answers = new List<FieloELR__AnswerOption__c>();
     private static List<FieloPLT__Program__c> programs;
     private static List<FieloPLT__Segment__c> segments;
     private static List<FieloELR__Course__c> courses;
 
-	@testSetup
-    	static void setup(){ 
-    	programs = MockUpFactory.createPrograms('testProgram', 2);
+    @testSetup
+        static void setup(){ 
+        programs = MockUpFactory.createPrograms('testProgram', 2);
         insert programs;
 
         //Segments
@@ -18,13 +18,13 @@ private class TestCreateQuestion{
         segments.get(1).FieloPLT__Program__c = programs.get(1).id;
         insert segments;
 
-    	//Courses 
+        //Courses 
         courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 3);
         courses.get(0).FieloELR__Description__c = 'aTestCourse';
 
         insert courses;
 
-    	//Module
+        //Module
         FieloELR__Module__c moduleTest = new FieloELR__Module__c();
         moduleTest.Name = 'testModule';
         moduleTest.FieloELR__Course__c = courses.get(0).id;
@@ -64,8 +64,8 @@ private class TestCreateQuestion{
         modules.add(moduleTest4);
         insert modules;
 
-    	//Question
-    	FieloELR__Question__c question1 = new FieloELR__Question__c();
+        //Question
+        FieloELR__Question__c question1 = new FieloELR__Question__c();
         question1.Name = 'question0';
         question1.FieloELR__Module__c = modules.get(0).Id;
         question1.FieloELR__QuestionText__c = 'How are you?';
@@ -109,46 +109,46 @@ private class TestCreateQuestion{
 
         modules.get(1).FieloELR__IsActive__c = true;
         update modules;
-	}
+    }
 
-	@isTest
-		static void ELR_0005_FB(){
-			
-			questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'Quest1',
-				FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-				FieloELR__Type__c = 'Single Choice',FieloELR__Order__c = 1,FieloELR__CorrectWeight__c = 1,
-				FieloELR__IncorrectWeight__c = 0,
-				FieloELR__PenaltyPerAttempt__c = 0,
-				FieloELR__QuestionText__c = 'someQuest')};
+    @isTest
+        static void ELR_0005_FB(){
+            
+            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'Quest1',
+                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
+                FieloELR__Type__c = 'Single Choice',FieloELR__Order__c = 1,FieloELR__CorrectWeight__c = 1,
+                FieloELR__IncorrectWeight__c = 0,
+                FieloELR__PenaltyPerAttempt__c = 0,
+                FieloELR__QuestionText__c = 'someQuest')};
 
-			insert questions.get(0);
-			
-			questions = [SELECT Id FROM FieloELR__Question__c  WHERE Name = 'Quest1' LIMIT 1];
+            insert questions.get(0);
+            
+            questions = [SELECT Id FROM FieloELR__Question__c  WHERE Name = 'Quest1' LIMIT 1];
 
-			System.assertEquals(1, questions.size());
-		}
+            System.assertEquals(1, questions.size());
+        }
 
-	@isTest
-		static void ELR_0005_FA1(){
-			questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'Quest1',
-				FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule1' LIMIT 1].id,
-				FieloELR__Type__c = 'Single Choice')};
-			try{
-				insert questions;
-			}catch(System.Dmlexception e){
-					System.assert(e.getMessage().Contains('Active modules or modules with module responses cannot have changes in their set of questions.'));
-			}
-		}
+    @isTest
+        static void ELR_0005_FA1(){
+            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'Quest1',
+                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule1' LIMIT 1].id,
+                FieloELR__Type__c = 'Single Choice')};
+            try{
+                insert questions;
+            }catch(System.Dmlexception e){
+                    System.assert(e.getMessage().Contains('Active modules or modules with module responses cannot have changes in their set of questions.'));
+            }
+        }
 
-	/*@isTest 
-		static void ELR_0005_FA2(){
-			FieloELR__Question__c quest = new FieloELR__Question__c();
+    /*@isTest 
+        static void ELR_0005_FA2(){
+            FieloELR__Question__c quest = new FieloELR__Question__c();
             quest.FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2' LIMIT 1].id;
             quest.Name = 'QuestName';
             quest.FieloELR__Type__c = 'Short Answer';
-			insert quest;
-			
-		} validation is not working*/ 
+            insert quest;
+            
+        } validation is not working*/ 
 
 
     /*@isTest

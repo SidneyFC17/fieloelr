@@ -1,7 +1,7 @@
 public class Questions extends SObjectDomain {
 
 	public static Boolean validateAdminFields = true;
-	public static Boolean isDelete = true;
+	public static Boolean isDelete = false;
 
 	public Questions(List<Question__c> records) {
         super(records);

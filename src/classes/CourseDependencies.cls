@@ -12,7 +12,31 @@ public class CourseDependencies extends SObjectDomain{
 
     public override void onApplyDefaults(){
         for(CourseDependency__c courseDependency : (List<CourseDependency__c>)records){
-            courseDependency.Key__c = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
+            if (courseDependency.Course__c!=null && courseDependency.Predecessor__c!=null) {
+                courseDependency.Key__c = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
+            }
+        }
+    }
+
+    public override void onValidate(Map<Id,SObject> existingRecords) {
+        for (CourseDependency__c courseDependency: (List<CourseDependency__c>) records) {
+            if (courseDependency.Predecessor__c == null) {
+                courseDependency.addError(Label.PredecessorRequired);
+            }
+            if (courseDependency.Course__c == null) {
+                courseDependency.addError(Label.CourseRequiredField);
+            }
+        }
+    }
+
+    public override void onValidate() {
+        for (CourseDependency__c courseDependency: (List<CourseDependency__c>) records) {
+            if (courseDependency.Predecessor__c == null) {
+                courseDependency.addError(Label.PredecessorRequired);
+            }
+            if (courseDependency.Course__c == null) {
+                courseDependency.addError(Label.CourseRequiredField);
+            }
         }
     }
 

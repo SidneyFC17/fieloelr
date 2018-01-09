@@ -1,5 +1,6 @@
 public class ModuleResponses extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
+    public static Set<Id> approvedIds = new Set<Id>();
     public static Boolean validateAdminFields = true;
     public static SObjectUnitOfWork questionResponseUOW;
 
@@ -226,12 +227,15 @@ public class ModuleResponses extends SObjectDomain {
                 recordsToProcess.add(record);
                 mapExistingRecordsToProcess.put(record.Id,(ModuleResponse__c)existingRecords.get(record.Id));                
                 processedIds.add(record.Id);
-
+            }
+            if(!approvedIds.contains(record.Id)) {
                 if(record.IsApproved__c && !((ModuleResponse__c)existingRecords.get(record.Id)).IsApproved__c){
                     approvedRecords.add(record);
+                    approvedIds.add(record.Id);
                 }
             }
         }
+
         if(!recordsToProcess.isEmpty()){
             FieloPLT.SObjectService.processRecords(recordsToProcess, mapExistingRecordsToProcess);
         }

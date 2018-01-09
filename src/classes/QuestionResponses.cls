@@ -23,8 +23,12 @@ public class QuestionResponses extends SObjectDomain {
         for(QuestionResponse__c questionResp : (List<QuestionResponse__c>)records){
             questionResp.IsSubmitted__c = false;
             questionResp.IsCorrect__c = false;
-            questionResp.Key__c = String.valueOf(questionResp.Question__c).subString(0,15) + String.valueOf(questionResp.ModuleResponse__c).subString(0,15);
-            qrKeys.add(questionResp.Key__c);
+            if (questionResp.Question__c != null) {
+                questionResp.Key__c = String.valueOf(questionResp.Question__c).subString(0,15) + String.valueOf(questionResp.ModuleResponse__c).subString(0,15);
+                qrKeys.add(questionResp.Key__c);
+            } else {
+                questionResp.addError(Label.QuestionFieldRequired);
+            }
         }
 
         List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM QuestionResponse__c WHERE Key__c in : qrKeys GROUP BY Key__c];
@@ -49,8 +53,13 @@ public class QuestionResponses extends SObjectDomain {
 
         Set<Id> moduleResponseIds = new Set<Id>();
         for(QuestionResponse__c questionResponse : (List<QuestionResponse__c>)records){
-            moduleResponseIds.add(questionResponse.ModuleResponse__c);
-        }        
+            if (questionResponse.Question__c == null) {
+                questionResponse.addError(Label.QuestionFieldRequired);
+            } else {
+                moduleResponseIds.add(questionResponse.ModuleResponse__c);
+            }
+        }
+
         Map<Id,ModuleResponse__c> moduleResponsesMap = 
             new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector().selectByIdWithQuestionPool(moduleResponseIds));
 
@@ -175,8 +184,21 @@ public class QuestionResponses extends SObjectDomain {
     private static void validateModuleSubmitted(List<QuestionResponse__c> questionResponses){
         Set<Id> moduleResponseIds = new Set<Id>();
         for(QuestionResponse__c questionResp : questionResponses){
-            if(questionResp.IsSubmitted__c){
-                questionResp.addError(Label.ValidateQuestionResponseDelete);
+            moduleResponseIds.add(questionResp.ModuleResponse__c);
+        }
+
+        Map<Id, ModuleResponse__c> moduleResponsesMap = new Map<Id, ModuleResponse__c>(
+            new ModuleResponsesSelector().selectById(moduleResponseIds)
+        );
+
+        for(QuestionResponse__c questionResp : questionResponses){
+            if(moduleResponsesMap.get(questionResp.ModuleResponse__c).IsSubmitted__c){
+                if (Trigger.isDelete) {
+                    questionResp.addError(Label.ValidateQuestionResponseDelete);
+                }
+                if (Trigger.isInsert) {
+                    questionResp.addError(Label.ValidateQuestionResponseInsert);
+                }
             }
         }
     }
