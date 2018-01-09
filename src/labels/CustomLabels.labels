@@ -388,4 +388,60 @@
         <shortDescription>ValidateQuestionResponseSubmit</shortDescription>
         <value>The question cannot be submitted because was already answered correct.</value>
     </labels>
+    <labels>
+        <fullName>QuestionPoolGreaterThenQuestionNumber</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>QuestionPoolGreaterThenQuestionNumber</shortDescription>
+        <value>The question pool value cannot be greater than the number of questions</value>
+    </labels>
+    <labels>
+        <fullName>CannotDeleteActiveModuleInActiveCourse</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CannotDeleteActiveModuleInActiveCourse</shortDescription>
+        <value>Cannot delete or update an active module from an active course</value>
+    </labels>
+    <labels>
+        <fullName>CourseFutureDatesNotAllowed</fullName>
+        <categories>Courses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CourseFutureDatesNotAllowed</shortDescription>
+        <value>Start Date and End Date must be equal or greater than today date.</value>
+    </labels>
+    <labels>
+        <fullName>QuestionFieldRequired</fullName>
+        <categories>QuestionResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>QuestionFieldRequired</shortDescription>
+        <value>Question is a required field.</value>
+    </labels>
+    <labels>
+        <fullName>ValidateQuestionResponseInsert</fullName>
+        <categories>QuestionResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ValidateQuestionResponseInsert</shortDescription>
+        <value>Cannot insert a Question Response for a submitted Module Response.</value>
+    </labels>
+    <labels>
+        <fullName>CourseRequiredField</fullName>
+        <categories>CourseDependencies.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CourseRequiredField</shortDescription>
+        <value>Course is a required field.</value>
+    </labels>
+    <labels>
+        <fullName>PredecessorRequired</fullName>
+        <categories>CourseDependencies.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PredecessorRequired</shortDescription>
+        <value>Predecessor is a required field</value>
+    </labels>
 </CustomLabels>

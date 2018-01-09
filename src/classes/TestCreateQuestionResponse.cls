@@ -336,7 +336,7 @@ private class TestCreateQuestionResponse {
 
         update questionResponses.get(0);
 
-        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id AND Question__r.Type__c = 'Short Answer'];
+        questionResponses = [SELECT Id, Question__c, NumberOfAttempt__c, TextValue__c FROM QuestionResponse__c WHERE ModuleResponse__c = :moduleResponses.get(0).Id AND Question__r.Type__c = 'Short Answer'];
 
         System.assertEquals('PC', questionResponses.get(0).TextValue__c);
     }

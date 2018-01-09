@@ -327,6 +327,9 @@ private class TestCreateModuleResponse {
             questionResponseTest.FieloELR__Question__c = questions.get(1).id;
             questionResponseTest.FieloELR__ModuleResponse__c = moduleRespList.get(1).id;
             questionResponses.add(questionResponseTest);
+            
+            FieloELR.ModuleResponses.validateAdminFields = false;
+            FieloELR.QuestionResponses.validateAdminFields = false;
             insert questionResponses;
             
             //Answer
@@ -338,6 +341,8 @@ private class TestCreateModuleResponse {
 
             questionResponses.get(0).FieloELR__IsSubmitted__c = true;
             update questionResponses.get(0);
+            FieloELR.QuestionResponses.validateAdminFields = true;
+            FieloELR.ModuleResponses.validateAdminFields = true;
 	     }
 
       @isTest static void ELR_0007_FB() { 

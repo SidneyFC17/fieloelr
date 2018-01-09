@@ -51,7 +51,6 @@ public class CourseStatus extends SObjectDomain {
                 courseStatus.addError(Label.ValidateCourseStatusErrorSubscriptionMode);
             }
         }
-        
     }
 
     public static void validatePredecessorAndSegments(List<CourseStatus__c> records){
