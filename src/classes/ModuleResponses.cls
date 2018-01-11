@@ -2,6 +2,7 @@ public class ModuleResponses extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
     public static Set<Id> approvedIds = new Set<Id>();
     public static Boolean validateAdminFields = true;
+    public static Boolean disableCommit = false;
     public static SObjectUnitOfWork questionResponseUOW;
 
     public ModuleResponses(List<ModuleResponse__c> records) {
@@ -24,6 +25,9 @@ public class ModuleResponses extends SObjectDomain {
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             moduleResponse.IsSubmitted__c = false;
             moduleResponse.IsApproved__c = false;
+            moduleResponse.CorrectQuestions__c = 0;
+            moduleResponse.IncorrectQuestions__c = 0;
+            moduleResponse.TotalQuestions__c = 0;
             moduleResponse.Key__c = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
             mrKeys.add(moduleResponse.Key__c);
         }
@@ -178,6 +182,15 @@ public class ModuleResponses extends SObjectDomain {
                 if(moduleResponse.Key__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).Key__c){
                     moduleResponse.Key__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).Key__c;
                 }
+                if(moduleResponse.CorrectQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c){
+                    moduleResponse.CorrectQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c;
+                }
+                if(moduleResponse.IncorrectQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IncorrectQuestions__c){
+                    moduleResponse.IncorrectQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IncorrectQuestions__c;
+                }
+                if(moduleResponse.TotalQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c){
+                    moduleResponse.TotalQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c;
+                }
             }
         }
     }
@@ -207,27 +220,29 @@ public class ModuleResponses extends SObjectDomain {
 
         // Submit Unsubmited Question Responses
         if (questionResponseUOW != null) {
-            try {
-                QuestionResponses.validateAdminFields = false;
-                validateAdminFields = false;
-                questionResponseUOW.commitWork();
-                validateAdminFields = true;
-                QuestionResponses.validateAdminFields = true;
-                QuestionResponses.disableSubmit = false;
-            } catch (Exception e) {
-                validateAdminFields = true;
-                QuestionResponses.validateAdminFields = true;
-                QuestionResponses.disableSubmit = false;
-                throw e;
+            if (!disableCommit) {
+                disableCommit = true;
+                try {
+                    QuestionResponses.validateAdminFields = false;
+                    validateAdminFields = false;
+                    questionResponseUOW.commitWork();
+                    validateAdminFields = true;
+                    QuestionResponses.validateAdminFields = true;
+                    QuestionResponses.disableSubmit = false;
+                } catch (Exception e) {
+                    validateAdminFields = true;
+                    QuestionResponses.validateAdminFields = true;
+                    QuestionResponses.disableSubmit = false;
+                    throw e;
+                }    
             }
+            questionResponseUOW = null;
         }
 
         for(ModuleResponse__c record : (List<ModuleResponse__c>)records){
-            if(!processedIds.contains(record.Id)){
-                recordsToProcess.add(record);
-                mapExistingRecordsToProcess.put(record.Id,(ModuleResponse__c)existingRecords.get(record.Id));                
-                processedIds.add(record.Id);
-            }
+            recordsToProcess.add(record);
+            mapExistingRecordsToProcess.put(record.Id,(ModuleResponse__c)existingRecords.get(record.Id));                
+            processedIds.add(record.Id);
             if(!approvedIds.contains(record.Id)) {
                 if(record.IsApproved__c && !((ModuleResponse__c)existingRecords.get(record.Id)).IsApproved__c){
                     approvedRecords.add(record);
@@ -298,9 +313,24 @@ public class ModuleResponses extends SObjectDomain {
             if(!hasError(moduleResponse.Id)){
                 moduleResponse.GradeValue__c = 0.0;
                 questionMap = new Map<Id,Question__c>(modulesMap.get(moduleResponse.Module__c).Questions__r);
-
+                
+                if (moduleResponse.CorrectQuestions__c == null) {
+                    moduleResponse.CorrectQuestions__c = 0;
+                }
+                if (moduleResponse.IncorrectQuestions__c == null) {
+                    moduleResponse.IncorrectQuestions__c = 0;
+                }
+                if (moduleResponse.TotalQuestions__c == null) {
+                    moduleResponse.TotalQuestions__c = 0;
+                }
                 for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
                     moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
+                    if (questionResponse.IsCorrect__c) {
+                        moduleResponse.CorrectQuestions__c++;
+                    } else {
+                        moduleResponse.IncorrectQuestions__c++;
+                    }
+                    moduleResponse.TotalQuestions__c++;
                 }
 
                 Decimal totalValue = modulesMap.get(moduleResponse.Module__c).QuestionPool__c == null ? modulesMap.get(moduleResponse.Module__c).TotalValue__c : modulesMap.get(moduleResponse.Module__c).QuestionPool__c;
