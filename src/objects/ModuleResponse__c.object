@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -53,12 +49,24 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>CorrectQuestions__c</fullName>
+        <externalId>false</externalId>
+        <label>Correct Questions</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>CourseStatus__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -97,6 +105,17 @@
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IncorrectQuestions__c</fullName>
+        <externalId>false</externalId>
+        <label>Incorrect Questions</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -191,6 +210,25 @@
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
+    <fields>
+        <fullName>Submit_Datetime__c</fullName>
+        <externalId>false</externalId>
+        <label>Submit Datetime</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>TotalQuestions__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Questions</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
     <gender>Feminine</gender>
     <label>Module Response</label>
     <nameField>
@@ -256,4 +294,5 @@ AND( IsSubmitted__c &amp;&amp; !PRIORVALUE(IsSubmitted__c))
         <errorConditionFormula>OR(AND(NOT(ISBLANK(Module__r.Course__r.StartDate__c)), Date__c &lt; Module__r.Course__r.StartDate__c),AND(NOT(ISBLANK(Module__r.Course__r.EndDate__c)), Date__c &gt; Module__r.Course__r.EndDate__c))</errorConditionFormula>
         <errorMessage>The course is not available in this period.</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>
