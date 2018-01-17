@@ -383,7 +383,7 @@ public class Modules extends SObjectDomain {
             if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice' || question.Type__c == 'Matching Options' || question.Type__c == 'Short Answer') && question.AnswerOptions__r.isEmpty()) {
             // Question types "statement", "single choice","multiple choice", "Matching" and "Short Answer" must have at least one answer option.
                 addError(modulesMap.get(question.Module__c),Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveQuestionAnswer +' '+ question.Name);    
-            } else if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice') && (question.AnswerOptions__r[0].IsCorrect__c != true)) {
+            } else if((question.Type__c == 'Statement' || question.Type__c == 'Single Choice' || question.Type__c == 'Multiple Choice') && (question.AnswerOptions__r[0].IsCorrect__c != true)) {
                 // Question types "statement" and "single choice" must have a correct answer option.
                 addError(modulesMap.get(question.Module__c),Label.ValidateModuleActiveQuestion +' '+ question.Type__c +' '+ Label.ValidateModuleActiveAnswer +' '+ question.Name);
             } 
