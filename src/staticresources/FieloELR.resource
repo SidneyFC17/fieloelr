@@ -83,7 +83,177 @@
             } ]
           }, {
             "objectAPIName" : "fieloplt__kpi__c",
-            "records" : [ ]
+            "records" : [ {
+              "fieldsValues" : [ {
+                "apiName" : "name",
+                "value" : "Training - Available Courses By Program"
+              }, {
+                "apiName" : "fieloplt__externalid__c",
+                "value" : "00D6A0000001u5v-a0w6A000001jTVH"
+              }, {
+                "apiName" : "fieloplt__iscustom__c",
+                "value" : "false"
+              }, {
+                "apiName" : "fieloplt__reportfilter__c",
+                "value" : "[{ \"Report Field\" : \"FK_CUSTENT_ID\", \"Operator\" : \"equals\", \"Value\" : \"a0Q6A0000005OITUA2\" }]"
+              }, {
+                "apiName" : "fieloplt__reportmetadata__c",
+                "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
+              }, {
+                "apiName" : "fieloplt__reportobjectivefield__c",
+                "value" : "RowCount"
+              }, {
+                "apiName" : "fieloplt__reporttype__c",
+                "value" : "Standard"
+              }, {
+                "apiName" : "fieloplt__reportuniquename__c",
+                "value" : "fieloelr__AvailableCourses"
+              }, {
+                "apiName" : "fieloplt__ruletrigger__c.fieloplt__externalid__c",
+                "value" : "CourseStatus",
+                "refObject" : "fieloplt__ruletrigger__c"
+              }, {
+                "apiName" : "fieloplt__type__c",
+                "value" : "Program"
+              } ],
+              "relatedList" : [ ]
+            }, {
+              "fieldsValues" : [ {
+                "apiName" : "name",
+                "value" : "Training - Members That Doesn't Finished a Course By Program"
+              }, {
+                "apiName" : "fieloplt__externalid__c",
+                "value" : "00D6A0000001u5v-a0w6A000001jTUx"
+              }, {
+                "apiName" : "fieloplt__iscustom__c",
+                "value" : "false"
+              }, {
+                "apiName" : "fieloplt__reportfilter__c",
+                "value" : "[{ \"Report Field\" : \"FieloPLT__Program__c.Id\", \"Operator\" : \"equals\", \"Record Field\": \"FieloPLT__Program__r.Id\" }]"
+              }, {
+                "apiName" : "fieloplt__reportmetadata__c",
+                "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
+              }, {
+                "apiName" : "fieloplt__reportobjectivefield__c",
+                "value" : "s!FieloPLT__Member__c.FieloPLT__MemberRecord__c"
+              }, {
+                "apiName" : "fieloplt__reporttype__c",
+                "value" : "Standard"
+              }, {
+                "apiName" : "fieloplt__reportuniquename__c",
+                "value" : "fieloelr__MembersThatDoesntFinishedACourse"
+              }, {
+                "apiName" : "fieloplt__ruletrigger__c.fieloplt__externalid__c",
+                "value" : "CourseStatus",
+                "refObject" : "fieloplt__ruletrigger__c"
+              }, {
+                "apiName" : "fieloplt__type__c",
+                "value" : "Program"
+              } ],
+              "relatedList" : [ ]
+            }, {
+              "fieldsValues" : [ {
+                "apiName" : "name",
+                "value" : "Training - Members That Doesn't Finished a Course By Promotion's Program"
+              }, {
+                "apiName" : "fieloplt__externalid__c",
+                "value" : "00D6A0000001u5v-a0w6A000001jTVC"
+              }, {
+                "apiName" : "fieloplt__iscustom__c",
+                "value" : "false"
+              }, {
+                "apiName" : "fieloplt__reportfilter__c",
+                "value" : "[{ \"Report Field\" : \"FieloPLT__Program__c.Id\", \"Operator\" : \"equals\", \"Record Field\": \"FieloPLT__Promotion__r.FieloPLT__Program__c\" }]"
+              }, {
+                "apiName" : "fieloplt__reportmetadata__c",
+                "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
+              }, {
+                "apiName" : "fieloplt__reportobjectivefield__c",
+                "value" : "s!FieloPLT__Member__c.FieloPLT__MemberRecord__c"
+              }, {
+                "apiName" : "fieloplt__reporttype__c",
+                "value" : "Standard"
+              }, {
+                "apiName" : "fieloplt__reportuniquename__c",
+                "value" : "fieloelr__MembersThatDoesntFinishedACourse"
+              }, {
+                "apiName" : "fieloplt__ruletrigger__c.fieloplt__externalid__c",
+                "value" : "CourseStatus",
+                "refObject" : "fieloplt__ruletrigger__c"
+              }, {
+                "apiName" : "fieloplt__type__c",
+                "value" : "Promotion"
+              } ],
+              "relatedList" : [ ]
+            }, {
+              "fieldsValues" : [ {
+                "apiName" : "name",
+                "value" : "Training - Members That Started a Course By Program"
+              }, {
+                "apiName" : "fieloplt__externalid__c",
+                "value" : "00D6A0000001u5v-a0w6A000001jTV2"
+              }, {
+                "apiName" : "fieloplt__iscustom__c",
+                "value" : "false"
+              }, {
+                "apiName" : "fieloplt__reportfilter__c",
+                "value" : "[{ \"Report Field\" : \"FieloPLT__Program__c.Id\", \"Operator\" : \"equals\", \"Record Field\": \"FieloPLT__Program__r.Id\" }]"
+              }, {
+                "apiName" : "fieloplt__reportmetadata__c",
+                "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
+              }, {
+                "apiName" : "fieloplt__reportobjectivefield__c",
+                "value" : "s!FieloPLT__Member__c.FieloPLT__MemberRecord__c"
+              }, {
+                "apiName" : "fieloplt__reporttype__c",
+                "value" : "Standard"
+              }, {
+                "apiName" : "fieloplt__reportuniquename__c",
+                "value" : "fieloelr__MembersThatStartedACourse"
+              }, {
+                "apiName" : "fieloplt__ruletrigger__c.fieloplt__externalid__c",
+                "value" : "CourseStatus",
+                "refObject" : "fieloplt__ruletrigger__c"
+              }, {
+                "apiName" : "fieloplt__type__c",
+                "value" : "Program"
+              } ],
+              "relatedList" : [ ]
+            }, {
+              "fieldsValues" : [ {
+                "apiName" : "name",
+                "value" : "Training - Members That Started a Course By Promotion's Program"
+              }, {
+                "apiName" : "fieloplt__externalid__c",
+                "value" : "00D6A0000001u5v-a0w6A000001jTV7"
+              }, {
+                "apiName" : "fieloplt__iscustom__c",
+                "value" : "false"
+              }, {
+                "apiName" : "fieloplt__reportfilter__c",
+                "value" : "[{ \"Report Field\" : \"FieloPLT__Program__c.Id\", \"Operator\" : \"equals\", \"Record Field\": \"FieloPLT__Promotion__r.FieloPLT__Program__c\" }]"
+              }, {
+                "apiName" : "fieloplt__reportmetadata__c",
+                "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
+              }, {
+                "apiName" : "fieloplt__reportobjectivefield__c",
+                "value" : "s!FieloPLT__Member__c.FieloPLT__MemberRecord__c"
+              }, {
+                "apiName" : "fieloplt__reporttype__c",
+                "value" : "Standard"
+              }, {
+                "apiName" : "fieloplt__reportuniquename__c",
+                "value" : "fieloelr__MembersThatStartedACourse"
+              }, {
+                "apiName" : "fieloplt__ruletrigger__c.fieloplt__externalid__c",
+                "value" : "CourseStatus",
+                "refObject" : "fieloplt__ruletrigger__c"
+              }, {
+                "apiName" : "fieloplt__type__c",
+                "value" : "Promotion"
+              } ],
+              "relatedList" : [ ]
+            } ]
           } ]
         }, {
           "fieldsValues" : [ {
