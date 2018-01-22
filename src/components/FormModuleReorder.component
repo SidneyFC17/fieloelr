@@ -1,13 +1,13 @@
 <apex:component controller="FormModuleReorderController">
-	<!-- Generales del Form -->
+    <!-- Generales del Form -->
     <apex:attribute name="formId" type="String" default="form" description="" />
     <apex:attribute name="heading" type="String" default="" description="Text of First heading line" />
     <apex:attribute name="className" description="Inject a css class to the form container" type="String" />
-	<!-- Controladores -->
+    <!-- Controladores -->
     <apex:attribute name="namespace" description="namespace of package" type="String" default="" />
     <apex:attribute name="saveController" description="controller with save remote action" type="String" default="FormModuleReorderController.reorder" />
     <apex:attribute name="secondaryParameters" description="Parameters to be passed after sobject. Separated by comma" type="String" default="" />
-	<!-- Sections y Elementos -->
+    <!-- Sections y Elementos -->
     <apex:attribute name="mode" description="new, update, view" type="String" />
     <apex:attribute name="sObjectName" type="String" default="" description="" assignTo="{!csObjectName}" />
     <apex:attribute name="fieldset" type="String" default="" description="Form Fields" assignTo="{!cFieldset}" />
@@ -60,7 +60,7 @@
             </div>
             <div class="slds-modal__footer">
                 <a data-aljs-dismiss="modal" class="slds-button slds-button--neutral slds-form__cancel">{!$Label.Cancel}</a>
-                <a data-aljs-dismiss="modal" class="slds-button slds-button--brand slds-form__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
+                <a data-aljs-dismiss="modal" class="slds-button slds-button--brand fielosf-module-reorder__save" data-confirm="{!saveConfirm}" data-confirm-message="{!saveConfirmMessage}">{!$Label.Save}</a>
             </div>          
         </div>
     </div>
