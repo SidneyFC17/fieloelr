@@ -59,19 +59,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		exportPage.getParameters().put( 'courseId', recordId );
 		exportPage.getParameters().put( 'type', 'course' );
 
-		/*
-		buttonList = new List<Map<String,Object>>();
-		buttonList.add(new Map<String,Object>{
-            'Label' => 'Export',
-            'Type' => 'Link', //Remote
-            'Action' => exportPage.getUrl()
-        });
-
-		toolsString = JSON.serialize(buttonList);
-        toolsString = toolsString.substring(1,toolsString.length()-1);
-		*/
-
-		initPageSettings(objectName, record, buttonString, '', '');
+		initPageSettings( objectName, (SObject) record, '', '', '',record.Id );
 
 		if (relatedSettings != null) {
 			for(FieloPLT__PageSettings__c settings:relatedSettings) {

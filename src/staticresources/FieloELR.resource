@@ -19,7 +19,7 @@
         "value" : "FieloELR"
       }, {
         "apiName" : "fieloplt__version__c",
-        "value" : "1.006"
+        "value" : "1.003"
       }, {
         "apiName" : "fieloplt__externalid__c",
         "value" : "FieloELR"
@@ -41,11 +41,17 @@
             "apiName" : "fieloplt__lookupfromtransaction__c",
             "value" : "FieloELR__CourseStatus__c"
           }, {
+            "apiName" : "fieloplt__lookupfromtracker__c",
+            "value" : "FieloELR__CourseStatus__c"
+          }, {
             "apiName" : "fieloplt__object__c",
             "value" : "FieloELR__CourseStatus__c"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "CourseStatus"
+          }, {
+            "apiName" : "fieloplt__lookupfromemailalert__c",
+            "value" : "FieloELR__CourseStatus__c"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__action__c",
@@ -63,6 +69,12 @@
               }, {
                 "apiName" : "fieloplt__externalid__c",
                 "value" : "CourseStatusFieloELRMemberc"
+              }, {
+                "apiName" : "fieloplt__targetemailfield__c",
+                "value" : "FieloELR__Member__r.FieloPLT__Email__c"
+              }, {
+                "apiName" : "fieloplt__targetemailobject__c",
+                "value" : "FieloPLT__Member__c"
               } ],
               "relatedList" : [ {
                 "objectAPIName" : "fieloplt__programassignment__c",
@@ -105,6 +117,9 @@
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "ModuleResponse"
+          }, {
+            "apiName" : "fieloplt__lookupfromemailalert__c",
+            "value" : "FieloELR__ModuleResponse__c"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__action__c",
@@ -122,6 +137,12 @@
               }, {
                 "apiName" : "fieloplt__externalid__c",
                 "value" : "ModuleResponseFieloELRMemberc"
+              }, {
+                "apiName" : "fieloplt__targetemailfield__c",
+                "value" : "FieloELR__Member__r.FieloPLT__Email__c"
+              }, {
+                "apiName" : "fieloplt__targetemailobject__c",
+                "value" : "FieloPLT__Member__c"
               } ],
               "relatedList" : [ {
                 "objectAPIName" : "fieloplt__programassignment__c",
@@ -252,30 +273,11 @@
         "objectAPIName" : "fieloplt__pagesettings__c",
         "records" : [ {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Answer Option > Edit"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__AnswerOption__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Order__c\", \"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__AnswerOptionText__c\", \"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__IsCorrect__c\", \"Type\":\"checkbox\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Edit"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2l"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -283,30 +285,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > Detail"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__SubscriptionMode__c\",\"Type\":\"picklist\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Description__c\",\"Type\":\"input\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Detail"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU34"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -314,30 +297,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > Edit"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{ \t\r\n\t\"Name\":\"Information\",\r\n \t\"Rows\": \t\r\n\t[ \t\t\r\n\t\t[ \t\t\t\r\n\t\t\t{\"Name\":\"Name\",\"Type\":\"input\"}\r\n \t\t], \t\t\r\n\t\t[ \t\t\t\t\t\t\t\t\t{\"Name\":\"FieloELR__Program__c\",\"Type\":\"lookup\"}\r\n \t\t],\r\n \t\t[ \t\t\t\t\t\t\t\t\t{\"Name\":\"FieloELR__Segment__c\",\"Type\":\"multiselect\"}\r\n \t\t],\r\n \t\t[ \t\t\t\t\t\t{\"Name\":\"FieloELR__SubscriptionMode__c\",\"Type\":\"radio\"}\r\n\t\t],\r\n \t\t[ \t\t\t\t\t\t{\"Name\":\"FieloELR__Description__c\",\"Type\":\"input\"}\r\n \t\t],\r\n \t\t[ \t\t\t\t\t\t{\"Name\":\"FieloELR__StartDate__c\",\"Type\":\"input\"},\r\n \t\t\t{\"Name\":\"FieloELR__EndDate__c\",\"Type\":\"input\"}\r\n \t\t]\r\n \t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Edit"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2r"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -345,36 +309,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > Landing"
-          }, {
-            "apiName" : "fieloplt__buttons__c",
-            "value" : "{'Label': 'New', 'Type': 'Modal', 'Action': 'FieloELR__Course__cForm' }"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__SubscriptionMode__c\"},{\"Name\":\"FieloELR__Status__c\"},{\"Name\":\"FieloELR__Program__r.Name\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "View;Settings"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Landing"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2o"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -382,30 +321,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > New"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"Name\",\"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Program__c\",\"Type\":\"lookup\",\"onchange\":\"RefreshSegments\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Segment__c\",\"Type\":\"multiselect\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__SubscriptionMode__c\",\"Type\":\"radio\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Description__c\",\"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__StartDate__c\",\"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__EndDate__c\",\"Type\":\"input\"}\r\n\t\t]\r\n\t]\r\n}, \r\n{ \"Name\": \"Model\", \"Rows\": [[ { \"Label\": \"Course\", \"Type\": \"model\" }]]}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "New"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2p"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -413,51 +333,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > Related > Course Dependency"
-          }, {
-            "apiName" : "fieloplt__actions__c",
-            "value" : "{\"Label\":\"Delete\",\"Type\":\"Remote\",\"Action\":\"FieloELR.RelatedListController.deleteRecord\",\"CssClass\":\"slds-button--destructive\",\"Confirm\":true}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Predecessor__r.Name\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "Name"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "2"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Course__c\",\"Type\":\"lookup\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Predecessor__c\",\"Type\":\"lookup\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "New"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__CourseDependency__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2t"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -465,39 +345,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > Related > Course Status"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Progress__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "3"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__CourseStatus__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU38"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -505,48 +357,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > Related > Module"
-          }, {
-            "apiName" : "fieloplt__actions__c",
-            "value" : "{\"Label\":\"Delete\",\"Type\":\"Remote\",\"Action\":\"FieloELR.RelatedListController.deleteRecord\",\"CssClass\":\"slds-button--destructive\",\"Confirm\":true}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__ApprovalGrade__c\"},\r\n{\"Name\":\"FieloELR__IsActive__c\"},\r\n{\"Name\":\"FieloELR__Order__c\"},\r\n{\"Name\":\"FieloELR__PenaltyMode__c\"},\r\n{\"Name\":\"FieloELR__QuestionPool__c\"},\r\n{\"Name\":\"FieloELR__WeightedQuestions__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "FieloELR__Order__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "Edit;New"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2q"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -554,39 +369,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course > View"
-          }, {
-            "apiName" : "fieloplt__buttons__c",
-            "value" : "{\"Label\":\"Clone\",\"Type\":\"Modal\",\"Action\":\"FieloELR__Course__cFormClone\"}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"Name\"}, {\"Name\":\"FieloELR__Program__r.Name\"}, {\"Name\":\"FieloELR__Status__c\"}, {\"Name\":\"FieloELR__Segment__r.Name\"}, {\"Name\":\"FieloELR__StartDate__c\"}, {\"Name\":\"FieloELR__EndDate__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Course__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "Edit;Delete;View;Settings"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "View"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2s"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -594,30 +381,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course Dependency > Edit"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__CourseDependency__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Course__c\",\"Type\":\"lookup\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Predecessor__c\",\"Type\":\"lookup\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Edit"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2n"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -625,33 +393,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course Dependency > New"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__CourseDependency__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Course__c\",\"Type\":\"lookup\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Predecessor__c\",\"Type\":\"lookup\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "New"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2u"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -659,48 +405,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course Status > Related > Module Response"
-          }, {
-            "apiName" : "fieloplt__actions__c",
-            "value" : "{\"Label\":\"Delete\",\"Type\":\"Remote\",\"Action\":\"FieloELR.RelatedListController.deleteRecord\",\"CssClass\":\"slds-button--destructive\",\"Confirm\":true}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Module__r.Name\"},{\"Name\":\"FieloELR__Date__c\"},  {\"Name\":\"FieloELR__GradePercent__c\"},  {\"Name\":\"FieloELR__IsApproved__c\"},  {\"Name\":\"FieloELR__IsSubmitted__c\"}, {\"Name\":\"FieloELR__NumberOfAttempt__c\"}, {\"Name\":\"FieloELR__NumberofApprove__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__CourseStatus__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "FieloELR__Date__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{ \t\"Name\":\"Information\", \t\"Rows\": \t[ \t\t[ \t\t\t{\"Name\":\"Name\",\"Type\":\"input\"} \t\t], \t\t[ \t\t\t{\"Name\":\"FieloELR__CourseStatus__c\",\"Type\":\"lookup\"} \t\t], \t\t[ {\"Name\":\"FieloELR__Date__c\",\"Type\":\"input\"},\t \t\t{\"Name\":\"FieloELR__GradePercent__c\",\"Type\":\"input\"} \t\t], \t\t[ {\"Name\":\"FieloELR__IsApproved__c\",\"Type\":\"checkbox\"}, {\"Name\":\"FieloELR__IsSubmitted__c\",\"Type\":\"checkbox\"}, \t\t], \t\t[ {\"Name\":\"FieloELR__NumberOfAttempt__c\",\"Type\":\"input\"},\t\t\t {\"Name\":\"FieloELR__NumberOFApprove__c\",\"Type\":\"picklist\"} \t\t] \t] }"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__CourseStatus__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__ModuleResponse__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
-            "value" : "00D6A0000001u5v-a0L6A000000BU37"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
+            "value" : "00D6A0000001u5v-a0L6A0000015xcN"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -708,33 +417,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Course Status > View"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"Name\"},  {\"Name\":\"FieloELR__Course__r.Name\"}, {\"Name\":\"FieloELR__Member__r.Name\"}, {\"Name\":\"FieloELR__Progress__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__CourseStatus__c"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "Delete;View;Settings"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "View"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2j"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -742,30 +429,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module > Detail"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Description__c\",\"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__ApprovalGrade__c\",\"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__QuestionPool__c\",\"Type\":\"checkbox\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__AttemptsAllowed__c\",\"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__AttemptsAllowedPerQuestion__c\",\"Type\":\"input\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Detail"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU35"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -773,30 +441,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module > Edit"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\": [ \t\t\r\n\t\t\t[ \t\t\t\r\n\t\t\t\t{\"Name\":\"Name\",\"Type\":\"input\"} \t\t\r\n\t\t\t],\r\n\t\t\t[\r\n\t\t\t\t{\"Name\":\"FieloELR__Description__c\",\"Type\":\"input\"}\t\t\r\n\t\t\t],\r\n\t\t\t[\t\r\n\t\t\t\t{\"Name\":\"FieloELR__Course__c\",\"Type\":\"lookup\"}\r\n\t\t\t],\r\n\t\t\t[ \t\t\t\t\t\t\t\r\n\t\t\t\t{\"Name\":\"FieloELR__ApprovalGrade__c\",\"Type\":\"input\"}\t\t\t\t\r\n\t\t\t],\r\n\t\t\t[\r\n\t\t\t\t{\"Name\":\"FieloELR__AttemptsAllowed__c\",\"Type\":\"input\"}\r\n\t\t\t]\r\n\t] \r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Edit"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2z"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -804,33 +453,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module > New"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"Name\",\"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Description__c\",\"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Course__c\",\"Type\":\"lookup\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__ApprovalGrade__c\",\"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__AttemptsAllowed__c\",\"Type\":\"input\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "New"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2v"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -838,51 +465,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module > Related > Module Dependency"
-          }, {
-            "apiName" : "fieloplt__actions__c",
-            "value" : "{\"Label\":\"Delete\",\"Type\":\"Remote\",\"Action\":\"FieloELR.RelatedListController.deleteRecord\",\"CssClass\":\"slds-button--destructive\",\"Confirm\":true}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Predecessor__r.Name\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "Name"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "2"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{ \t\"Name\":\"Information\", \t\"Rows\": \t[ \t\t[ \t\t\t{\"Name\":\"FieloELR__Module__c\",\"Type\":\"lookup\"} \t\t], \t\t[ \t\t\t{\"Name\":\"FieloELR__Predecessor__c\",\"Type\":\"lookup\"} \t\t] \t] }"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "New"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__ModuleDependency__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2m"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -890,39 +477,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module > Related > Module Response"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Date__c\"},  {\"Name\":\"FieloELR__GradePercent__c\"},  {\"Name\":\"FieloELR__IsApproved__c\"},  {\"Name\":\"FieloELR__IsSubmitted__c\"}, {\"Name\":\"FieloELR__NumberOfAttempt__c\"}, {\"Name\":\"FieloELR__NumberofApprove__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "3"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__ModuleResponse__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU36"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -930,48 +489,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module > Related > Question"
-          }, {
-            "apiName" : "fieloplt__actions__c",
-            "value" : "{\"Label\":\"Edit\",\"Type\":\"Modal\",\"Action\":\"FieloELR__Question__cForm-multiplechoice\"},{\"Label\":\"Delete\",\"Type\":\"Remote\",\"Action\":\"FieloELR.RelatedListController.deleteRecord\",\"CssClass\":\"slds-button--destructive\",\"Confirm\":true}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Type__c\"},\r\n{\"Name\":\"FieloELR__QuestionText__c\"},\r\n{\"Name\":\"FieloELR__PenaltyPerAttempt__c\"},\r\n{\"Name\":\"FieloELR__CorrectWeight__c\"},\r\n{\"Name\":\"FieloELR__IncorrectWeight__c\"},\r\n{\"Name\":\"FieloELR__Order__c\"},\r\n{\"Name\":\"FieloELR__ShuffleAnswerOptions__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "FieloELR__Order__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "New"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2y"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -979,36 +501,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module > View"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"Name\"},  {\"Name\":\"FieloELR__Course__r.Name\"}, {\"Name\":\"FieloELR__IsActive__c\"}, {\"Name\":\"FieloELR__WeightedQuestions__c\"}, {\"Name\":\"FieloELR__PenaltyMode__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Module__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "Edit;Delete;View;Settings"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "View"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU30"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1016,33 +513,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module Dependency > Edit"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__ModuleDependency__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{ \t\"Name\":\"Information\", \t\"Rows\": \t[ \t\t[ \t\t\t{\"Name\":\"FieloELR__Module__c\",\"Type\":\"lookup\"} \t\t], \t\t[ \t\t\t{\"Name\":\"FieloELR__Predecessor__c\",\"Type\":\"lookup\"} \t\t] \t] }"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Edit"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2w"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1050,33 +525,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module Dependency > New"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__ModuleDependency__c"
-          }, {
-            "apiName" : "fieloplt__order__c",
-            "value" : "1"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{ \t\"Name\":\"Information\", \t\"Rows\": \t[ \t\t[ \t\t\t{\"Name\":\"FieloELR__Module__c\",\"Type\":\"lookup\"} \t\t], \t\t[ \t\t\t{\"Name\":\"FieloELR__Predecessor__c\",\"Type\":\"lookup\"} \t\t] \t] }"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "New"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2x"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1084,45 +537,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module Response > Related > Question Response"
-          }, {
-            "apiName" : "fieloplt__actions__c",
-            "value" : "{\"Label\":\"Delete\",\"Type\":\"Remote\",\"Action\":\"FieloELR.RelatedListController.deleteRecord\",\"CssClass\":\"slds-button--destructive\",\"Confirm\":true}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Question__r.Name\"}, {\"Name\":\"FieloELR__IsCorrect__c\"},  {\"Name\":\"FieloELR__IsSubmitted__c\"},  {\"Name\":\"FieloELR__PartialGradeValue__c\"},  {\"Name\":\"FieloELR__NumberOfAttempt__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__ModuleResponse__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{ \t\"Name\":\"Information\", \t\"Rows\": \t[ \t\t[ \t\t\t{\"Name\":\"Name\",\"Type\":\"input\"} \t\t], \t\t[ {\"Name\":\"FieloELR__ModuleStatus__c\",\"Type\":\"lookup\"}, {\"Name\":\"FieloELR__Question__c\",\"Type\":\"lookup\"} \t\t], \t\t[ {\"Name\":\"FieloELR__IsCorrect__c\",\"Type\":\"checkbox\"}, {\"Name\":\"FieloELR__IsSubmitted__c\",\"Type\":\"checkbox\"}, \t\t], \t\t[ {\"Name\":\"FieloELR__PartialGradeValue__c\",\"Type\":\"input\"},\t\t\t {\"Name\":\"FieloELR__NumberOfAttempt__c\",\"Type\":\"input\"} \t\t] \t] }"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__ModuleResponse__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__QuestionResponse__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
-            "value" : "00D6A0000001u5v-a0L6A000000BU3A"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
+            "value" : "00D6A0000001u5v-a0L6A0000015xcX"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1130,33 +549,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Module Response > View"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"Name\"},  {\"Name\":\"FieloELR__CourseStatus__r.Name\"}, {\"Name\":\"FieloELR__Module__r.Name\"}, {\"Name\":\"FieloELR__Member__r.Name\"}, {\"Name\":\"FieloELR__GradePercent__c\"}, {\"Name\":\"FieloELR__IsApproved__c\"}, {\"Name\":\"FieloELR__IsSubmitted__c\"}, {\"Name\":\"FieloELR__NumberofApprove__c\"}, {\"Name\":\"FieloELR__NumberOfAttempt__c\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__ModuleResponse__c"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "Delete;View;Settings"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "View"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU39"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1164,42 +561,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Question (Question Wizard) > Related > Answer Option"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{'Name':'FieloELR__AnswerOptionText__c', 'Type':'input'},\r\n{'Name':'FieloELR__MatchingText__c', 'Type':'input'},\r\n{'Name':'FieloELR__IsCorrect__c', 'Type':'checkbox'},\r\n{'Name':'FieloELR__Order__c', 'Type': 'input'}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "FieloELR__Order__c"
-          }, {
-            "apiName" : "fieloplt__recordtype__c",
-            "value" : "Question Wizard"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__AnswerOption__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2i"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1207,30 +573,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Question > Detail"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__QuestionText__c\", \"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__CorrectWeight__c\", \"Type\":\"input\"}, \r\n\t\t\t{\"Name\":\"FieloELR__PenaltyPerAttempt__c\", \"Type\":\"input\"}, \r\n\t\t\t{\"Name\":\"FieloELR__IncorrectWeight__c\", \"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Order__c\", \"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__ShuffleAnswerOptions__c\", \"Type\":\"checkbox\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Detail"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU33"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1238,30 +585,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Question > Edit"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Module__c\",\"Type\":\"lookup\"},\r\n\t\t\t{\"Name\":\"Name\",\"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__ShuffleAnswerOptions__c\",\"Type\":\"checkbox\"},\r\n\t\t\t{\"Name\":\"FieloELR__CorrectWeight__c\",\"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__IncorrectWeight__c\",\"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__PenaltyPerAttempt__c\",\"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__Type__c\",\"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__QuestionText__c\",\"Type\":\"input\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Edit"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU31"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1269,42 +597,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Question > Related > Answer Option"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{'Name':'FieloELR__IsCorrect__c', 'Type':'checkbox'},{'Name':'FieloELR__Order__c', 'Type': 'input'},{'Name':'FieloELR__AnswerOptionText__c', 'Type':'input'},\r\n{'Name':'FieloELR__MatchingText__c', 'Type':'input'}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
-          }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__orderby__c",
-            "value" : "FieloELR__Order__c"
-          }, {
-            "apiName" : "fieloplt__sections__c",
-            "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\":\r\n\t[\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__QuestionText__c\", \"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__CorrectWeight__c\", \"Type\":\"input\"}, \r\n\t\t\t{\"Name\":\"FieloELR__PenaltyPerAttempt__c\", \"Type\":\"input\"}, \r\n\t\t\t{\"Name\":\"FieloELR__IncorrectWeight__c\", \"Type\":\"input\"}\r\n\t\t],\r\n\t\t[\r\n\t\t\t{\"Name\":\"FieloELR__Order__c\", \"Type\":\"input\"},\r\n\t\t\t{\"Name\":\"FieloELR__ShuffleAnswerOptions__c\", \"Type\":\"checkbox\"}\r\n\t\t]\r\n\t]\r\n}"
-          }, {
-            "apiName" : "fieloplt__targetfield__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__targetobject__c",
-            "value" : "FieloELR__AnswerOption__c"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "Related"
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU32"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",
@@ -1312,36 +609,11 @@
           } ]
         }, {
           "fieldsValues" : [ {
-            "apiName" : "name",
-            "value" : "Question > View"
-          }, {
-            "apiName" : "fieloplt__buttons__c",
-            "value" : "{\"Label\":\"Edit\",\"Type\":\"Modal\",\"Action\":\"FieloELR__Question__cForm-multiplechoice\"}"
-          }, {
-            "apiName" : "fieloplt__fieldset__c",
-            "value" : "{\"Name\":\"FieloELR__Type__c\"}, {\"Name\":\"FieloELR__Module__r.Name\"}"
-          }, {
             "apiName" : "fieloplt__isactive__c",
             "value" : "true"
           }, {
-            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
-            "value" : "FieloELR",
-            "refObject" : "fieloplt__library__c"
-          }, {
-            "apiName" : "fieloplt__object__c",
-            "value" : "FieloELR__Question__c"
-          }, {
-            "apiName" : "fieloplt__standardactions__c",
-            "value" : "Delete;View;Settings"
-          }, {
-            "apiName" : "fieloplt__type__c",
-            "value" : "View"
-          }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2k"
-          }, {
-            "apiName" : "fieloplt__iscustom__c",
-            "value" : "true"
           } ],
           "relatedList" : [ {
             "objectAPIName" : "fieloplt__programassignment__c",

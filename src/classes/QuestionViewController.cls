@@ -29,7 +29,9 @@ public with sharing class QuestionViewController extends PageSettingsController 
 
         record = (FieloELR__Question__c)controller.getRecord();
 
-		initPageSettings(objectName, record, '', '', '');
+		// initPageSettings(objectName, (SObject) record, '', '', '', record.Id);
+
+		initPageSettings( objectName, (SObject) record, '', '', 'utility-sprite/svg/symbols.svg#world',record.Id );
 
 		if ( fieldList.size() > 0  ) {
 			for(String fieldName:fieldList) {
