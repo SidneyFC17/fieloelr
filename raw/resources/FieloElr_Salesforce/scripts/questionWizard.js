@@ -135,7 +135,7 @@
         retrieveRecordId,
         this.fields_.join(),
         this.retrieveHandler_.bind(this),
-        {escape: true}
+        {escape: false}
       );
     } else {
       this.isEditing = false;
@@ -154,7 +154,16 @@
 
   FieloQuestionWizard.prototype.retrieveHandler_ = function(result) {
     fielo.util.spinner.FieloSpinner.show();
+    // Adding Treatment for htmlTextArea Fields
+    // Temporary
+    [].forEach.call(Object.keys(result), function(fieldName) {
+      if (fieldName.indexOf('__c') > -1 &&
+        typeof result[fieldName] === 'string') {
+        result[fieldName] = this.decode(result[fieldName]);
+      }
+    }, this);
     this.result = result;
+    console.log(this.result);
     // Set form type
     $('#' + this.formId_)
       .find('[data-field-name="FieloELR__Type__c"]')[0]
@@ -243,6 +252,12 @@
       }
     }
     fielo.util.spinner.FieloSpinner.hide();
+  };
+
+  FieloQuestionWizard.prototype.decode = function(str) {
+    return str.replace(/&#(\d+);/g, function(match, dec) {
+      return String.fromCharCode(dec);
+    });
   };
 
   FieloQuestionWizard.prototype.setAnswers_ = function(answers) {
@@ -423,7 +438,7 @@
           deletedIds,
           this.processRemoteActionResult_.bind(this),
           {
-            escape: false
+            escape: true
           }
         );
       }

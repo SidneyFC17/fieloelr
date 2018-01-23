@@ -79,7 +79,7 @@ public with sharing class CourseViewController extends PageSettingsController {
         standardTools = standardTools.substring(1,standardTools.length()-1);
 		
 
-		initPageSettings(objectName, record, buttonString, standardTools, '');
+		initPageSettings(objectName, (SObject) record, buttonString, standardTools, '', record.Id);
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 		try{

@@ -1,6 +1,6 @@
 @isTest
-public class TestModuleViewController
-{
+public class TestModuleViewController {
+
     @testSetup static void pageSettingsSetup() {
         List<FieloPLT__PageSettings__c> pageSettings = new List<FieloPLT__PageSettings__c>();
 
@@ -25,8 +25,7 @@ public class TestModuleViewController
         insert pageSettings;
     }
 
-    @isTest static void itShouldViewModuleWithActivateButton()
-    {
+    @isTest static void itShouldViewModuleWithActivateButton() {
         List<FieloPLT__Program__c> programs =
             MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -36,15 +35,16 @@ public class TestModuleViewController
         List<FieloPLT__Segment__c> segments =
             MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-        segments.add(metaSegment);
-
         for (FieloPLT__Segment__c segment:segments) {
             segment.FieloPLT__Program__c = programs[0].Id;
         }
 
         insert segments;
+
+        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+        metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+        insert metaSegment;
 
         FieloELR__Course__c course = new FieloELR__Course__c(
             Name = 'Developers Course'
@@ -97,8 +97,7 @@ public class TestModuleViewController
         result = ModuleViewController.activate(module.Id);*/
     }
 
-    @isTest static void itShouldViewModuleWithInactivateButton()
-    {
+    @isTest static void itShouldViewModuleWithInactivateButton() {
         List<FieloPLT__Program__c> programs =
             MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -108,15 +107,16 @@ public class TestModuleViewController
         List<FieloPLT__Segment__c> segments =
             MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-        segments.add(metaSegment);
-
         for (FieloPLT__Segment__c segment:segments) {
             segment.FieloPLT__Program__c = programs[0].Id;
         }
 
         insert segments;
+
+        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+        metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+        insert metaSegment;
 
         FieloELR__Course__c course = new FieloELR__Course__c(
             Name = 'Developers Course'
@@ -155,8 +155,7 @@ public class TestModuleViewController
         RemoteActionResult result = ModuleViewController.inactivate(module.Id);
     }
 
-    @isTest static void itShouldRetrieveModule()
-    {
+    @isTest static void itShouldRetrieveModule() {
         List<FieloPLT__Program__c> programs =
             MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -166,15 +165,16 @@ public class TestModuleViewController
         List<FieloPLT__Segment__c> segments =
             MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-        segments.add(metaSegment);
-
         for (FieloPLT__Segment__c segment:segments) {
             segment.FieloPLT__Program__c = programs[0].Id;
         }
 
         insert segments;
+
+        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+        metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+        insert metaSegment;
 
         FieloELR__Course__c course = new FieloELR__Course__c(
             Name = 'Developers Course'
@@ -213,8 +213,7 @@ public class TestModuleViewController
         module = (FieloELR__Module__c) ModuleViewController.retrieve('FieloELR__Module__c', module.Id, fields);
     }
 
-    @isTest static void itShouldCreateModuleDependency()
-    {
+    @isTest static void itShouldCreateModuleDependency() {
         List<FieloPLT__Program__c> programs =
             MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -224,15 +223,16 @@ public class TestModuleViewController
         List<FieloPLT__Segment__c> segments =
             MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-        segments.add(metaSegment);
-
         for (FieloPLT__Segment__c segment:segments) {
             segment.FieloPLT__Program__c = programs[0].Id;
         }
 
         insert segments;
+
+        metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+        metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+        insert metaSegment;
 
         FieloELR__Course__c course = new FieloELR__Course__c(
             Name = 'Developers Course'

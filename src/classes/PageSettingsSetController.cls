@@ -1,5 +1,11 @@
 // TODO: Ver que pasa cuando hay registros para un program y registros sin program
 public with sharing abstract class PageSettingsSetController {
+    public Boolean showHeader { get{
+            if (showHeader == null){
+                showHeader = ApexPages.currentPage().getParameters().containsKey('embed') ? false : true;
+            } return showHeader;
+        } set; }    
+
     public String objectName { get; set; }
     private Map<ID, Schema.RecordTypeInfo> mapRecordTypes { get; set; } 
 
@@ -48,7 +54,7 @@ public with sharing abstract class PageSettingsSetController {
 /* 
     Constructor para las Landings
 */
-    public void initPageSettings( String objectName, String standardButtons, String standardTools, String defaultIcon  ) {
+    public void initPageSettings( String objectName, String standardButtons, String standardTools, String defaultIcon, Id programId ) {
         newSettings = null;
         landingSettings = null;
         
@@ -62,7 +68,14 @@ public with sharing abstract class PageSettingsSetController {
         //  }
         //}
 
-        List<FieloPLT__PageSettings__c> settings =  PageSettingsController.getPageSettings( new List<String>{ 'Edit', 'New', 'Landing' }, recordTypeNames, objectName );
+        if(programId == null){
+            FieloPLT__Program__c activeProgram = ProgramService.getActiveProgram();
+            if(activeProgram != null){
+                programId = activeProgram.Id;
+            }
+        }
+
+        List<FieloPLT__PageSettings__c> settings =  PageSettingsController.getPageSettings( new List<String>{ 'Edit', 'New', 'Landing' }, recordTypeNames, objectName, programId );
 
         newPS = new FieloPLT__PageSettings__c( FieloPLT__Sections__c = '', FieloPLT__Object__c = objectName );
         FieloPLT__PageSettings__c editPS = new FieloPLT__PageSettings__c( FieloPLT__Sections__c = '', FieloPLT__Object__c = objectName );
@@ -108,7 +121,7 @@ public with sharing abstract class PageSettingsSetController {
             }
         }
         if ( !hasNewForm && hasEditForm ) {
-        	newPS = editPS;
+            newPS = editPS;
             hasNewForm = true;
         }
         if ( ! String.isBlank( landingPS.FieloPLT__StandardActions__c )  ) {
@@ -116,19 +129,18 @@ public with sharing abstract class PageSettingsSetController {
             opciones.addAll( landingPS.FieloPLT__StandardActions__c.split(';') );
 
             if ( opciones.contains('Settings') ){
-                landingPS.FieloPLT__Tools__c = '{"Label": "Settings", "Type": "Link", "Action": "/apex/FieloPLT__PageSettingsView?type=set&objectName=' + objectName + '" }' + (String.isBlank(landingPS.FieloPLT__Tools__c)?'':',') + landingPS.FieloPLT__Tools__c;
-
+                landingPS.FieloPLT__Tools__c = '{"Label": "' + Label.fieloplt.Settings + '", "Type": "Link", "Action": "/apex/FieloPLT__PageSettingsListView?type=set&objectName=' + objectName + '" }' + (String.isBlank(landingPS.FieloPLT__Tools__c)?'':',') + landingPS.FieloPLT__Tools__c;
             }
 
             if ( opciones.contains('New') ){
-                Schema.DescribeSObjectResult[] describes = SObjectDescribe.describeSObjects(  new List<String>{objectName} );          
-                Schema.DescribeSObjectResult describeObject = describes.get(0);
-
-                if ( hasNewForm && describeObject.isCreateable() ) {
-                    landingPS.FieloPLT__Buttons__c = '{"Label": "' + Label.New + '", "Type": "Modal", "Action": "' + objectName + 'Form" }' + (String.isBlank(landingPS.FieloPLT__Buttons__c)?'':',') + landingPS.FieloPLT__Buttons__c;
-                } else {
-                    landingPS.FieloPLT__Buttons__c = '{"Label": "' + Label.New + '", "Type": "Action", "Action": "New", "ObjectName" : "' + objectName + '" }' + (String.isBlank(landingPS.FieloPLT__Buttons__c)?'':',') + landingPS.FieloPLT__Buttons__c;
-                }               
+                Schema.DescribeSObjectResult describeObjectResult = ((sObject)Type.forName(objectName).newInstance()).getSObjectType().getDescribe();
+                if(describeObjectResult.isCreateable()){
+                    if(hasNewForm){
+                        landingPS.FieloPLT__Buttons__c = '{"Label": "' + Label.New + '", "Type": "Modal", "Action": "' + objectName + 'Form" }' + (String.isBlank(landingPS.FieloPLT__Buttons__c)?'':',') + landingPS.FieloPLT__Buttons__c;
+                    }else{
+                        landingPS.FieloPLT__Buttons__c = '{"Label": "' + Label.New + '", "Type": "Action", "Action": "New", "ObjectName" : "' + objectName + '" }' + (String.isBlank(landingPS.FieloPLT__Buttons__c)?'':',') + landingPS.FieloPLT__Buttons__c;
+                    }
+                }             
             }
         }    
     }

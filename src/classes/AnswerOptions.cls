@@ -1,6 +1,7 @@
 public class AnswerOptions extends SObjectDomain {
+    public static Boolean validateAdminFields = true;
 
-	public  AnswerOptions(List<AnswerOption__c> records) {
+    public  AnswerOptions(List<AnswerOption__c> records) {
         super(records);
     }
 
@@ -15,18 +16,18 @@ public class AnswerOptions extends SObjectDomain {
     }
 
     public override void onBeforeInsert() {
-    	validateAnswerOptions(records, true);
+        validateAnswerOptions(records, true);
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
-		validateAnswerOptions(records, true);
+        validateAnswerOptions(records, true);
         setDefaultOrder(records);
     }
 
-	public override void onBeforeDelete() {
-     	if(!Questions.isDelete){
-     		validateAnswerOptions(records, false);
-     	}
+    public override void onBeforeDelete() {
+        if(!Questions.isDelete){
+            validateAnswerOptions(records, false);
+        }
     }
 
     private void setDefaultOrder(List<AnswerOption__c> answerOptions){
@@ -60,55 +61,55 @@ public class AnswerOptions extends SObjectDomain {
         }
     }
 
-	// General validations for a list of answers
+    // General validations for a list of answers
     private void validateAnswerOptions(List<AnswerOption__c> answerOptions, Boolean validateFormat) {
-		
-	    Set<Id> questions = new Set<Id>();
-	    for(AnswerOption__c answerOption : answerOptions) {
-			questions.add(answerOption.Question__c);
-	    }
+        if (validateAdminFields) {
+            Set<Id> questions = new Set<Id>();
+            for(AnswerOption__c answerOption : answerOptions) {
+                questions.add(answerOption.Question__c);
+            }
 
-		Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__c', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithQuestionResponses(questions));
+            Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(new QuestionsSelector(new Set<String> {'Id', 'Module__c', 'Module__r.IsActive__c', 'Type__c'}).selectByIdWithQuestionResponses(questions));
 
-        Set<Id> moduleResponses = new Set<Id>();
-        for (Question__c question: questionsMap.values()) {
-            moduleResponses.add(question.Module__c);
-        }
+            Set<Id> moduleResponses = new Set<Id>();
+            for (Question__c question: questionsMap.values()) {
+                moduleResponses.add(question.Module__c);
+            }
 
-        Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector().selectByIdHavingModuleResponses(moduleResponses));
+            Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector().selectByIdHavingModuleResponses(moduleResponses));
 
-	    for(AnswerOption__c answerOption : answerOptions) {
+            for(AnswerOption__c answerOption : answerOptions) {
 
-			// If the module is active, answers cannot be deleted, updated or added.																		
-	    	if(questionsMap.get(answerOption.Question__c).Module__r.IsActive__c) {
-	        	answerOption.addError(Label.ValidateAnswerActiveModules);
-	        	continue;
-	    	}
-
-    		// If the question type is "Matching Options", the format for Answer Text must be validated as {"xx":"yy"}
-  			if(validateFormat && questionsMap.get(answerOption.Question__c).Type__c == 'Matching Options') {   
-				if(String.isBlank(answerOption.MatchingText__c)) {
-		        	answerOption.addError(Label.ValidateMatchingText);             
-				}
-  				if (!String.isBlank(answerOption.AnswerOptionText__c)) {
-					answerOption.IsCorrect__c = true;
-				} else {
-					answerOption.IsCorrect__c = false;
-				}				
-	    	}
-
-    		if( !questionsMap.get(answerOption.Question__c).QuestionsResponses__r.isEmpty()){
-    			if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
-    				answerOption.addError(Label.ValidateAnswerActiveModules);
-    			}
-    		}
-
-            if (!modulesMap.get(questionsMap.get(answerOption.Question__c).Module__c).ModuleResponses__r.isEmpty()) {
-                if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
+                // If the module is active, answers cannot be deleted, updated or added.                                                                        
+                if(questionsMap.get(answerOption.Question__c).Module__r.IsActive__c) {
                     answerOption.addError(Label.ValidateAnswerActiveModules);
+                    continue;
+                }
+
+                // If the question type is "Matching Options", the format for Answer Text must be validated as {"xx":"yy"}
+                if(validateFormat && questionsMap.get(answerOption.Question__c).Type__c == 'Matching Options') {   
+                    if(String.isBlank(answerOption.MatchingText__c)) {
+                        answerOption.addError(Label.ValidateMatchingText);             
+                    }
+                    if (!String.isBlank(answerOption.AnswerOptionText__c)) {
+                        answerOption.IsCorrect__c = true;
+                    } else {
+                        answerOption.IsCorrect__c = false;
+                    }               
+                }
+
+                if( !questionsMap.get(answerOption.Question__c).QuestionsResponses__r.isEmpty()){
+                    if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
+                        answerOption.addError(Label.ValidateAnswerActiveModules);
+                    }
+                }
+
+                if (!modulesMap.get(questionsMap.get(answerOption.Question__c).Module__c).ModuleResponses__r.isEmpty()) {
+                    if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
+                        answerOption.addError(Label.ValidateAnswerActiveModules);
+                    }
                 }
             }
-	    }
+        }
     }
-
 }
