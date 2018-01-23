@@ -43,7 +43,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
@@ -81,7 +81,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
@@ -119,7 +119,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
@@ -157,7 +157,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
@@ -196,7 +196,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
@@ -239,7 +239,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
@@ -281,7 +281,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
@@ -306,7 +306,7 @@ public class TestCourseViewController
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
 		metaSegment.FieloPLT__Program__c = programs[0].Id;
 
 		insert metaSegment;
