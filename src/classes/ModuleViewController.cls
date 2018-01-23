@@ -59,7 +59,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		exportPage.getParameters().put( 'courseId', recordId );
 		exportPage.getParameters().put( 'type', 'course' );
 
-		initPageSettings( objectName, (SObject) record, '', '', '',record.Id );
+		initPageSettings( objectName, (SObject) record, buttonString, '', '',record.Id );
 
 		if (relatedSettings != null) {
 			for(FieloPLT__PageSettings__c settings:relatedSettings) {
@@ -67,7 +67,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 					settings.FieloPLT__Buttons__c = '{"Label":"Manage","Type":"Modal","Action":"FieloELR__Question__cFormManage"}' +
 						(settings.FieloPLT__Buttons__c != '' && settings.FieloPLT__Buttons__c != null ?
 							',' + settings.FieloPLT__Buttons__c :
-							'');	
+							'');
 				}
 			}
 		}
