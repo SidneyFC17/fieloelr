@@ -95,7 +95,7 @@
                 "value" : "false"
               }, {
                 "apiName" : "fieloplt__reportfilter__c",
-                "value" : "[{ \"Report Field\" : \"FK_CUSTENT_ID\", \"Operator\" : \"equals\", \"Value\" : \"a0Q6A0000005OITUA2\" }]"
+                "value" : "[{ \"Report Field\" : \"FK_CUSTENT_ID\", \"Operator\" : \"equals\", \"Record Field\" : \"FieloPLT__Program__r.Id\" }]"
               }, {
                 "apiName" : "fieloplt__reportmetadata__c",
                 "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
