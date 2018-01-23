@@ -43,7 +43,7 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 		exportPage.getParameters().put( 'moduleResponseId', recordId );
 		exportPage.getParameters().put( 'type', 'moduleResponse' );
 
-		initPageSettings(objectName, record, buttonString, '', '');
+		initPageSettings( objectName, (SObject) record, buttonString, '', '',record.Id );
 
 		for(FieloPLT__PageSettings__c settings:relatedSettings) {
 			if(settings.FieloPLT__TargetObject__c == 'FieloELR__QuestionResponse__c') {

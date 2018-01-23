@@ -43,7 +43,7 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 		exportPage.getParameters().put( 'courseStatusId', recordId );
 		exportPage.getParameters().put( 'type', 'courseStatus' );
 
-		initPageSettings(objectName, record, buttonString, '', '');
+		initPageSettings( objectName, (SObject) record, buttonString, '', '',record.Id );
 
 		for(FieloPLT__PageSettings__c settings:relatedSettings) {
 			if(settings.FieloPLT__TargetObject__c == 'FieloELR__ModuleResponse__c') {

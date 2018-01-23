@@ -27,8 +27,7 @@ public class TestCourseViewController
     }
 
 	@isTest
-	static void itShouldViewCouseWithActivateButton()
-	{
+	static void itShouldViewCouseWithActivateButton() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -38,15 +37,16 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -65,8 +65,7 @@ public class TestCourseViewController
 	}
 
 	@isTest
-	static void itShouldViewCouseWithInactivateButton()
-	{
+	static void itShouldViewCouseWithInactivateButton() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -76,15 +75,16 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -103,8 +103,7 @@ public class TestCourseViewController
 	}
 
 	@isTest
-	static void itShouldRetrieveCouse()
-	{
+	static void itShouldRetrieveCouse() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -114,15 +113,16 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -141,8 +141,7 @@ public class TestCourseViewController
 	}
 
 	@isTest
-	static void itShouldSaveCourse()
-	{
+	static void itShouldSaveCourse() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -152,15 +151,16 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -180,8 +180,7 @@ public class TestCourseViewController
 	}
 
 	@isTest
-	static void itShouldSaveCourseWithMoreParameters()
-	{
+	static void itShouldSaveCourseWithMoreParameters() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -191,15 +190,16 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -223,8 +223,7 @@ public class TestCourseViewController
 	}
 
 	@isTest
-	static void itShouldSaveCourseWithMoreParametersAndOneSegment()
-	{
+	static void itShouldSaveCourseWithMoreParametersAndOneSegment() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -234,15 +233,16 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -265,8 +265,7 @@ public class TestCourseViewController
 	}
 
 	@isTest
-	static void itShouldGetSegments()
-	{
+	static void itShouldGetSegments() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -276,22 +275,22 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		segments = CourseViewController.getSegments(programs[0].Id);
 	}
 
 	@isTest
-	static void itShouldSaveModuleAndCourseDependency()
-	{
+	static void itShouldSaveModuleAndCourseDependency() {
 		List<FieloPLT__Program__c> programs =
 			MockUpFactory.createPrograms('Default', 1);
         insert programs;
@@ -301,15 +300,16 @@ public class TestCourseViewController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		List<FieloELR__Course__c> courses = new List<FieloELR__Course__c>();
 

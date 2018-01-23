@@ -99,6 +99,17 @@ global class CourseService {
         }
     }
 
+    global static void enableAdminPermission(Boolean value) {
+        Courses.validateAdminFields = !value;
+        CourseStatus.validateAdminFields = !value;
+        Modules.validateAdminFields = !value;
+        ModuleResponses.validateAdminFields = !value;
+        Questions.validateAdminFields = !value;
+        QuestionResponses.validateAdminFields = !value;
+        Answers.validateAdminFields = !value;
+        AnswerOptions.validateAdminFields = !value;
+    }
+
 	public static List<Course__c> getCourses(Set<String> fields, Set<String> status, Id programId, Integer quantity, Integer offset, String orderBy) {   
 		String query = 'SELECT ' + String.join(new List<String>(fields), ',') + ' FROM Course__c ';
 		// WHERE CONDITION 
@@ -204,7 +215,7 @@ global class CourseService {
 											String orderBy) {
 		String queryCourseStatus = 'SELECT ' + String.join(new List<String>(fieldsCourseStatus), ',');
 		if(fieldsModuleResponse != null){
-			queryCourseStatus += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',') + ' FROM ModuleResponses__r WHERE Member__c =: memberId AND IsSubmitted__c = true) ';
+			queryCourseStatus += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',') + ' FROM ModuleResponses__r WHERE Member__c =: memberId) ';
 		}
 		queryCourseStatus += ' FROM CourseStatus__c WHERE Member__c =: memberId ';		
 		if (courseIds != null) {

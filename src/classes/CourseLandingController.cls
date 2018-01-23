@@ -31,7 +31,10 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             standardTools = '{"Label": "Export", "Type": "Link", "Action": "' + exportPage.getUrl() + '" }';
             standardTools += ',{"Label": "Import", "Type": "Link", "Action": "' + importPage.getUrl() + '" }';
 
-            initPageSettings( 'FieloELR__Course__c', standardButtons, standardTools, 'utility-sprite/svg/symbols.svg#people' );
+            // initPageSettings( 'FieloELR__Course__c', standardButtons, standardTools, 'utility-sprite/svg/symbols.svg#people' );
+
+            initPageSettings( 'FieloELR__Course__c', standardButtons, standardTools, 'utility-sprite/svg/symbols.svg#people', null);
+
             newCourse = newSettings.clone();
             landingCourse = landingSettings;
 

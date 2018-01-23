@@ -37,15 +37,16 @@ private class TestCourseLandingController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -77,15 +78,16 @@ private class TestCourseLandingController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -122,15 +124,16 @@ private class TestCourseLandingController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -160,15 +163,16 @@ private class TestCourseLandingController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		FieloELR__Course__c course = new FieloELR__Course__c(
 			Name = 'Developers Course'
@@ -202,15 +206,16 @@ private class TestCourseLandingController
 		List<FieloPLT__Segment__c> segments =
 			MockUpFactory.createSegments('Segment #', 2, 'Manual');
 
-		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ',' + segments[1].Id;
-
-		segments.add(metaSegment);
-
 		for (FieloPLT__Segment__c segment:segments) {
 			segment.FieloPLT__Program__c = programs[0].Id;
 		}
 
 		insert segments;
+
+		metaSegment.FieloPLT__RelatedSegments__c = segments[0].Id + ';' + segments[1].Id;
+		metaSegment.FieloPLT__Program__c = programs[0].Id;
+
+		insert metaSegment;
 
 		segments = CourseLandingController.getSegments(programs[0].Id);
 	}

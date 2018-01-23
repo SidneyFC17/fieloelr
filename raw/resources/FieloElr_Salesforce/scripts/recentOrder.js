@@ -40,8 +40,7 @@
     CONTAINER: 'fielosf-recent-records__container',
     FIELD: 'fielosf-output',
     MODEL: 'fielosf-recent-records__model',
-    SAVE: 'slds-form__save',
-    CANCEL: 'slds-form__cancel',
+    SAVE: 'fielosf-module-reorder__save',
     GRIPS: 'fielosf-draggable__grip',
     CURSOR: 'fielosf-draggable__cursor'
   };
@@ -238,7 +237,7 @@
       this.sortable_();
       this.order();
       this.saveBtn_ = this.element_
-        .getElementsByClassName(this.CssClasses_.SAVE)[0];
+        .querySelector('.' + this.CssClasses_.SAVE);
       if (this.saveBtn_) {
         this.saveBtn_.addEventListener('click', this.save_.bind(this));
       }
