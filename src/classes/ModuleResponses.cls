@@ -23,30 +23,39 @@ public class ModuleResponses extends SObjectDomain {
     public override void onApplyDefaults() {
         Set<String> mrKeys = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
-            moduleResponse.IsSubmitted__c = false;
-            moduleResponse.IsApproved__c = false;
-            moduleResponse.CorrectQuestions__c = 0;
-            moduleResponse.IncorrectQuestions__c = 0;
-            moduleResponse.TotalQuestions__c = 0;
-            moduleResponse.Key__c = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
-            mrKeys.add(moduleResponse.Key__c);
+            if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
+                moduleResponse.IsSubmitted__c = false;
+                moduleResponse.IsApproved__c = false;
+                moduleResponse.CorrectQuestions__c = 0;
+                moduleResponse.IncorrectQuestions__c = 0;
+                moduleResponse.TotalQuestions__c = 0;
+                moduleResponse.Key__c = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                mrKeys.add(moduleResponse.Key__c);
+            } else {
+                moduleResponse.addError(Label.ModuleRequiredField);
+                return;
+            }
         }
 
-        List<AggregateResult> aggResult = new ModuleResponsesSelector().selectByKeyGroupByKey(mrKeys);
-        Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
-        for(AggregateResult mr : aggResult){
-            maxNumbByKey.put((String)mr.get('FieloELR__Key__c'), (Decimal)mr.get('attemptNumber'));
-        }
-        
-        for(ModuleResponse__c moduleResp : (List<ModuleResponse__c>)records){
-            if(maxNumbByKey.containsKey(moduleResp.Key__c)){
-                Decimal maxAttempt = maxNumbByKey.get(moduleResp.Key__c);
-                moduleResp.NumberOfAttempt__c = ++maxAttempt;
-                maxNumbByKey.put(moduleResp.Key__c, maxAttempt);
-            }else{
-                moduleResp.NumberOfAttempt__c = 1;
-                maxNumbByKey.put(moduleResp.Key__c, 1);
+        if (!mrKeys.isEmpty()) {
+            List<AggregateResult> aggResult = new ModuleResponsesSelector().selectByKeyGroupByKey(mrKeys);
+            Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
+            for(AggregateResult mr : aggResult){
+                maxNumbByKey.put((String)mr.get('FieloELR__Key__c'), (Decimal)mr.get('attemptNumber'));
             }
+            
+            for(ModuleResponse__c moduleResp : (List<ModuleResponse__c>)records){
+                if (moduleResp.Module__c != null && moduleResp.Member__c != null) {
+                    if(maxNumbByKey.containsKey(moduleResp.Key__c)){
+                        Decimal maxAttempt = maxNumbByKey.get(moduleResp.Key__c);
+                        moduleResp.NumberOfAttempt__c = ++maxAttempt;
+                        maxNumbByKey.put(moduleResp.Key__c, maxAttempt);
+                    }else{
+                        moduleResp.NumberOfAttempt__c = 1;
+                        maxNumbByKey.put(moduleResp.Key__c, 1);
+                    }
+                }
+            }    
         }
     }
 
@@ -54,7 +63,12 @@ public class ModuleResponses extends SObjectDomain {
         //store module Ids
         Set<Id> moduleIds = new Set<Id>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
-            moduleIds.add(moduleResponse.Module__c);                
+            if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
+                moduleIds.add(moduleResponse.Module__c);                    
+            } else {
+                moduleResponse.addError(Label.ModuleRequiredField);
+            }
+            
         }
 
         //Creates a set to know wich are the required modules to be approved for each of the related members
@@ -63,16 +77,18 @@ public class ModuleResponses extends SObjectDomain {
         Set<String> csKeysRequired = new Set<String>();
         Set<String> modulesProcessedIds = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
-            String moduleResponseKey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
-            if(!modulesProcessedIds.contains(moduleResponseKey)){
-                for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
-                    mrKeysRequired.add(String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+            if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
+                String moduleResponseKey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                if(!modulesProcessedIds.contains(moduleResponseKey)){
+                    for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
+                        mrKeysRequired.add(String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+                    }
+                    modulesProcessedIds.add(moduleResponseKey);
                 }
-                modulesProcessedIds.add(moduleResponseKey);
-            }
 
-            //add keys to query course status
-            csKeysRequired.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+                //add keys to query course status
+                csKeysRequired.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+            }
         }
 
         //query in the database only the moduleResponses that were approved for the related members
@@ -93,41 +109,44 @@ public class ModuleResponses extends SObjectDomain {
         Map<String,CourseStatus__c> newCourseStatusMap = new Map<String,CourseStatus__c>();
         List<ModuleResponse__c> mrWithNewCourseStatus = new List<ModuleResponse__c>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
-            String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+            if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
 
-            if(mrKeysWithError.contains(moduleResponse.Key__c)){
-                moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
-                continue;
-            }
-            
-            Boolean errorDependency = false;
-            for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
-                String dependentKey = String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
-                if(!approvedMRKeys.contains(dependentKey)){
+                String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+
+                if(mrKeysWithError.contains(moduleResponse.Key__c)){
                     moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
-                    mrKeysWithError.add(moduleResponse.Key__c);
-                    errorDependency = true;
-                    break;
+                    continue;
+                }
+                
+                Boolean errorDependency = false;
+                for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
+                    String dependentKey = String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                    if(!approvedMRKeys.contains(dependentKey)){
+                        moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
+                        mrKeysWithError.add(moduleResponse.Key__c);
+                        errorDependency = true;
+                        break;
+                    }
+                }
+
+                if(errorDependency)
+                    continue;
+
+                if(existingCSMap.containsKey(cskey)){
+                    moduleResponse.CourseStatus__c = existingCSMap.get(cskey).Id;
+                }else{
+                    if(modulesMap.get(moduleResponse.Module__c).Course__r.SubscriptionMode__c == 'Manual'){
+                        moduleResponse.addError(Label.ValidateModuleResponseRegisteredMember);
+                    }else{
+                        if(!newCourseStatusMap.containsKey(cskey)){
+                            CourseStatus__c cs = new CourseStatus__c(Course__c = modulesMap.get(moduleResponse.Module__c).Course__c, Member__c = moduleResponse.Member__c);
+                            newCourseStatusMap.put(cskey, cs);
+                            uow.registerNew(cs);
+                        }
+                        mrWithNewCourseStatus.add(moduleResponse);
+                    }
                 }
             }
-
-            if(errorDependency)
-                continue;
-
-            if(existingCSMap.containsKey(cskey)){
-                moduleResponse.CourseStatus__c = existingCSMap.get(cskey).Id;
-            }else{
-                if(modulesMap.get(moduleResponse.Module__c).Course__r.SubscriptionMode__c == 'Manual'){
-                    moduleResponse.addError(Label.ValidateModuleResponseRegisteredMember);
-                }else{
-                    if(!newCourseStatusMap.containsKey(cskey)){
-                        CourseStatus__c cs = new CourseStatus__c(Course__c = modulesMap.get(moduleResponse.Module__c).Course__c, Member__c = moduleResponse.Member__c);
-                        newCourseStatusMap.put(cskey, cs);
-                        uow.registerNew(cs);
-                    }
-                    mrWithNewCourseStatus.add(moduleResponse);
-                }
-            }            
         }
 
         if(!mrWithNewCourseStatus.isEmpty()){
