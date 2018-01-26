@@ -59,26 +59,29 @@ private class TestCreateModuleResponse {
         insert courseStatus;
 
         Test.startTest();
-            FieloELR__ModuleResponse__c mr = new FieloELR__ModuleResponse__c(
-                Member__c = member.Id,
-                CourseStatus__c = courseStatus.Id
-            );
-            String errorMsg = '';
-            try{
-                insert mr;    
-            } catch (Exception e) {
-                errorMsg = e.getMessage();
-            }
-            System.debug(errorMsg);
-            System.assert(errorMsg.contains(Label.ModuleRequiredField));
+
+        FieloELR__ModuleResponse__c mr = new FieloELR__ModuleResponse__c(
+            Member__c = member.Id,
+            CourseStatus__c = courseStatus.Id
+        );
+        String errorMsg = '';
+        try{
+            insert mr;    
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+        System.debug(errorMsg);
+        System.assert(errorMsg.contains(Label.ModuleRequiredField));
 
         Test.stopTest();
     }
 
     /*  TEST-1781
-        Create Module Response - Validations - Related module is not active (NOK)
+        Create Module Response
+        - Validations
+        - Related module is not active (NOK)
     */
-    @isTest static void ELR_0007_FA2(){
+    @isTest static void ELR_0007_FA2() {
         delete [SELECT Id From ModuleDependency__c];
 
         Module__c module = [SELECT Id, Course__c From Module__c WHERE Name = 'Intermediate'];
@@ -114,198 +117,479 @@ private class TestCreateModuleResponse {
         System.assert(errorMsg.contains('The related module must be active'));
     }
 
-    /*
-      @isTest static void ELR_0007_FA2(){
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 1'].id,
-            FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule3'].id,
-            FieloELR__Date__c = Date.today())};
+    /*  TEST-1782
+        Create Module Response
+        - Validations
+        - Member field is null (NOK)
+    */
+    @isTest static void ELR_0007_FA3() {
+        MockUpFactory.activateCourse();
 
-            try{
-            insert moduleRespList;
-        }catch(System.Dmlexception e){
-            System.assert(e.getMessage().Contains('The related module must be active'));
-        }
-      }
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
+        FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
+            Member__c = member.Id,
+            Course__c = module.Course__c
+        );
+        insert courseStatus;
 
-      @isTest static void ELR_0007_FA3(){
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2'].id,
-            FieloELR__Date__c = Date.today())};
-
-            try{
-                  insert moduleRespList;
-            }catch(System.Dmlexception e){
-                  System.assert(e.getMessage() != null);
-            }
-      }
-
-
-      @isTest static void ELR_0007_FA4(){
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 1'].id,
-            FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2'].id,FieloELR__Date__c = Date.today(),FieloELR__IsApproved__c = true)};
-
-            try{
-                  insert moduleRespList;
-            }catch(System.Dmlexception e){
-                  System.assert(e.getMessage().Contains(' The member didn\'t approve the dependent Modules'));
-            }
-      }
-
-
-      @isTest static void ELR_0007_FA8() {   
-        moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule1'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 0'].id,
-            FieloELR__Date__c = Date.today().addDays(-50))};
-
+        Test.startTest();
+        FieloELR__ModuleResponse__c mr = new FieloELR__ModuleResponse__c(
+            Module__c = module.Id,
+            CourseStatus__c = courseStatus.Id
+        );
+        String errorMsg = '';
         try{
-            insert moduleRespList;
-        }catch(System.Dmlexception e){
-            System.assert(e.getMessage().Contains('The course is not available in this period.'));
+            insert mr;    
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
         }
+        System.debug(errorMsg);
+        System.assert(errorMsg.contains(Label.MemberRequiredField));
 
-        moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule1'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 0'].id,
-            FieloELR__Date__c = Date.today().addDays(50))};
+        Test.stopTest();
+    }
 
+    /*  TEST-1783
+        Create Module Response
+        - Validations
+        - Member is not approved in the predecessors modules (NOK)
+    */
+    @isTest static void ELR_0007_FA7() {
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Intermediate'];
+
+        FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
+            Member__c = member.Id,
+            Course__c = module.Course__c
+        );
+        insert courseStatus;
+
+        Test.startTest();
+        FieloELR__ModuleResponse__c mr = new FieloELR__ModuleResponse__c(
+            Module__c = module.Id,
+            Member__c = member.Id,
+            CourseStatus__c = courseStatus.Id
+        );
+        String errorMsg = '';
         try{
-            insert moduleRespList;
-        }catch(System.Dmlexception e){
-            System.assert(e.getMessage().Contains('The course is not available in this period.'));
+            insert mr;    
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
         }
-      }
+        System.debug(errorMsg);
+        System.assert(errorMsg.contains(Label.ValidateModuleResponseMemberApproved));
 
-      @isTest static void ELR_0007_FA10(){
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule4'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 1'].id)};
-            insert moduleRespList;
+        Test.stopTest();
+    }
 
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule4'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 1'].id)};
-            
+    /*  TEST-1784
+        Create Module Response
+        - Validations
+        - The date of the response is not within the period of the course (NOK)
+    */
+    @isTest static void ELR_0007_FA8() {
+        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
 
-            try{
-                insert moduleRespList;
-            }catch(System.Dmlexception e){
-                System.assert(e.getMessage().Contains(' You have reached the limit of attempts for this module.'));
-            }
-      }
+        course.StartDate__c = System.today();
+        course.EndDate__c = System.today().addDays(30);
 
-      @isTest static void ELR_0007_FA11(){
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule5'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 2'].id)};
-            
+        update course;
 
-            try{
-              insert moduleRespList;
-            }catch(System.Dmlexception e){
-                System.assert(e.getMessage().Contains(' The member is not registered in the related course.'));
-            }     
-      }
+        MockUpFactory.activateCourse();
 
-      @isTest static void ELR_0007_FA12(){
-        moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule6'].id,
-        FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 2'].id)};
-        
-        insert moduleRespList; 
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
-        moduleRespList = [SELECT FieloELR__NumberOfAttempt__c,FieloELR__CourseStatus__c FROM FieloELR__ModuleResponse__c];
+        FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
+            Member__c = member.Id,
+            Course__c = module.Course__c
+        );
+        insert courseStatus;
 
-        System.assert(moduleRespList.get(0).FieloELR__NumberOfAttempt__c != 0);
-        System.assert(moduleRespList.get(0).FieloELR__CourseStatus__c != null);
-      }
+        Test.startTest();
 
-      @isTest static void ELR_0007_FA13(){
-        moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule7'].id,
-        FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 2'].id)};
-        
-        insert moduleRespList; 
+        FieloELR__ModuleResponse__c mr = new FieloELR__ModuleResponse__c(
+            Module__c = module.Id,
+            Member__c = member.Id,
+            CourseStatus__c = courseStatus.Id,
+            Date__c = System.today().addDays(-1)
+        );
 
-        moduleRespList = [SELECT FieloELR__NumberOfAttempt__c,FieloELR__CourseStatus__c FROM FieloELR__ModuleResponse__c];
-        System.assert(moduleRespList.get(0).FieloELR__NumberOfAttempt__c != 0);
-        System.assert(moduleRespList.get(0).FieloELR__CourseStatus__c != null);
-      }
+        String errorMsg = '';
+        try{
+            insert mr;
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
 
-      @isTest static void ELR_0007_FA14(){
-        moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule6'].id,
-        FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 2'].id, FieloELR__IsApproved__c = true)};
-        
-        insert moduleRespList; 
+        System.assert(errorMsg.contains('The course is not available in this period'));
 
-        moduleRespList = [SELECT FieloELR__NumberOfAttempt__c,FieloELR__CourseStatus__c,FieloELR__IsApproved__c FROM FieloELR__ModuleResponse__c WHERE Id =: moduleRespList.get(0).id];
+        mr = new FieloELR__ModuleResponse__c(
+            Module__c = module.Id,
+            Member__c = member.Id,
+            CourseStatus__c = courseStatus.Id,
+            Date__c = System.today().addDays(40)
+        );
 
-        System.assert(moduleRespList.get(0).FieloELR__NumberOfAttempt__c != 0);
-        System.assert(moduleRespList.get(0).FieloELR__CourseStatus__c != null);
-        System.assertEquals(false ,moduleRespList.get(0).FieloELR__IsApproved__c);
-      }
+        errorMsg = '';
+        try{
+            insert mr;
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
 
-      @isTest static void ELR_0007_FA15(){
-        moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c = false AND FieloELR__Module__r.Name = 'testModule7' LIMIT 1];
-        
-        delete moduleRespList;
+        System.assert(errorMsg.contains('The course is not available in this period'));
 
-         moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c = false AND FieloELR__Module__r.Name = 'testModule7' LIMIT 1];
+        Test.stopTest();
+    }
 
-            System.assertEquals(0, moduleRespList.size());
-      }
+    /*  TEST-1785
+        Create Module Response
+        - The Number of Attempt is equal to the “Attempts Allowed” of the related module (OK)
+    */
+    @isTest static void ELR_0007_FA9() {
+        MockUpFactory.activateCourse();
 
-      @isTest static void ELR_0007_FA16(){
-        moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c = true AND FieloELR__Module__r.Name = 'testModule1' LIMIT 1];
-        
-        delete moduleRespList;
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
-         moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c = true AND FieloELR__Module__r.Name = 'testModule1' LIMIT 1];
+        FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
+            Member__c = member.Id,
+            Course__c = module.Course__c
+        );
+        insert courseStatus;
 
-            System.assertEquals(0, moduleRespList.size());
-      }
+        Test.startTest();
 
-      @isTest static void ELR_0007_FA17(){
-        moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c = false AND FieloELR__Module__r.Name = 'testModule7' LIMIT 1];
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
 
-        moduleRespList.get(0).FieloELR__CourseStatus__c = [SELECT Id FROM FieloELR__CourseStatus__c WHERE FieloELR__Course__r.FieloELR__Status__c = 'Active' LIMIT 1].id;
+        System.debug(JSON.serializePretty(moduleWrapper));
 
-            try{
-                  update moduleRespList;
-            }catch(System.Dmlexception e){
-                  System.assert(e.getMessage().Contains('Course Status can\'t be modified.'));
-            }
-      }
+        System.assert(moduleWrapper.moduleResponse.Id != null);
 
-      @isTest static void ELR_0007_FA21(){
-            moduleRespList = [SELECT Id FROM FieloELR__ModuleResponse__c WHERE FieloELR__IsSubmitted__c = true LIMIT 1];
-            moduleRespList.get(0).FieloELR__GradeValue__c = 1;
+        moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
 
-            try{
-                  update moduleRespList;
-            }catch(System.Dmlexception e){
-                  System.assert(e.getMessage().Contains(' Cannot modify a moduleResponse that was already submitted.'));
-            }
-      }
+        FieloELR__ModuleResponse__c mr = [SELECT Id, NumberOfAttempt__c, LastChance__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
 
-      @isTest static void ELR_0007_FA5(){
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule8'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 3'].id)};
-            try{
-                  insert moduleRespList;
-            }catch(System.Dmlexception e){
-                  System.assert(e.getMessage().Contains(' The member is not registered in the related course.'));
-            }
-      }
+        System.assertEquals(mr.NumberOfAttempt__c, moduleWrapper.module.AttemptsAllowed__c);
 
-      /*@isTest static void ELR_0007_FA6(){
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule9'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 5'].id)};
+        System.assertEquals(mr.NumberOfAttempt__c, moduleWrapper.module.AttemptsAllowed__c);
 
-            insert moduleRespList;
-      }*/
+        System.assertEquals(true,mr.LastChance__c);
 
+        Test.stopTest();
+    }
 
-      /*@isTest static void ELR_0007_FA7(){
-            //The member must not be approved in the predecessors modules
-            moduleRespList = new List<FieloELR__ModuleResponse__c>{new FieloELR__ModuleResponse__c(FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule9'].id,
-            FieloELR__Member__c = [SELECT Id FROM FieloPLT__Member__c WHERE Name = 'Member 5'].id, FieloELR__IsApproved__c = false,FieloELR__IsSubmitted__c = true)};
+    /*  TEST-1786
+        Create Module Response
+        - Validations
+        - The Number of Attempt is greater than the “Attempts Allowed” of the related module (NOK)
+    */
+    @isTest static void ELR_0007_FA10() {
+        MockUpFactory.activateCourse();
 
-            insert moduleRespList;
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
-            System.debug(moduleRespList.get(0).FieloELR__IsApproved__c);
-      }*/
+        FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
+            Member__c = member.Id,
+            Course__c = module.Course__c
+        );
+        insert courseStatus;
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        FieloELR__ModuleResponse__c mr = [SELECT Id, NumberOfAttempt__c, LastChance__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        System.assertEquals(mr.NumberOfAttempt__c, moduleWrapper.module.AttemptsAllowed__c);
+
+        System.assertEquals(mr.NumberOfAttempt__c, moduleWrapper.module.AttemptsAllowed__c);
+
+        System.assertEquals(true,mr.LastChance__c);
+
+        String errorMsg = '';
+        try{
+            moduleWrapper = FieloELR.ModuleService.takeModule(
+                module.Id,
+                member.Id,
+                new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+                new Set<String> {'FieloELR__QuestionText__c'},
+                new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+            );
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('You have reached the limit of attempts for this module'));
+
+        Test.stopTest();
+    }
+
+    /*  TEST-1787
+        Create Module Response
+        - The related course subscription mode is manual and the related course status does not exist (NOK)
+    */
+    @isTest static void ELR_0007_FA11() {
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        Test.startTest();
+
+        String errorMsg = '';
+        try{
+            ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+                module.Id,
+                member.Id,
+                new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+                new Set<String> {'FieloELR__QuestionText__c'},
+                new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+            );    
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('The member is not registered in the related course'));
+
+        Test.stopTest();
+    }
+
+    /*  TEST-1788
+        Create Module Response - The related course subscription mode is automatic and the related course status already exists (OK)
+    */
+    @isTest static void ELR_0007_FA12() {
+        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
+            Member__c = member.Id,
+            Course__c = module.Course__c
+        );
+        CourseService.enableAdminPermission(true);
+        insert courseStatus;
+        CourseService.enableAdminPermission(false);
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.debug(JSON.serializePretty(moduleWrapper));
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        FieloELR__ModuleResponse__c mr = [SELECT Id, FieloELR__NumberOfAttempt__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        System.assertEquals(1, mr.FieloELR__NumberOfAttempt__c);
+
+        Test.stopTest();
+    }
+
+    /*  TEST-1789
+        Create Module Response
+        - The related course subscription mode is automatic and the related course status does not exist (OK)
+    */
+    @isTest static void ELR_0007_FA13() {
+        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.debug(JSON.serializePretty(moduleWrapper));
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        FieloELR__ModuleResponse__c mr = [SELECT Id, FieloELR__NumberOfAttempt__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        System.assertEquals(1, mr.FieloELR__NumberOfAttempt__c);
+
+        Test.stopTest();
+    }
+
+    /*  TEST-1790
+        Create Module Response - The administrator sets the “IsApproved” field to “true” (OK)
+    */
+    @isTest static void ELR_0007_FA14() {
+        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
+            Member__c = member.Id,
+            Course__c = module.Course__c
+        );
+        insert courseStatus;
+
+        Test.startTest();
+
+        FieloELR__ModuleResponse__c mr = new FieloELR__ModuleResponse__c(
+            Module__c = module.Id,
+            Member__c = member.Id,
+            CourseStatus__c = courseStatus.Id,
+            Date__c = System.today().addDays(-1),
+            IsApproved__c = true
+        );
+
+        insert mr;
+
+        mr = [SELECT Id, IsApproved__c FROM ModuleResponse__c WHERE Id = :mr.Id];
+
+        System.assertEquals(false, mr.IsApproved__c);
+
+        Test.stopTest();
+    }
+
+    /*  TEST-1791
+        Create Module Response
+        - Delete a module response not submitted (OK)
+    */
+    @isTest static void ELR_0007_FA15() {
+        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        FieloELR__ModuleResponse__c mr = [SELECT Id, FieloELR__NumberOfAttempt__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        System.assertEquals(1, mr.FieloELR__NumberOfAttempt__c);
+
+        delete [SELECT Id, FieloELR__NumberOfAttempt__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        System.assertEquals(0, [SELECT Id FROM ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id].size());
+
+        Test.stopTest();
+    }
+
+    /*  TEST-1792
+        Create Module Response
+        - Delete a module response already submitted (OK)
+    */
+    @isTest static void ELR_0007_FA16() {
+        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        FieloELR__ModuleResponse__c mr = [SELECT Id, FieloELR__NumberOfAttempt__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        mr.IsSubmitted__c = true;
+
+        update mr;
+
+        delete [SELECT Id, FieloELR__NumberOfAttempt__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        System.assertEquals(0, [SELECT Id FROM ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id].size());
+
+        Test.stopTest();
+    }
+
 }

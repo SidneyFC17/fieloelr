@@ -30,9 +30,17 @@ public class ModuleResponses extends SObjectDomain {
                 moduleResponse.IncorrectQuestions__c = 0;
                 moduleResponse.TotalQuestions__c = 0;
                 moduleResponse.Key__c = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                if (moduleResponse.Date__c == null) {
+                    moduleResponse.Date__c = System.today();
+                }
                 mrKeys.add(moduleResponse.Key__c);
             } else {
-                moduleResponse.addError(Label.ModuleRequiredField);
+                if (moduleResponse.Module__c == null) {
+                    moduleResponse.addError(Label.ModuleRequiredField);
+                }
+                if (moduleResponse.Member__c == null) {
+                    moduleResponse.addError(Label.MemberRequiredField);
+                }
                 return;
             }
         }
@@ -64,20 +72,32 @@ public class ModuleResponses extends SObjectDomain {
         Set<Id> moduleIds = new Set<Id>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
-                moduleIds.add(moduleResponse.Module__c);                    
+                moduleIds.add(moduleResponse.Module__c);
             } else {
-                moduleResponse.addError(Label.ModuleRequiredField);
+                if (moduleResponse.Module__c == null) {
+                    moduleResponse.addError(Label.ModuleRequiredField);
+                }
+                if (moduleResponse.Member__c == null) {
+                    moduleResponse.addError(Label.MemberRequiredField);
+                }
+                return;
             }
             
         }
 
         //Creates a set to know wich are the required modules to be approved for each of the related members
-        Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Id','Course__c','Course__r.SubscriptionMode__c'}).selectByIdHavingDependencies(moduleIds));
+        Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Id','Course__c','Course__r.SubscriptionMode__c','Course__r.StartDate__c','Course__r.EndDate__c'}).selectByIdHavingDependencies(moduleIds));
         Set<String> mrKeysRequired = new Set<String>();
         Set<String> csKeysRequired = new Set<String>();
         Set<String> modulesProcessedIds = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
+                if (moduleResponse.Date__c > modulesMap.get(moduleResponse.Module__c).Course__r.EndDate__c &&
+                    moduleResponse.Date__c < modulesMap.get(moduleResponse.Module__c).Course__r.StartDate__c) {
+                    moduleResponse.addError(Label.OutOfCoursePeriod);
+                    return;
+                }
+
                 String moduleResponseKey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
                 if(!modulesProcessedIds.contains(moduleResponseKey)){
                     for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
@@ -185,6 +205,7 @@ public class ModuleResponses extends SObjectDomain {
 
     public override void onValidate(Map<Id,SObject> existingRecords){
         if(validateAdminFields){
+            Set<Id> moduleIds = new Set<Id>();
             for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
                 if(((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsSubmitted__c){
                     moduleResponse.addError(Label.ValidateModuleResponseSubmitted);
@@ -209,6 +230,17 @@ public class ModuleResponses extends SObjectDomain {
                 }
                 if(moduleResponse.TotalQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c){
                     moduleResponse.TotalQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c;
+                }
+                moduleIds.add(moduleResponse.Module__c);
+            }
+
+            Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Id','Course__c','Course__r.SubscriptionMode__c','Course__r.StartDate__c','Course__r.EndDate__c'}).selectById(moduleIds));
+
+            for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records) {
+                if (moduleResponse.Date__c > modulesMap.get(moduleResponse.Module__c).Course__r.EndDate__c &&
+                    moduleResponse.Date__c < modulesMap.get(moduleResponse.Module__c).Course__r.StartDate__c) {
+                    moduleResponse.addError(Label.OutOfCoursePeriod);
+                    return;
                 }
             }
         }
