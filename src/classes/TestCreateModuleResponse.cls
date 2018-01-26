@@ -592,4 +592,12 @@ private class TestCreateModuleResponse {
         Test.stopTest();
     }
 
+    /*  TEST-1793
+        Create Module Response
+        - Edit the course status of a module response not submitted (NOK)
+    */
+    @isTest static void ELR_0007_FA17() {
+        
+    }
+
 }
