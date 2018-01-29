@@ -192,7 +192,7 @@ private class TestCreateModuleResponse {
         - The date of the response is not within the period of the course (NOK)
     */
     @isTest static void ELR_0007_FA8() {
-        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
         course.StartDate__c = System.today();
         course.EndDate__c = System.today().addDays(30);
@@ -397,7 +397,7 @@ private class TestCreateModuleResponse {
         Create Module Response - The related course subscription mode is automatic and the related course status already exists (OK)
     */
     @isTest static void ELR_0007_FA12() {
-        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
         course.SubscriptionMode__c = 'Automatic';
 
@@ -442,7 +442,7 @@ private class TestCreateModuleResponse {
         - The related course subscription mode is automatic and the related course status does not exist (OK)
     */
     @isTest static void ELR_0007_FA13() {
-        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
         course.SubscriptionMode__c = 'Automatic';
 
@@ -478,10 +478,6 @@ private class TestCreateModuleResponse {
         Create Module Response - The administrator sets the “IsApproved” field to “true” (OK)
     */
     @isTest static void ELR_0007_FA14() {
-        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
-
-        update course;
-
         MockUpFactory.activateCourse();
 
         FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
@@ -517,7 +513,7 @@ private class TestCreateModuleResponse {
         - Delete a module response not submitted (OK)
     */
     @isTest static void ELR_0007_FA15() {
-        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
         course.SubscriptionMode__c = 'Automatic';
 
@@ -556,7 +552,7 @@ private class TestCreateModuleResponse {
         - Delete a module response already submitted (OK)
     */
     @isTest static void ELR_0007_FA16() {
-        Course__c course = [SELECT Id FROM Course__c LIMIT 1];
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
         course.SubscriptionMode__c = 'Automatic';
 
@@ -597,7 +593,100 @@ private class TestCreateModuleResponse {
         - Edit the course status of a module response not submitted (NOK)
     */
     @isTest static void ELR_0007_FA17() {
-        
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        List<Course__c> courses = [SELECT Id FROM Course__c ORDER BY Name];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        CourseStatus__c cs = new CourseStatus__c (
+            Course__c = courses[1].Id,
+            Member__c = member.Id
+        );
+
+        insert cs;
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        FieloELR__ModuleResponse__c mr = [SELECT Id, FieloELR__NumberOfAttempt__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        mr.CourseStatus__c = cs.Id;
+
+        String errorMsg = '';
+        try{
+            update mr;
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('Course Status can\'t be modified'));
+
+        Test.stopTest();
     }
 
+    /*  TEST-1794
+        Create Module Response
+        - Edit a module response already submitted (NOK)
+    */
+    @isTest static void ELR_0007_FA21() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        MockUpFactory.answerModuleCorrectly(moduleWrapper);
+
+        FieloELR__ModuleResponse__c mr = [SELECT Id, NumberOfAttempt__c, IsApproved__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        // Continue from here
+
+        String errorMsg = '';
+        try{
+            update mr;
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('Course Status can\'t be modified'));
+
+        Test.stopTest();
+    }
 }

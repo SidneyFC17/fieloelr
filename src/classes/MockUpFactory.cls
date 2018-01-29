@@ -108,7 +108,7 @@ public class MockUpFactory {
         List<FieloPLT__Segment__c> segments = MockUpFactory.createSegments('Segment',1,'Manual');
         insert segments;
 
-        List<FieloELR__Course__c> courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 1);
+        List<FieloELR__Course__c> courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 2);
         insert courses;
 
         List<FieloPLT__Member__c> members = MockUpFactory.createMembers(programs.get(0).id, 1);
@@ -134,6 +134,13 @@ public class MockUpFactory {
                 ApprovalGrade__c = 70,
                 AttemptsAllowed__c = 2,
                 AttemptsAllowedPerQuestion__c = 1
+            ),
+            new FieloELR__Module__c(
+                Name = 'Basic 2',
+                Course__c = courses.get(1).id,
+                ApprovalGrade__c = 70,
+                AttemptsAllowed__c = 2,
+                AttemptsAllowedPerQuestion__c = 1
             )
         };
         insert modules;
@@ -155,6 +162,8 @@ public class MockUpFactory {
 
         List<FieloELR__Question__c> questions = createQuestions(modules.get(0).Id, questionsMap);
 
+        questions.addAll(createQuestions(modules.get(2).Id, questionsMap));
+
         questionsMap = new Map<String, String>{
             'Which one is the LEAST popular programming language?' => 'Single Choice',
             'Select all loop statements' => 'Multiple Choice',
@@ -170,7 +179,7 @@ public class MockUpFactory {
         List<FieloELR__AnswerOption__c> answersOptions = new List<FieloELR__AnswerOption__c>();
 
         for (FieloELR__Question__c q: questions){
-            if (q.Module__c == modules.get(0).Id && q.Type__c == 'Single Choice') {
+            if ((q.Module__c == modules.get(0).Id || q.Module__c == modules.get(2).Id) && q.Type__c == 'Single Choice') {
                 answersOptions.addAll(
                     createAnswerOptions(q.Id,
                         new Map<String, Boolean> {
@@ -185,7 +194,7 @@ public class MockUpFactory {
                     )
                 );
             }
-            if (q.Module__c == modules.get(0).Id && q.Type__c == 'Multiple Choice') {
+            if ((q.Module__c == modules.get(0).Id || q.Module__c == modules.get(2).Id) && q.Type__c == 'Multiple Choice') {
                 answersOptions.addAll(
                     createAnswerOptions(q.Id,
                         new Map<String, Boolean> {
@@ -199,7 +208,7 @@ public class MockUpFactory {
                     )
                 );
             }
-            if (q.Module__c == modules.get(0).Id && q.Type__c == 'Short Answer') {
+            if ((q.Module__c == modules.get(0).Id || q.Module__c == modules.get(2).Id) && q.Type__c == 'Short Answer') {
                 answersOptions.addAll(
                     createAnswerOptions(q.Id,
                         new Map<String, Boolean> {
@@ -210,7 +219,7 @@ public class MockUpFactory {
                     )
                 );
             }
-            if (q.Module__c == modules.get(0).Id && q.Type__c == 'Statement') {
+            if ((q.Module__c == modules.get(0).Id || q.Module__c == modules.get(2).Id) && q.Type__c == 'Statement') {
                 answersOptions.addAll(
                     createAnswerOptions(q.Id,
                         new Map<String, Boolean> {
@@ -221,7 +230,7 @@ public class MockUpFactory {
                     )
                 );
             }
-            if (q.Module__c == modules.get(0).Id && q.Type__c == 'Matching Options') {
+            if ((q.Module__c == modules.get(0).Id || q.Module__c == modules.get(2).Id) && q.Type__c == 'Matching Options') {
                 answersOptions.addAll(
                     createAnswerOptions(q.Id,
                         new Map<String, Boolean> {
@@ -319,6 +328,9 @@ public class MockUpFactory {
 
     public static void activateCourse() {
         FieloELR__ModuleDependency__c moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM FieloELR__ModuleDependency__c LIMIT 1];
+        FieloELR__Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic 2' LIMIT 1];
+
+        module.IsActive__c = true;
 
         moduleDependencies.Module__r.IsActive__c = true;
 
@@ -326,9 +338,71 @@ public class MockUpFactory {
 
         update new List<Module__c>{
             moduleDependencies.Predecessor__r,
-            moduleDependencies.Module__r
+            moduleDependencies.Module__r,
+            module
         };
 
-        CourseService.activateCourses(new Set<Id>{moduleDependencies.Module__r.Course__r.Id});
+        Map<Id, Course__c> courses = new Map<Id, Course__c>([SELECT Id FROM Course__c]);
+
+        CourseService.activateCourses(courses.keySet());
+    }
+
+    public static void answerModuleCorrectly(ModuleService.ModuleWrapper moduleWrapper) {
+        List<QuestionResponse__c> questionResponses = new List<QuestionResponse__c>();
+        List<Answer__c> answers = new List<Answer__c>();
+
+        for (Question__c question: moduleWrapper.module.Questions__r) {
+            questionResponses.add(
+                new QuestionResponse__c(
+                    ModuleResponse__c = moduleWrapper.module.Id,
+                    Question__c = question.Id
+                )
+            );
+        }
+        insert questionResponses;
+
+        Map<Id, Question__c> questionMap = new Map<Id, Question__c>(moduleWrapper.module.Questions__r);
+
+        for (QuestionResponse__c qr: questionResponses) {
+            for (AnswerOption__c ao: questionMap.get(qr.Question__c).AnswerOptions__r) {
+                if (questionMap.get(qr.Question__c).Type__c == 'Short Answer') {
+                    if (ao.IsCorrect__c) {
+                        questionResponses.get(questionResponses.size()-1).TextValue__c = ao.AnswerOptionText__c;
+                        break;
+                    }
+                } else if (questionMap.get(qr.Question__c).Type__c == 'Single Choice' || questionMap.get(qr.Question__c).Type__c == 'Statement') {
+                    if (ao.IsCorrect__c) {
+                        answers.add(
+                            new Answer__c(
+                                QuestionResponse__c = qr.Id,
+                                AnswerOption__c = ao.Id
+                            )
+                        );
+                        break;
+                    }
+                } else if (questionMap.get(qr.Question__c).Type__c == 'Multiple Choice') {
+                    if (ao.IsCorrect__c) {
+                        answers.add(
+                            new Answer__c(
+                                QuestionResponse__c = qr.Id,
+                                AnswerOption__c = ao.Id
+                            )
+                        );
+                        break;
+                    }
+                } else if (questionMap.get(qr.Question__c).Type__c == 'Matching Options') {
+                    if (ao.IsCorrect__c) {
+                        answers.add(
+                            new Answer__c(
+                                QuestionResponse__c = qr.Id,
+                                AnswerOption__c = ao.Id,
+                                TextValue__c = ao.MatchingText__c
+                            )
+                        );
+                    }
+                }
+            }
+        }
+        insert answers;
     }
 }
