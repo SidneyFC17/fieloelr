@@ -351,23 +351,25 @@ public class MockUpFactory {
         List<QuestionResponse__c> questionResponses = new List<QuestionResponse__c>();
         List<Answer__c> answers = new List<Answer__c>();
 
-        for (Question__c question: moduleWrapper.module.Questions__r) {
+        for (Question__c question: moduleWrapper.questions) {
             questionResponses.add(
                 new QuestionResponse__c(
-                    ModuleResponse__c = moduleWrapper.module.Id,
+                    ModuleResponse__c = moduleWrapper.moduleresponse.Id,
                     Question__c = question.Id
                 )
             );
         }
         insert questionResponses;
 
-        Map<Id, Question__c> questionMap = new Map<Id, Question__c>(moduleWrapper.module.Questions__r);
+        Map<Id, Question__c> questionMap = new Map<Id, Question__c>(moduleWrapper.questions);
+        List<QuestionResponse__c> needUpdate = new List<QuestionResponse__c>();
 
         for (QuestionResponse__c qr: questionResponses) {
             for (AnswerOption__c ao: questionMap.get(qr.Question__c).AnswerOptions__r) {
                 if (questionMap.get(qr.Question__c).Type__c == 'Short Answer') {
                     if (ao.IsCorrect__c) {
-                        questionResponses.get(questionResponses.size()-1).TextValue__c = ao.AnswerOptionText__c;
+                        qr.TextValue__c = ao.AnswerOptionText__c;
+                        needUpdate.add(qr);
                         break;
                     }
                 } else if (questionMap.get(qr.Question__c).Type__c == 'Single Choice' || questionMap.get(qr.Question__c).Type__c == 'Statement') {
@@ -388,7 +390,6 @@ public class MockUpFactory {
                                 AnswerOption__c = ao.Id
                             )
                         );
-                        break;
                     }
                 } else if (questionMap.get(qr.Question__c).Type__c == 'Matching Options') {
                     if (ao.IsCorrect__c) {
@@ -403,6 +404,18 @@ public class MockUpFactory {
                 }
             }
         }
+        if (!needUpdate.isEmpty()) {
+            update needUpdate;
+        }
+
         insert answers;
+
+        update new ModuleResponse__c(
+            Id = moduleWrapper.moduleresponse.Id,
+            IsSubmitted__c = true
+        );
+
+        System.debug(JSON.serializePretty(questionResponses));
+        System.debug(JSON.serializePretty(answers));
     }
 }

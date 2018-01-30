@@ -670,11 +670,17 @@ private class TestCreateModuleResponse {
 
         System.assert(moduleWrapper.moduleResponse.Id != null);
 
+        System.debug(JSON.serializePretty(moduleWrapper));
+
         MockUpFactory.answerModuleCorrectly(moduleWrapper);
 
-        FieloELR__ModuleResponse__c mr = [SELECT Id, NumberOfAttempt__c, IsApproved__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+        FieloELR__ModuleResponse__c mr = [SELECT Id, NumberOfAttempt__c, IsApproved__c, IsSubmitted__c FROM FieloELR__ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
 
-        // Continue from here
+        System.assertEquals('IsSubmited: ' + true, 'IsSubmited: ' + mr.IsSubmitted__c);
+
+        System.assertEquals('IsApproved: ' + true, 'IsApproved: ' + mr.IsApproved__c);
+
+        mr.FieloELR__IsSubmitted__c = false;
 
         String errorMsg = '';
         try{
@@ -685,8 +691,59 @@ private class TestCreateModuleResponse {
 
         System.debug(errorMsg);
 
-        System.assert(errorMsg.contains('Course Status can\'t be modified'));
+        System.assert(errorMsg.contains(Label.ValidateModuleResponseSubmitted));
 
         Test.stopTest();
+    }
+
+    /*  TEST-1918
+        Create Module Response
+        - Validations
+        - Member does not belong to the program of the related course (NOK)
+    */
+    @isTest static void ELR_0007_FA4() {
+
+    }
+
+    /*  TEST-1919
+        Create Module Response
+        - Validations
+        - Member does not belong to any of the segments of the related course (NOK)
+    */
+    @isTest static void ELR_0007_FA5() {
+
+    }
+
+    /*  TEST-1920
+        Create Module Response
+        - Validations
+        - Related course is not active (NOK)
+    */
+    @isTest static void ELR_0007_FA6() {
+
+    }
+
+    /*  TEST-1921
+        Create Module Response
+        - Edit the member of a module response not submitted (NOK)
+    */
+    @isTest static void ELR_0007_FA18() {
+
+    }
+
+    /*  TEST-1922
+        Create Module Response
+        - Edit the module of a module response not submitted (NOK)
+    */
+    @isTest static void ELR_0007_FA19() {
+
+    }
+
+    /*  TEST-1923
+        Create Module Response
+        - Edit the date of a module response not submitted (OK)
+    */
+    @isTest static void ELR_0007_FA20() {
+        
     }
 }
