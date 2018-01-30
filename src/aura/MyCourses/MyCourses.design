@@ -24,7 +24,7 @@ default='{
     "value": "My Courses"
   },
   "paging": true,
-  "limit": 6,
+  "quantity": 5,
   "Course": {
     "fieldset": [
       {
