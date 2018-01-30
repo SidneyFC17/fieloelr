@@ -11,7 +11,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FB() { 
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -49,7 +49,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FA1() {
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -90,7 +90,7 @@ private class TestCreateModuleResponse {
 
         CourseService.activateCourses(new Set<Id>{module.Course__c});
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -125,7 +125,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FA3() {
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -159,7 +159,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FA7() {
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Intermediate'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -201,7 +201,7 @@ private class TestCreateModuleResponse {
 
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -254,7 +254,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FA9() {
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -304,7 +304,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FA10() {
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -368,7 +368,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FA11() {
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         Test.startTest();
@@ -405,7 +405,7 @@ private class TestCreateModuleResponse {
 
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -450,7 +450,7 @@ private class TestCreateModuleResponse {
 
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         Test.startTest();
@@ -480,7 +480,7 @@ private class TestCreateModuleResponse {
     @isTest static void ELR_0007_FA14() {
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         FieloELR__CourseStatus__c courseStatus = new FieloELR__CourseStatus__c(
@@ -521,7 +521,7 @@ private class TestCreateModuleResponse {
 
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         Test.startTest();
@@ -560,7 +560,7 @@ private class TestCreateModuleResponse {
 
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         Test.startTest();
@@ -602,7 +602,7 @@ private class TestCreateModuleResponse {
         MockUpFactory.activateCourse();
 
         List<Course__c> courses = [SELECT Id FROM Course__c ORDER BY Name];
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         CourseStatus__c cs = new CourseStatus__c (
@@ -655,7 +655,7 @@ private class TestCreateModuleResponse {
 
         MockUpFactory.activateCourse();
 
-        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
         FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
 
         Test.startTest();
@@ -702,7 +702,47 @@ private class TestCreateModuleResponse {
         - Member does not belong to the program of the related course (NOK)
     */
     @isTest static void ELR_0007_FA4() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        List<FieloPLT__Member__c> members = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c ORDER BY Name];
+        List<FieloELR__Module__c> modules = [SELECT Id, Course__c FROM Module__c ORDER BY Name];
+
+        /**
+         *  Order By Name:
+         *  modules[0] - Basic
+         *  modules[1] - Intermediate
+         *
+         *  member[0] - Member 0 - Program Default 0
+         *  member[1] - Member 1 - Program Default 1
+         *  member[2] - Member 2 - Program Default 0
+        **/
+
+        Test.startTest();
+
+        String errorMsg = '';
+        try{
+            ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+                modules[0].Id,
+                members[1].Id,
+                new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+                new Set<String> {'FieloELR__QuestionText__c'},
+                new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+            );
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+        
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('The member should belong to the course\'s program'));
+
+        Test.stopTest();
     }
 
     /*  TEST-1919
@@ -711,7 +751,49 @@ private class TestCreateModuleResponse {
         - Member does not belong to any of the segments of the related course (NOK)
     */
     @isTest static void ELR_0007_FA5() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        delete [SELECT Id FROM FieloPLT__MemberSegment__c];
+
+        MockUpFactory.activateCourse();
+
+        List<FieloPLT__Member__c> members = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c ORDER BY Name];
+        List<FieloELR__Module__c> modules = [SELECT Id, Course__c FROM Module__c ORDER BY Name];
+
+        /**
+         *  Order By Name:
+         *  modules[0] - Basic
+         *  modules[1] - Intermediate
+         *
+         *  member[0] - Member 0 - Program Default 0
+         *  member[1] - Member 1 - Program Default 1
+         *  member[2] - Member 2 - Program Default 0
+        **/
+
+        Test.startTest();
+
+        String errorMsg = '';
+        try{
+            ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+                modules[0].Id,
+                members[0].Id,
+                new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+                new Set<String> {'FieloELR__QuestionText__c'},
+                new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+            );
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+        
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('The member does not apply to the course\'s segment'));
+
+        Test.stopTest();
     }
 
     /*  TEST-1920
@@ -720,7 +802,35 @@ private class TestCreateModuleResponse {
         - Related course is not active (NOK)
     */
     @isTest static void ELR_0007_FA6() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+        FieloELR__Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        Test.startTest();
+
+        String errorMsg = '';
+        try {
+            ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+                module.Id,
+                member.Id,
+                new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+                new Set<String> {'FieloELR__QuestionText__c'},
+                new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+            );    
+        } catch (Exception e) {
+            errorMsg = e.getMessage();
+        }
+        
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('Course Status must be related to a Course with the Status Active'));
+
+        Test.stopTest();
     }
 
     /*  TEST-1921
@@ -728,7 +838,52 @@ private class TestCreateModuleResponse {
         - Edit the member of a module response not submitted (NOK)
     */
     @isTest static void ELR_0007_FA18() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        List<FieloPLT__Member__c> members = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c ORDER BY Name];
+        List<FieloELR__Module__c> modules = [SELECT Id, Course__c FROM Module__c ORDER BY Name];
+
+        /**
+         *  Order By Name:
+         *  modules[0] - Basic
+         *  modules[1] - Intermediate
+         *
+         *  member[0] - Member 0 - Program Default 0
+         *  member[1] - Member 1 - Program Default 1
+         *  member[2] - Member 2 - Program Default 0
+        **/
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            modules[0].Id,
+            members[0].Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        String errorMsg = '';
+        try{
+            update new ModuleResponse__c(
+                Id = moduleWrapper.moduleResponse.Id,
+                Member__c = members[2].Id
+            );
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+        
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('The member cannot be changed'));
+
+        Test.stopTest();
     }
 
     /*  TEST-1922
@@ -736,7 +891,48 @@ private class TestCreateModuleResponse {
         - Edit the module of a module response not submitted (NOK)
     */
     @isTest static void ELR_0007_FA19() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
 
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+        List<FieloELR__Module__c> modules = [SELECT Id, Course__c FROM Module__c ORDER BY Name];
+
+        /**
+         *  Order By Name:
+         *  modules[0] - Basic
+         *  modules[1] - Intermediate
+        **/
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            modules[0].Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        String errorMsg = '';
+        try{
+            update new ModuleResponse__c(
+                Id = moduleWrapper.moduleResponse.Id,
+                Module__c = modules[1].Id
+            );
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+        
+        System.debug(errorMsg);
+
+        System.assert(errorMsg.contains('The module cannot be changed'));
+
+        Test.stopTest();
     }
 
     /*  TEST-1923
@@ -744,6 +940,42 @@ private class TestCreateModuleResponse {
         - Edit the date of a module response not submitted (OK)
     */
     @isTest static void ELR_0007_FA20() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+        List<FieloELR__Module__c> modules = [SELECT Id, Course__c FROM Module__c ORDER BY Name];
+
+        /**
+         *  Order By Name:
+         *  modules[0] - Basic
+         *  modules[1] - Intermediate
+        **/
+
+        Test.startTest();
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            modules[0].Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        update new ModuleResponse__c(
+            Id = moduleWrapper.moduleResponse.Id,
+            Date__c = System.today().addDays(-1)
+        );
         
+        ModuleResponse__c mr = [SELECT Id, Date__c FROM ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
+
+        System.assertEquals(mr.Date__c, System.today().addDays(-1));
+
+        Test.stopTest();
     }
 }

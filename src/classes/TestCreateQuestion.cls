@@ -1,415 +1,688 @@
 @isTest
 private class TestCreateQuestion{
-    private static List<FieloELR__Question__c> questions = new List<FieloELR__Question__c>();
-    private static List<FieloELR__Module__c> modules = new List<FieloELR__Module__c>();
-    private static List<FieloELR__AnswerOption__c> answers = new List<FieloELR__AnswerOption__c>();
-    private static List<FieloPLT__Program__c> programs;
-    private static List<FieloPLT__Segment__c> segments;
-    private static List<FieloELR__Course__c> courses;
+    private static String errorMsg;
 
-    @testSetup
-        static void setup(){ 
-        programs = MockUpFactory.createPrograms('testProgram', 2);
-        insert programs;
+    @testSetup static void setup(){
+        MockUpFactory.InsertTestData();
+    }
 
-        //Segments
-        segments = MockUpFactory.createSegments('testSegment',2,'Dynamic');
-        segments.get(0).FieloPLT__Program__c = programs.get(0).id;
-        segments.get(1).FieloPLT__Program__c = programs.get(1).id;
-        insert segments;
+    /*  TEST-1738
+        Create Question - Question type is “Single Choice” (OK)
+    */
+    @isTest static void ELR_0005_FB() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
-        //Courses 
-        courses = MockUpFactory.createCourses(programs.get(0).id, segments.get(0).id, 3);
-        courses.get(0).FieloELR__Description__c = 'aTestCourse';
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
 
-        insert courses;
-
-        //Module
-        FieloELR__Module__c moduleTest = new FieloELR__Module__c();
-        moduleTest.Name = 'testModule';
-        moduleTest.FieloELR__Course__c = courses.get(0).id;
-        moduleTest.FieloELR__ApprovalGrade__c = 0;
-        moduleTest.FieloELR__QuestionPool__c = 2;
-        modules.add(moduleTest);
-
-        //active module
-        FieloELR__Module__c moduleTest1 = new FieloELR__Module__c();
-        moduleTest1.Name = 'testModule1';
-        moduleTest1.FieloELR__Course__c = courses.get(1).id;
-        moduleTest1.FieloELR__ApprovalGrade__c = 0;
-
-        modules.add(moduleTest1);
-        
-        //module with penaltymode = 'none'
-        FieloELR__Module__c moduleTest2 = new FieloELR__Module__c();
-        moduleTest2.Name = 'testModule2';
-        moduleTest2.FieloELR__Course__c = courses.get(1).id;
-        moduleTest2.FieloELR__ApprovalGrade__c = 0;
-        moduleTest2.FieloELR__PenaltyMode__c = 'None';
-        moduleTest2.FieloELR__QuestionPool__c = 2;
-        modules.add(moduleTest2);
-
-        FieloELR__Module__c moduleTest3 = new FieloELR__Module__c();
-        moduleTest3.Name = 'testModule3';
-        moduleTest3.FieloELR__Course__c = courses.get(1).id;
-        moduleTest3.FieloELR__ApprovalGrade__c = 0;
-        moduleTest3.FieloELR__WeightedQuestions__c = true;
-        modules.add(moduleTest3);
-
-        FieloELR__Module__c moduleTest4 = new FieloELR__Module__c();
-        moduleTest4.Name = 'testModule4';
-        moduleTest4.FieloELR__Course__c = courses.get(1).id;
-        moduleTest4.FieloELR__ApprovalGrade__c = 0;
-        moduleTest4.FieloELR__WeightedQuestions__c = false;
-        modules.add(moduleTest4);
-        insert modules;
-
-        //Question
-        FieloELR__Question__c question1 = new FieloELR__Question__c();
-        question1.Name = 'question0';
-        question1.FieloELR__Module__c = modules.get(0).Id;
-        question1.FieloELR__QuestionText__c = 'How are you?';
-        question1.FieloELR__Type__c = 'Short Answer';
-        questions.add(question1);
-
-        FieloELR__Question__c question2 = new FieloELR__Question__c();
-        question2.Name = 'question1';
-        question2.FieloELR__Module__c = modules.get(1).Id;
-        question2.FieloELR__QuestionText__c = 'How are you?';
-        question2.FieloELR__Type__c = 'Short Answer';
-        questions.add(question2);
-
-        //question to delete
-        FieloELR__Question__c question3 = new FieloELR__Question__c();
-        question3.Name = 'question3';
-        question3.FieloELR__Module__c = modules.get(3).Id;
-        question3.FieloELR__QuestionText__c = 'How are you?';
-        question3.FieloELR__Type__c = 'Short Answer';
-        question3.FieloELR__CorrectWeight__c = 1;
-        question3.FieloELR__IncorrectWeight__c = 0;
-        question3.FieloELR__Order__c = 1;
-        question3.FieloELR__PenaltyPerAttempt__c = 0;
-        questions.add(question3);
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].Order__c = 0;
+        questions[0].IncorrectWeight__c = 0;
+        questions[0].PenaltyPerAttempt__c = 0;
 
         insert questions;
 
-        //Answer
-        FieloELR__AnswerOption__c answers1 = new FieloELR__AnswerOption__c();
-        answers1.FieloELR__Question__c = questions.get(0).Id;
-        answers1.FieloELR__IsCorrect__c = true;
-        answers1.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-        answers.add(answers1);
+        questions = [SELECT Id, Name, Module__c, Type__c, QuestionText__c, Order__c, IncorrectWeight__c, PenaltyPerAttempt__c, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
 
-        FieloELR__AnswerOption__c answers2 = new FieloELR__AnswerOption__c();
-        answers2.FieloELR__Question__c = questions.get(1).Id;
-        answers2.FieloELR__IsCorrect__c = true;
-        answers2.FieloELR__AnswerOptionText__c = 'Esta es correcta';
-        answers.add(answers2);
-        insert answers;
+        System.assertEquals(1,questions.size());
+        System.assert(questions[0].Name != null);
+        System.assert(questions[0].Module__c != null);
+        System.assert(questions[0].Type__c != null);
+        System.assert(questions[0].QuestionText__c != null);
+        System.assert(questions[0].Order__c != null);
+        System.assert(questions[0].IncorrectWeight__c != null);
+        System.assert(questions[0].PenaltyPerAttempt__c != null);
+        System.assert(questions[0].CorrectWeight__c != null);
 
-        modules.get(1).FieloELR__IsActive__c = true;
-        update modules;
+        System.assertEquals(1,questions[0].CorrectWeight__c);
     }
 
-    @isTest
-        static void ELR_0005_FB(){
-            
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'Quest1',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Single Choice',FieloELR__Order__c = 1,FieloELR__CorrectWeight__c = 1,
-                FieloELR__IncorrectWeight__c = 0,
-                FieloELR__PenaltyPerAttempt__c = 0,
-                FieloELR__QuestionText__c = 'someQuest')};
+    /*  TEST-1739
+        Create Question
+        - Validations
+        - The related module is active (NOK)
+    */
+    @isTest static void ELR_0005_FA1() {
+        MockUpFactory.activateCourse();
 
-            insert questions.get(0);
-            
-            questions = [SELECT Id FROM FieloELR__Question__c  WHERE Name = 'Quest1' LIMIT 1];
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
-            System.assertEquals(1, questions.size());
-        }
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
 
-    @isTest
-        static void ELR_0005_FA1(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'Quest1',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule1' LIMIT 1].id,
-                FieloELR__Type__c = 'Single Choice')};
-            try{
-                insert questions;
-            }catch(System.Dmlexception e){
-                    System.assert(e.getMessage().Contains('Active modules or modules with module responses cannot have changes in their set of questions.'));
-            }
-        }
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
 
-    /*@isTest 
-        static void ELR_0005_FA2(){
-            FieloELR__Question__c quest = new FieloELR__Question__c();
-            quest.FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2' LIMIT 1].id;
-            quest.Name = 'QuestName';
-            quest.FieloELR__Type__c = 'Short Answer';
-            insert quest;
-            
-        } validation is not working*/ 
-
-
-    /*@isTest
-        static void ELR_0005_FA3(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2' LIMIT 1].id,
-                FieloELR__Type__c = 'Single Choice')};
-
+        errorMsg = '';
+        try{
             insert questions;
-
-            questions = [SELECT FieloELR__Order__c FROM FieloELR__Question__c WHERE Name = 'QuestTest' LIMIT 1];
-            System.assert(questions.get(0).FieloELR__Order__c != 0);
-
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    @isTest
-        static void ELR_0005_FA4(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2' LIMIT 1].id,
-                FieloELR__Type__c = 'Short Answer')};
+        System.assert(errorMsg.contains(Label.ValidateQuestionActiveModulesQuestions));
+    }
 
+    /*  TEST-1740
+        Create Question
+        - Validations
+        - The “Question Text” field is null (NOK)
+    */
+    @isTest static void ELR_0005_FA3() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].QuestionText__c = null;
+
+        String errorMsg = '';
+        try{
             insert questions;
-
-            questions = [SELECT FieloELR__CorrectWeight__c FROM FieloELR__Question__c WHERE Name = 'QuestTest' LIMIT 1];
-            System.assert(questions.get(0).FieloELR__CorrectWeight__c != 0);
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    @isTest
-        static void ELR_0005_FA5(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2' LIMIT 1].id,
-                FieloELR__Type__c = 'Short Answer')};
+        System.assert(errorMsg.contains('The question text is required'));
+    }
 
-            questions.get(0).FieloELR__CorrectWeight__c = 5;
+    /*  TEST-1741
+        Create Question
+        - Order field is null (OK)
+    */
+    @isTest static void ELR_0005_FA4() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+
+        insert questions;
+
+        questions = [SELECT Id, Name, Module__c, Type__c, QuestionText__c, Order__c, IncorrectWeight__c, PenaltyPerAttempt__c, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(1,questions.size());
+        
+        System.assertEquals(1, questions[0].Order__c);
+    }
+
+    /*  TEST-1742
+        Create Question
+        - Validations
+        - The related module has module response (NOK)
+    */
+    @isTest static void ELR_0005_FA2() {
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+
+        errorMsg = '';
+        try{
             insert questions;
-
-            questions = [SELECT FieloELR__CorrectWeight__c FROM FieloELR__Question__c WHERE Name = 'QuestTest' LIMIT 1];
-            System.assertEquals(1, questions.get(0).FieloELR__CorrectWeight__c);
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    @isTest 
-        static void ELR_0005_FA6(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule2' LIMIT 1].id,
-                FieloELR__Type__c = 'Short Answer')};
-            
-            questions.get(0).FieloELR__CorrectWeight__c = -1;
+        System.assert(errorMsg.contains(Label.ValidateQuestionActiveModulesQuestions));
+    }
 
-            try{
-                insert questions;
-            }catch(System.Dmlexception e){
-                System.assert(e.getMessage().Contains('The correct weight must be a positive number.'));
-            } 
-        }
+    /*  TEST-1743
+        Create Question
+        - “Correct Weight” field is greater than one and “Question Pool” of related module is not null (OK)
+    */
+    @isTest static void ELR_0005_FA5() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
-    @isTest
-        static void ELR_0005_FA7(){
-             questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule4' LIMIT 1].id,
-                FieloELR__Type__c = 'Short Answer')};
+        module.QuestionPool__c = 3;
 
-             questions.get(0).FieloELR__CorrectWeight__c  = 5;
+        update module;
 
-             insert questions;
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
 
-             questions = [SELECT FieloELR__CorrectWeight__c FROM FieloELR__Question__c WHERE Name = 'QuestTest' LIMIT 1];
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].CorrectWeight__c = 10;
 
-             System.assertEquals(1, questions.get(0).FieloELR__CorrectWeight__c);
+        insert questions;
 
-        }
+        System.assert(questions[0].Id != null);
 
-    @isTest
-        static void ELR_0005_FA8(){
-             questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Short Answer')};
+        questions = [SELECT Id, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
 
-             insert questions;
+        System.assertEquals(1, questions[0].CorrectWeight__c);
 
-             questions = [SELECT FieloELR__IncorrectWeight__c FROM FieloELR__Question__c WHERE Name = 'QuestTest'];
+    }
 
-             System.assertEquals(0,questions.get(0).FieloELR__IncorrectWeight__c);
+    /*  TEST-1744
+        Create Question
+        - Validations
+        - The “Correct Weight” field is negative and “Weighted Questions” of related module is true (NOK)
+    */
+    @isTest static void ELR_0005_FA6() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
-        }
+        module.WeightedQuestions__c = true;
 
-    @isTest
-        static void ELR_0005_FA9(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Multiple Choice')};
+        update module;
 
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].CorrectWeight__c = -10;
+
+        errorMsg = '';
+        try {
             insert questions;
-
-            questions = [SELECT FieloELR__PenaltyPerAttempt__c FROM FieloELR__Question__c WHERE Name = 'QuestTest' LIMIT 1];
-
-            System.assertEquals(0,questions.get(0).FieloELR__PenaltyPerAttempt__c);
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    @isTest
-        static void ELR_0005_FA10(){
-             questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Multiple Choice')};
+        System.debug(errorMsg);
 
-             questions.get(0).FieloELR__PenaltyPerAttempt__c = -1;
+        System.assert(errorMsg.contains('The correct weight must be a positive number'));
 
-            try{
-                insert questions;
-            }catch(System.Dmlexception e){
-                System.assert(e.getMessage().Contains(' The penalty per attempt must have a value  between 0 and 100.'));
-            }
+        System.assert(questions[0].Id == null);
+    }
 
-            questions.get(0).FieloELR__PenaltyPerAttempt__c = 200;
-            
-            try{
-                insert questions;
-            }catch(System.Dmlexception e){
-                System.assert(e.getMessage().Contains(' The penalty per attempt must have a value  between 0 and 100.'));
-            }
+    /*  TEST-1745
+        Create Question
+        - “Correct Weight” field is greater than one and “Weighted Questions” of related module is false (OK)
+    */
+    @isTest static void ELR_0005_FA7() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
+        module.WeightedQuestions__c = true;
+
+        update module;
+
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].CorrectWeight__c = 10;
+
+        insert questions;
+
+        System.assert(questions[0].Id != null);
+
+        questions = [SELECT Id, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(10, questions[0].CorrectWeight__c);
+    }
+
+    /*  TEST-1746
+        Create Question
+        - “Incorrect Weight” field is null (OK)
+    */
+    @isTest static void ELR_0005_FA8() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+
+        insert questions;
+
+        questions = [SELECT Id, Name, Module__c, Type__c, QuestionText__c, Order__c, IncorrectWeight__c, PenaltyPerAttempt__c, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(1,questions.size());
+        System.assert(questions[0].IncorrectWeight__c != null);
+        System.assertEquals(0,questions[0].IncorrectWeight__c);
+    }
+
+    /*  TEST-1747
+        Create Question
+        - “Penalty per Attempt” field is null (OK)
+    */
+    @isTest static void ELR_0005_FA9() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        
+        System.assert(questions[0].PenaltyPerAttempt__c == null);
+
+        insert questions;
+
+        System.assert(questions[0].Id != null);
+
+        questions = [SELECT Id, PenaltyPerAttempt__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(0, questions[0].PenaltyPerAttempt__c);
+    }
+
+    /*  TEST-1748
+        Create Question
+        - Validations
+        - “Penalty per Attempt” field is invalid (NOK)
+    */
+    @isTest static void ELR_0005_FA10() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+
+        questions[0].PenaltyPerAttempt__c = 150;
+        
+        System.assert(questions[0].PenaltyPerAttempt__c != null);
+
+        errorMsg = '';
+        try {
+            insert questions;    
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    @isTest
-        static void ELR_0005_FA11(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTest',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id)};
+        System.debug(errorMsg);
 
-            try{
-                insert questions;
-            }catch(System.Dmlexception e){
-                System.assert(e.getMessage().Contains('Required fields are missing'));
-            }
-        }*/
+        System.debug(errorMsg.contains('The penalty per attempt must have a value  between 0 and 100'));
 
-    @isTest
-        static void ELR_0005_FA12(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'QuestTestName',
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Statement',FieloELR__Order__c = 1,FieloELR__CorrectWeight__c = 1,
-                FieloELR__IncorrectWeight__c = 0,
-                FieloELR__PenaltyPerAttempt__c = 0,
-                FieloELR__QuestionText__c = 'someQuest')};
+        System.assert(questions[0].Id == null);
+    }
 
-            insert questions;
+    /*  TEST-1749
+        Create Question
+        - Validations
+        - The question “Type” field is null (NOK)
+    */
+    @isTest static void ELR_0005_FA11() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
-            questions = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'QuestTestName'];
+        Map<String, String> questionsMap = new Map<String, String>{'Which one is the LEAST popular programming language?' => 'Single Choice'};
 
-            System.assertEquals(1, questions.size());
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+
+        questions[0].Type__c = null;
+        
+        System.assert(questions[0].Type__c == null);
+
+        errorMsg = '';
+        try {
+            insert questions;    
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    @isTest
-        static void ELR_0005_FA13(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'newQuestion', 
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Multiple Choice', FieloELR__Order__c = 1, FieloELR__CorrectWeight__c = 1,
-                FieloELR__IncorrectWeight__c = 0, FieloELR__PenaltyPerAttempt__c = 0, FieloELR__QuestionText__c = 'Is null?')};
+        System.debug(errorMsg);
 
-            insert questions;
+        System.debug(errorMsg.contains('Required fields are missing: [FieloELR__Type__c]'));
 
-            questions = [SELECT FieloELR__Type__c FROM FieloELR__Question__c WHERE Name = 'newQuestion' LIMIT 1];
-            System.assertEquals('Multiple Choice', questions.get(0).FieloELR__Type__c);
+        System.assert(questions[0].Id == null);
+    }
 
+    /*  TEST-1750
+        Create Question
+        - Question type is “Statement” (OK)
+    */
+    @isTest static void ELR_0005_FA12() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{
+            'C++ is more performatic then Java' => 'Statement'
+        };
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].Order__c = 0;
+        questions[0].CorrectWeight__c = 1;
+        questions[0].IncorrectWeight__c = 0;
+        questions[0].PenaltyPerAttempt__c = 0;
+
+        insert questions;
+
+        questions = [SELECT Id, Name, Module__c, Type__c, QuestionText__c, Order__c, IncorrectWeight__c, PenaltyPerAttempt__c, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(1,questions.size());
+        System.assert(questions[0].Name != null);
+        System.assert(questions[0].Module__c != null);
+        System.assert(questions[0].Type__c != null);
+        System.assert(questions[0].QuestionText__c != null);
+        System.assert(questions[0].Order__c != null);
+        System.assert(questions[0].IncorrectWeight__c != null);
+        System.assert(questions[0].PenaltyPerAttempt__c != null);
+        System.assert(questions[0].CorrectWeight__c != null);
+
+        System.assertEquals(1,questions[0].CorrectWeight__c);
+    }
+
+    /*  TEST-1751
+        Create Question
+        - Question type is “Multiple Choice” (OK)
+    */
+    @isTest static void ELR_0005_FA13() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{
+            'Select all Family-C programming languages?' => 'Multiple Choice'
+        };
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].Order__c = 0;
+        questions[0].CorrectWeight__c = 1;
+        questions[0].IncorrectWeight__c = 0;
+        questions[0].PenaltyPerAttempt__c = 0;
+
+        insert questions;
+
+        questions = [SELECT Id, Name, Module__c, Type__c, QuestionText__c, Order__c, IncorrectWeight__c, PenaltyPerAttempt__c, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(1,questions.size());
+        System.assert(questions[0].Name != null);
+        System.assert(questions[0].Module__c != null);
+        System.assert(questions[0].Type__c != null);
+        System.assert(questions[0].QuestionText__c != null);
+        System.assert(questions[0].Order__c != null);
+        System.assert(questions[0].IncorrectWeight__c != null);
+        System.assert(questions[0].PenaltyPerAttempt__c != null);
+        System.assert(questions[0].CorrectWeight__c != null);
+
+        System.assertEquals(1,questions[0].CorrectWeight__c);
+    }
+
+
+    /*  TEST-1752
+        Create Question
+        - Question type is “Short Answer” (OK)
+    */
+    @isTest static void ELR_0005_FA14() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{
+            'Acronym for Personal Computer' => 'Short Answer'
+        };
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].Order__c = 0;
+        questions[0].CorrectWeight__c = 1;
+        questions[0].IncorrectWeight__c = 0;
+        questions[0].PenaltyPerAttempt__c = 0;
+
+        insert questions;
+
+        questions = [SELECT Id, Name, Module__c, Type__c, QuestionText__c, Order__c, IncorrectWeight__c, PenaltyPerAttempt__c, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(1,questions.size());
+        System.assert(questions[0].Name != null);
+        System.assert(questions[0].Module__c != null);
+        System.assert(questions[0].Type__c != null);
+        System.assert(questions[0].QuestionText__c != null);
+        System.assert(questions[0].Order__c != null);
+        System.assert(questions[0].IncorrectWeight__c != null);
+        System.assert(questions[0].PenaltyPerAttempt__c != null);
+        System.assert(questions[0].CorrectWeight__c != null);
+
+        System.assertEquals(1,questions[0].CorrectWeight__c);
+    }
+
+    /*  TEST-1753
+        Create Question
+        - Question type is “Matching Options” (OK)
+    */
+    @isTest static void ELR_0005_FA15() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        Map<String, String> questionsMap = new Map<String, String>{
+            'Match statement with its meaning' => 'Matching Options'
+        };
+
+        List<FieloELR__Question__c> questions = MockUpFactory.createQuestions(module.Id, questionsMap);
+        questions[0].Order__c = 0;
+        questions[0].CorrectWeight__c = 1;
+        questions[0].IncorrectWeight__c = 0;
+        questions[0].PenaltyPerAttempt__c = 0;
+
+        insert questions;
+
+        questions = [SELECT Id, Name, Module__c, Type__c, QuestionText__c, Order__c, IncorrectWeight__c, PenaltyPerAttempt__c, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(1,questions.size());
+        System.assert(questions[0].Name != null);
+        System.assert(questions[0].Module__c != null);
+        System.assert(questions[0].Type__c != null);
+        System.assert(questions[0].QuestionText__c != null);
+        System.assert(questions[0].Order__c != null);
+        System.assert(questions[0].IncorrectWeight__c != null);
+        System.assert(questions[0].PenaltyPerAttempt__c != null);
+        System.assert(questions[0].CorrectWeight__c != null);
+
+        System.assertEquals(1,questions[0].CorrectWeight__c);
+    }
+
+    /*  TEST-1754
+        Create Question
+        - Delete question when related module is inactive and does not have module response (OK)
+    */
+    @isTest static void ELR_0005_FA16() {
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        module.IsActive__c = false;
+
+        CourseService.inactivateCourses(new Set<Id>{module.Course__c});
+
+        update module;
+
+        List<Question__c> questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
+
+        System.assertEquals(5, questions.size());
+
+        delete [SELECT Id FROM Question__c WHERE Module__c = :module.Id LIMIT 1];
+
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
+
+        System.assertEquals(4, questions.size());
+    }
+
+    /*  TEST-1755
+        Create Question
+        - Validations
+        - Delete question when related module is active (NOK)
+    */
+    @isTest static void ELR_0005_FA18() {
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        List<Question__c> questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
+
+        System.assertEquals(5, questions.size());
+
+        errorMsg = '';
+        try {
+            delete [SELECT Id FROM Question__c WHERE Module__c = :module.Id LIMIT 1];
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    @isTest
-        static void ELR_0005_FA14(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'newQuestion', 
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Short Answer', FieloELR__Order__c = 1, FieloELR__CorrectWeight__c = 1,
-                FieloELR__IncorrectWeight__c = 0, FieloELR__PenaltyPerAttempt__c = 0, FieloELR__QuestionText__c = 'How do you do?')};
+        System.assert(errorMsg.contains(Label.ValidateQuestionActiveModulesQuestions));
 
-            insert questions;
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
 
-            questions = [SELECT FieloELR__Type__c FROM FieloELR__Question__c WHERE Name = 'newQuestion' LIMIT 1];
-            System.assertEquals('Short Answer', questions.get(0).FieloELR__Type__c);
+        System.assertEquals(5, questions.size());
+    }
+
+    /*  TEST-1756
+        Create Question
+        - Edit question when related module is inactive and does not have module response (OK)
+    */
+    @isTest static void ELR_0005_FA22() {
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        module.IsActive__c = false;
+
+        CourseService.inactivateCourses(new Set<Id>{module.Course__c});
+
+        update module;
+
+        List<Question__c> questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
+
+        System.assertEquals(5, questions.size());
+
+        questions[0].QuestionText__c = questions[0].QuestionText__c + '??';
+
+        update questions[0];
+
+        questions = [SELECT Id, QuestionText__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals('??', questions[0].QuestionText__c.right(2));
+    }
+
+    /*  TEST-1757
+        Create Question
+        - Validations
+        - Edit question when related module is active (NOK)
+    */
+    @isTest static void ELR_0005_FA21() {
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic'];
+
+        List<Question__c> questions = [SELECT Id, QuestionText__c FROM Question__c WHERE Module__c = :module.Id];
+
+        System.assertEquals(5, questions.size());
+
+        questions[0].QuestionText__c = questions[0].QuestionText__c + '??';
+
+        errorMsg = '';
+        try{
+            update questions[0];
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-    
-    @isTest
-        static void ELR_0005_FA15(){
-            questions = new List<FieloELR__Question__c>{new FieloELR__Question__c(Name = 'newQuestion', 
-                FieloELR__Module__c = [SELECT Id FROM FieloELR__Module__c WHERE Name = 'testModule' LIMIT 1].id,
-                FieloELR__Type__c = 'Matching Options', FieloELR__Order__c = 1, FieloELR__CorrectWeight__c = 1,
-                FieloELR__IncorrectWeight__c = 0, FieloELR__PenaltyPerAttempt__c = 0, FieloELR__QuestionText__c = 'A new Question')};
+        System.assert(errorMsg.contains(Label.ActiveModuleQuestionNotEditable));
+    }
 
-            insert questions;
+    /*  TEST-1758
+        Create Question
+        - Edit question when “Question Pool” of related module is different from null (OK)
+    */
+    @isTest static void ELR_0005_FA28() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
 
-            questions = [SELECT FieloELR__Type__c FROM FieloELR__Question__c WHERE Name = 'newQuestion' LIMIT 1];
-            System.assertEquals('Matching Options', questions.get(0).FieloELR__Type__c);
+        module.QuestionPool__c = 4;
+
+        update module;
+
+        List<Question__c> questions = [SELECT Id, CorrectWeight__c FROM Question__c WHERE Module__c = :module.Id];
+
+        questions[0].CorrectWeight__c = 10;
+
+        System.assertEquals(10,questions[0].CorrectWeight__c);
+
+        update questions[0];
+
+        questions = [SELECT Id, CorrectWeight__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals(1,questions[0].CorrectWeight__c);
+    }
+
+    /*  TEST-1759
+        Create Question
+        - Validations
+        - Edit question type (NOK)
+    */
+    @isTest static void ELR_0005_FA19() {
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+
+        List<Question__c> questions = [SELECT Id, CorrectWeight__c, Type__c FROM Question__c WHERE Module__c = :module.Id AND Type__c = 'Single Choice'];
+
+        questions[0].Type__c = 'Multiple Choice';
+
+        System.assertEquals('Multiple Choice',questions[0].Type__c);
+
+        errorMsg = '';
+        try {
+            update questions[0];
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
         }
 
-   @isTest
-        static void ELR_0005_FA16(){
-            questions = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question3'];
+        System.assert(errorMsg.contains('The question type cannot be changed'));
 
-            delete questions;
+        questions = [SELECT Id, CorrectWeight__c, Type__c FROM Question__c WHERE Id = :questions[0].Id];
 
-            questions = [SELECT Id FROM FieloELR__Question__c WHERE Name = 'question3'];
+        System.assertEquals('Single Choice',questions[0].Type__c);
+    }
 
-            System.assertEquals(0,questions.size());
-        }
+    /*  TEST-1924
+        Create Question
+        - Validations
+        - Delete question when related module is inactive and has module response (NOK)
+    */
+    @isTest static void ELR_0005_FA17() {
 
-    @IsTest 
-        static void ELR_0005_FA17(){
-            questions = [SELECT Id,FieloELR__Module__c FROM FieloELR__Question__c WHERE Name = 'question1'];
+    }
 
-            try{
-                delete questions;
-            }catch(System.DmlException e){
-                e.getMessage().Contains('Active modules cannot have changes in their set of questions.');
-            }
-            
-        }
+    /*  TEST-1925
+        Create Question
+        - Validations
+        - Edit the related module (NOK)
+    */
+    @isTest static void ELR_0005_FA20() {
 
-    @isTest
-        static void ELR_0005_FA18(){
-            questions = [SELECT Id,FieloELR__Module__c,FieloELR__QuestionText__c FROM FieloELR__Question__c WHERE Name = 'question0'];
-           
-            questions.get(0).FieloELR__QuestionText__c = 'New question';
-           
-            update questions;
+    }
 
-            questions = [SELECT Id,FieloELR__Module__c,FieloELR__QuestionText__c FROM FieloELR__Question__c WHERE Name = 'question0'];
+    /*  TEST-1926
+        Create Question
+        - Edit Question Name when related module is inactive and has module response (OK)
+    */
+    @isTest static void ELR_0005_FA23() {
 
-            System.assertEquals('New question', questions.get(0).FieloELR__QuestionText__c);
-        }
+    }
 
-    @isTest
-        static void ELR_0005_FA19(){
-            questions = [SELECT Id,FieloELR__Module__c,FieloELR__QuestionText__c FROM FieloELR__Question__c WHERE Name = 'question1'];
-           
-            questions.get(0).FieloELR__QuestionText__c = 'Question Text';
-              
-            try{  
-                update questions;
-            }catch(System.DmlException e){
-                e.getMessage().Contains('Active modules cannot have changes in their set of questions.');
-            }
-            
-        }
+    /*  TEST-1927
+        Create Question
+        - Edit Question Text when related module is inactive and has module response (OK)
+    */
+    @isTest static void ELR_0005_FA24() {
 
-    @isTest
-        static void ELR_0005_FA20(){
-            questions = [SELECT Id, FieloELR__Module__c, FieloELR__CorrectWeight__c FROM FieloELR__Question__c WHERE Name = 'question0'];
-            questions.get(0).FieloELR__CorrectWeight__c = 5;
+    }
 
-            update questions;
+    /*  TEST-1928
+        Create Question
+        - Validations
+        - Edit Correct Weight when related module is inactive and has module response (NOK)
+    */
+    @isTest static void ELR_0005_FA25() {
 
-            questions = [SELECT FieloELR__CorrectWeight__c FROM FieloELR__Question__c WHERE Name ='question0'];
+    }
 
-            System.assertEquals(1, questions.get(0).FieloELR__CorrectWeight__c);
-        }
+    /*  TEST-1929
+        Create Question
+        - Validations
+        - Edit Penalty per Attempt when related module is inactive and has module response (NOK)
+    */
+    @isTest static void ELR_0005_FA26() {
 
-   /*@isTest
-        static void ELR_0005_FA21(){
-            questions = [SELECT Id, FieloELR__Module__c, FieloELR__Type__c FROM FieloELR__Question__c WHERE Name = 'question0'];
-            questions.get(0).FieloELR__Type__c = 'Multiple Choice';
-            
-            update questions;
- 
-            //questions = [SELECT FieloELR__Type__c FROM FieloELR__Question__c WHERE Name ='question0'];
-        } */
+    }
+
+    /*  TEST-1930
+        Create Question
+        - Validations
+        - Edit Incorrect Weight when related module is inactive and has module response (NOK)
+    */
+    @isTest static void ELR_0005_FA27() {
+
+    }
 }

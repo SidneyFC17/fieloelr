@@ -102,7 +102,7 @@ public class MockUpFactory {
     }
 
     public static void InsertTestData() {
-        List<FieloPLT__Program__c> programs = MockUpFactory.createPrograms('Default', 1);
+        List<FieloPLT__Program__c> programs = MockUpFactory.createPrograms('Default', 2);
         insert programs;
 
         List<FieloPLT__Segment__c> segments = MockUpFactory.createSegments('Segment',1,'Manual');
@@ -112,6 +112,8 @@ public class MockUpFactory {
         insert courses;
 
         List<FieloPLT__Member__c> members = MockUpFactory.createMembers(programs.get(0).id, 1);
+        members.addAll(MockUpFactory.createMembers(programs.get(1).id, 1));
+        members.addAll(MockUpFactory.createMembers(programs.get(0).id, 1));
         insert members;
 
         FieloPLT__MemberSegment__c memberSegment = new FieloPLT__MemberSegment__c(
