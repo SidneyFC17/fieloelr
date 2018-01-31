@@ -329,24 +329,61 @@ public class MockUpFactory {
     }
 
     public static void activateCourse() {
-        FieloELR__ModuleDependency__c moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM FieloELR__ModuleDependency__c LIMIT 1];
-        FieloELR__Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic 2' LIMIT 1];
+        Map<Id, Module__c> modulesMap = new Map<Id, Module__c>();
+        List<ModuleDependency__c> moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM ModuleDependency__c];
+        List<Module__c> modules = [SELECT Id FROM Module__c];
 
-        module.IsActive__c = true;
+        for (ModuleDependency__c md:moduleDependencies) {
+            if (!modulesMap.containsKey(md.Predecessor__r.Id)) {
+                md.Predecessor__r.IsActive__c = true;
+                modulesMap.put(md.Predecessor__r.Id, md.Predecessor__r);
+            }
+            if (!modulesMap.containsKey(md.Module__r.Id)) {
+                md.Module__r.IsActive__c = true;
+                modulesMap.put(md.Module__r.Id, md.Module__r);
+            }
+        }
+        for (Module__c module:modules) {
+            if (!modulesMap.containsKey(module.Id)) {
+                module.IsActive__c = true;
+                modulesMap.put(module.Id, module);
+            }
+        }
 
-        moduleDependencies.Module__r.IsActive__c = true;
-
-        moduleDependencies.Predecessor__r.IsActive__c = true;
-
-        update new List<Module__c>{
-            moduleDependencies.Predecessor__r,
-            moduleDependencies.Module__r,
-            module
-        };
+        update modulesMap.values();
 
         Map<Id, Course__c> courses = new Map<Id, Course__c>([SELECT Id FROM Course__c]);
 
         CourseService.activateCourses(courses.keySet());
+    }
+
+    public static void inactivateCourse() {
+        Map<Id, Module__c> modulesMap = new Map<Id, Module__c>();
+        List<ModuleDependency__c> moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM ModuleDependency__c];
+        List<Module__c> modules = [SELECT Id FROM Module__c];
+
+        for (ModuleDependency__c md:moduleDependencies) {
+            if (!modulesMap.containsKey(md.Module__r.Id)) {
+                md.Module__r.IsActive__c = false;
+                modulesMap.put(md.Module__r.Id, md.Module__r);
+            }
+            if (!modulesMap.containsKey(md.Predecessor__r.Id)) {
+                md.Predecessor__r.IsActive__c = false;
+                modulesMap.put(md.Predecessor__r.Id, md.Predecessor__r);
+            }
+        }
+        for (Module__c module:modules) {
+            if (!modulesMap.containsKey(module.Id)) {
+                module.IsActive__c = false;
+                modulesMap.put(module.Id, module);
+            }
+        }
+
+        Map<Id, Course__c> courses = new Map<Id, Course__c>([SELECT Id FROM Course__c]);
+
+        CourseService.inactivateCourses(courses.keySet());
+
+        update modulesMap.values();
     }
 
     public static void answerModuleCorrectly(ModuleService.ModuleWrapper moduleWrapper) {

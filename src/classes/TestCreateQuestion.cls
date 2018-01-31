@@ -100,7 +100,9 @@ private class TestCreateQuestion{
 
         System.assertEquals(1,questions.size());
         
-        System.assertEquals(1, questions[0].Order__c);
+        //There are already 5 questions in the module.
+
+        System.assertEquals(6, questions[0].Order__c);
     }
 
     /*  TEST-1742
@@ -534,7 +536,7 @@ private class TestCreateQuestion{
 
         update module;
 
-        List<Question__c> questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
+        List<Question__c> questions = [SELECT Id, QuestionText__c FROM Question__c WHERE Module__c = :module.Id];
 
         System.assertEquals(5, questions.size());
 
@@ -631,7 +633,43 @@ private class TestCreateQuestion{
         - Delete question when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA17() {
-        
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        List<FieloELR__Question__c> questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
+
+        System.assertEquals(5, questions.size());
+
+        errorMsg = '';
+        try{
+            delete questions[0];
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.assert(errorMsg.contains(Label.ValidateQuestionActiveModulesQuestions));
+
+        questions = [SELECT Id FROM Question__c WHERE Module__c = :module.Id];
+
+        System.assertEquals(5, questions.size());
     }
 
     /*  TEST-1925
@@ -640,7 +678,30 @@ private class TestCreateQuestion{
         - Edit the related module (NOK)
     */
     @isTest static void ELR_0005_FA20() {
-        
+        List<Module__c> modules = [SELECT Id FROM Module__c ORDER BY Name];
+        /**
+         *  ORDER BY Name
+         *  modules[0] - Basic
+         *  modules[1] - Intermediate
+         **/
+        List<FieloELR__Question__c> questions = [SELECT Id FROM Question__c WHERE Module__c = :modules[0].Id];
+
+        System.assertEquals(5, questions.size());
+
+        Id questionId = questions[0].Id;
+
+        update new Question__c(
+            Id = questions[0].Id,
+            Module__c = modules[1].Id
+        );
+
+        questions = [SELECT Id, Module__c FROM Question__c WHERE Module__c = :modules[0].Id];
+
+        System.assertEquals(5, questions.size());
+
+        Map<Id, Question__c> questionsMap = new Map<Id, Question__c>(questions);
+
+        System.assertEquals(questionsMap.get(questionId).Module__c, modules[0].Id);
     }
 
     /*  TEST-1926
@@ -648,7 +709,38 @@ private class TestCreateQuestion{
         - Edit Question Name when related module is inactive and has module response (OK)
     */
     @isTest static void ELR_0005_FA23() {
-        
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        MockUpFactory.inactivateCourse();
+
+        List<Question__c> questions = [SELECT Id, Name FROM Question__c WHERE Module__c = :module.Id];
+
+        questions[0].Name = questions[0].Name + 'suffix';
+
+        update questions[0];
+
+        questions = [SELECT Id, Name FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals('suffix', questions[0].Name.right(6));
     }
 
     /*  TEST-1927
@@ -656,7 +748,38 @@ private class TestCreateQuestion{
         - Edit Question Text when related module is inactive and has module response (OK)
     */
     @isTest static void ELR_0005_FA24() {
-        
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        MockUpFactory.inactivateCourse();
+
+        List<Question__c> questions = [SELECT Id, QuestionText__c FROM Question__c WHERE Module__c = :module.Id];
+
+        questions[0].QuestionText__c = questions[0].QuestionText__c + 'suffix';
+
+        update questions[0];
+
+        questions = [SELECT Id, QuestionText__c FROM Question__c WHERE Id = :questions[0].Id];
+
+        System.assertEquals('suffix', questions[0].QuestionText__c.right(6));
     }
 
     /*  TEST-1928
@@ -665,7 +788,41 @@ private class TestCreateQuestion{
         - Edit Correct Weight when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA25() {
-        
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        MockUpFactory.inactivateCourse();
+
+        List<Question__c> questions = [SELECT Id, CorrectWeight__c FROM Question__c WHERE Module__c = :module.Id];
+
+        questions[0].CorrectWeight__c = 10;
+
+        errorMsg = '';
+        try{
+            update questions[0];
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.assert(errorMsg.contains(Label.QuestionReadOnlyFields));
     }
 
     /*  TEST-1929
@@ -674,7 +831,41 @@ private class TestCreateQuestion{
         - Edit Penalty per Attempt when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA26() {
-        
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        MockUpFactory.inactivateCourse();
+
+        List<Question__c> questions = [SELECT Id, CorrectWeight__c FROM Question__c WHERE Module__c = :module.Id];
+
+        questions[0].PenaltyPerAttempt__c = 50;
+
+        errorMsg = '';
+        try{
+            update questions[0];
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.assert(errorMsg.contains(Label.QuestionReadOnlyFields));
     }
 
     /*  TEST-1930
@@ -683,6 +874,40 @@ private class TestCreateQuestion{
         - Edit Incorrect Weight when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA27() {
-        
+        Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
+
+        course.SubscriptionMode__c = 'Automatic';
+
+        update course;
+
+        MockUpFactory.activateCourse();
+
+        Module__c module = [SELECT Id FROM Module__c WHERE Name = 'Basic'];
+        FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c WHERE Name = 'Member 0' LIMIT 1];
+
+        ModuleService.ModuleWrapper moduleWrapper = FieloELR.ModuleService.takeModule(
+            module.Id,
+            member.Id,
+            new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
+            new Set<String> {'FieloELR__QuestionText__c'},
+            new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c','FieloELR__IsCorrect__c'}
+        );
+
+        System.assert(moduleWrapper.moduleResponse.Id != null);
+
+        MockUpFactory.inactivateCourse();
+
+        List<Question__c> questions = [SELECT Id, CorrectWeight__c FROM Question__c WHERE Module__c = :module.Id];
+
+        questions[0].IncorrectWeight__c = 10;
+
+        errorMsg = '';
+        try{
+            update questions[0];
+        } catch(Exception e) {
+            errorMsg = e.getMessage();
+        }
+
+        System.assert(errorMsg.contains(Label.QuestionReadOnlyFields));
     }
 }

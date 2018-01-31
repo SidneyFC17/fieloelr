@@ -134,7 +134,7 @@ public class Questions extends SObjectDomain {
     					if(oldQuestion.CorrectWeight__c != question.CorrectWeight__c || 
 	                    oldQuestion.IncorrectWeight__c != question.IncorrectWeight__c || 
 	                    oldQuestion.PenaltyPerAttempt__c != question.PenaltyPerAttempt__c) {
-	                    	question.addError('Cannot modified any of the following fields for an active module or module that already has module responses: Correct Weight, Incorrect Weight or Penalty per Attempt.');
+	                    	question.addError(Label.QuestionReadOnlyFields);
 		                }
 	    			}
 	    		}
