@@ -1,6 +1,7 @@
 ({
-    loadCourses : function(component, event, helper) {        
+    loadCourses : function(component, event, helper, offset) {        
         var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+        var quantity = component.get('v.quantity');
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -21,7 +22,9 @@
             action.setParams({
                 'member': member,
                 'coursesFieldset': fieldset,
-                'modulesFieldset': modulesFieldset
+                'modulesFieldset': modulesFieldset,
+                'quantity': quantity + 1,
+                'offset': offset
             })
             // Add callback behavior for when response is received
             action.setCallback(this, function(response) {
@@ -37,7 +40,7 @@
                     var coursesCompleted = {};
                     var moduleDependencies = {};                    
                     var modulesCompleted = {};
-                    coursesWrapper.forEach(function(course){                        
+                    coursesWrapper.forEach(function(course){
                         var newCourse = course.course;
                         newCourse.courseStatus = course.courseStatus ;
                         var courseId = newCourse.Id;                                     
@@ -110,8 +113,7 @@
                             }
                         })
                     })
-                    component.set('v.coursesList', coursesList);                                        
-                    component.set('v.showCoursesList', false);
+                    component.set('v.coursesList', coursesList);                    
                     component.set('v.showCourse', false);
                     component.set('v.showModule', false);                                        
                     component.set('v.showModuleResponse', false);
