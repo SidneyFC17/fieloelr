@@ -1,6 +1,7 @@
 ({
-    loadCourses : function(component, event, helper) {
+    loadCourses : function(component, event, helper, offset) {
         var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+        var quantity = component.get('v.quantity');
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -15,7 +16,7 @@
             action.setParams({
                 'member': member,
                 'coursesFieldset': fieldset,
-                'modulesFieldset': modulesFieldset
+                'modulesFieldset': modulesFieldset                
             })
             // Add callback behavior for when response is received
             action.setCallback(this, function(response) {

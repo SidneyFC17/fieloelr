@@ -29,7 +29,7 @@ default='{
     "value": "Courses"
   },
   "paging": true,
-  "limit": 6,
+  "quantity": 6,
   "Course": {
     "fieldset": [
       {
@@ -61,5 +61,5 @@ default='{
     "layout": "Table"
   }
 }'
-    	/>
+      />
 </design:component>
