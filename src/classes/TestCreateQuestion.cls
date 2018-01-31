@@ -631,7 +631,7 @@ private class TestCreateQuestion{
         - Delete question when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA17() {
-
+        
     }
 
     /*  TEST-1925
@@ -640,7 +640,7 @@ private class TestCreateQuestion{
         - Edit the related module (NOK)
     */
     @isTest static void ELR_0005_FA20() {
-
+        
     }
 
     /*  TEST-1926
@@ -648,7 +648,7 @@ private class TestCreateQuestion{
         - Edit Question Name when related module is inactive and has module response (OK)
     */
     @isTest static void ELR_0005_FA23() {
-
+        
     }
 
     /*  TEST-1927
@@ -656,7 +656,7 @@ private class TestCreateQuestion{
         - Edit Question Text when related module is inactive and has module response (OK)
     */
     @isTest static void ELR_0005_FA24() {
-
+        
     }
 
     /*  TEST-1928
@@ -665,7 +665,7 @@ private class TestCreateQuestion{
         - Edit Correct Weight when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA25() {
-
+        
     }
 
     /*  TEST-1929
@@ -674,7 +674,7 @@ private class TestCreateQuestion{
         - Edit Penalty per Attempt when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA26() {
-
+        
     }
 
     /*  TEST-1930
@@ -683,6 +683,6 @@ private class TestCreateQuestion{
         - Edit Incorrect Weight when related module is inactive and has module response (NOK)
     */
     @isTest static void ELR_0005_FA27() {
-
+        
     }
 }
