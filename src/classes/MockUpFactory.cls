@@ -2,7 +2,7 @@
 public class MockUpFactory {
 
     private static Map<String, Id> rtMember;
-
+    
     public static List<FieloPLT__Program__c> createPrograms(String basename, Integer count) {
         List<FieloPLT__Program__c> results = new List<FieloPLT__Program__c>();
         for(Integer x = 0; x < count; x++){
@@ -400,7 +400,7 @@ public class MockUpFactory {
         }
         insert questionResponses;
 
-        Map<Id, Question__c> questionMap = new Map<Id, Question__c>(moduleWrapper.questions);
+        Map<Id, Question__c> questionMap = new Map<Id, Question__c>([SELECT Id, Type__c, (SELECT Id, AnswerOptionText__c, MatchingText__c, IsCorrect__c FROM AnswerOptions__r) FROM Question__c WHERE Id in : new Map<Id,Question__c>(moduleWrapper.questions).keySet()]);
         List<QuestionResponse__c> needUpdate = new List<QuestionResponse__c>();
 
         for (QuestionResponse__c qr: questionResponses) {
@@ -437,6 +437,78 @@ public class MockUpFactory {
                                 QuestionResponse__c = qr.Id,
                                 AnswerOption__c = ao.Id,
                                 TextValue__c = ao.MatchingText__c
+                            )
+                        );
+                    }
+                }
+            }
+        }
+        if (!needUpdate.isEmpty()) {
+            update needUpdate;
+        }
+
+        insert answers;
+
+        update new ModuleResponse__c(
+            Id = moduleWrapper.moduleresponse.Id,
+            IsSubmitted__c = true
+        );
+
+        System.debug(JSON.serializePretty(questionResponses));
+        System.debug(JSON.serializePretty(answers));
+    }
+
+    public static void answerModuleIncorrectly(ModuleService.ModuleWrapper moduleWrapper) {
+        List<QuestionResponse__c> questionResponses = new List<QuestionResponse__c>();
+        List<Answer__c> answers = new List<Answer__c>();
+
+        for (Question__c question: moduleWrapper.questions) {
+            questionResponses.add(
+                new QuestionResponse__c(
+                    ModuleResponse__c = moduleWrapper.moduleresponse.Id,
+                    Question__c = question.Id
+                )
+            );
+        }
+        insert questionResponses;
+
+        Map<Id, Question__c> questionMap = new Map<Id, Question__c>([SELECT Id, Type__c, (SELECT Id, AnswerOptionText__c, MatchingText__c, IsCorrect__c FROM AnswerOptions__r) FROM Question__c WHERE Id in : new Map<Id,Question__c>(moduleWrapper.questions).keySet()]);
+        List<QuestionResponse__c> needUpdate = new List<QuestionResponse__c>();
+
+        for (QuestionResponse__c qr: questionResponses) {
+            for (AnswerOption__c ao: questionMap.get(qr.Question__c).AnswerOptions__r) {
+                if (questionMap.get(qr.Question__c).Type__c == 'Short Answer') {
+                    if (!ao.IsCorrect__c) {
+                        qr.TextValue__c = ao.AnswerOptionText__c;
+                        needUpdate.add(qr);
+                        break;
+                    }
+                } else if (questionMap.get(qr.Question__c).Type__c == 'Single Choice' || questionMap.get(qr.Question__c).Type__c == 'Statement') {
+                    if (!ao.IsCorrect__c) {
+                        answers.add(
+                            new Answer__c(
+                                QuestionResponse__c = qr.Id,
+                                AnswerOption__c = ao.Id
+                            )
+                        );
+                        break;
+                    }
+                } else if (questionMap.get(qr.Question__c).Type__c == 'Multiple Choice') {
+                    if (!ao.IsCorrect__c) {
+                        answers.add(
+                            new Answer__c(
+                                QuestionResponse__c = qr.Id,
+                                AnswerOption__c = ao.Id
+                            )
+                        );
+                    }
+                } else if (questionMap.get(qr.Question__c).Type__c == 'Matching Options') {
+                    if (ao.IsCorrect__c) {
+                        answers.add(
+                            new Answer__c(
+                                QuestionResponse__c = qr.Id,
+                                AnswerOption__c = ao.Id,
+                                TextValue__c = '!!Wrong Value!!'
                             )
                         );
                     }
