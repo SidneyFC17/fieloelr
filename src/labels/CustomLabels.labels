@@ -452,4 +452,12 @@
         <shortDescription>PredecessorRequired</shortDescription>
         <value>Predecessor is a required field</value>
     </labels>
+    <labels>
+        <fullName>ModuleRequiredField</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ModuleRequiredField</shortDescription>
+        <value>Module is a required field.</value>
+    </labels>
 </CustomLabels>
