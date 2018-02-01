@@ -468,4 +468,12 @@
         <shortDescription>MemberRequiredField</shortDescription>
         <value>Member is a required field</value>
     </labels>
+    <labels>
+        <fullName>OutOfCoursePeriod</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>OutOfCoursePeriod</shortDescription>
+        <value>Out of course period</value>
+    </labels>
 </CustomLabels>
