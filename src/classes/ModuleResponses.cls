@@ -264,6 +264,10 @@ public class ModuleResponses extends SObjectDomain {
         }
     }
 
+    public override void onAfterInsert() {
+        FieloPLT.SObjectService.processEmailRecords(records, null);
+    }
+
     public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
         List<ModuleResponse__c> recordsToProcess = new List<ModuleResponse__c>();
         List<ModuleResponse__c> approvedRecords = new List<ModuleResponse__c>();
