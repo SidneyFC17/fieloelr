@@ -13,7 +13,9 @@ default='{
       "apiName": "FieloELR__Progress__c",
       "type": "subcomponent",
       "subcomponent": "FieloELR:ProgressBar",
-      "layout": "bar",
+      "config": {
+        "layout": "bar"
+      },
       "label": {"type": "text","value":"Progress"},
       "showLabel": true
     }
