@@ -160,6 +160,10 @@ public class CourseStatus extends SObjectDomain {
             FieloPLT.SObjectService.processRecords(recordsToProcess, mapExistingRecordsToProcess);
         }
     }
+
+    public override void onAfterInsert() {
+        FieloPLT.SObjectService.processEmailRecords(records, null);
+    }
         
     public override void onBeforeDelete() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType}, true);

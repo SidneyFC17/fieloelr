@@ -421,6 +421,14 @@
         <value>Question is a required field.</value>
     </labels>
     <labels>
+        <fullName>QuestionReadOnlyFields</fullName>
+        <categories>Questions.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>QuestionReadOnlyFields</shortDescription>
+        <value>Cannot modified any of the following fields for an active module or module that already has module responses: Correct Weight, Incorrect Weight or Penalty per Attempt</value>
+    </labels>
+    <labels>
         <fullName>ValidateQuestionResponseInsert</fullName>
         <categories>QuestionResponses.cls</categories>
         <language>en_US</language>
@@ -443,5 +451,29 @@
         <protected>true</protected>
         <shortDescription>PredecessorRequired</shortDescription>
         <value>Predecessor is a required field</value>
+    </labels>
+    <labels>
+        <fullName>ModuleRequiredField</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ModuleRequiredField</shortDescription>
+        <value>Module is a required field.</value>
+    </labels>
+    <labels>
+        <fullName>MemberRequiredField</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MemberRequiredField</shortDescription>
+        <value>Member is a required field</value>
+    </labels>
+    <labels>
+        <fullName>OutOfCoursePeriod</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>OutOfCoursePeriod</shortDescription>
+        <value>Out of course period</value>
     </labels>
 </CustomLabels>
