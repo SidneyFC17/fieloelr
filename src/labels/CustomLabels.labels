@@ -452,4 +452,28 @@
         <shortDescription>PredecessorRequired</shortDescription>
         <value>Predecessor is a required field</value>
     </labels>
+    <labels>
+        <fullName>ModuleRequiredField</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ModuleRequiredField</shortDescription>
+        <value>Module is a required field.</value>
+    </labels>
+    <labels>
+        <fullName>MemberRequiredField</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MemberRequiredField</shortDescription>
+        <value>Member is a required field</value>
+    </labels>
+    <labels>
+        <fullName>OutOfCoursePeriod</fullName>
+        <categories>ModuleResponses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>OutOfCoursePeriod</shortDescription>
+        <value>Out of course period</value>
+    </labels>
 </CustomLabels>
