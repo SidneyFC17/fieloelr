@@ -19,7 +19,7 @@
         "value" : "FieloELR"
       }, {
         "apiName" : "fieloplt__version__c",
-        "value" : "1.003"
+        "value" : "1.004"
       }, {
         "apiName" : "fieloplt__externalid__c",
         "value" : "FieloELR"
@@ -197,13 +197,10 @@
                 "value" : "false"
               }, {
                 "apiName" : "fieloplt__reportfilter__c",
-                "value" : "[{ \"Report Field\" : \"FieloPLT__Program__c.Id\", \"Operator\" : \"equals\", \"Record Field\": \"FieloPLT__Program__r.Id\" }]"
+                "value" : "[{ \"Report Field\" : \"FieloPLT__Program__c.Id\", \"Operator\" : \"equals\", \"Record Field\": \"FieloPLT__Program__r.Id\"}, {\"Report Field\" : \"FieloELR__CourseStatus__c.FieloELR__Course__c.FieloELR__Status__c\", \"Operator\" : \"equals\", \"Value\" : \"Active\" }, { \"Report Field\" : \"FieloELR__CourseStatus__c.CreatedDate\", \"Operator\" : \"greaterOrEqual\", \"Record Field\" : \"FieloPLT__StartDate__c\" }, { \"Report Field\" : \"FieloELR__CourseStatus__c.CreatedDate\", \"Operator\" : \"lessOrEqual\", \"Record Field\" : \"FieloPLT__EndDate__c\" }]"
               }, {
                 "apiName" : "fieloplt__reportmetadata__c",
                 "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
-              }, {
-                "apiName" : "fieloplt__reportobjectivefield__c",
-                "value" : "s!FieloPLT__Member__c.FieloPLT__MemberRecord__c"
               }, {
                 "apiName" : "fieloplt__reporttype__c",
                 "value" : "Standard"
