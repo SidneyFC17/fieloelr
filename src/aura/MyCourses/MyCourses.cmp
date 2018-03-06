@@ -1,8 +1,23 @@
 <aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+    
+    <aura:attribute name="configDefault" type="String" access="global" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Progress__c","type":"subcomponent","subcomponent":"FieloELR:ProgressBar","config":{"layout":"bar"},"label":{"type":"text","value":"Progress"},"showLabel":true}],"quantity":5,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ModuleCheck","label":{"type":"text","value":"Approved"},"showLabel":true}]}}'/>
+    
+    <!-- DESIGN ATTRIBUTES -->    
+    <aura:attribute type="String" name="titleValue" access="global"/>
+    <aura:attribute type="String" name="layout" access="global" />
+    <aura:attribute type="Integer" name="columns" access="global" />    
+    <aura:attribute type="String" name="courseDetailFields" access="global" />
+    <aura:attribute type="String" name="courseLayout" access="global" />    
+    <aura:attribute name="courseColumns" type="String" access="global" />
+    <aura:attribute name="fields" type="String" access="global" />
+    <aura:attribute name="showCourseProgress" type="Boolean" access="global" />
+    <!-- DESIGN ATTRIBUTES -->
+
+
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     <aura:attribute type="Boolean" name="showMyCourses" default="false"/>
     <aura:attribute type="String" name="title" />
-    <aura:attribute type="String" name="layout" default="table" />
+    
     <aura:attribute type="sObject[]" name="fieldset" default="[]" />
     <aura:attribute type="sObject[]" name="myCourses" default="[]" />
     
@@ -24,9 +39,8 @@
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>        
     
     <aura:attribute type="String" name="config" access="global"/>
-    
-    <aura:attribute type="String" name="courseLayout"/>    
-    <aura:attribute name="courseColumns" type="String" />    
+        
+
     
     <aura:if isTrue="{!v.showMyCourses}">       
         <h3 class="slds-section-title--divider">{!v.title}</h3>
