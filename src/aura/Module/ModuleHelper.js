@@ -17,8 +17,8 @@
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                                        
                     var moduleResponse = response.getReturnValue();                    
-                    component.set('v.content', moduleResponse);
-                    component.set('v.contentType', moduleResponse[contentType])                    
+                    component.set('v.content', moduleResponse);                    
+                    component.set('v.contentType', moduleResponse[contentType].toLowerCase().replace(' ', '-'));
                     if(moduleResponse[contentField]){
                         component.set('v.showContent', true);                                            
                     }                                        

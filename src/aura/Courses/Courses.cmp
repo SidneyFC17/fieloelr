@@ -2,6 +2,19 @@
     
     <aura:attribute type="sObject" name="moduleContent" />
     
+    <aura:attribute name="configDefault" type="String" access="global" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"JoinCourse","type":"subcomponent","subcomponent":"FieloELR:JoinCourse","label":{"type":"text","value":"Join Course"},"showLabel":false}],"quantity":6,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"TakeModule","type":"subcomponent","subcomponent":"FieloELR:TakeModule","label":{"type":"text","value":""},"showLabel":false}]}}'/>
+    
+    <!-- DESIGN ATTRIBUTES -->    
+    <aura:attribute type="String" name="titleValue" access="global"/>
+    <aura:attribute type="String" name="layout" access="global" />
+    <aura:attribute type="Integer" name="columns" access="global" />    
+    <aura:attribute type="String" name="courseDetailFields" access="global" />
+    <aura:attribute type="String" name="courseLayout" access="global" />    
+    <aura:attribute name="courseColumns" type="String" access="global" />
+    <aura:attribute name="fields" type="String" access="global" />        
+    <!-- DESIGN ATTRIBUTES -->
+
+
     <aura:attribute type="Boolean" name="reloadCourses" default="true" />
     <aura:attribute type="Boolean" name="viewAnswer" default="false" />
     
@@ -21,11 +34,9 @@
     <aura:attribute type="String" name="moduleTitle" default="" />
     
     <aura:attribute type="sObject[]" name="fieldset" />
-    <aura:attribute type="String" name="config" access="global" />
     
-    <aura:attribute type="String" name="title" default="" />
-    <aura:attribute type="String" name="layout"/>    
-    <aura:attribute name="columns" type="String" />
+    
+    <aura:attribute type="String" name="title" default="" />    
     <aura:attribute type="String" name="whereClause" default="" />    
     
     <aura:attribute type="String" name="courseTitle" default="" />
@@ -44,13 +55,10 @@
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     
     <!-- PAGINADOR -->
-    <aura:attribute name="paging" type="Boolean" />
-    <aura:attribute name="quantity" type="Integer"/>    
+    <aura:attribute name="paging" type="Boolean" access="global"  />
+    <aura:attribute name="quantity" type="Integer" access="global" />    
     <aura:handler name="paging" event="c:PaginatorEvent" action="{!c.paginator}" default="false"/>        
     <!-- PAGINADOR -->
-    
-    <aura:attribute type="String" name="courseLayout"/>    
-    <aura:attribute name="courseColumns" type="String" />
     
     <aura:if isTrue="{!v.reloadCourses}">
         <aura:if isTrue="{!v.showCoursesList}">
