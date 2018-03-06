@@ -91,18 +91,16 @@
                 var fieldsList = moduleFieldsConfig.split(',');
                 fieldsList.forEach(function(field){
                     nameAndType = field.split('/');
-                    apiName = nameAndType[0].trim();
-                    if(apiName != 'Name'){
-                        type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
-                        newField = {
-                            'apiName': apiName,
-                            'type': type,
-                            'label': {                                
-                            },
-                            'showLabel': true
-                        }
-                        fieldset.push(newField);                        
+                    apiName = nameAndType[0].trim();                    
+                    type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
+                    newField = {
+                        'apiName': apiName,
+                        'type': type,
+                        'label': {                                
+                        },
+                        'showLabel': true
                     }
+                    fieldset.push(newField);                        
                 })
                 fieldset.push({
                     "apiName": "TakeModule",
