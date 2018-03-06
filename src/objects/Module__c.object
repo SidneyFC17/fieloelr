@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -53,6 +49,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
@@ -91,53 +88,52 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-      <fields>
+    <fields>
         <fullName>ContentType__c</fullName>
-<description>Content Type</description>
-         <externalId>false</externalId>
-<label>ContentType</label>
-    <required>false</required>
-     <trackTrending>false</trackTrending>
-     <type>Picklist</type>
-      <valueSet>
-              <restricted>true</restricted>
-           <valueSetDefinition>
-                  <sorted>false</sorted>
-                 <value>
-                      <fullName>Image</fullName>
-                     <default>false</default>
-                      <label>Image</label>
-                  </value>
-                  <value>
-                     <fullName>Link</fullName>
-                     <default>false</default>
-                     <label>Link</label>
-                 </value>
-                  <value>
-                      <fullName>PDF</fullName>
+        <description>Content Type</description>
+        <externalId>false</externalId>
+        <label>ContentType</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Image</fullName>
+                    <default>false</default>
+                    <label>Image</label>
+                </value>
+                <value>
+                    <fullName>Link</fullName>
+                    <default>false</default>
+                    <label>Link</label>
+                </value>
+                <value>
+                    <fullName>PDF</fullName>
                     <default>false</default>
                     <label>PDF</label>
-                  </value>
-                  <value>
-                      <fullName>Youtube Video</fullName>
-                       <default>false</default>
-                       <label>Youtube Video</label>
-                   </value>
-               </valueSetDefinition>
-           </valueSet>
-       </fields>
-       <fields>
-           <fullName>Content__c</fullName>
-           <description>Module Content</description>
-            <externalId>false</externalId>
-          <label>Content</label>
-          <length>255</length>
-           <required>false</required>
-            <trackTrending>false</trackTrending>
-            <type>Text</type>
-           <unique>false</unique>
-       </fields>
-       <fields>
+                </value>
+                <value>
+                    <fullName>Youtube Video</fullName>
+                    <default>false</default>
+                    <label>Youtube Video</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Content__c</fullName>
+        <description>Module Content</description>
+        <externalId>false</externalId>
+        <label>Content</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>Course__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
@@ -171,6 +167,14 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>HasDependencies__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has Dependencies</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Image__c</fullName>
         <externalId>false</externalId>
         <label>Image</label>
@@ -179,14 +183,6 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>HasDependencies__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Has Dependencies</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>IsActive__c</fullName>
@@ -221,8 +217,12 @@
         <fullName>PenaltyMode__c</fullName>
         <externalId>false</externalId>
         <label>Penalty Mode</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
+                <sorted>false</sorted>
                 <value>
                     <fullName>None</fullName>
                     <default>false</default>
@@ -238,12 +238,8 @@
                     <default>false</default>
                     <label>Negative Weight</label>
                 </value>
-                <sorted>false</sorted>
             </valueSetDefinition>
         </valueSet>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>QuestionPool__c</fullName>
@@ -390,6 +386,14 @@ TEXT(Course__r.Status__c) = &apos;Completed&apos;)
         <errorMessage>New module (without questions) cannot be active.</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>QuestioPoolNotZero</fullName>
+        <active>true</active>
+        <description>Question Pool cannot be equal to zero.</description>
+        <errorConditionFormula>QuestionPool__c  = 0</errorConditionFormula>
+        <errorDisplayField>QuestionPool__c</errorDisplayField>
+        <errorMessage>Question Pool cannot be equal to zero.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>QuestioPoolPositive</fullName>
         <active>true</active>
         <description>Question Pool cannot be equal to zero.</description>
@@ -397,4 +401,5 @@ TEXT(Course__r.Status__c) = &apos;Completed&apos;)
         <errorDisplayField>QuestionPool__c</errorDisplayField>
         <errorMessage>Question Pool must be greater than zero.</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>
