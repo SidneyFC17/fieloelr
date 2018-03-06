@@ -1,60 +1,23 @@
 <design:component label="Fielo ELR - My Courses">
-    <design:attribute label="Configuration" name="config" description="Component Configuration" 
-default='{
-  "fieldset": [
-    {
-      "apiName": "Name",
-      "type": "subcomponent",
-      "subcomponent": "FieloELR:ShowRecord",
-      "label": {"type": "default"},
-      "showLabel": true
-    },
-    {
-      "apiName": "FieloELR__Progress__c",
-      "type": "subcomponent",
-      "subcomponent": "FieloELR:ProgressBar",
-      "layout": "bar",
-      "label": {"type": "text","value":"Progress"},
-      "showLabel": true
-    }
-  ],
-  "layout": "Table",
-  "title": {
-    "type": "text",
-    "value": "My Courses"
-  },
-  "paging": true,
-  "quantity": 5,
-  "Course": {
-    "fieldset": [
-      {
-        "apiName": "Name",
-        "type": "output",
-        "label": {"type": "default"},
-        "showLabel": true
-      },
-      {
-        "apiName": "FieloELR__Description__c",
-        "type": "output",
-        "label": {"type": "default"},
-        "showLabel": true
-      },
-      {
-        "apiName": "FieloELR__ApprovalGrade__c",
-        "type": "output",
-        "label": {"type": "default"},
-        "showLabel": true
-      },
-      {
-        "apiName": "Name",
-        "type": "subcomponent",
-        "subcomponent": "FieloELR:ModuleCheck",
-        "label": {"type": "text","value": "Approved"},
-        "showLabel": true
-      }
-    ],
-    "layout": "Table"
-  }
-}'
-      />
+    <design:attribute label="Title" name="titleValue" description="Enter the title to be displayed" default="My Courses"
+                    />
+    <design:attribute label="Layout" name="layout" description="Choose 'Table' to view Courses in list format or 'Grid' to view them in tile format" 
+                      datasource='table,grid' default="table"
+                      />
+    <design:attribute label="Number of Columns" name="columns" description="Enter the number of columns to be displayed if using Grid view"
+                      />    
+    <design:attribute label="Show Course Progress" name="showCourseProgress" description="Tick this box to show Course Progress" 
+                      default='true'
+                      />
+    <design:attribute label="Fieldset" name="fields" description="Enter the API names of fields to include in the Courses list, separated by commas" 
+                      default='Name,FieloELR__Description__c'
+                      />
+    <design:attribute label="Course Detail Layout" name="courseLayout" description="Choose 'Table' to view Modules in list format or 'Grid' to view them in tile format" 
+                      datasource='table,grid' default="table"
+                      />
+    <design:attribute label="Course Detail Number of Columns" name="courseColumns" description="Enter the number of columns to be displayed if using Grid view"
+                      />    
+    <design:attribute label="Course Detail Fieldset" name="courseDetailFields" description="Enter the API names of fields to include in the Modules list, separated by commas" 
+                      default='Name,FieloELR__Description__c'
+                      />    
 </design:component>

@@ -96,11 +96,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>FieloPLT__SiteUserProfile__c</field>
-            <table>FieloPLT__Program__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>FieloPLT__UserCreationClass__c</field>
             <table>FieloPLT__Program__c</table>
         </columns>
