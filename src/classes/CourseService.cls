@@ -151,6 +151,23 @@ global class CourseService {
 											Integer offset, 
 											String orderBy, 
 											String dynamicFilter) {
+		return getCourses(fieldsCourse, fieldsCourseDependency, fieldsModule, courseIds, new Set<String>{'Active'}, programId, memberId, filterByDependencies, filterBySegments, filterByNotTaken, quantity, offset, orderBy, dynamicFilter);
+	}
+
+	global static List<Course__c> getCourses(Set<String> fieldsCourse, 
+											Set<String> fieldsCourseDependency,
+											Set<String> fieldsModule,
+											Set<Id> courseIds,
+											Set<String> status, 
+											Id programId, 
+											Id memberId, 
+												Boolean filterByDependencies, 
+												Boolean filterBySegments, 
+												Boolean filterByNotTaken, 
+											Integer quantity, 
+											Integer offset, 
+											String orderBy, 
+											String dynamicFilter) {
 		String queryCourses = 'SELECT ' + String.join(new List<String>(fieldsCourse), ',');
 		if(fieldsCourseDependency != null){
 			queryCourses += ' ,(SELECT ' + String.join(new List<String>(fieldsCourseDependency), ',') + ' FROM PredecessorCourses__r) ';
@@ -162,9 +179,17 @@ global class CourseService {
 		queryCourses += ' FROM Course__c WHERE ';
 		if (courseIds != null) {
 			queryCourses += ' Id in : courseIds ';
-		}else{
-			queryCourses += ' Status__c = \'Active\' ';
+		} else {
+			if (status == null) {
+				status = new Set<String>();
+			}
+			if (status.isEmpty()) {
+				status.add('Active');
+			} 
+			queryCourses += ' Status__c in :status ';
 		}
+
+		
 		
 		if (programId != null) {
 			queryCourses += ' AND Program__c =: programId ';
