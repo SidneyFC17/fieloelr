@@ -93,6 +93,7 @@ private class TestCreateModule{
         // Answers
         for (Integer i = 0; i < testQuantity; i++){
             answers.add(new FieloELR__AnswerOption__c(FieloELR__Question__c = questions.get(i).Id, FieloELR__IsCorrect__c = true, FieloELR__AnswerOptionText__c = 'Very well done, that is a correct answer!'));
+            answers.add(new FieloELR__AnswerOption__c(FieloELR__Question__c = questions.get(i).Id, FieloELR__IsCorrect__c = false, FieloELR__AnswerOptionText__c = 'Very well done, that is a incorrect answer!'));
         }
         insert answers;       
 
@@ -136,6 +137,7 @@ private class TestCreateModule{
         answers.clear();
         for (Integer i = 10; i > 0; i--){
             answers.add(new FieloELR__AnswerOption__c(FieloELR__Question__c = questions.get(questions.size() - i).Id, FieloELR__IsCorrect__c = true, FieloELR__AnswerOptionText__c = 'Very well done, that is a correct answer!', FieloELR__MatchingText__c = 'Matching Text'));
+            answers.add(new FieloELR__AnswerOption__c(FieloELR__Question__c = questions.get(questions.size() - i).Id, FieloELR__IsCorrect__c = false, FieloELR__AnswerOptionText__c = 'Very well done, that is a incorrect answer!', FieloELR__MatchingText__c = 'Matching Text'));
         }
         insert answers; 
 
