@@ -61,9 +61,23 @@ public class QuestionsSelector extends SObjectSelector {
                   ', (SELECT Id, IsCorrect__c ' +
                   '   FROM AnswerOptions__r ' +
                   '   ORDER BY IsCorrect__c DESC ' +
-                  '   LIMIT 1) ' +
+                  '   LIMIT 2) ' +
                   'FROM {1} ' +
                   'WHERE Module__c IN :moduleIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
+    public List<Question__c> selectByIdHavingAnswers(Set<Id> questionIds) {
+      return (List<Question__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  ', (SELECT Id, IsCorrect__c ' +
+                  '   FROM AnswerOptions__r) ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :questionIds ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
