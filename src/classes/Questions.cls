@@ -175,7 +175,7 @@ public class Questions extends SObjectDomain {
 
     private void deleteRelatedAnswers(List<Question__c> questions) {
     	Map<Id, Question__c> existingQuestions = new Map<Id, Question__c>(
-    		new QuestionsSelector().selectByModuleHavingAnswers(new Map<Id,Question__c>(questions).keySet()));
+    		new QuestionsSelector().selectByIdHavingAnswers(new Map<Id,Question__c>(questions).keySet()));
 
     	List<AnswerOption__c> existingAnswerOptions = new List<AnswerOption__c>();
 

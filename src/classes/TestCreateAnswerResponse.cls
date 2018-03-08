@@ -103,11 +103,23 @@ private class TestCreateAnswerResponse {
 
 		insert listQuest;
 
+		Map<Id,List<Id>> questionMap = new Map<Id,List<Id>>();
+
+		for (Question__c q: listQuest) {
+			questionMap.put(q.Id, new List<Id>());
+		}
+
 		//////ANSWER OPTIONS
 		FieloELR__AnswerOption__c ansOpt1 = new FieloELR__AnswerOption__c();
 		ansOpt1.FieloELR__Question__c = listQuest.get(0).Id;
 		ansOpt1.FieloELR__IsCorrect__c = true;
 		ansOpt1.FieloELR__AnswerOptionText__c = 'Esta es correcta';
+		listAnsOpt.add(ansOpt1);
+
+		ansOpt1 = new FieloELR__AnswerOption__c();
+		ansOpt1.FieloELR__Question__c = listQuest.get(0).Id;
+		ansOpt1.FieloELR__IsCorrect__c = false;
+		ansOpt1.FieloELR__AnswerOptionText__c = 'Esta es incorrecta';
 		listAnsOpt.add(ansOpt1);
 
 		FieloELR__AnswerOption__c ansOpt2 = new FieloELR__AnswerOption__c();
@@ -116,10 +128,22 @@ private class TestCreateAnswerResponse {
 		ansOpt2.FieloELR__AnswerOptionText__c = 'Esta es correcta';
 		listAnsOpt.add(ansOpt2);
 
+		ansOpt2 = new FieloELR__AnswerOption__c();
+		ansOpt2.FieloELR__Question__c = listQuest.get(1).Id;
+		ansOpt2.FieloELR__IsCorrect__c = false;
+		ansOpt2.FieloELR__AnswerOptionText__c = 'Esta es incorrecta';
+		listAnsOpt.add(ansOpt2);
+
 		FieloELR__AnswerOption__c ansOpt3 = new FieloELR__AnswerOption__c();
 		ansOpt3.FieloELR__Question__c = listQuest.get(2).Id;
 		ansOpt3.FieloELR__IsCorrect__c = true;
 		ansOpt3.FieloELR__AnswerOptionText__c = 'Esta es correcta';
+		listAnsOpt.add(ansOpt3);
+
+		ansOpt3 = new FieloELR__AnswerOption__c();
+		ansOpt3.FieloELR__Question__c = listQuest.get(2).Id;
+		ansOpt3.FieloELR__IsCorrect__c = false;
+		ansOpt3.FieloELR__AnswerOptionText__c = 'Esta es incorrecta';
 		listAnsOpt.add(ansOpt3);
 
 		FieloELR__AnswerOption__c ansOpt4 = new FieloELR__AnswerOption__c();
@@ -129,10 +153,23 @@ private class TestCreateAnswerResponse {
 		ansOpt4.FieloELR__MatchingText__c = 'Va con esta';
 		listAnsOpt.add(ansOpt4);
 
+		ansOpt4 = new FieloELR__AnswerOption__c();
+		ansOpt4.FieloELR__Question__c = listQuest.get(3).Id;
+		ansOpt4.FieloELR__IsCorrect__c = false;
+		ansOpt4.FieloELR__AnswerOptionText__c = 'Esta es incorrecta';
+		ansOpt4.FieloELR__MatchingText__c = 'Va con esta';
+		listAnsOpt.add(ansOpt4);
+
 		FieloELR__AnswerOption__c ansOpt5 = new FieloELR__AnswerOption__c();
 		ansOpt5.FieloELR__Question__c = listQuest.get(4).Id;
 		ansOpt5.FieloELR__IsCorrect__c = true;
 		ansOpt5.FieloELR__AnswerOptionText__c = 'Esta es correcta';
+		listAnsOpt.add(ansOpt5);
+
+		ansOpt5 = new FieloELR__AnswerOption__c();
+		ansOpt5.FieloELR__Question__c = listQuest.get(4).Id;
+		ansOpt5.FieloELR__IsCorrect__c = false;
+		ansOpt5.FieloELR__AnswerOptionText__c = 'Esta es incorrecta';
 		listAnsOpt.add(ansOpt5);
 
 		FieloELR__AnswerOption__c ansOpt6 = new FieloELR__AnswerOption__c();
@@ -141,14 +178,29 @@ private class TestCreateAnswerResponse {
 		ansOpt6.FieloELR__AnswerOptionText__c = 'Esta es correcta';
 		listAnsOpt.add(ansOpt6);
 
+		ansOpt6 = new FieloELR__AnswerOption__c();
+		ansOpt6.FieloELR__Question__c = listQuest.get(5).Id;
+		ansOpt6.FieloELR__IsCorrect__c = false;
+		ansOpt6.FieloELR__AnswerOptionText__c = 'Esta es incorrecta';
+		listAnsOpt.add(ansOpt6);
+
 		FieloELR__AnswerOption__c ansOpt7 = new FieloELR__AnswerOption__c();
 		ansOpt7.FieloELR__Question__c = listQuest.get(6).Id;
 		ansOpt7.FieloELR__IsCorrect__c = true;
 		ansOpt7.FieloELR__AnswerOptionText__c = 'Esta es correcta';
 		listAnsOpt.add(ansOpt7);
 
+		ansOpt7 = new FieloELR__AnswerOption__c();
+		ansOpt7.FieloELR__Question__c = listQuest.get(6).Id;
+		ansOpt7.FieloELR__IsCorrect__c = false;
+		ansOpt7.FieloELR__AnswerOptionText__c = 'Esta es incorrecta';
+		listAnsOpt.add(ansOpt7);
+
 		insert listAnsOpt;
 
+		for (AnswerOption__c ao: listAnsOpt) {
+			questionMap.get(ao.Question__c).add(ao.Id);
+		}
 
         //////MODULES UPDATE
 		listMod.get(0).FieloELR__IsActive__c = true;
@@ -218,21 +270,38 @@ private class TestCreateAnswerResponse {
 
         insert listQuestResp;
 
+        /*
+        	Q0	A0
+				A1
+			Q1	A2
+				A3
+			Q2  A4
+				A5
+			Q3  A6
+				A7
+			Q4  A8
+				A9
+			Q5  A10
+				A11
+			Q6  A12
+				A13
+        */
+
         //ANSWERS RESPONSE
         answer1.FieloELR__QuestionResponse__c = listQuestResp.get(5).Id;
-        answer1.FieloELR__AnswerOption__c = listAnsOpt.get(4).Id;
+        answer1.FieloELR__AnswerOption__c = questionMap.get(listQuestResp.get(5).Question__c).get(0);
         listAnsResp.add(answer1);
 
         answer2.FieloELR__QuestionResponse__c = listQuestResp.get(6).Id;
-        answer2.FieloELR__AnswerOption__c = listAnsOpt.get(5).Id;
+        answer2.FieloELR__AnswerOption__c = questionMap.get(listQuestResp.get(6).Question__c).get(0);
         listAnsResp.add(answer2);
 
         answer3.FieloELR__QuestionResponse__c = listQuestResp.get(7).Id;
-        answer3.FieloELR__AnswerOption__c = listAnsOpt.get(6).Id;
+        answer3.FieloELR__AnswerOption__c = questionMap.get(listQuestResp.get(7).Question__c).get(0);
         listAnsResp.add(answer3);
 
         answer4.FieloELR__QuestionResponse__c = listQuestResp.get(3).Id;
-        answer4.FieloELR__AnswerOption__c = listAnsOpt.get(2).Id;
+        answer4.FieloELR__AnswerOption__c = questionMap.get(listQuestResp.get(3).Question__c).get(0);
         listAnsResp.add(answer4);
 
         insert listAnsResp;

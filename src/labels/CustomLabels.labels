@@ -476,4 +476,12 @@
         <shortDescription>OutOfCoursePeriod</shortDescription>
         <value>Out of course period</value>
     </labels>
+    <labels>
+        <fullName>TwoAnswerOptionsRequired</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>TwoAnswerOptionsRequired</shortDescription>
+        <value>without at least two answer options. Question:</value>
+    </labels>
 </CustomLabels>
