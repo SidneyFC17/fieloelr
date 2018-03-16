@@ -92,10 +92,17 @@ public class ModuleResponses extends SObjectDomain {
         Set<String> modulesProcessedIds = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
-                if (moduleResponse.Date__c > modulesMap.get(moduleResponse.Module__c).Course__r.EndDate__c &&
-                    moduleResponse.Date__c < modulesMap.get(moduleResponse.Module__c).Course__r.StartDate__c) {
-                    moduleResponse.addError(Label.OutOfCoursePeriod);
-                    return;
+                if (modulesMap.get(moduleResponse.Module__c).Course__r.StartDate__c != null) {
+                    if (moduleResponse.Date__c < modulesMap.get(moduleResponse.Module__c).Course__r.StartDate__c) {
+                        moduleResponse.addError(Label.OutOfCoursePeriod);
+                        return;
+                    }
+                }
+                if (modulesMap.get(moduleResponse.Module__c).Course__r.EndDate__c != null) {
+                    if (moduleResponse.Date__c > modulesMap.get(moduleResponse.Module__c).Course__r.EndDate__c) {
+                        moduleResponse.addError(Label.OutOfCoursePeriod);
+                        return;
+                    }
                 }
 
                 String moduleResponseKey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
