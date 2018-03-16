@@ -405,7 +405,7 @@
           }
         }
         if (deletedIds) {
-          if (deletedIds.includes(row.Id)) {
+          if (deletedIds.indexOf(row.Id) !== -1) {
             delete answerOptionValues[answerOptionValues.indexOf(row)];
           }
         }
@@ -495,7 +495,9 @@
     var answerOptions = $(this.form_)
       .find('.' + this.CssClasses_.ANSWER_OPTIONS)[0];
     if (answerOptions) {
-      answerOptions.FieloAnswerOptions.clear();
+      if (answerOptions.FieloAnswerOptions) {
+        answerOptions.FieloAnswerOptions.clear();
+      }
     }
     var fields = $(this.form_)
       .find('.' + this.CssClasses_.FORM_ELEMENT);

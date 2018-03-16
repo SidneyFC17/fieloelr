@@ -64,8 +64,7 @@
             />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
             	<apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Question__c' && relForm.FieloPLT__Type__c = 'Edit'}">
-            	<c:FormQuestion
-	        		namespace="FieloELR"
+            	<c:FormQuestion namespace="FieloELR"
 	        		formId="FieloELR__Question__cForm"
 					heading="{!$ObjectType[rel.FieloPLT__TargetObject__c].label} Wizard"
 					sObjectName="{!rel.FieloPLT__TargetObject__c}"
@@ -78,8 +77,7 @@
             	</apex:panelGroup>
             </apex:repeat>
             
-            <c:FormQuestionManage
-        		namespace="FieloELR" 
+            <c:FormQuestionManage namespace="FieloELR" 
         		formId="FieloELR__Question__cFormManage"
 				heading="Manage {!$ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
 				sObjectName="{!objectName}"
@@ -191,7 +189,8 @@
 	    </apex:repeat>
 	</div>
 	<c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloFileUpload','FieloPhotoUpload','FieloPaginator','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder','FieloQuestionManage','FieloQuestionWizard'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
-	<script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script>
+	<!-- <script type="text/javascript" src="{!URLFOR($Resource.FieloPLT__FieloSalesforce_Backend, 'jquery/jquery-ui.min.js')}"></script> -->
+	<script type="text/javascript" src="{!URLFOR($Resource.FieloSalesforce_Backend_Custom, 'jquery/jquery-ui.min.js')}"></script>
 	<script>
 		if(typeof BackEndJSSettings == 'undefined') {
 			var BackEndJSSettings = {};

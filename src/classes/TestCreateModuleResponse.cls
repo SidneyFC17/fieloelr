@@ -226,7 +226,7 @@ private class TestCreateModuleResponse {
             errorMsg = e.getMessage();
         }
 
-        System.assert(errorMsg.contains('The course is not available in this period'));
+        System.assert(errorMsg.contains('The course is not available in this period') || errorMsg.contains(Label.OutOfCoursePeriod));
 
         mr = new FieloELR__ModuleResponse__c(
             Module__c = module.Id,
@@ -242,7 +242,7 @@ private class TestCreateModuleResponse {
             errorMsg = e.getMessage();
         }
 
-        System.assert(errorMsg.contains('The course is not available in this period'));
+        System.assert(errorMsg.contains('The course is not available in this period') || errorMsg.contains(Label.OutOfCoursePeriod));
 
         Test.stopTest();
     }
@@ -495,7 +495,6 @@ private class TestCreateModuleResponse {
             Module__c = module.Id,
             Member__c = member.Id,
             CourseStatus__c = courseStatus.Id,
-            Date__c = System.today().addDays(-1),
             IsApproved__c = true
         );
 
@@ -969,12 +968,12 @@ private class TestCreateModuleResponse {
 
         update new ModuleResponse__c(
             Id = moduleWrapper.moduleResponse.Id,
-            Date__c = System.today().addDays(-1)
+            Date__c = System.today().addDays(1)
         );
         
         ModuleResponse__c mr = [SELECT Id, Date__c FROM ModuleResponse__c WHERE Id = :moduleWrapper.moduleResponse.Id];
 
-        System.assertEquals(mr.Date__c, System.today().addDays(-1));
+        System.assertEquals(mr.Date__c, System.today().addDays(1));
 
         Test.stopTest();
     }
