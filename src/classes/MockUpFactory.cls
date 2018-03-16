@@ -37,7 +37,9 @@ public class MockUpFactory {
                     FieloELR__Program__c = programId,
                     FieloELR__Description__c = 'Description',
                     FieloELR__SubscriptionMode__c = 'Manual',
-                    FieloELR__Segment__c = segmentId
+                    FieloELR__Segment__c = segmentId,
+                    FieloELR__StartDate__c = System.today(),
+                    FieloELR__EndDate__c = System.today().addDays(30)
                 )
             );
         }
