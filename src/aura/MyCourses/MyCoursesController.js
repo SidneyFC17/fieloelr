@@ -111,8 +111,8 @@
                     "type": "subcomponent",
                     "subcomponent": "FieloELR:ModuleCheck",
                     "label": {
-                      "type": "text",
-                      "value": "Approved"
+                      "type": "label",
+                      "value": "c.SuccessfullyCompleted"
                     },
                     "showLabel": true
                   })
