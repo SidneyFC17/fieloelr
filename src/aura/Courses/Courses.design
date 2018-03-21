@@ -1,4 +1,4 @@
-<design:component label="Fielo ELR - Courses" >
+<design:component label="Fielo - Courses" >
     <design:attribute label="Title" name="titleValue" description="Enter the title to be displayed" default="Courses"
                     />
     <design:attribute label="Layout" name="layout" description="Choose 'Table' to view Courses in list format or 'Grid' to view them in tile format" 
