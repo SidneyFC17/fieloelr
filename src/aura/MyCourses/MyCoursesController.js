@@ -87,7 +87,7 @@
             fieldset = [], fields = [];                        
             var moduleFieldsConfig = component.get('v.courseDetailFields').trim();
             if(moduleFieldsConfig.length == 0){
-                fieldset = config.fieldset;                
+                fieldset = config.Course.fieldset;                
             } else if (moduleFieldsConfig.indexOf('[') == 0) {
                 fieldset = JSON.parse(moduleFieldsConfig);
             } else {                
@@ -116,6 +116,12 @@
                     },
                     "showLabel": true
                   })
+                fieldset.push({"apiName":"TakeModule",
+                               "type":"subcomponent",
+                               "subcomponent":"FieloELR:TakeModule",
+                               "label":{"type":"text","value":""},
+                               "showLabel":false
+                              })
             }            
             component.set('v.courseFieldset', fieldset);
             
@@ -144,6 +150,7 @@
         component.set('v.modules', modulesList);
         component.set('v.courseTitle', course.Name);
         component.set('v.showMyCourses', false);
+        component.set('v.showModuleResponse', false); 
         component.set('v.showCourse', true);            
     },
     showCoursesList: function(component, event, helper){
@@ -153,5 +160,23 @@
     paginator: function(component, event, helper){
         var offset = event.getParam("offset");        
         helper.loadCourses(component, event, helper, offset);
+    },    
+    showCourseInformation: function(component, event, helper){        
+        component.set('v.showModule', false); 
+        component.set('v.showModuleResponse', false); 
+        component.set('v.showCourse', true); 
+    },
+    showModuleResponse: function(component, event, helper){
+        var moduleResponse = event.getParam('moduleResponse');
+        var view = event.getParam('view');
+        var moduleName = event.getParam('name');
+        if(moduleName){
+            component.set('v.moduleTitle', moduleName);
+        }
+        component.set('v.viewAnswer', view);
+        component.set('v.moduleResponse', moduleResponse);
+        component.set('v.showCourse', false); 
+        component.set('v.showModule', false);
+        component.set('v.showModuleResponse', true);
     }
 })
