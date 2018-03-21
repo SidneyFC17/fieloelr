@@ -1,7 +1,8 @@
 ({
     doInit : function(component, event, helper) {        
-        var question = component.get('v.question');        
-        component.set('v.title', question.FieloELR__QuestionText__c);
+        var question = component.get('v.question');
+        debugger;
+        component.set('v.title', question.FieloELR__QuestionText__c.replace(/&#39;/g, '\''));
         component.set('v.options', question.FieloELR__AnswerOptions__r.records);        
         var type = component.get('v.type');
         if (type == 'Matching Options') {

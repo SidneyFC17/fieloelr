@@ -13,7 +13,7 @@
             fieldset += ',FieloELR__SubscriptionMode__c';
         }
         var modulesFieldset = component.get('v.courseFieldset');
-        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset;
+        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset.join(',');        
         if(modulesFieldset != '' && modulesFieldset.indexOf('FieloELR__AttemptsAllowed__c') == -1){
             modulesFieldset += ',FieloELR__AttemptsAllowed__c';
         }
