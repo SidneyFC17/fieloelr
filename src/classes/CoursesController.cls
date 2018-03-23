@@ -29,6 +29,5 @@ public with sharing class CoursesController {
         } catch(Exception e){
              throw new AuraHandledException(e.getMessage());
         }  
-    }    
-
+    }        
 }

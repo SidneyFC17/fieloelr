@@ -60,7 +60,9 @@
                         newField = {
                             'apiName': apiName,
                             'type': type,
-                            'label': {},
+                            'label': {
+                                "type": "default"
+                            },
                             'showLabel': true
                         }
                         fieldset.push(newField);                        
@@ -82,7 +84,7 @@
                     });
                 }
             }
-            component.set('v.fieldset', fieldset);            
+            component.set('v.fieldset', fieldset);
             // MODULE FIELDSET
             fieldset = [], fields = [];                        
             var moduleFieldsConfig = component.get('v.courseDetailFields').trim();
@@ -124,6 +126,34 @@
                               })
             }            
             component.set('v.courseFieldset', fieldset);
+
+            // MODULE RESPONSE FIELDSET
+            fieldset = [], fields = [];                        
+            var moduleResponseFieldsConfig = component.get('v.moduleResponseFields').trim();
+            if(moduleResponseFieldsConfig.length == 0){
+                fieldset = config.Course.moduleResponse;
+                component.set('v.moduleResponseFields', 'FieloELR__NumberOfAttempt__c');
+            } else if (moduleResponseFieldsConfig.indexOf('[') == 0) {
+                fieldset = JSON.parse(moduleResponseFieldsConfig);
+            } else {                
+                var newField, nameAndType, apiName, type;
+                var fieldsList = moduleResponseFieldsConfig.split(',');
+                fieldsList.forEach(function(field){
+                    nameAndType = field.split('/');
+                    apiName = nameAndType[0].trim();
+                    type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
+                    newField = {
+                        'apiName': apiName,
+                        'type': type,
+                        'label': {
+                            "type": "default"
+                        },
+                        'showLabel': true
+                    }
+                    fieldset.push(newField);                    
+                })
+            }            
+            component.set('v.moduleResponseFieldset', fieldset);
             
             window.localStorage.setItem('coursesStatus', '{}');                        
         } catch(e) {

@@ -1,6 +1,6 @@
 <aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
     
-    <aura:attribute name="configDefault" type="String" access="global" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Progress__c","type":"subcomponent","subcomponent":"FieloELR:ProgressBar","config":{"layout":"bar"},"label":{"type":"text","value":"Progress"},"showLabel":true}],"quantity":5,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ModuleCheck","label":{"type":"label","value":"c.SuccessfullyCompleted"},"showLabel":true},{"apiName":"TakeModule","type":"subcomponent","subcomponent":"FieloELR:TakeModule","label":{"type":"text","value":""},"showLabel":false}]}}'/>
+    <aura:attribute name="configDefault" type="String" access="global" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Progress__c","type":"subcomponent","subcomponent":"FieloELR:ProgressBar","config":{"layout":"bar"},"label":{"type":"text","value":"Progress"},"showLabel":true}],"quantity":5,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ModuleCheck","label":{"type":"label","value":"c.SuccessfullyCompleted"},"showLabel":true},{"apiName":"TakeModule","type":"subcomponent","subcomponent":"FieloELR:TakeModule","label":{"type":"text","value":""},"showLabel":false}],"moduleResponse":[{"apiName":"FieloELR__NumberOfAttempt__c","label":{"type":"default"},"type":"output","showLabel":true}]}}'/>
     
     <!-- DESIGN ATTRIBUTES -->    
     <aura:attribute type="String" name="titleValue" access="global"/>
@@ -38,6 +38,11 @@
     <aura:handler event="c:ShowModuleResponseEvent" action="{!c.showModuleResponse}"/>
     <aura:attribute type="Boolean" name="showModuleResponse" default="false" />
     <aura:attribute type="sObject" name="moduleResponse" />
+    
+    <!-- MODULE RESPONSE -->
+    <aura:attribute type="sObject[]" name="moduleResponseFieldset" />
+    <aura:attribute type="String" name="moduleResponseFields" default="FieloELR__NumberOfAttempt__c"/>
+    <!-- MODULE RESPONSE -->
 
     <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>        
@@ -62,12 +67,9 @@
     <aura:if isTrue="{!v.showModuleResponse}">
             <div class="slds-clearfix slds-p-bottom--small">
                 <h3 class="slds-section-title--divider slds-float_left">{!v.moduleTitle}</h3>        
-                
                     <lightning:button class="slds-float_right" variant="neutral" label="Back to Course" onclick="{!c.showCourseInformation }" />            
-                
-                
             </div>                
-            <c:ModuleResponse moduleResponse="{!v.moduleResponse}" />       
+            <c:ModuleResponse moduleResponse="{!v.moduleResponse}" fieldset="{!v.moduleResponseFieldset}" fieldsModuleResponse="{!v.moduleResponseFields}"/>       
         </aura:if>
     
     <c:Spinner />   

@@ -18,8 +18,18 @@
         <aura:if isTrue="{!v.renderQuestion}">
             <div>
                 <aura:if isTrue="{!v.mode == 'view'}">
-                    <lightning:icon iconName="{!v.isCorrect ? 'action:approval' : 'action:close'}" class="slds-float_right" size="small" />
-                </aura:if>                
+                    <lightning:icon iconName="{!v.isCorrect ? 'action:approval' : 'action:close'}" class="slds-float_right" size="small" />                    
+                </aura:if>
+                <!--<aura:if isTrue="{!v.mode == 'view'}">
+                    <div class="slds-float_right slds-text-align-center">
+                        <div>
+                            <lightning:icon iconName="{!v.isCorrect ? 'action:approval' : 'action:close'}" size="small" />
+                        </div>
+                        <div>
+                            Grade: {!v.question.FieloELR__PartialGradeValue__c}
+                        </div>
+                    </div>                    
+                </aura:if>-->
                 <div class="slds-text-heading_small slds-text-align_left">{!v.title}</div>
             </div>            
             <aura:if isTrue="{!v.type == 'Single Choice'}" >        

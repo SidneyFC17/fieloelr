@@ -21,4 +21,7 @@
     <design:attribute label="Course Detail Fieldset" name="courseDetailFields" description="Enter the API names of fields to include in the Modules list, separated by commas" 
                       default='Name,FieloELR__Description__c'
                       />    
+    <design:attribute label="Module Response Fieldset" name="moduleResponseFields" description="Enter the API names of fields to include in the Module Response detail, separated by commas" 
+                      default='FieloELR__NumberOfAttempt__c'
+                      />                                                
 </design:component>
