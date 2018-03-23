@@ -2,7 +2,7 @@
     
     <aura:attribute type="sObject" name="moduleContent" />
     
-    <aura:attribute name="configDefault" type="String" access="global" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"JoinCourse","type":"subcomponent","subcomponent":"FieloELR:JoinCourse","label":{"type":"text","value":"Join Course"},"showLabel":false}],"quantity":6,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"TakeModule","type":"subcomponent","subcomponent":"FieloELR:TakeModule","label":{"type":"text","value":""},"showLabel":false}]}}'/>
+    <aura:attribute name="configDefault" type="String" access="global" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"JoinCourse","type":"subcomponent","subcomponent":"FieloELR:JoinCourse","label":{"type":"text","value":"Join Course"},"showLabel":false}],"quantity":6,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"TakeModule","type":"subcomponent","subcomponent":"FieloELR:TakeModule","label":{"type":"text","value":""},"showLabel":false}],"moduleResponse":[{"apiName":"FieloELR__NumberOfAttempt__c","label":{"type":"default"},"type":"output","showLabel":true}]}}'/>
     
     <!-- DESIGN ATTRIBUTES -->    
     <aura:attribute type="String" name="titleValue" access="global"/>
@@ -35,6 +35,10 @@
     
     <aura:attribute type="sObject[]" name="fieldset" />
     
+    <!-- MODULE RESPONSE -->
+    <aura:attribute type="sObject[]" name="moduleResponseFieldset" />
+    <aura:attribute type="String" name="moduleResponseFields"  />
+    <!-- MODULE RESPONSE -->
     
     <aura:attribute type="String" name="title" default="" />    
     <aura:attribute type="String" name="whereClause" default="" />    
@@ -98,8 +102,8 @@
                 <aura:if isTrue="{!!v.viewAnswer}">
                     <lightning:button class="slds-float_right" variant="neutral" label="Back to Courses" onclick="{!c.reloadCourses }" />            
                 </aura:if>                                
-            </div>                
-            <c:ModuleResponse moduleResponse="{!v.moduleResponse}" />       
+            </div>                            
+            <c:ModuleResponse moduleResponse="{!v.moduleResponse}" fieldset="{!v.moduleResponseFieldset}" fieldsModuleResponse="{!v.moduleResponseFields}"/>       
         </aura:if>
         
         <c:Spinner />            

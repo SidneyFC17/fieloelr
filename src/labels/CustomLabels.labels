@@ -174,6 +174,13 @@
         <value>Question Text is a required field</value>
     </labels>
     <labels>
+        <fullName>SuccessfullyCompleted</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Successfully Completed</shortDescription>
+        <value>Successfully Completed</value>
+    </labels>
+    <labels>
         <fullName>True</fullName>
         <categories>questionWizard.js</categories>
         <language>en_US</language>

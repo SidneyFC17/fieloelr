@@ -17,10 +17,21 @@
     <div class="{!v.className + ' question slds-p-top_large'}" >
         <aura:if isTrue="{!v.renderQuestion}">
             <div>
+                <div class="slds-text-heading_small slds-text-align_left" style="display:inline-block">{!v.title}  
+                    </div>
                 <aura:if isTrue="{!v.mode == 'view'}">
-                    <lightning:icon iconName="{!v.isCorrect ? 'action:approval' : 'action:close'}" class="slds-float_right" size="small" />
-                </aura:if>                
-                <div class="slds-text-heading_small slds-text-align_left">{!v.title}</div>
+                    <lightning:icon iconName="{!v.isCorrect ? 'action:approval' : 'action:close'}" class="slds-float_right" size="small" />                    
+                </aura:if>
+                <!--<aura:if isTrue="{!v.mode == 'view'}">
+                    <div class="slds-float_right slds-text-align-center">
+                        <div>
+                            <lightning:icon iconName="{!v.isCorrect ? 'action:approval' : 'action:close'}" size="small" />
+                        </div>
+                        <div>
+                            Grade: {!v.question.FieloELR__PartialGradeValue__c}
+                        </div>
+                    </div>                    
+                </aura:if>-->
             </div>            
             <aura:if isTrue="{!v.type == 'Single Choice'}" >        
                 <aura:iteration items="{!v.options}" var="option">                
