@@ -1,8 +1,12 @@
 public class CourseStatus extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
+
+    public static Set<Id> completedCoursesIds = new Set<Id>();
     
     public static Boolean validateAdminFields = true;
     
+
+
     public CourseStatus(List<CourseStatus__c> records) {
         super(records);
     }
@@ -137,11 +141,32 @@ public class CourseStatus extends SObjectDomain {
         //before update
         if(validateAdminFields){
             for(CourseStatus__c courseStatus : (List<CourseStatus__c>)records){
+                if(!completedCoursesIds.contains(courseStatus.Id)){
+                    if(courseStatus.CompletedDate__c != ((CourseStatus__c)(existingRecords.get(courseStatus.Id))).CompletedDate__c) {
+                        courseStatus.CompletedDate__c = ((CourseStatus__c)(existingRecords.get(courseStatus.Id))).CompletedDate__c;
+                    }
+                }
                 if(courseStatus.ApprovedModules__c != ((CourseStatus__c)(existingRecords.get(courseStatus.Id))).ApprovedModules__c) {
                     courseStatus.ApprovedModules__c = ((CourseStatus__c)(existingRecords.get(courseStatus.Id))).ApprovedModules__c;
                 }
             }
         }        
+    }
+
+
+
+    public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
+        Set<Id> coursesIds = new Set<Id>();
+        for(CourseStatus__c record : (List<CourseStatus__c>)records){
+            coursesIds.add(record.Course__c);
+        }
+        Map<Id, Course__c> coursesMap = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__ActiveModules__c'}).selectById(coursesIds));
+        for(CourseStatus__c record : (List<CourseStatus__c>)records){
+            if(record.ApprovedModules__c != ((CourseStatus__c)existingRecords.get(record.Id)).ApprovedModules__c && record.ApprovedModules__c == coursesMap.get(record.Course__c).FieloELR__ActiveModules__c){
+                record.CompletedDate__c = System.now();
+                completedCoursesIds.add(record.Id);
+            }
+        }
     }
 
     public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
