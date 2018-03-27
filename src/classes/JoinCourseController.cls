@@ -4,6 +4,10 @@ public with sharing class JoinCourseController {
     public static String memberJoinCourse(Id memberId, Id courseId){
         try{
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{FieloELR__CourseStatus__c.SObjectType});
+            
+            if(!Schema.sObjectType.CourseStatus__c.isCreatable())
+                throw new FieloPLT.FieloException('Insufficient permission to create course status.');
+
             uow.registerNew(new FieloELR__CourseStatus__c(FieloELR__Member__c = memberId, FieloELR__Course__c = courseId));
             uow.commitWork();
         } catch (DMLException e) {
