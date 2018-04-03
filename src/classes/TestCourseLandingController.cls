@@ -219,4 +219,30 @@ private class TestCourseLandingController
 
 		segments = CourseLandingController.getSegments(programs[0].Id);
 	}
+
+	// 
+	@isTest 
+	static void testCurrentPageView() {
+	currentView = Apexpages.currentPage()put{'view', vTest}	
+	System.assertEquals('view', Apexpages.currentPage().getParameters().get('view'));
+
+	CourseLandingController.Section section = new CourseLandingController.Section();
+	section.Name =  'none';
+	section.CssClass = 'none';
+
+	System.assertEquals('none', section.Name);
+	System.assertEquals('none', section.CssClass);
+
+	CourseLandingController.FormField formfield = new CourseLandingController.FormField();
+	formfield.Type = 'none';
+	formfield.MetaField = 'none';
+	formfield.onchange = 'none';
+	formfield.Label = 'none';
+	fomrfield.Value = 'none';
+	formfield.Required = 'none';
+
+	
+	
+	}
+	
 }
