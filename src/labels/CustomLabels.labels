@@ -491,4 +491,12 @@
         <shortDescription>TwoAnswerOptionsRequired</shortDescription>
         <value>without at least two answer options. Question:</value>
     </labels>
+    <labels>
+        <fullName>CannotChangeAnsweredModules</fullName>
+        <categories>AnswerOptions.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CannotChangeAnsweredModules</shortDescription>
+        <value>Cannot change an already answered module</value>
+    </labels>
 </CustomLabels>
