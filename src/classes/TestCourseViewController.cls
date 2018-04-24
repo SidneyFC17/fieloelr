@@ -17,7 +17,7 @@ public class TestCourseViewController
 		pageSettings.add( new FieloPLT__PageSettings__c(
 				Name = 'Course > Edit',
 				FieloPLT__Object__c = 'FieloELR__Course__c',
-				FieloPLT__Sections__c = '{"Name":"Information","Rows":[[{"Name":"Name","Type":"input"}],[{"Name":"FieloELR__Program__c","Type":"lookup","onchange":"RefreshSegments"}],[{"Name":"FieloELR__Segment__c","Type":"multiselect"}],[{"Name":"FieloELR__SubscriptionMode__c","Type":"picklist"},{"Name":"FieloELR__Status__c","Type":"picklist"}],[{"Name":"FieloELR__Description__c","Type":"input"}],[{"Name":"FieloELR__StartDate__c","Type":"input"},{"Name":"FieloELR__EndDate__c","Type":"input"}]]}',
+				FieloPLT__Ftions__c = '{"Name":"Information","Rows":[[{"Name":"Name","Type":"input"}],[{"Name":"FieloELR__Program__c","Type":"lookup","onchange":"RefreshSegments"}],[{"Name":"FieloELR__Segment__c","Type":"multiselect"}],[{"Name":"FieloELR__SubscriptionMode__c","Type":"picklist"},{"Name":"FieloELR__Status__c","Type":"picklist"}],[{"Name":"FieloELR__Description__c","Type":"input"}],[{"Name":"FieloELR__StartDate__c","Type":"input"},{"Name":"FieloELR__EndDate__c","Type":"input"}]]}',
 				FieloPLT__IsActive__c = true,
 				FieloPLT__Type__c = 'Edit'
 			)
@@ -57,6 +57,8 @@ public class TestCourseViewController
 		);
 
 		insert course;
+
+		
 
 		ApexPages.StandardController standardController = new ApexPages.StandardController(course);
         CourseViewController controller = new CourseViewController(standardController);
@@ -220,6 +222,29 @@ public class TestCourseViewController
 				segments[1].Id
 			}
 		);
+
+		result = CourseViewController.clone(
+			course,
+			new List<String>{
+				'FieloELR__StartDate__c',
+				'FieloELR__EndDate__c'
+			},
+			new List<String>{
+				segments[0].Id,
+				segments[1].Id
+			}
+		);
+	
+	String test1 = '{"Name":"Information","Rows":[[{"Name":"Name","Type":"input"}],[{"Name":"FieloELR__Program__c","Type":"lookup","onchange":"RefreshSegments"}],[{"Name":"FieloELR__Segment__c","Type":"multiselect"}],[{"Name":"FieloELR__SubscriptionMode__c","Type":"radio"}],[{"Name":"FieloELR__Description__c","Type":"input"}],[{"Name":"FieloELR__StartDate__c","Type":"input"},{"Name":"FieloELR__EndDate__c","Type":"input"}]]},{ "Name": "Model", "Rows": [[ { "Label": "Course", "Type": "model" }]]}';
+	String test2 = 'test2';
+	String test3 = 'test3';
+	//acredito que ele espera uma string json no primeiro parmetro
+		String metReturn = CourseViewController.getSectionsWithCourseWhereCondition(
+			test1,
+			test2,
+			test3
+			); 
+
 	}
 
 	@isTest
@@ -384,5 +409,35 @@ public class TestCourseViewController
 		CourseService.testTemporal16();
 		CourseService.testTemporal17();
 		CourseService.testTemporal18();
+	}
+
+	@isTest
+	static void testCurrentPageView() {
+	
+	CourseViewController.Section section = new CourseViewController.Section();
+	section.Name =  'none';
+	section.CssClass = 'none';
+
+	System.assertEquals('none', section.Name);
+	System.assertEquals('none', section.CssClass);
+
+
+	CourseViewController.FormField formfield = new CourseViewController.FormField();
+	formfield.Type = 'none';
+	formfield.MetaField = 'none';
+	formfield.onchange = 'none';
+	formfield.Label = 'none';
+	formfield.Value = 'none';
+	
+	System.assertEquals('none', formfield.Type);
+	System.assertEquals('none', formfield.MetaField);
+	System.assertEquals('none', formfield.onchange);
+	System.assertEquals('none', formfield.Value);
+	System.assertEquals(null, formfield.Required);
+	System.assertEquals('', formfield.getRequiredValue());
+	
+	formfield.Required = true;
+	System.assertEquals(true, formfield.Required);
+	System.assertEquals('true', formfield.getRequiredValue());
 	}
 }
