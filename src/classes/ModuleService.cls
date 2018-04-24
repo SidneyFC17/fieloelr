@@ -1,4 +1,3 @@
-
 global class ModuleService {
 	
 	global class ModuleWrapper{
@@ -22,17 +21,9 @@ global class ModuleService {
 		try{
 			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
 			moduleResponse.NumberOfAttempt__c++;
-			
-			if(!Schema.sObjectType.ModuleResponse__c.isUpdateable())
-                throw new FieloPLT.FieloException('Insufficient permission to update module response.');
-
 			uow.registerDirty(moduleResponse);
 		}catch(Exception e){
 			moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
-
-			if(!Schema.sObjectType.ModuleResponse__c.isCreateable())
-                throw new FieloPLT.FieloException('Insufficient permission to create module response.');
-
 			uow.registerNew(moduleResponse);
 		}
 		uow.commitWork();
@@ -43,26 +34,44 @@ global class ModuleService {
 		moduleQuery += ' FROM Module__c WHERE Id =: moduleId ';
 		Module__c module = Database.query(moduleQuery);
 
-		Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
-		fieldsQuestionClone.add('FieloELR__Type__c');
-		String questionQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionClone), ',');
+		Set<String> fieldsQuestionClone = new Set<String>();
+		String questionQuery = 'SELECT ';
 
-		Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
-		fieldsAnswerOptionClone.add('FieloELR__IsCorrect__c');
-		questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOptionClone), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
-
-		questionQuery += ' FROM Question__c WHERE Module__c =: moduleId ORDER BY OrderFormula__c';
 		
-		if(module.QuestionPool__c != null){
-			questionQuery += ' LIMIT ' + module.QuestionPool__c;
+		if(fieldsQuestion != null) {
+			fieldsQuestionClone.addAll(fieldsQuestion);
+			
 		}
+		fieldsQuestionClone.add('FieloELR__Type__c');
+			
 
-		List<Question__c> questions = Database.query(questionQuery);
+		if(!fieldsQuestionClone.isEmpty()){
+			questionQuery += String.join(new List<String>(fieldsQuestionClone), ',');
+	
+		}
+		if(fieldsAnswerOption != null){
+			Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
+			fieldsAnswerOptionClone.add('FieloELR__IsCorrect__c');
+			if(!fieldsQuestionClone.isEmpty()){
+				questionQuery += ',';
+			}
+			questionQuery += ' (SELECT ' + String.join(new List<String>(fieldsAnswerOptionClone), ',') + ' FROM AnswerOptions__r ORDER BY OrderFormula__c)';
+			questionQuery += ' FROM Question__c WHERE Module__c =: moduleId ORDER BY OrderFormula__c';
+			
+		
+			if(module.QuestionPool__c != null){
+				questionQuery += ' LIMIT ' + module.QuestionPool__c;
+			}
+		}
+		
+		system.debug(questionQuery);	
+		List<Question__c> questions ;		
 
 		if(fieldsAnswerOption != null){
 			Integer currentIndex;
 	    	string currentMatchingText;
 	    	Integer randomIndex;
+			questions = Database.query(questionQuery);
 			for(Question__c q : questions){
 				// Shuffle Answer Options Matching Text
 				if(q.Type__c == 'Matching Options'){
@@ -88,13 +97,6 @@ global class ModuleService {
 	global static ModuleResponse__c submitModuleResponse (ModuleResponse__c moduleResponse, List<QuestionService.QuestionResponseWrapper> questionWrappers){
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType, Answer__c.SObjectType, ModuleResponse__c.SObjectType});
 		if(questionWrappers != null){
-			
-			if(!Schema.sObjectType.QuestionResponse__c.isUpdateable())
-                throw new FieloPLT.FieloException('Insufficient permission to update question response.');
-
-            if(!Schema.sObjectType.Answer__c.isUpdateable())
-                throw new FieloPLT.FieloException('Insufficient permission to update answer.');
-
 			for(QuestionService.QuestionResponseWrapper qw : questionWrappers){
 				uow.registerNew(qw.questionResponse, QuestionResponse__c.ModuleResponse__c, moduleResponse);
 				for(Answer__c answer : qw.answers){
@@ -105,10 +107,6 @@ global class ModuleService {
 
 		SavePoint sp = Database.setSavePoint();
 		moduleResponse.IsSubmitted__c = true;
-		
-		if(!Schema.sObjectType.ModuleResponse__c.isUpdateable())
-            throw new FieloPLT.FieloException('Insufficient permission to update module response.');
-
 		uow.registerDirty(moduleResponse);
 		try{
 			uow.commitWork();
@@ -130,6 +128,7 @@ global class ModuleService {
 		}
 
 		public void addQuestion(QuestionService.QuestionResponseResult qWrapper){
+			System.debug(this.questions.add(qWrapper));
 			this.questions.add(qWrapper);
 		}
 	}
@@ -138,10 +137,6 @@ global class ModuleService {
 									  Set<String> fieldsModuleResponse,
 									  Set<String> fieldsQuestion,
 									  Set<String> fieldsAnswerOption) {
-		
-		if(!Schema.sObjectType.ModuleResponse__c.isAccessible())
-            throw new FieloPLT.FieloException('Insufficient permission to read module response.');
-
 		Set<String> fieldsModuleResponseClone = new Set<String>(fieldsModuleResponse);
 		fieldsModuleResponseClone.add('FieloELR__Module__r.FieloELR__AttemptsAllowed__c');
 		fieldsModuleResponseClone.add('FieloELR__NumberOfAttempt__c');
