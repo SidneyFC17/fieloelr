@@ -2,18 +2,22 @@
 public with sharing class TestCoursesController {
 	@testSetup static void setup(){
         MockUpFactory.InsertTestData();
+        MockUpFactory.activateCourse();
 		
     }
 
 	@isTest
 	static void TestCoursesController() {
-	FieloPLT__Member__c = member = [SELECT Id FROM FieloPLT__Member__c LIMIT 1];
-	List<String> mdFieldset = new List<String>{'{"Name":"Information","Rows":[[{"Name":"FieloELR__Description__c","Type":"input"}],[{"Name":"FieloELR__ApprovalGrade__c","Type":"input"},{"Name":"FieloELR__QuestionPool__c","Type":"checkbox"}],[{"Name":"FieloELR__AttemptsAllowed__c","Type":"input"},{"Name":"FieloELR__AttemptsAllowedPerQuestion__c","Type":"input"}]]}}';
+	FieloPLT__Member__c member = [SELECT Id, FieloPLT__Program__c FROM FieloPLT__Member__c LIMIT 1];
+	List<String> csFieldset = new List<String>{'FieloELR__Status__c'};
+	List<String> mdFieldset = new List<String>{'FieloELR__IsActive__c'};
 
-
-	CourseController.getCourses(
+	String gCoursesReturn = CoursesController.getCourses(
 		member
-		,);
+		,csFieldset
+		,mdFieldset
+		,2
+		,2);
 	
 	}
 }
