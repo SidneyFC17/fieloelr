@@ -76,7 +76,7 @@ public class TestModuleViewController {
 
         RemoteActionResult result = ModuleViewController.activate(module.Id);
 
-        /*FieloELR__Question__c question = new FieloELR__Question__c(
+        FieloELR__Question__c question = new FieloELR__Question__c(
             Name = 'Question 1'
             , QuestionText__c = 'Question 1 text?'
             , CorrectWeight__c = 20
@@ -94,7 +94,9 @@ public class TestModuleViewController {
             }
         );
 
-        result = ModuleViewController.activate(module.Id);*/
+        result = ModuleViewController.activate(module.Id);
+        
+
     }
 
     @isTest static void itShouldViewModuleWithInactivateButton() {
@@ -153,6 +155,13 @@ public class TestModuleViewController {
         ModuleViewController controller = new ModuleViewController(standardController);
 
         RemoteActionResult result = ModuleViewController.inactivate(module.Id);
+    
+
+       FieloPLT__PageSettings__c pageSettingsTest = new FieloPLT__PageSettings__c();
+        pageSettingsTest  = controller.getPageSettings(
+            'Module > View',
+            'View');
+
     }
 
     @isTest static void itShouldRetrieveModule() {
@@ -287,5 +296,74 @@ public class TestModuleViewController {
             moduleDependency,
             new List<String>()
         );
+
+        List<FieloELR__Module__c> moduleRecords1 = ModuleViewController.getRecords(
+            'Module__c',
+            'Course__c',
+            3,
+            'Name',
+            'Test',
+            1,
+            'isTested');
+    
+
+        List<FieloELR__Module__c> moduleRecords2 = ModuleViewController.getRecords(
+            'Module__c',
+            'Course__c',
+            3,
+            null,
+            '{"PenaltyMode__c":"None"}',
+            null,
+            'isTested');
+
+    String test1 = '{"Name":"Information","Rows":[[{"Name":"Name","Type":"input"}],[{"Name":"FieloELR__Program__c","Type":"lookup","onchange":"RefreshSegments"}],[{"Name":"FieloELR__Segment__c","Type":"multiselect"}],[{"Name":"FieloELR__SubscriptionMode__c","Type":"radio"}],[{"Name":"FieloELR__Description__c","Type":"input"}],[{"Name":"FieloELR__StartDate__c","Type":"input"},{"Name":"FieloELR__EndDate__c","Type":"input"}]]},{ "Name": "Model", "Rows": [[ { "Label": "Course", "Type": "model" }]]}';
+    String test2 = 'test2';
+    String test3 = 'test3';
+    //acredito que ele espera uma string json no primeiro parmetro
+        String metReturn = ModuleViewController.getSectionsWithModuleWhereCondition(
+            test1,
+            test2,
+            test3
+            ); 
+    
+    }
+
+
+    @isTest
+    static void testCurrentPageView() {
+    
+    ModuleViewController.Section section = new ModuleViewController.Section();
+    section.Name =  'none';
+    section.CssClass = 'none';
+    
+
+    System.assertEquals('none', section.Name);
+    System.assertEquals('none', section.CssClass);
+
+
+    ModuleViewController.FormField formfield = new ModuleViewController.FormField();
+    formfield.Type = 'none';
+    formfield.MetaField = 'none';
+    formfield.onchange = 'none';
+    formfield.Label = 'none';
+    formfield.Value = 'none';
+    formfield.Name = 'none';
+    formfield.WhereCondition = 'none';
+    
+    List<ModuleViewController.FormField> innerList = new List<ModuleViewController.FormField>{formfield};
+   section.Rows = new List<List<ModuleViewController.FormField>>{innerList};
+
+
+    System.assertEquals('none', formfield.Type);
+    System.assertEquals('none', formfield.MetaField);
+    System.assertEquals('none', formfield.onchange);
+    System.assertEquals('none', formfield.Value);
+    System.assertEquals(null, formfield.Required);
+    System.assertEquals('', formfield.getRequiredValue());
+    
+    formfield.Required = true;
+    System.assertEquals(true, formfield.Required);
+    System.assertEquals('true', formfield.getRequiredValue());
+
     }
 }
