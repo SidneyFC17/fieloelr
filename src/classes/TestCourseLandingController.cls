@@ -182,6 +182,19 @@ private class TestCourseLandingController
 			, Program__c = programs[0].Id
 		);
 
+		RemoteActionResult result = CourseLandingController.createCourse(
+			course,
+			new List<String>{
+				'FieloELR__StartDate__c',
+				'FieloELR__EndDate__c'
+			},
+			null
+			,
+			new List<String>{
+				'test1',
+				'test2'
+			});
+
 		/*RemoteActionResult result = CourseLandingController.createCourseWithSegments(
 			course,
 			new List<String>{
@@ -218,5 +231,45 @@ private class TestCourseLandingController
 		insert metaSegment;
 
 		segments = CourseLandingController.getSegments(programs[0].Id);
+		
+
 	}
+
+	// 
+	@isTest 
+	static void testCurrentPageView() {
+	
+	CourseLandingController.Section section = new CourseLandingController.Section();
+	section.Name =  'none';
+	section.CssClass = 'none';
+
+	System.assertEquals('none', section.Name);
+	System.assertEquals('none', section.CssClass);
+
+
+	CourseLandingController.FormField formfield = new CourseLandingController.FormField();
+	formfield.Type = 'none';
+	formfield.MetaField = 'none';
+	formfield.onchange = 'none';
+	formfield.Label = 'none';
+	formfield.Value = 'none';
+	
+	System.assertEquals('none', formfield.Type);
+	System.assertEquals('none', formfield.MetaField);
+	System.assertEquals('none', formfield.onchange);
+	System.assertEquals('none', formfield.Value);
+	System.assertEquals(null, formfield.Required);
+	System.assertEquals('', formfield.getRequiredValue());
+	
+	formfield.Required = true;
+	System.assertEquals(true, formfield.Required);
+	System.assertEquals('true', formfield.getRequiredValue());
+	
+	
+
+	
+	//chamar a classe, chamar o metodo deixar modelid e segments null
+
+	}
+	
 }

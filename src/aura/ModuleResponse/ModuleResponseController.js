@@ -1,6 +1,7 @@
 ({
     doInit : function(component, event, helper) {        
-        var moduleResponse = component.get('v.moduleResponse');                
+        var moduleResponse = component.get('v.moduleResponse');        
+        var fieldsModuleResponse = component.get('v.fieldsModuleResponse');        
         var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");        
         if(spinner){
             spinner.setParam('show', true);
@@ -8,7 +9,8 @@
         }                   
         var action = component.get('c.getModuleResponse');
         action.setParams({
-            'moduleResponseId': moduleResponse.Id
+            'moduleResponseId': moduleResponse.Id,
+            'fieldsModuleResponse': fieldsModuleResponse.split(',')
         })
         // Add callback behavior for when response is received
         action.setCallback(this, function(response) { 
@@ -18,12 +20,15 @@
             var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");                
             if (component.isValid() && state === 'SUCCESS') {                    
                 var moduleResponse = JSON.parse(response.getReturnValue());                
-                component.set('v.moduleResponseQuestions', moduleResponse);                
+                component.set('v.moduleResponseQuestions', moduleResponse);
+                if(moduleResponse.moduleResponse.FieloELR__GradeValue__c){                    
+                    component.set('v.moduleGrade', moduleResponse.moduleResponse.FieloELR__GradeValue__c);
+                }
                 helper.loadQuestionResponses(component);
                 if(moduleResponse.moduleResponse.FieloELR__IsApproved__c){
-                    message = $A.get("$Label.FieloELR.Approved");
+                    message = $A.get("$Label.c.Approved");
                 } else {
-                    message = $A.get("$Label.FieloELR.TryAgain");
+                    message = $A.get("$Label.c.TryAgain");
                 }
                 component.set('v.responseMessage', message);
             }else {
@@ -41,6 +46,7 @@
             }   
         });      
         // Send action off to be executed
-        $A.enqueueAction(action);
+        $A.enqueueAction(action);        
+        helper.getLabels(component, event, helper);
     }
 })

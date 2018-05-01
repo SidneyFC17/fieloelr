@@ -30,7 +30,7 @@
                 var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
-                    var joinLabel = $A.get("$Label.FieloELR.Join");
+                    var joinLabel = $A.get("$Label.c.Join");
                     toastEvent.setParams({
                         "title": joinLabel + " " + courseName + "!",
                         "message": " ",
@@ -40,7 +40,15 @@
                     component.set('v.join', false);
                     var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
                     courseCache[memberId][courseId] = false;
-                    window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));                    
+                    window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));
+                    
+                    var recordEvent = component.getEvent("showRecord");
+                    var record = component.get('v.record');
+                    if(recordEvent){
+                        recordEvent.setParams({'record': record});
+                        recordEvent.fire();
+                    }
+
                 }else {
                     var errorMsg = response.getError()[0].message;
                     toastEvent.setParams({

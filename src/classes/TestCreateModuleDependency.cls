@@ -166,6 +166,7 @@ private class TestCreateModuleDependency {
 		}catch(System.DmlException d){
 			errorMsg = d.getMessage();
 		}
+		System.debug(errorMsg);
 		System.assert(errorMsg.Contains('This module dependency already exists.'));
 	}
 

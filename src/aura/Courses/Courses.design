@@ -1,24 +1,27 @@
-<design:component label="Fielo ELR - Courses" >
-    <design:attribute label="Title" name="titleValue" description="Enter the title to be displayed" default="Courses"
+<design:component label="Fielo - Courses" >
+    <design:attribute label="Title" name="titleValue" description="Enter the title to be displayed at the top of the component." default="Courses"
                     />
     <design:attribute label="Layout" name="layout" description="Choose 'Table' to view Courses in list format or 'Grid' to view them in tile format" 
                       datasource='table,grid' default="table"
                       />
-    <design:attribute label="Number of Columns" name="columns" description="Enter the number of columns to be displayed if using Grid view"
+    <design:attribute label="Number of Columns" name="columns" description="Choose the number of columns to be displayed, if using Grid view."
                       />    
-    <design:attribute label="Paging" name="paging" description="Tick this box to allow Courses to display in pages" default="true"
+    <design:attribute label="Paging" name="paging" description="Tick this box to allow Courses to be displayed in pages." default="true"
                       />
-    <design:attribute label="Records per page" name="quantity" description="Enter the number of Courses to be displayed per page" default="5"
+    <design:attribute label="Records per page" name="quantity" description="Enter the number of Courses to be displayed per page, if using Paging." default="5"
                       />
-    <design:attribute label="Fieldset" name="fields" description="Enter the API names of fields to include in the Courses list, separated by commas" 
+    <design:attribute label="Fieldset" name="fields" description="Enter the API names of fields to include in the Course list, separated by commas." 
                       default='Name,FieloELR__Description__c'
                       />
-    <design:attribute label="Course Detail Layout" name="courseLayout" description="Choose 'Table' to view Modules in list format or 'Grid' to view them in tile format" 
+    <design:attribute label="Course Detail Layout" name="courseLayout" description="Choose 'Table' to view Modules in list format or 'Grid' to view them in tile format." 
                       datasource='table,grid' default="table"
                       />
-    <design:attribute label="Course Detail Number of Columns" name="courseColumns" description="Enter the number of columns to be displayed if using Grid view"
+    <design:attribute label="Course Detail Number of Columns" name="courseColumns" description="Choose the number of columns to be displayed, if using Grid view."
                       />    
-    <design:attribute label="Course Detail Fieldset" name="courseDetailFields" description="Enter the API names of fields to include in the Modules list, separated by commas" 
+    <design:attribute label="Course Detail Fieldset" name="courseDetailFields" description="Enter the API names of fields to include in the Module list, separated by commas." 
                       default='Name,FieloELR__Description__c'
                       />    
+    <design:attribute label="Module Response Fieldset" name="moduleResponseFields" description="Enter the API names of fields to include in the Module Response detail, separated by commas" 
+                      default='FieloELR__NumberOfAttempt__c'
+                      />                                                
 </design:component>
