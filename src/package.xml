@@ -61,9 +61,9 @@
 		<name>MatchingRules</name>
 	</types>
 	<types>
-        <members>*</members>
-        <name>DuplicateRule</name>
-    </types>
+		<members>*</members>
+		<name>DuplicateRule</name>
+	</types>
 	<types>
 		<members>*</members>
 		<name>AuraDefinitionBundle</name>
