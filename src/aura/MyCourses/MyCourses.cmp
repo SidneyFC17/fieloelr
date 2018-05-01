@@ -41,7 +41,7 @@
     
     <!-- MODULE RESPONSE -->
     <aura:attribute type="sObject[]" name="moduleResponseFieldset" />
-    <aura:attribute type="String" name="moduleResponseFields" default="FieloELR__NumberOfAttempt__c"/>
+    <aura:attribute type="String" name="moduleResponseFields" default="FieloELR__NumberOfAttempt__c" access="global" />
     <!-- MODULE RESPONSE -->
 
     <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
