@@ -37,7 +37,7 @@
     
     <!-- MODULE RESPONSE -->
     <aura:attribute type="sObject[]" name="moduleResponseFieldset" />
-    <aura:attribute type="String" name="moduleResponseFields"  />
+    <aura:attribute type="String" name="moduleResponseFields" access="global" />
     <!-- MODULE RESPONSE -->
     
     <aura:attribute type="String" name="title" default="" />    
