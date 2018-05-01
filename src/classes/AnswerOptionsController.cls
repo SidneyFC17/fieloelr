@@ -54,6 +54,8 @@ public with sharing class AnswerOptionsController {
         return sections;
     } set;}
 
+    
+
     public String fields {get{
         if ( fields == null ) {
             fields = 'Id';
