@@ -499,4 +499,12 @@
         <shortDescription>CannotChangeAnsweredModules</shortDescription>
         <value>Cannot change an already answered module</value>
     </labels>
+    <labels>
+        <fullName>CourseStatusMustBeActive</fullName>
+        <categories>CoursesStatus.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CourseStatusMustBeActive</shortDescription>
+        <value>Course Status must be related to a Course with the Status Active</value>
+    </labels>
 </CustomLabels>
