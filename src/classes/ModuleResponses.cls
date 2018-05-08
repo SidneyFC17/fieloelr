@@ -114,7 +114,7 @@ public class ModuleResponses extends SObjectDomain {
                 }
 
                 //add keys to query course status
-                csKeysRequired.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+                csKeysRequired.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c) + String.valueOf(moduleResponse.Member__c));
             }
         }
 
@@ -138,7 +138,7 @@ public class ModuleResponses extends SObjectDomain {
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             if (moduleResponse.Module__c != null && moduleResponse.Member__c != null) {
 
-                String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c) + String.valueOf(moduleResponse.Member__c);
 
                 if(mrKeysWithError.contains(moduleResponse.Key__c)){
                     moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
@@ -191,14 +191,14 @@ public class ModuleResponses extends SObjectDomain {
                         errorMsgs.add(err.getMessage());
                     }
                     CourseStatus__c cs = (CourseStatus__c)uow.m_newListByType.get('FieloELR__CourseStatus__c')[i];
-                    String csKey = String.valueOf(cs.Course__c).subString(0,15) + String.valueOf(cs.Member__c).subString(0,15);
+                    String csKey = String.valueOf(cs.Course__c) + String.valueOf(cs.Member__c);
                     errorMsgByCoursest.put(csKey, errorMsgs);
                 }
                 i++;
             }
 
             for(ModuleResponse__c mr : mrWithNewCourseStatus){
-                String cskey = String.valueOf(modulesMap.get(mr.Module__c).Course__c).subString(0,15) + String.valueOf(mr.Member__c).subString(0,15);
+                String cskey = String.valueOf(modulesMap.get(mr.Module__c).Course__c) + String.valueOf(mr.Member__c);
                 if(!errorMsgByCoursest.containsKey(cskey)){
                     mr.CourseStatus__c = newCourseStatusMap.get(cskey).Id;
                 }else{
@@ -451,7 +451,7 @@ public class ModuleResponses extends SObjectDomain {
         //store course status keys
         Set<String> csKeys = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
-            csKeys.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+            csKeys.add(String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c) + String.valueOf(moduleResponse.Member__c));
         }
 
         //look for existing course status
@@ -472,7 +472,7 @@ public class ModuleResponses extends SObjectDomain {
             //looks for the course status where needs to update the progress
             CourseStatus__c cs;
             Module__c module = modulesMap.get(moduleResponse.Module__c);
-            String csKey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+            String csKey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c) + String.valueOf(moduleResponse.Member__c);
             
             if(isUpdate){
                 if(module.Course__r.SubscriptionMode__c == 'Manual'){

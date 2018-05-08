@@ -28,7 +28,7 @@ public class CourseStatus extends SObjectDomain {
 
     public override void onValidate() {
         // Validate that course predecessor has a course status progress at 100 per cent
-        validatePredecessorAndSegments(records);    
+        validatePredecessorAndSegments(records);
 
         if(validateAdminFields) {
             
@@ -90,7 +90,7 @@ public class CourseStatus extends SObjectDomain {
             Course__c course = coursesMap.get(courseStatus.Course__c);
             for(CourseDependency__c cd : course.PredecessorCourses__r){
                // Course ID of Predecessor +  Member ID of New Course Status
-               String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
+               String cskey = String.valueOf(cd.Predecessor__c) + String.valueOf(courseStatus.Member__c);
                keysPredecessors.add(cskey);
             }
 
@@ -128,7 +128,7 @@ public class CourseStatus extends SObjectDomain {
 
             //validate dependencies
             for(CourseDependency__c cd : course.PredecessorCourses__r){
-                String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
+                String cskey = String.valueOf(cd.Predecessor__c) + String.valueOf(courseStatus.Member__c);
                 if(!keysPredecessorsCompleted.contains(cskey)){
                     courseStatus.addError(Label.ValidateCourseStatusErrorPredecessorIncomplete);
                     break;
