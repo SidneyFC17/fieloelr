@@ -827,7 +827,7 @@ private class TestCreateModuleResponse {
         
         System.debug(errorMsg);
 
-        System.assert(errorMsg.contains('Course Status must be related to a Course with the Status Active'));
+        System.assert(errorMsg.contains('Course Status must be related to a Course with the Status Active') || errorMsg.contains('The related course must be active'));
 
         Test.stopTest();
     }
