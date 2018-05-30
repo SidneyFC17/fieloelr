@@ -23,7 +23,7 @@
     <apex:attribute name="layout" type="String" default="inline" description="" assignTo="{!cLayout}"/>
     <apex:attribute name="step" type="String" default="questionType" description=""/>
 
-    <div class="fielosf fielosf-question-wizard" form-id="{!formId}">
+    <div class="fielosf-question-wizard" form-id="{!formId}">
 
 	    <div id="{!formId}" 
 	        role="dialog" 

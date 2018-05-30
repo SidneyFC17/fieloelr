@@ -891,11 +891,22 @@
     }
   };
 
+  FieloQuestionWizard.prototype.getModals = function() {
+    this.element_
+      .appendChild(
+        document.getElementById(this.element_.getAttribute('form-id')));
+    this.element_
+      .appendChild(
+        document.getElementById(
+          this.element_.getAttribute('form-id') + '-multiplechoice'));
+  };
+
   /**
   * Inicializa el elemento
   */
   FieloQuestionWizard.prototype.init = function() {
     if (this.element_) {
+      this.getModals();
       this.element_.getElementsByClassName(this.CssClasses_.NEXT)[0]
         .addEventListener('click', this.next_.bind(this));
       this.reorderObject =
