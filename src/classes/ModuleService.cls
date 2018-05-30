@@ -128,7 +128,6 @@ global class ModuleService {
 		}
 
 		public void addQuestion(QuestionService.QuestionResponseResult qWrapper){
-			System.debug(this.questions.add(qWrapper));
 			this.questions.add(qWrapper);
 		}
 	}
