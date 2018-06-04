@@ -65,22 +65,29 @@ public class Modules extends SObjectDomain {
                     if(!(oldModule.IsActive__c) && module.IsActive__c) {
                         activatedModules.add(module);
                     }
-                    // When Active, no field can be edited
-                    if(oldModule.IsActive__c && module.IsActive__c) {
-                        addError(module, Label.ActiveModuleCannotBeEdited);
-                    }
-                    /* 
+                   //get PublicSettings field that check if Edit Courses is authorized
+                FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+                Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+                   //If the field is true, there is no check 
+                    if(editCourseSettings ==false ){
+                        if(oldModule.IsActive__c && module.IsActive__c) {
+                            addError(module, Label.ActiveModuleCannotBeEdited);
+                        }
+                    }/* 
                         Check if any of these fields were modified:
                         IsActive / Attempts Allowed / Approval Grade / Penalty Mode
                         Question Pool / Attempts Allowed per question / Weighted questions
                     */
-                    else if(oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
+                    else if((oldModule.AttemptsAllowed__c != module.AttemptsAllowed__c || 
                         oldModule.ApprovalGrade__c != module.ApprovalGrade__c || 
                         oldModule.PenaltyMode__c != module.PenaltyMode__c || 
                         oldModule.QuestionPool__c != module.QuestionPool__c || 
                         oldModule.AttemptsAllowedPerQuestion__c != module.AttemptsAllowedPerQuestion__c ||
-                        oldModule.WeightedQuestions__c != module.WeightedQuestions__c) {
+                        oldModule.WeightedQuestions__c != module.WeightedQuestions__c) && editCourseSettings == false) {
                         updatedModules.add(module);
+                    }else if((module.FieloELR__HasDependencies__c != oldModule.FieloELR__HasDependencies__c) ||
+                    (module.FieloELR__KeyDependencies__c != oldModule.FieloELR__KeyDependencies__c)){
+                        addError(module, 'This field can\'t be edited');
                     }
                 }
 

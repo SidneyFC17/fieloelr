@@ -117,29 +117,36 @@ public class Questions extends SObjectDomain {
 
 		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id','IsActive__c'}).selectByIdHavingModuleResponses(modules));
 
-		// If the module is active, questions cannot be deleted or added.															
-	    for(Question__c question : questions) {
-	    	if(modulesMap.containsKey(question.Module__c)) {
-	    		if (modulesMap.get(question.Module__c).IsActive__c){
-	    			if (Trigger.isInsert || Trigger.isDelete) {
-	    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
-	    			}else{
-	    				question.addError(Label.ActiveModuleQuestionNotEditable);
-	    			}
-	    		}else if (!modulesMap.get(question.Module__c).ModuleResponses__r.isEmpty()) {
-		    		if (Trigger.isInsert || Trigger.isDelete) {
-	    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
-	    			} else {
-	    				Question__c oldQuestion = existingQuestions.get(question.Id);
-    					if(oldQuestion.CorrectWeight__c != question.CorrectWeight__c || 
-	                    oldQuestion.IncorrectWeight__c != question.IncorrectWeight__c || 
-	                    oldQuestion.PenaltyPerAttempt__c != question.PenaltyPerAttempt__c) {
-	                    	question.addError(Label.QuestionReadOnlyFields);
-		                }
-	    			}
-	    		}
-	    	}
-	    }
+		// If the module is active, questions cannot be deleted or added.
+		//get PublicSettings field that check if Edit Courses is authorized
+        FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+        Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+       
+       //If the field is true, there is no check 
+        if(editCourseSettings == false  ){															
+		    for(Question__c question : questions) {
+		    	if(modulesMap.containsKey(question.Module__c)) {
+		    		if (modulesMap.get(question.Module__c).IsActive__c){
+		    			if (Trigger.isInsert || Trigger.isDelete) {
+		    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
+		    			}else{
+		    				question.addError(Label.ActiveModuleQuestionNotEditable);
+		    			}
+		    		}else if (!modulesMap.get(question.Module__c).ModuleResponses__r.isEmpty()) {
+			    		if (Trigger.isInsert || Trigger.isDelete) {
+		    				question.addError(Label.ValidateQuestionActiveModulesQuestions);
+		    			} else {
+		    				Question__c oldQuestion = existingQuestions.get(question.Id);
+	    					if(oldQuestion.CorrectWeight__c != question.CorrectWeight__c || 
+		                    oldQuestion.IncorrectWeight__c != question.IncorrectWeight__c || 
+		                    oldQuestion.PenaltyPerAttempt__c != question.PenaltyPerAttempt__c) {
+		                    	question.addError(Label.QuestionReadOnlyFields);
+			                }
+		    			}
+		    		}
+		    	}
+		    }
+		}
     }
 
     // Set fields to zero if null
