@@ -322,6 +322,26 @@ global class CourseService {
 											String orderBy, 
 											String dynamicFilter) {
 		
+		
+		return getCoursesMap(fieldsCourse,fieldsCourseDependency,fieldsModule,fieldsModuleDependency,courseIds,new Set<String>{'Active'},programId,memberId,filterByDependencies,filterBySegments,quantity,offset,orderBy,dynamicFilter);
+	}
+
+	//For Courses with desired status
+	global static List<CourseWrapper> getCoursesMap(Set<String> fieldsCourse, 
+											Set<String> fieldsCourseDependency,
+											Set<String> fieldsModule,
+											Set<String> fieldsModuleDependency,
+											Set<Id> courseIds,
+											Set<String> status,
+											Id programId, 
+											Id memberId, 
+											Boolean filterByDependencies, 
+											Boolean filterBySegments, 
+											Integer quantity, 
+											Integer offset, 
+											String orderBy, 
+											String dynamicFilter) {
+		
 		Set<String> fieldsCourseClone = new Set<String>(fieldsCourse);
 		fieldsCourseClone.add('FieloELR__Segment__c');
 		fieldsCourseClone.add('FieloELR__HasDependencies__c');
@@ -330,7 +350,14 @@ global class CourseService {
 		fieldsModuleClone.add('FieloELR__HasDependencies__c');
 		fieldsModuleClone.add('FieloELR__KeyDependencies__c');
 		fieldsModuleClone.add('FieloELR__Course__c');
-		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
+		if(status == null){
+			status = new Set<String>();
+		}
+		if(status.isEmpty()){
+			status.add('Active');
+		}
+
+		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, status, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
 		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__Module__c'};
