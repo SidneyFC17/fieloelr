@@ -59,11 +59,20 @@ public  class Courses extends SObjectDomain{
                     course.Status__c = oldCourse.Status__c;
                 }
 
-                // When Active, no field can be edited
-                if((oldCourse.Status__c == 'Active' && course.Status__c == 'Active') ||
-                    (oldCourse.Status__c == 'Scheduled' && course.Status__c == 'Scheduled') ||
-                    (oldCourse.Status__c == 'Completed' && course.Status__c == 'Completed')) {
-                    addError(course, Label.ActiveCourseCannotBeEdited);
+               //get PublicSettings field that check if Edit Courses is authorized
+               FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+               Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+               //If the field is true, there is no check 
+               if(editCourseSettings == false  ){
+                    if((oldCourse.Status__c == 'Active' && course.Status__c == 'Active') ||
+                        (oldCourse.Status__c == 'Scheduled' && course.Status__c == 'Scheduled') ||
+                        (oldCourse.Status__c == 'Completed' && course.Status__c == 'Completed')) {
+                        addError(course, Label.ActiveCourseCannotBeEdited);
+                    }
+                }else if((course.FieloELR__ActiveModules__c != oldCourse.FieloELR__ActiveModules__c) ||
+                    (course.FieloELR__HasDependencies__c != oldCourse.FieloELR__HasDependencies__c) ||
+                    (course.FieloELR__KeyDependencies__c != oldCourse.FieloELR__KeyDependencies__c)){
+                    addError(course,'This field can\'t be edited');
                 }
 
                 // Date validation
