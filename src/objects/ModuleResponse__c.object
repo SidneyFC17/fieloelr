@@ -138,7 +138,7 @@
     </fields>
     <fields>
         <fullName>Key__c</fullName>
-        <externalId>false</externalId>
+        <externalId>true</externalId>
         <label>Key</label>
         <length>30</length>
         <required>false</required>

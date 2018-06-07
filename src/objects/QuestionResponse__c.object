@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -51,6 +47,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
@@ -75,7 +72,7 @@
     </fields>
     <fields>
         <fullName>Key__c</fullName>
-        <externalId>false</externalId>
+        <externalId>true</externalId>
         <label>Key</label>
         <length>30</length>
         <required>false</required>
@@ -169,4 +166,5 @@
         <errorConditionFormula>Question__r.Module__c !=  ModuleResponse__r.Module__c</errorConditionFormula>
         <errorMessage>The related question doesn&apos;t belong to this module.</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>
