@@ -20,6 +20,7 @@ global class ModuleService {
 		ModuleResponse__c moduleResponse;
 		try{
 			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+			moduleResponse.Date__c = System.today();
 			moduleResponse.NumberOfAttempt__c++;
 			uow.registerDirty(moduleResponse);
 		}catch(Exception e){
