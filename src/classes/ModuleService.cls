@@ -19,9 +19,14 @@ global class ModuleService {
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType});
 		ModuleResponse__c moduleResponse;
 		try{
-			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c, (SELECT Id FROM QuestionResponses__r) FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
 			moduleResponse.Date__c = System.today();
 			moduleResponse.NumberOfAttempt__c++;
+			moduleResponse.IsApproved__c = false;
+			moduleResponse.CorrectQuestions__c = 0;
+			moduleResponse.IncorrectQuestions__c = 0;
+			moduleResponse.TotalQuestions__c = 0;
+			uow.registerDeleted(moduleResponse.QuestionResponses__r);
 			uow.registerDirty(moduleResponse);
 		}catch(Exception e){
 			moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
