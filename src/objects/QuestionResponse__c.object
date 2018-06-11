@@ -57,7 +57,7 @@
     <fields>
         <fullName>ExternalKey__c</fullName>
         <externalId>true</externalId>
-        <label>Key</label>
+        <label>External Key</label>
         <length>255</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
