@@ -9,6 +9,7 @@ retrieveunpackaged
 retrieveunpackaged.zip2
 npm-debug.log
 destructiveChanges.xml
+sfdx-project.json
 config
 resource-bundles/
 raw/node_modules/

@@ -222,7 +222,7 @@ public class Modules extends SObjectDomain {
                 keySetDependencies = new Set<String>(module.KeyDependencies__c.split(','));
 
                 for (String key: keySetDependencies) {
-                    if (inactiveModulesIds.contains(key.substring(0,15))) {
+                    if (inactiveModulesIds.contains(key)) {
                         keySetDependencies.remove(key);
                     }
                 }
@@ -251,18 +251,18 @@ public class Modules extends SObjectDomain {
         Map<Id,Module__c> modulesMap = new Map<Id,Module__c>();
         for(ModuleDependency__c md: mds) {
             if (md.Module__r.KeyDependencies__c == null) {
-                md.Module__r.KeyDependencies__c = String.valueOf(md.Predecessor__c).substring(0, 15);
+                md.Module__r.KeyDependencies__c = String.valueOf(md.Predecessor__c);
                 md.Module__r.HasDependencies__c = true;
                 modulesMap.put(md.Module__c, md.Module__r);
             } else {
                 keySetDependencies = new Set<String>(md.Module__r.KeyDependencies__c.split(','));
 
-                if (!keySetDependencies.contains(String.valueOf(md.Predecessor__c).substring(0, 15))) {
+                if (!keySetDependencies.contains(String.valueOf(md.Predecessor__c))) {
                     if (!modulesMap.containsKey(md.Module__c)) {
                         modulesMap.put(md.Module__c, md.Module__r);
                     }
 
-                    keySetDependencies.add(String.valueOf(md.Predecessor__c).substring(0, 15));
+                    keySetDependencies.add(String.valueOf(md.Predecessor__c));
                 
                     keyDependencies = new List<String>(keySetDependencies);
                     keyDependencies.sort();

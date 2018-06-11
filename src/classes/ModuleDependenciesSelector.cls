@@ -6,7 +6,7 @@ public class ModuleDependenciesSelector extends SObjectSelector {
                 ModuleDependency__c.Name,
                 ModuleDependency__c.Module__c,
                 ModuleDependency__c.Predecessor__c,
-                ModuleDependency__c.Key__c
+                ModuleDependency__c.ExternalKey__c
             };
     }
 

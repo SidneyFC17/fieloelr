@@ -59,7 +59,7 @@ public class ExportService{
         coursefieldsSet.addAll(new Set<String>{'Segment__c','Segment__r.Name','Segment__r.RecordType.DeveloperName','Segment__r.FieloPLT__RelatedSegments__c'});
         
         Set<String> courseDependencyFieldsSet = new Set<String>(courseDependencyFieldsList);
-        courseDependencyFieldsSet.remove('FieloELR__Key__c');
+        courseDependencyFieldsSet.remove('FieloELR__ExternalKey__c');
         courseDependencyFieldsList = new List<String>(courseDependencyFieldsSet);
         courseDependencyFieldsSet.addAll(new Set<String>{'Predecessor__c','Predecessor__r.Name'});
 
@@ -81,7 +81,7 @@ public class ExportService{
             modulefieldsSet.addAll(new Set<String>{'FieloELR__Course__c','FieloELR__Course__r.Name'});
             
             Set<String> moduleDependencyFieldsSet = new Set<String>(moduleDependencyFieldsList);
-            moduleDependencyFieldsSet.remove('FieloELR__Key__c');
+            moduleDependencyFieldsSet.remove('FieloELR__ExternalKey__c');
             moduleDependencyFieldsList = new List<String>(moduleDependencyFieldsSet);
             moduleDependencyFieldsSet.addAll(new Set<String>{'Predecessor__c'});
 

@@ -29,11 +29,11 @@ public class ModuleResponses extends SObjectDomain {
                 moduleResponse.CorrectQuestions__c = 0;
                 moduleResponse.IncorrectQuestions__c = 0;
                 moduleResponse.TotalQuestions__c = 0;
-                moduleResponse.Key__c = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                moduleResponse.ExternalKey__c = String.valueOf(moduleResponse.Module__c) + String.valueOf(moduleResponse.Member__c);
                 if (moduleResponse.Date__c == null) {
                     moduleResponse.Date__c = System.today();
                 }
-                mrKeys.add(moduleResponse.Key__c);
+                mrKeys.add(moduleResponse.ExternalKey__c);
             } else {
                 if (moduleResponse.Module__c == null) {
                     moduleResponse.addError(Label.ModuleRequiredField);
@@ -49,18 +49,18 @@ public class ModuleResponses extends SObjectDomain {
             List<AggregateResult> aggResult = new ModuleResponsesSelector().selectByKeyGroupByKey(mrKeys);
             Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
             for(AggregateResult mr : aggResult){
-                maxNumbByKey.put((String)mr.get('FieloELR__Key__c'), (Decimal)mr.get('attemptNumber'));
+                maxNumbByKey.put((String)mr.get('FieloELR__ExternalKey__c'), (Decimal)mr.get('attemptNumber'));
             }
             
             for(ModuleResponse__c moduleResp : (List<ModuleResponse__c>)records){
                 if (moduleResp.Module__c != null && moduleResp.Member__c != null) {
-                    if(maxNumbByKey.containsKey(moduleResp.Key__c)){
-                        Decimal maxAttempt = maxNumbByKey.get(moduleResp.Key__c);
+                    if(maxNumbByKey.containsKey(moduleResp.ExternalKey__c)){
+                        Decimal maxAttempt = maxNumbByKey.get(moduleResp.ExternalKey__c);
                         moduleResp.NumberOfAttempt__c = ++maxAttempt;
-                        maxNumbByKey.put(moduleResp.Key__c, maxAttempt);
+                        maxNumbByKey.put(moduleResp.ExternalKey__c, maxAttempt);
                     }else{
                         moduleResp.NumberOfAttempt__c = 1;
-                        maxNumbByKey.put(moduleResp.Key__c, 1);
+                        maxNumbByKey.put(moduleResp.ExternalKey__c, 1);
                     }
                 }
             }    
@@ -105,10 +105,10 @@ public class ModuleResponses extends SObjectDomain {
                     }
                 }
 
-                String moduleResponseKey = String.valueOf(moduleResponse.Module__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                String moduleResponseKey = String.valueOf(moduleResponse.Module__c)+ String.valueOf(moduleResponse.Member__c);
                 if(!modulesProcessedIds.contains(moduleResponseKey)){
                     for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
-                        mrKeysRequired.add(String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15));
+                        mrKeysRequired.add(String.valueOf(md.Predecessor__c) + String.valueOf(moduleResponse.Member__c));
                     }
                     modulesProcessedIds.add(moduleResponseKey);
                 }
@@ -120,14 +120,14 @@ public class ModuleResponses extends SObjectDomain {
 
         //query in the database only the moduleResponses that were approved for the related members
         Set<String> approvedMRKeys = new Set<String>();
-        for(ModuleResponse__c mr : new ModuleResponsesSelector(new Set<String>{'Key__c'}).selectByKeyAndApproved(mrKeysRequired)){
-            approvedMRKeys.add(mr.Key__c);
+        for(ModuleResponse__c mr : new ModuleResponsesSelector(new Set<String>{'ExternalKey__c'}).selectByKeyAndApproved(mrKeysRequired)){
+            approvedMRKeys.add(mr.ExternalKey__c);
         }
 
         //query in the database only the courseStatus that exist for the related members
         Map<String,CourseStatus__c> existingCSMap = new Map<String,CourseStatus__c>();
-        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c'}).selectByKey(csKeysRequired)){
-            existingCSMap.put(cs.Key__c, cs);
+        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'ExternalKey__c'}).selectByKey(csKeysRequired)){
+            existingCSMap.put(cs.ExternalKey__c, cs);
         }
 
         //verifies for each module response if the related modules where approved for the member
@@ -140,17 +140,17 @@ public class ModuleResponses extends SObjectDomain {
 
                 String cskey = String.valueOf(modulesMap.get(moduleResponse.Module__c).Course__c) + String.valueOf(moduleResponse.Member__c);
 
-                if(mrKeysWithError.contains(moduleResponse.Key__c)){
+                if(mrKeysWithError.contains(moduleResponse.ExternalKey__c)){
                     moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
                     continue;
                 }
                 
                 Boolean errorDependency = false;
                 for(ModuleDependency__c md : modulesMap.get(moduleResponse.Module__c).PredecessorModules__r){
-                    String dependentKey = String.valueOf(md.Predecessor__c).subString(0,15) + String.valueOf(moduleResponse.Member__c).subString(0,15);
+                    String dependentKey = String.valueOf(md.Predecessor__c) + String.valueOf(moduleResponse.Member__c);
                     if(!approvedMRKeys.contains(dependentKey)){
                         moduleResponse.addError(Label.ValidateModuleResponseMemberApproved);
-                        mrKeysWithError.add(moduleResponse.Key__c);
+                        mrKeysWithError.add(moduleResponse.ExternalKey__c);
                         errorDependency = true;
                         break;
                     }
@@ -226,8 +226,8 @@ public class ModuleResponses extends SObjectDomain {
                 if(moduleResponse.GradePercent__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c){
                     moduleResponse.GradePercent__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c;
                 }
-                if(moduleResponse.Key__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).Key__c){
-                    moduleResponse.Key__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).Key__c;
+                if(moduleResponse.ExternalKey__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).ExternalKey__c){
+                    moduleResponse.ExternalKey__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).ExternalKey__c;
                 }
                 if(moduleResponse.CorrectQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c){
                     moduleResponse.CorrectQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c;
@@ -400,28 +400,28 @@ public class ModuleResponses extends SObjectDomain {
                 moduleResponse.IsApproved__c = moduleResponse.GradePercent__c >= modulesMap.get(moduleResponse.Module__c).ApprovalGrade__c;
 
                 if(moduleResponse.IsApproved__c){
-                    mrKeys.add(moduleResponse.Key__c);
+                    mrKeys.add(moduleResponse.ExternalKey__c);
                     approvedResponses.add(moduleResponse);
                 }
             }
         }
 
         if(!mrKeys.isEmpty()){
-            List<AggregateResult> aggResult = [SELECT MAX(NumberOfApprove__c) approveNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : mrKeys GROUP BY Key__c];
+            List<AggregateResult> aggResult = [SELECT MAX(NumberOfApprove__c) approveNumber, ExternalKey__c FROM ModuleResponse__c WHERE ExternalKey__c in : mrKeys GROUP BY ExternalKey__c];
             Map<String,Decimal> maxAppByKey = new Map<String,Decimal>();
             for(AggregateResult mr : aggResult){
-                maxAppByKey.put((String)mr.get('FieloELR__Key__c'), (Decimal)mr.get('approveNumber'));
+                maxAppByKey.put((String)mr.get('FieloELR__ExternalKey__c'), (Decimal)mr.get('approveNumber'));
             }
 
             for(ModuleResponse__c moduleResponse : approvedResponses){
                 if(!hasError(moduleResponse.Id)){
-                    if(maxAppByKey.containsKey(moduleResponse.Key__c)){
-                        Decimal maxApprove = maxAppByKey.get(moduleResponse.Key__c);
+                    if(maxAppByKey.containsKey(moduleResponse.ExternalKey__c)){
+                        Decimal maxApprove = maxAppByKey.get(moduleResponse.ExternalKey__c);
                         moduleResponse.NumberOfApprove__c = ++maxApprove;
-                        maxAppByKey.put(moduleResponse.Key__c, maxApprove);
+                        maxAppByKey.put(moduleResponse.ExternalKey__c, maxApprove);
                     }else{
                         moduleResponse.NumberOfApprove__c = 1;
-                        maxAppByKey.put(moduleResponse.Key__c, 1);
+                        maxAppByKey.put(moduleResponse.ExternalKey__c, 1);
                     }
                 }
             }
@@ -434,18 +434,18 @@ public class ModuleResponses extends SObjectDomain {
         Set<String> mrKeys = new Set<String>();
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             moduleIds.add(moduleResponse.Module__c);                
-            mrKeys.add(moduleResponse.Key__c);
+            mrKeys.add(moduleResponse.ExternalKey__c);
         }
 
         //Creates a set to know wich are the required modules to be approved for each of the related members
         Map<Id,Module__c> modulesMap = new Map<Id,Module__c>(new ModulesSelector(new Set<String>{'Id','Course__c','Course__r.SubscriptionMode__c'}).selectById(moduleIds));
 
         //look for already approved modules
-        ModuleResponsesSelector mrSelector = new ModuleResponsesSelector(new Set<String>{'Id','Key__c'});
+        ModuleResponsesSelector mrSelector = new ModuleResponsesSelector(new Set<String>{'Id','ExternalKey__c'});
         List<ModuleResponse__c> approvedModuleResponses = isUpdate ? mrSelector.selectByKeyAndApproved(mrKeys, new Map<Id,ModuleResponse__c>(records).keySet()) : mrSelector.selectByKeyAndApproved(mrKeys, null);
         Set<String> approvedMRKeys = new Set<String>();
         for(ModuleResponse__c mr : approvedModuleResponses){
-            approvedMRKeys.add(mr.Key__c);
+            approvedMRKeys.add(mr.ExternalKey__c);
         }
         
         //store course status keys
@@ -456,17 +456,17 @@ public class ModuleResponses extends SObjectDomain {
 
         //look for existing course status
         Map<String,CourseStatus__c> csMap = new Map<String,CourseStatus__c>();
-        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'Key__c','ApprovedModules__c'}).selectByKey(csKeys)){
-            csMap.put(cs.Key__c, cs);
+        for(CourseStatus__c cs : new CourseStatusSelector(new Set<String>{'ExternalKey__c','ApprovedModules__c'}).selectByKey(csKeys)){
+            csMap.put(cs.ExternalKey__c, cs);
         }
 
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{CourseStatus__c.SObjectType});
         for(ModuleResponse__c moduleResponse : (List<ModuleResponse__c>)records){
             //verifies if the module was not approved previously
-            if(approvedMRKeys.contains(moduleResponse.Key__c)){
+            if(approvedMRKeys.contains(moduleResponse.ExternalKey__c)){
                 continue;
             }else{
-                approvedMRKeys.add(moduleResponse.Key__c);
+                approvedMRKeys.add(moduleResponse.ExternalKey__c);
             }
 
             //looks for the course status where needs to update the progress
