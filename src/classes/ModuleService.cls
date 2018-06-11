@@ -16,7 +16,7 @@ global class ModuleService {
 	//Take module
 	global static ModuleWrapper takeModule(Id moduleId, Id memberId, Set<String> fieldsModule, Set<String> fieldsQuestion, Set<String> fieldsAnswerOption) {
 		
-		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType});
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType,QuestionResponse__c.SObjectType});
 		ModuleResponse__c moduleResponse;
 		try{
 			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c, (SELECT Id FROM QuestionResponses__r) FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
@@ -26,7 +26,11 @@ global class ModuleService {
 			moduleResponse.CorrectQuestions__c = 0;
 			moduleResponse.IncorrectQuestions__c = 0;
 			moduleResponse.TotalQuestions__c = 0;
-			uow.registerDeleted(moduleResponse.QuestionResponses__r);
+			List<QuestionResponse__c> questionResponsesToDelete = new List<QuestionResponse__c>();
+			for(QuestionResponse__c q : moduleResponse.QuestionResponses__r) {
+				questionResponsesToDelete.add(new QuestionResponse__c(Id=q.Id));
+			}
+			uow.registerDeleted(questionResponsesToDelete);
 			uow.registerDirty(moduleResponse);
 		}catch(Exception e){
 			moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
