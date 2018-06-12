@@ -449,7 +449,7 @@ private class TestCreateAnswerResponse {
 		try{
     		update listAnsResp.get(0);
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('An answer cannot be edited.'));
+			System.assert(d.getMessage().Contains('An answer cannot be edited'));
 		}
 	}
 
