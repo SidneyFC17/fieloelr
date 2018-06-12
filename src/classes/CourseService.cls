@@ -453,9 +453,9 @@ global class CourseService {
 		Map<Id,Set<String>> cdKeysByCourse = new Map<Id,Set<String>>();
 		for(CourseDependency__c cd : Database.query(cdQuery)){
 			if(cdKeysByCourse.containsKey(cd.Course__c)){
-				cdKeysByCourse.get(cd.Course__c).add(String.valueOf(cd.Predecessor__c).subString(0,15));
+				cdKeysByCourse.get(cd.Course__c).add(String.valueOf(cd.Predecessor__c));
 			}else{
-				cdKeysByCourse.put(cd.Course__c, new Set<String>{String.valueOf(cd.Predecessor__c).subString(0,15)});
+				cdKeysByCourse.put(cd.Course__c, new Set<String>{String.valueOf(cd.Predecessor__c)});
 			}
 		}
 
@@ -473,9 +473,9 @@ global class CourseService {
 		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
 		for(ModuleDependency__c md : Database.query(mdQuery)){
 			if(mdKeysByCourse.containsKey(md.Module__c)){
-				mdKeysByCourse.get(md.Module__c).add(String.valueOf(md.Predecessor__c).subString(0,15));
+				mdKeysByCourse.get(md.Module__c).add(String.valueOf(md.Predecessor__c));
 			}else{
-				mdKeysByCourse.put(md.Module__c, new Set<String>{String.valueOf(md.Predecessor__c).subString(0,15)});
+				mdKeysByCourse.put(md.Module__c, new Set<String>{String.valueOf(md.Predecessor__c)});
 			}
 		}
 

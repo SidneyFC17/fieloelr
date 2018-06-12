@@ -26,7 +26,7 @@ public class CourseStatusSelector extends SObjectSelector {
         return (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys ' +
+                  'WHERE ExternalKey__c IN : keys ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
@@ -38,7 +38,7 @@ public class CourseStatusSelector extends SObjectSelector {
         return (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys and Progress__c = 100' +
+                  'WHERE ExternalKey__c IN : keys and Progress__c = 100' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),

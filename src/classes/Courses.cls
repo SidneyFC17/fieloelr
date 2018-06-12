@@ -162,7 +162,7 @@ public  class Courses extends SObjectDomain{
                 keySetDependencies = new Set<String>(course.KeyDependencies__c.split(','));
 
                 for (String key: keySetDependencies) {
-                    if (inactiveCoursesIds.contains(key.substring(0,15))) {
+                    if (inactiveCoursesIds.contains(key)) {
                         keySetDependencies.remove(key);
                     }
                 }
@@ -191,18 +191,18 @@ public  class Courses extends SObjectDomain{
         Map<Id,Course__c> coursesMap = new Map<Id,Course__c>();
         for(CourseDependency__c cd: cds) {
             if (cd.Course__r.KeyDependencies__c == null) {
-                cd.Course__r.KeyDependencies__c = String.valueOf(cd.Predecessor__c).substring(0, 15);
+                cd.Course__r.KeyDependencies__c = String.valueOf(cd.Predecessor__c);
                 cd.Course__r.HasDependencies__c = true;
                 coursesMap.put(cd.Course__c, cd.Course__r);
             } else {
                 keySetDependencies = new Set<String>(cd.Course__r.KeyDependencies__c.split(','));
 
-                if (!keySetDependencies.contains(String.valueOf(cd.Predecessor__c).substring(0, 15))) {
+                if (!keySetDependencies.contains(String.valueOf(cd.Predecessor__c))) {
                     if (!coursesMap.containsKey(cd.Course__c)) {
                         coursesMap.put(cd.Course__c, cd.Course__r);
                     }
 
-                    keySetDependencies.add(String.valueOf(cd.Predecessor__c).substring(0, 15));
+                    keySetDependencies.add(String.valueOf(cd.Predecessor__c));
                 
                     keyDependencies = new List<String>(keySetDependencies);
                     keyDependencies.sort();
