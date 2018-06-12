@@ -24,27 +24,27 @@ public class QuestionResponses extends SObjectDomain {
             questionResp.IsSubmitted__c = false;
             questionResp.IsCorrect__c = false;
             if (questionResp.Question__c != null) {
-                questionResp.Key__c = String.valueOf(questionResp.Question__c).subString(0,15) + String.valueOf(questionResp.ModuleResponse__c).subString(0,15);
-                qrKeys.add(questionResp.Key__c);
+                questionResp.ExternalKey__c = String.valueOf(questionResp.Question__c) + String.valueOf(questionResp.ModuleResponse__c);
+                qrKeys.add(questionResp.ExternalKey__c);
             } else {
                 questionResp.addError(Label.QuestionFieldRequired);
             }
         }
 
-        List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM QuestionResponse__c WHERE Key__c in : qrKeys GROUP BY Key__c];
+        List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, ExternalKey__c FROM QuestionResponse__c WHERE ExternalKey__c in : qrKeys GROUP BY ExternalKey__c];
         Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
         for(AggregateResult qr : aggResult){
-            maxNumbByKey.put((String)qr.get('FieloELR__Key__c'), (Decimal)qr.get('attemptNumber'));
+            maxNumbByKey.put((String)qr.get('FieloELR__ExternalKey__c'), (Decimal)qr.get('attemptNumber'));
         }
         
         for(QuestionResponse__c questionResp : (List<QuestionResponse__c>)records){
-            if(maxNumbByKey.containsKey(questionResp.Key__c)){
-                Decimal maxAttempt = maxNumbByKey.get(questionResp.Key__c);
+            if(maxNumbByKey.containsKey(questionResp.ExternalKey__c)){
+                Decimal maxAttempt = maxNumbByKey.get(questionResp.ExternalKey__c);
                 questionResp.NumberOfAttempt__c = ++maxAttempt;
-                maxNumbByKey.put(questionResp.Key__c, maxAttempt);
+                maxNumbByKey.put(questionResp.ExternalKey__c, maxAttempt);
             }else{
                 questionResp.NumberOfAttempt__c = 1;
-                maxNumbByKey.put(questionResp.Key__c, 1);
+                maxNumbByKey.put(questionResp.ExternalKey__c, 1);
             }
         }
     }
@@ -123,8 +123,8 @@ public class QuestionResponses extends SObjectDomain {
                 if(questionResp.PartialGradeValue__c != ((QuestionResponse__c)existingRecords.get(questionResp.Id)).PartialGradeValue__c){
                     questionResp.PartialGradeValue__c = ((QuestionResponse__c)existingRecords.get(questionResp.Id)).PartialGradeValue__c;
                 }
-                if(questionResp.Key__c != ((QuestionResponse__c)existingRecords.get(questionResp.Id)).Key__c){
-                    questionResp.Key__c = ((QuestionResponse__c)existingRecords.get(questionResp.Id)).Key__c;
+                if(questionResp.ExternalKey__c != ((QuestionResponse__c)existingRecords.get(questionResp.Id)).ExternalKey__c){
+                    questionResp.ExternalKey__c = ((QuestionResponse__c)existingRecords.get(questionResp.Id)).ExternalKey__c;
                 }
             }
         }
@@ -135,18 +135,18 @@ public class QuestionResponses extends SObjectDomain {
             //Add only submitted records.
             if( questionResp.IsSubmitted__c && !((QuestionResponse__c)existingRecords.get(questionResp.Id)).IsSubmitted__c){
                 submittedRecords.add(questionResp);
-                submittedKeys.add(questionResp.Key__c);
+                submittedKeys.add(questionResp.ExternalKey__c);
             }
         }
 
         List<QuestionResponse__c> correctedQuestionResponses = new QuestionResponsesSelector().selectByKeyAndCorrect(submittedKeys);
         Set<String> existingSubmittedResponses = new Set<String>();
         for(QuestionResponse__c qr : correctedQuestionResponses){
-            existingSubmittedResponses.add(qr.Key__c);
+            existingSubmittedResponses.add(qr.ExternalKey__c);
         }
 
         for(QuestionResponse__c questionResp : submittedRecords){
-            if(existingSubmittedResponses.contains(questionResp.Key__c)){
+            if(existingSubmittedResponses.contains(questionResp.ExternalKey__c)){
                 questionResp.addError(Label.ValidateQuestionResponseSubmit);
             }
         }
@@ -276,12 +276,12 @@ public class QuestionResponses extends SObjectDomain {
                     }
                 }
 
-                if(questionResponse.IsCorrect__c && correctKeys.contains(questionResponse.Key__c)){
+                if(questionResponse.IsCorrect__c && correctKeys.contains(questionResponse.ExternalKey__c)){
                     mapErrors.put(questionResponse.Id, Label.QuestionAlreadyAnsweredCorrectly);
                     //questionResponse.addError('This question was already answered correct.');
                 }else{
                     if(questionResponse.IsCorrect__c){
-                        correctKeys.add(questionResponse.Key__c);                        
+                        correctKeys.add(questionResponse.ExternalKey__c);                        
                     }
                 
                     incorrectWeight = question.IncorrectWeight__c;

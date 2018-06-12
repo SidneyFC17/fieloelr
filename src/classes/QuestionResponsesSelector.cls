@@ -9,7 +9,7 @@ public class QuestionResponsesSelector extends SObjectSelector {
                 QuestionResponse__c.IsSubmitted__c,
                 QuestionResponse__c.NumberOfAttempt__c,
                 QuestionResponse__c.TextValue__c,
-                QuestionResponse__c.Key__c,
+                QuestionResponse__c.ExternalKey__c,
                 QuestionResponse__c.Question__c
             };
     }
@@ -47,7 +47,7 @@ public class QuestionResponsesSelector extends SObjectSelector {
         return (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys AND IsCorrect__c = true ' +
+                  'WHERE ExternalKey__c IN : keys AND IsCorrect__c = true ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),

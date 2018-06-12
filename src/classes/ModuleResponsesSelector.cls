@@ -53,7 +53,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
                     'Question__c, ' +
                     'PartialGradeValue__c, ' +
                     'TextValue__c, ' +
-                    'Key__c, ' +
+                    'ExternalKey__c, ' +
                     'Name FROM QuestionResponses__r) ' +
                   'FROM {1} ' +
                   'WHERE Id IN :moduleResponseIds ' +
@@ -68,7 +68,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
         return (List<ModuleResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys AND IsApproved__c = true ' +
+                  'WHERE ExternalKey__c IN : keys AND IsApproved__c = true ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
@@ -79,7 +79,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
     public List<ModuleResponse__c> selectByKeyAndApproved(Set<String> keys, Set<Id> moduleExcludeIds) {
         String query = 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys AND IsApproved__c = true ';
+                  'WHERE ExternalKey__c IN : keys AND IsApproved__c = true ';
         if(moduleExcludeIds != null){
             query += ' AND Id NOT in : moduleExcludeIds ';
         }
@@ -129,6 +129,6 @@ public class ModuleResponsesSelector extends SObjectSelector {
     }   
         
     public List<AggregateResult> selectByKeyGroupByKey(Set<String> keys) {
-        return [SELECT MAX(NumberOfAttempt__c) attemptNumber, Key__c FROM ModuleResponse__c WHERE Key__c in : keys GROUP BY Key__c];
+        return [SELECT MAX(NumberOfAttempt__c) attemptNumber, ExternalKey__c FROM ModuleResponse__c WHERE ExternalKey__c in : keys GROUP BY ExternalKey__c];
     }
 }

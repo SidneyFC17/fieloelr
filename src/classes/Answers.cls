@@ -53,7 +53,7 @@ public class Answers extends SObjectDomain {
     private void setKeys(List<Answer__c> records) {
     	for(Answer__c answer : records) {
 			if(answer.QuestionResponse__c != null && answer.AnswerOption__c != null) {
-				answer.Key__c = String.valueOf(answer.QuestionResponse__c).substring(0, 15) + String.valueOf(answer.AnswerOption__c).substring(0, 15);   
+				answer.ExternalKey__c = String.valueOf(answer.QuestionResponse__c) + String.valueOf(answer.AnswerOption__c);
     		}
     	}
     }
