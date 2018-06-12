@@ -32,9 +32,12 @@ public class Answers extends SObjectDomain {
 	private void validateRecords(List<Answer__c> answers) {
 	    
 		if(validateAdminFields) {
-			
 		    Set<Id> questionResponses = new Set<Id>();
 		    for(Answer__c answer : answers) {
+				if (Trigger.isUpdate) {
+					answer.addError(Label.AnswerCannotBeEdited);
+				}
+
 				questionResponses.add(answer.QuestionResponse__c);
 		    }
 		    Map<Id, QuestionResponse__c> submittedQuestionResponsesMap = new Map<Id, QuestionResponse__c>(
@@ -43,7 +46,7 @@ public class Answers extends SObjectDomain {
 		    for(Answer__c answer : answers) {
 				// If the related Question Response was already submitted, the answer response cannot be deleted or updated (Only with Admin Permissions) or create new ones.    																		    	
 		    	if(submittedQuestionResponsesMap.containsKey(answer.QuestionResponse__c)) {
-		        	answer.addError(Label.ValidateAnswerQuestionResponses);       		        	             
+		        	answer.addError(Label.ValidateAnswerQuestionResponses);
 		    	}   
 		    }
 		}
