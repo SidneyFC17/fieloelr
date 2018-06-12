@@ -3,14 +3,6 @@
     <customSettingsType>List</customSettingsType>
     <enableFeeds>false</enableFeeds>
     <fields>
-        <fullName>EnableEditingWhileActive__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Enable editing while Course is Active</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>Instance__c</fullName>
         <externalId>false</externalId>
         <label>Instance</label>
