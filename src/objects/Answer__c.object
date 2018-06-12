@@ -108,13 +108,6 @@
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
-        <fullName>AnswerCannotBeEdited</fullName>
-        <active>true</active>
-        <description>An answer cannot be edited.</description>
-        <errorConditionFormula>NOT( ISNEW() )</errorConditionFormula>
-        <errorMessage>An answer cannot be edited.</errorMessage>
-    </validationRules>
-    <validationRules>
         <fullName>ValidateAnswerLookup</fullName>
         <active>true</active>
         <errorConditionFormula>AND(NOT(ISBLANK( AnswerOption__c )),  AnswerOption__r.Question__c !=  QuestionResponse__r.Question__c )</errorConditionFormula>
