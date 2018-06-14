@@ -22,7 +22,7 @@ public class CourseStatus extends SObjectDomain {
     public override void onApplyDefaults() {
         for(CourseStatus__c cStatus : (List<CourseStatus__c>)records){
             cStatus.ApprovedModules__c = 0;
-            cStatus.Key__c = String.valueOf(cStatus.Course__c) + String.valueOf(cStatus.Member__c);
+            cStatus.ExternalKey__c = String.valueOf(cStatus.Course__c) + String.valueOf(cStatus.Member__c);
         }
     }
 
@@ -109,10 +109,10 @@ public class CourseStatus extends SObjectDomain {
         }
 
         // Query to get all the course status of the predecessors 100 per cent
-        List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,Key__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
+        List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,ExternalKey__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
         Set<String> keysPredecessorsCompleted = new Set<String>();
         for(CourseStatus__c cs : predecessorCourses){
-            keysPredecessorsCompleted.add(cs.Key__c);
+            keysPredecessorsCompleted.add(cs.ExternalKey__c);
         }
             
         //Adding errors

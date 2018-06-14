@@ -507,4 +507,12 @@
         <shortDescription>CourseStatusMustBeActive</shortDescription>
         <value>Course Status must be related to a Course with the Status Active</value>
     </labels>
+    <labels>
+        <fullName>AnswerCannotBeEdited</fullName>
+        <categories>Answers.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AnswerCannotBeEdited</shortDescription>
+        <value>An answer cannot be edited</value>
+    </labels>
 </CustomLabels>

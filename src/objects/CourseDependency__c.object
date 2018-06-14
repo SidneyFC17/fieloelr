@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -51,6 +47,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>false</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
@@ -70,10 +67,10 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Key__c</fullName>
-        <externalId>false</externalId>
-        <label>Key</label>
-        <length>30</length>
+        <fullName>ExternalKey__c</fullName>
+        <externalId>true</externalId>
+        <label>External Key</label>
+        <length>255</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -114,4 +111,5 @@
         <errorConditionFormula>Course__r.Program__c != Predecessor__r.Program__c</errorConditionFormula>
         <errorMessage>Course and Predecessor must belong to the same Program</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

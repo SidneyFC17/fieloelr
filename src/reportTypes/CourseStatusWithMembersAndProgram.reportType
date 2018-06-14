@@ -267,7 +267,7 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Key__c</field>
+            <field>ExternalKey__c</field>
             <table>FieloPLT__Program__c.FieloPLT__Members__r.CoursesStatus__r</table>
         </columns>
         <columns>
