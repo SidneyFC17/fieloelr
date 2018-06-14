@@ -277,34 +277,43 @@ public with sharing class CourseViewController extends PageSettingsController {
 
   	@RemoteAction
   	public static RemoteActionResult saveModule( SObject record, List<String> nullFields) {
+  		System.debug('passou por aqui 1');
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
-		try{
-			sp = Database.setSavepoint();
-			for ( String f :nullFields ) {
-         		record.put(f, null );
-			}
-			// TODO: Change to Create API
-        	upsert (Module__c) record;
 
-			//TODO Crear Label DataSavedSuccessfully
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
-			result.redirectURL = '/' + record.Id;
-    	}catch(DMLException e){
-    		if(sp != null){
-	            Database.rollback(sp);
-        	}
-            result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
-        }catch(Exception e){
-    		system.debug('Exception: ' + e);
-        	if(sp != null){
-	            Database.rollback(sp);
-        	}
-        	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
-    	}
-    	return result;
+		FieloPLT__PublicSettings__c ps = FieloPLT__PublicSettings__c.getInstance();
+		Boolean enableCreation = ps.FieloELR__EnableCreateWhileActive__c;
+
+		if(enableCreation == false){
+			try{
+				sp = Database.setSavepoint();
+				for ( String f :nullFields ) {
+	         		record.put(f, null );
+				}
+				// TODO: Change to Create API
+	        	upsert (Module__c) record;
+	        	System.debug('passou por aqui 2');
+				//TODO Crear Label DataSavedSuccessfully
+				result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
+				result.redirectURL = '/' + record.Id;
+				
+	    	}catch(DMLException e){
+	    		System.debug('passou por aqui 3');
+	    		if(sp != null){
+		            Database.rollback(sp);
+	        	}
+	            result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+	        }catch(Exception e){
+	        	System.debug('passou por aqui 4');
+	    		system.debug('Exception: ' + e);
+	        	if(sp != null){
+		            Database.rollback(sp);
+	        	}
+	        	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+	    	}	    	
+	  	}
+	  	return result;
   	}
-
   	@RemoteAction
   	public static RemoteActionResult saveCourseDependency( SObject record, List<String> nullFields) {
 		Savepoint sp;
