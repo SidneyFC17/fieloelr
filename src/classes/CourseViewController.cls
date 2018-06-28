@@ -280,10 +280,6 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
-
-		FieloPLT__PublicSettings__c ps = FieloPLT__PublicSettings__c.getInstance();
-		Boolean enableCreation = ps.EnableEditingWhileActive__c;
-
 		
 		try{
 			sp = Database.setSavepoint();
