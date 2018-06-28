@@ -284,32 +284,32 @@ public with sharing class CourseViewController extends PageSettingsController {
 		FieloPLT__PublicSettings__c ps = FieloPLT__PublicSettings__c.getInstance();
 		Boolean enableCreation = ps.EnableEditingWhileActive__c;
 
-		if(enableCreation == false){
-			try{
-				sp = Database.setSavepoint();
-				for ( String f :nullFields ) {
-	         		record.put(f, null );
-				}
-				// TODO: Change to Create API
-	        	upsert (Module__c) record;
+		
+		try{
+			sp = Database.setSavepoint();
+			for ( String f :nullFields ) {
+         		record.put(f, null );
+			}
+			// TODO: Change to Create API
+        	upsert (Module__c) record;
 
-				//TODO Crear Label DataSavedSuccessfully
-				result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
-				result.redirectURL = '/' + record.Id;
-				
-	    	}catch(DMLException e){
-	    		if(sp != null){
-		            Database.rollback(sp);
-	        	}
-	            result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
-	        }catch(Exception e){
-	    		system.debug('Exception: ' + e);
-	        	if(sp != null){
-		            Database.rollback(sp);
-	        	}
-	        	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
-	    	}	    	
-	  	}
+			//TODO Crear Label DataSavedSuccessfully
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
+			result.redirectURL = '/' + record.Id;
+			
+    	}catch(DMLException e){
+    		if(sp != null){
+	            Database.rollback(sp);
+        	}
+            result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+        }catch(Exception e){
+    		system.debug('Exception: ' + e);
+        	if(sp != null){
+	            Database.rollback(sp);
+        	}
+        	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+    	}	    	
+	  	
 	  	return result;
   	}
   	@RemoteAction
