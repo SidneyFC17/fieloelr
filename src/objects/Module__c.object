@@ -339,10 +339,13 @@
         <fullName>IsActiveChangedWhenCourseIsActive</fullName>
         <active>true</active>
         <description>The module &quot;IsActive&quot; field cannot be changed if the related course is active, completed or scheduled.</description>
-        <errorConditionFormula>AND( ISCHANGED( IsActive__c ) ,  OR(TEXT(Course__r.Status__c) = &apos;Active&apos;,
+        <errorConditionFormula>AND(
+				AND( 
+				ISCHANGED( IsActive__c ) ,  
+				OR(TEXT(Course__r.Status__c) = &apos;Active&apos;,
 TEXT(Course__r.Status__c) = &apos;Scheduled&apos;,
-TEXT(Course__r.Status__c) = &apos;Completed&apos;)
-)</errorConditionFormula>
+TEXT(Course__r.Status__c) = &apos;Completed&apos;)),
+ $Setup.FieloPLT__PublicSettings__c.EnableEditingWhileActive__c = false)</errorConditionFormula>
         <errorDisplayField>IsActive__c</errorDisplayField>
         <errorMessage>&quot;Active&quot; status cannot be changed if the related course is active, completed or scheduled.</errorMessage>
     </validationRules>

@@ -22,7 +22,7 @@ public class CourseStatus extends SObjectDomain {
     public override void onApplyDefaults() {
         for(CourseStatus__c cStatus : (List<CourseStatus__c>)records){
             cStatus.ApprovedModules__c = 0;
-            cStatus.ExternalKey__c = String.valueOf(cStatus.Course__c) + String.valueOf(cStatus.Member__c);
+            cStatus.Key__c = String.valueOf(cStatus.Course__c) + String.valueOf(cStatus.Member__c);
         }
     }
 
@@ -109,10 +109,10 @@ public class CourseStatus extends SObjectDomain {
         }
 
         // Query to get all the course status of the predecessors 100 per cent
-        List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,ExternalKey__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
+        List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,Key__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
         Set<String> keysPredecessorsCompleted = new Set<String>();
         for(CourseStatus__c cs : predecessorCourses){
-            keysPredecessorsCompleted.add(cs.ExternalKey__c);
+            keysPredecessorsCompleted.add(cs.Key__c);
         }
             
         //Adding errors
@@ -172,13 +172,17 @@ public class CourseStatus extends SObjectDomain {
     }
 
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
+
         Set<Id> coursesIds = new Set<Id>();
         for(CourseStatus__c record : (List<CourseStatus__c>)records){
             coursesIds.add(record.Course__c);
         }
-        Map<Id, Course__c> coursesMap = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__ActiveModules__c'}).selectById(coursesIds));
+        Map<Id, Course__c> coursesMap = new Map<Id, Course__c>(
+            new CoursesSelector(new Set<String>{'FieloELR__ActiveModules__c'}).selectById(coursesIds));
         for(CourseStatus__c record : (List<CourseStatus__c>)records){
-            if(record.ApprovedModules__c != ((CourseStatus__c)existingRecords.get(record.Id)).ApprovedModules__c && record.ApprovedModules__c == coursesMap.get(record.Course__c).FieloELR__ActiveModules__c){
+            if(record.ApprovedModules__c != ((CourseStatus__c)existingRecords.get(record.Id)).ApprovedModules__c && 
+                record.ApprovedModules__c == coursesMap.get(record.Course__c).FieloELR__ActiveModules__c){
+                record.NumberofTimesCompleted__c++;
                 record.CompletedDate__c = System.now();
                 completedCoursesIds.add(record.Id);
             }

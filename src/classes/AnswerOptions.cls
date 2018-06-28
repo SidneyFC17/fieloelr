@@ -107,13 +107,13 @@ public class AnswerOptions extends SObjectDomain {
                 }
 
                 if( !questionsMap.get(answerOption.Question__c).QuestionsResponses__r.isEmpty()){
-                    if(Trigger.isDelete || Trigger.isInsert || (Trigger.isUpdate && editCourseSettings == false)) {
+                    if(Trigger.isDelete || ((Trigger.isInsert || Trigger.isUpdate) && editCourseSettings == false)) {
                         answerOption.addError(Label.CannotChangeAnsweredModules);
                     }
                 }
 
                 if (!modulesMap.get(questionsMap.get(answerOption.Question__c).Module__c).ModuleResponses__r.isEmpty()) {
-                    if(Trigger.isDelete || Trigger.isInsert || (Trigger.isUpdate && editCourseSettings == false)) {
+                    if(Trigger.isDelete || ((Trigger.isInsert || Trigger.isUpdate) && editCourseSettings == false)) {
                         answerOption.addError(Label.CannotChangeAnsweredModules);
                     }
                 }

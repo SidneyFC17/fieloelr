@@ -69,7 +69,8 @@ public class Modules extends SObjectDomain {
                 FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
                 Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
                    //If the field is true, there is no check 
-                    if(editCourseSettings ==false ){
+                    if(editCourseSettings == false){
+                        //check if the user is trying to change the active status of the course
                         if(oldModule.IsActive__c && module.IsActive__c) {
                             addError(module, Label.ActiveModuleCannotBeEdited);
                         }
@@ -87,7 +88,7 @@ public class Modules extends SObjectDomain {
                         updatedModules.add(module);
                     }else if((module.FieloELR__HasDependencies__c != oldModule.FieloELR__HasDependencies__c) ||
                     (module.FieloELR__KeyDependencies__c != oldModule.FieloELR__KeyDependencies__c)){
-                        addError(module, 'This field can\'t be edited');
+                        addError(module, Label.ValidateModuleEditableFields);
                     }
                 }
 
@@ -167,6 +168,7 @@ public class Modules extends SObjectDomain {
     // Check the responses for a list of modules
     private void updateCourses(List<Module__c> activatedModules, List<Module__c> inactivatedModules, SObjectUnitOfWork uow) {
         
+        Set<Id> moduleIds = new Set<Id>();
         Set<Id> courseIds = new Set<Id>();
         if(activatedModules != null){
             for(Module__c module : activatedModules) {
@@ -180,6 +182,7 @@ public class Modules extends SObjectDomain {
             for(Module__c module : inactivatedModules) {
                 if(!hasError(module.Id)) {
                     courseIds.add(module.Course__c);
+                    moduleIds.add(module.Id);                    
                 }
             }
         }
