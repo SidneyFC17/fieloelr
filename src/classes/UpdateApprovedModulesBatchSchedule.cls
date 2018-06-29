@@ -1,5 +1,9 @@
-global class FixApprovedModules implements Database.Batchable<sObject> {
+global class UpdateApprovedModulesBatchSchedule implements Database.Batchable<sObject>, Schedulable  {
     
+    public void execute(SchedulableContext SC) {
+        Database.executeBatch(new UpdateApprovedModulesBatchSchedule());
+    }
+
     global Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
             'SELECT Id, FieloELR__ApprovedModules__c, '+ 
