@@ -181,7 +181,11 @@ public class CourseStatus extends SObjectDomain {
         for(CourseStatus__c record : (List<CourseStatus__c>)records){
             if(record.ApprovedModules__c != ((CourseStatus__c)existingRecords.get(record.Id)).ApprovedModules__c && record.ApprovedModules__c == coursesMap.get(record.Course__c).FieloELR__ActiveModules__c){
                 record.CompletedDate__c = System.now();
-                record.NumberofTimesCompleted__c++;
+                if (record.NumberofTimesCompleted__c == null) {
+                    record.NumberofTimesCompleted__c = 0;
+                } else {
+                    record.NumberofTimesCompleted__c++;
+                }
                 completedCoursesIds.add(record.Id);
             }
         }
