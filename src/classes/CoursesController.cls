@@ -119,4 +119,26 @@ public with sharing class CoursesController {
 		}
 		return rangeLabel;
 	} set; }
+
+	@AuraEnabled
+	public static String getConfig() {
+		try{
+            Map<String,String> lcConfig = new Map<String,String>();
+
+			String baseURL = Network.getLoginUrl(Network.getNetworkId());
+			String uselessString = baseURL.substring(baseURL.lastIndexOf('/')+1);
+			baseURL = baseURL.replace(uselessString, '');
+
+			lcConfig.put('orgId', UserInfo.getOrganizationId());
+			lcConfig.put('locale', UserInfo.getLocale());
+			lcConfig.put('profileId', UserInfo.getProfileId());
+			lcConfig.put('communityURL', baseURL);
+
+            return JSON.serialize(lcConfig);
+       } catch(DMLException e) {
+           throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e){
+             throw new AuraHandledException(e.getMessage());
+        }
+	}
 }
