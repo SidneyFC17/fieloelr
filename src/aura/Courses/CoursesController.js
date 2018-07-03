@@ -1,13 +1,21 @@
 ({
-    doInit : function(component, event, helper) {    
-
-        var title, fields, fieldset;
-        var config = component.get('v.configDefault');
-        
+    doInit : function(component, event, helper) {
         try{
-            config = JSON.parse(config);                        
-            // CHECK IF BASIC CONFIG OVERRIDES ADVANCED CONFIG
-            
+            helper.getFilterFieldSet(component);
+            helper.getCourseFieldSet(component);
+            helper.getConfiguration(component);
+            var title, fields, fieldset;
+        } catch(e) {
+            component.set('v.error', e);
+            component.set('v.showError', true);
+        }
+    },
+    getFieldSet: function(component, event, helper) {
+        try{
+            console.log('getFieldsetAction');
+            var config = component.get('v.configDefault');
+            var title, fields, fieldset;
+            config = JSON.parse(config);
             // TITLE
             var titleValue = component.get('v.titleValue').trim();
             if(titleValue.length > 0){
@@ -34,162 +42,117 @@
                 }
             }
             // TITLE
+            
             // FIELDSET
             fieldset = [], fields = [];                        
             var fieldsConfig = component.get('v.fields').trim();
+            var courseDetailFields = component.get('v.courseDetailFields').trim();
             if(fieldsConfig.length == 0){
                 fieldset = config.fieldset;                
             } else if (fieldsConfig.indexOf('[') == 0) {
                 fieldset = JSON.parse(fieldsConfig);
             } else {
-                fieldset.push({
-                  "apiName": "Name",
-                  "type": "subcomponent",
-                  "subcomponent": "FieloELR:ShowRecord",
-                  "label": {
-                    "type": "default"
-                  },
-                  "showLabel": true
-                });
                 var newField, nameAndType, apiName, type;
                 var fieldsList = fieldsConfig.split(',');
+                var detailFieldsList = courseDetailFields.split(',');
+                fieldsList.join(detailFieldsList);
+                fieldset.push({
+                    "apiName": "FieloELR__ExternalURL__c",
+                    "type": "subcomponent",
+                    "subcomponent": "c:CourseContent",
+                    "label": {
+                        "type": "default"
+                    },
+                    "showLabel": false,
+                    "config": component.get('v.compConfig')
+                });
                 fieldsList.forEach(function(field){
                     nameAndType = field.split('/');
                     apiName = nameAndType[0].trim();
-                    if(apiName != 'Name'){
-                        type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
+                    type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
+                    if (apiName.toLowerCase() != 'name' && apiName.toLowerCase() != 'fieloelr__description__c') {
                         newField = {
                             'apiName': apiName,
                             'type': type,
                             'label': {},
                             'showLabel': true
                         }
-                        fieldset.push(newField);                        
+                        fieldset.push(newField);
+                    } else if (apiName.toLowerCase() == 'fieloelr__description__c') {
+                        fieldset.push({
+                            "apiName": "FieloELR__Description__c",
+                            "type": "subcomponent",
+                            "subcomponent": "c:CourseDescription",
+                            "label": {
+                                "type": "default"
+                            },
+                            "showLabel": false
+                        });
                     }
-                })
+                });
                 fieldset.push({
-                  "apiName": "JoinCourse",
-                  "type": "subcomponent",
-                  "subcomponent": "FieloELR:JoinCourse",
-                  "label": {
-                    "type": "text",
-                    "value": "Join Course"
-                  },
-                  "showLabel": false
-                })
-            }
-            component.set('v.fieldset', fieldset);            
-            // MODULE FIELDSET
-            fieldset = [], fields = [];                        
-            var moduleFieldsConfig = component.get('v.courseDetailFields').trim();
-            if(moduleFieldsConfig.length == 0){
-                fieldset = config.fieldset;                
-            } else if (moduleFieldsConfig.indexOf('[') == 0) {
-                fieldset = JSON.parse(moduleFieldsConfig);
-            } else {                
-                var newField, nameAndType, apiName, type;
-                var fieldsList = moduleFieldsConfig.split(',');
-                fieldsList.forEach(function(field){
-                    nameAndType = field.split('/');
-                    apiName = nameAndType[0].trim();                    
-                    type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
-                    newField = {
-                        'apiName': apiName,
-                        'type': type,
-                        'label': {      
-                            "type": "default"
-                        },
-                        'showLabel': true
-                    }
-                    fieldset.push(newField);                        
-                })
-                fieldset.push({
-                    "apiName": "TakeModule",
+                    "apiName": "FieloELR__StartDate__c",
                     "type": "subcomponent",
-                    "subcomponent": "FieloELR:TakeModule",
+                    "subcomponent": "c:CourseDatesContainer",
                     "label": {
-                      "type": "text",
-                      "value": ""
+                        "type": "default"
                     },
-                    "showLabel": false
-                  })
-            }            
-            component.set('v.courseFieldset', fieldset);
-
-            // MODULE RESPONSE FIELDSET
-            fieldset = [], fields = [];                        
-            var moduleResponseFieldsConfig = component.get('v.moduleResponseFields').trim();
-            if(moduleResponseFieldsConfig.length == 0){
-                fieldset = config.Course.moduleResponse;                
-                component.set('v.moduleResponseFields', 'FieloELR__NumberOfAttempt__c');
-            } else if (moduleResponseFieldsConfig.indexOf('[') == 0) {
-                fieldset = JSON.parse(moduleResponseFieldsConfig);
-            } else {                
-                var newField, nameAndType, apiName, type;
-                var fieldsList = moduleResponseFieldsConfig.split(',');
-                fieldsList.forEach(function(field){
-                    nameAndType = field.split('/');
-                    apiName = nameAndType[0].trim();
-                    type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
-                    newField = {
-                        'apiName': apiName,
-                        'type': type,
-                        'label': {
-                            "type": "default"
-                        },
-                        'showLabel': true
-                    }
-                    fieldset.push(newField);                    
-                })
-            }            
-            component.set('v.moduleResponseFieldset', fieldset);
-
-            component.set('v.moduleContent', {
-                'type': 'FieloELR__ContentType__c',
-                'field': 'FieloELR__Content__c'
-            })
-            window.localStorage.setItem('coursesStatus', '{}');                        
+                    "showLabel": false,
+                    "config": JSON.stringify(
+                        {
+                            "daysToBeConsideredNew": component.get('v.daysToBeConsideredNew'),
+                            "daysToBeConsideredWarning": component.get('v.daysToBeConsideredWarning')
+                    	}
+                    )
+                });
+                fieldset.push({
+                    "apiName": "Id",
+                    "type": "subcomponent",
+                    "subcomponent": "c:FieldsSection",
+                    "label": {
+                        "type": "default"
+                    },
+                    "showLabel": false,
+                    "config": JSON.stringify(
+                        {
+                            'fields': component.get('v.courseDetailFields').trim(),
+                            'fieldsMeta': component.get('v.courseDetailFieldMeta')
+                        }
+                    )
+                });
+            }
+            component.set('v.fieldset', fieldset);
         } catch(e) {
-            component.set('v.error', e);
-            component.set('v.showError', true);
+            console.log(e);
         }
     },
     updateMember: function(component, event, helper){
-        var member = event.getParam('member');        
-        component.set('v.member', member);       
-        window.localStorage.setItem('member', JSON.stringify(member));         
+        try{
+            console.log('updateMember');
+            var member = event.getParam('member');
+            component.set('v.member', member);       
+            window.localStorage.setItem('member', JSON.stringify(member));
+            helper.loadCourses(component, event, helper, 0);   
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    handleFilterRecords: function(component, event, helper) {
+        var dynamicFilterString = event.getParam('dynamicFilter');
+        var sortByClause = event.getParam('sortByClause');
+        component.set('v.dynamicFilterString', dynamicFilterString);
+        component.set('v.sortByClause', sortByClause);
         helper.loadCourses(component, event, helper, 0);
     },
-    showCourse: function(component, event, helper, course){
-        helper.setCourseInfo(component, event, helper, false);
-    },
-    showCoursesList: function(component, event, helper){
-        helper.loadCourses(component, event, helper, 0);        
-    },
-    takeModule: function(component, event, helper){
-        component.set('v.showCourse', false); 
-        var moduleRecord = event.getParam('module');
-        component.set('v.moduleRecord', moduleRecord);
-        component.set('v.moduleTitle', moduleRecord.module.Name);
-        component.set('v.showModule', true); 
-    },
-    showCourseInformation: function(component, event, helper){
-        component.set('v.showModule', false); 
-        component.set('v.showModuleResponse', false); 
-        component.set('v.showCourse', true); 
-    },
-    showModuleResponse: function(component, event, helper){
-        var moduleResponse = event.getParam('moduleResponse');
-        var view = event.getParam('view');
-        var moduleName = event.getParam('name');
-        if(moduleName){
-            component.set('v.moduleTitle', moduleName);
+    handleCourseViewSelected: function(component, event, helper){
+        try{
+            event.stopPropagation();
+            var viewName = event.getParam('viewName');
+            console.log(viewName);
+            component.set('v.activeViewName', viewName);
+        } catch(e) {
+            console.log(e);
         }
-        component.set('v.viewAnswer', view);
-        component.set('v.moduleResponse', moduleResponse);
-        component.set('v.showCourse', false); 
-        component.set('v.showModule', false);
-        component.set('v.showModuleResponse', true);
     },
     reloadCourses: function(component, event, helper){
         helper.loadCourses(component, event, helper, 0);        

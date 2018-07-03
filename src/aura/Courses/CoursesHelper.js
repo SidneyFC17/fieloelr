@@ -1,123 +1,21 @@
 ({
-    loadCourses : function(component, event, helper, offset) {        
-        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
-        var quantity = component.get('v.quantity');
-        if(spinner){
-            spinner.setParam('show', true);
-            spinner.fire();    
-        }           
-        var member = component.get('v.member');        
-        var fieldset = component.get('v.fieldset');
-        fieldset = helper.getFieldset(fieldset).fieldset;
-        if(fieldset != ''){
-            fieldset += ',FieloELR__SubscriptionMode__c';
-        }
-        var modulesFieldset = component.get('v.courseFieldset');
-        modulesFieldset = helper.getFieldset(modulesFieldset).fieldset.join(',');        
-        if(modulesFieldset != '' && modulesFieldset.indexOf('FieloELR__AttemptsAllowed__c') == -1){
-            modulesFieldset += ',FieloELR__AttemptsAllowed__c';
-        }
-        if(member){            
-            var action = component.get('c.getCourses');
+    getFilterFieldSet: function(component) {
+        try{
+            console.log('getFilterFieldSet');
+            var action = component.get('c.getFilterFieldset');
             action.setParams({
-                'member': member,
-                'coursesFieldset': fieldset,
-                'modulesFieldset': modulesFieldset,
-                'quantity': quantity + 1,
-                'offset': offset
-            })
-            // Add callback behavior for when response is received
+                'objectName': 'FieloELR__Course__c',
+                'fieldNames': component.get('v.courseFilterFields'),
+                'rangedFields': component.get('v.courseRangedFilterFields'),
+                'useStandardStatusList': false
+            });
             action.setCallback(this, function(response) {
-                var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+                var spinner = $A.get("e.c:ToggleSpinnerEvent");
                 var toastEvent = $A.get("e.force:showToast");
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
-                    var member = component.get('v.member');
-                    var memberId = member.Id;                                     
-                    var coursesList = [];
-                    var coursesWrapper = JSON.parse(response.getReturnValue());
-                    var courseDependencies = {};                    
-                    var coursesCompleted = {};
-                    var moduleDependencies = {};                    
-                    var modulesCompleted = {};
-                    coursesWrapper.forEach(function(course){
-                        var newCourse = course.course;
-                        newCourse.courseStatus = course.courseStatus ;
-                        var courseId = newCourse.Id;                                     
-                        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));                                                                        
-                        if(!courseCache[memberId]){
-                            courseCache[memberId] = {};    
-                        }                        
-                        var showJoinBtn;                          
-                        if (courseCache[memberId][courseId]) {                            
-                            showJoinBtn = courseCache[memberId][courseId];                            
-                        } else {                            
-                            showJoinBtn = !newCourse.courseStatus && newCourse.FieloELR__SubscriptionMode__c == 'Manual';
-                            courseCache[memberId][courseId] = showJoinBtn;
-                            window.localStorage.setItem('coursesStatus', JSON.stringify(courseCache));                            
-                        }                                                
-                        newCourse.modules = course.modules;
-                        newCourse.modules.forEach(function(module){
-                            var courseModule = module.module;
-                            if(courseModule.FieloELR__HasDependencies__c){
-                                moduleDependencies[courseModule.Id] = {disabled: true, dependencies: []};
-                                var dependencies = courseModule.FieloELR__KeyDependencies__c.split(',');
-                                dependencies.forEach(function(dep){
-                                    moduleDependencies[courseModule.Id].dependencies.push(dep.substr(0,15));
-                                })
-                            }                            
-                            if(module.isApproved){                                
-                                modulesCompleted[courseModule.Id.substr(0,15)] = true;
-                            } else {
-                                modulesCompleted[courseModule.Id.substr(0,15)] = false;
-                            }                                                        
-                            
-                        })                             
-                        coursesList.push(newCourse);
-                        if(newCourse.FieloELR__HasDependencies__c){
-                            courseDependencies[newCourse.Id] = {disabled: true, dependencies: []};
-                            var dependencies = newCourse.FieloELR__KeyDependencies__c.split(',');
-                            dependencies.forEach(function(dep){
-                                courseDependencies[newCourse.Id].dependencies.push(dep.substr(0,15));
-                            })
-                        }
-                        if(newCourse.courseStatus && newCourse.courseStatus.FieloELR__Progress__c == 100){
-                            
-                            coursesCompleted[newCourse.Id.substr(0,15)] = true;
-                        } else {
-                            coursesCompleted[newCourse.Id.substr(0,15)] = false;
-                        }
-                    });
-                    for(var id in courseDependencies){
-                        var res = true;
-                        courseDependencies[id].dependencies.forEach(function(dep){
-                            res = res && coursesCompleted[dep];
-                        })
-                        courseDependencies[id].disabled = !res;
-                    }
-                    for(var id in moduleDependencies){
-                        var res = true;
-                        moduleDependencies[id].dependencies.forEach(function(dep){
-                            res = res && modulesCompleted[dep];
-                        })
-                        moduleDependencies[id].disabled = !res;
-                    }
-                    coursesList.forEach(function(course){
-                        if(courseDependencies[course.Id]){
-                            course.disabled = courseDependencies[course.Id].disabled;
-                        }
-                        course.modules.forEach(function(module){
-                            var courseModule = module.module;
-                            if(moduleDependencies[courseModule.Id]){
-                                courseModule.disabled = moduleDependencies[courseModule.Id].disabled;                                
-                            }
-                        })
-                    })
-                    component.set('v.coursesList', coursesList);                    
-                    component.set('v.showCourse', false);
-                    component.set('v.showModule', false);                                        
-                    component.set('v.showModuleResponse', false);
-                    component.set('v.showCoursesList', true);                     
+                    var objectInfo = JSON.parse(response.getReturnValue());
+                    component.set('v.filterFieldSet',objectInfo.fields);
                 }else {
                     var errorMsg = response.getError()[0].message;
                     toastEvent.setParams({
@@ -132,9 +30,133 @@
                     }           
                     
                 }
-            });      
-            // Send action off to be executed
-            $A.enqueueAction(action);   
+            });
+            $A.enqueueAction(action);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    getCourseFieldSet: function(component) {
+        try{
+            console.log('getFilterFieldSet');
+            var action = component.get('c.getCourseFieldsData');
+            action.setParams({
+                'objectName': 'FieloELR__Course__c',
+                'fieldNames': component.get('v.courseDetailFields')
+            });
+            action.setCallback(this, function(response) {
+                var spinner = $A.get("e.c:ToggleSpinnerEvent");
+                var toastEvent = $A.get("e.force:showToast");
+                var state = response.getState();                
+                if (component.isValid() && state === 'SUCCESS') {                    
+                    var objectInfo = JSON.parse(response.getReturnValue());
+                    console.log(objectInfo.fields);
+                    component.set('v.courseDetailFieldMeta',objectInfo.fields);
+                    
+                    var getFieldsetAction = component.get('c.getFieldSet');
+                    $A.enqueueAction(getFieldsetAction);
+                }else {
+                    var errorMsg = response.getError()[0].message;
+                    toastEvent.setParams({
+                        "title": errorMsg,
+                        "message": " ",
+                        "type": "error"
+                    });
+                    toastEvent.fire(); 
+                    if(spinner){
+                        spinner.setParam('show', false);
+                        spinner.fire();    
+                    }           
+                    
+                }
+            });
+            $A.enqueueAction(action);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    loadCourses : function(component, event, helper, offset) {
+        try{
+            var spinner = $A.get("e.c:ToggleSpinnerEvent");
+            var quantity = component.get('v.quantity');
+            if(spinner){
+                spinner.setParam('show', true);
+                spinner.fire();    
+            }           
+            var member = component.get('v.member');
+            var fieldset = component.get('v.fieldset');
+            fieldset = helper.getFieldset(fieldset).fieldset;
+            if(fieldset != ''){
+                fieldset += ',FieloELR__SubscriptionMode__c,FieloELR__Status__c';
+            }
+            if(fieldset.toLowerCase().indexOf('fieloelr__image__c') == -1) {
+                fieldset += ',FieloELR__Image__c'
+            }
+            if(fieldset.toLowerCase().indexOf('fieloelr__externalurl__c') == -1) {
+                fieldset += ',FieloELR__ExternalURL__c'
+            }
+            if(fieldset.toLowerCase().indexOf('fieloelr__description__c') == -1) {
+                fieldset += ',FieloELR__Description__c'
+            }
+            if(fieldset.toLowerCase().indexOf('fieloelr__startdate__c') == -1) {
+                fieldset += ',FieloELR__StartDate__c'
+            }
+            if(fieldset.toLowerCase().indexOf('fieloelr__enddate__c') == -1) {
+                fieldset += ',FieloELR__EndDate__c'
+            }
+            var modulesFieldset = component.get('v.courseFieldset');
+            modulesFieldset = helper.getFieldset(modulesFieldset).fieldset.join(',');        
+            if(modulesFieldset != '' && modulesFieldset.indexOf('FieloELR__AttemptsAllowed__c') == -1){
+                modulesFieldset += ',FieloELR__AttemptsAllowed__c';
+            }
+            var dynamicFilterString = component.get('v.dynamicFilterString');
+            console.log(dynamicFilterString);
+            var sortByClause = component.get('v.sortByClause');
+            if(member){            
+                var action = component.get('c.getCourses');
+                var params = {
+                    'member': member,
+                    'coursesFieldset': fieldset,
+                    'modulesFieldset': modulesFieldset,
+                    'quantity': quantity + 1,
+                    'offset': offset,
+                    'sortByClause': sortByClause,
+                    'dynamicFilter': dynamicFilterString
+                };
+                action.setParams(params);
+                // Add callback behavior for when response is received
+                action.setCallback(this, function(response) {
+                    var spinner = $A.get("e.c:ToggleSpinnerEvent");
+                    var toastEvent = $A.get("e.force:showToast");
+                    var state = response.getState();                
+                    if (component.isValid() && state === 'SUCCESS') {                    
+                        var member = component.get('v.member');
+                        var memberId = member.Id;                                     
+                        var coursesList = JSON.parse(response.getReturnValue());
+                        component.set('v.coursesList', coursesList);
+                        component.set('v.showCourse', false);
+                        component.set('v.showModule', false);
+                        component.set('v.showModuleResponse', false);
+                        component.set('v.showCoursesList', true);
+                    } else {
+                        var errorMsg = response.getError()[0].message;
+                        toastEvent.setParams({
+                            "title": errorMsg,
+                            "message": " ",
+                            "type": "error"
+                        });
+                        toastEvent.fire(); 
+                        if(spinner){
+                            spinner.setParam('show', false);
+                            spinner.fire();    
+                        }
+                    }
+                });      
+                // Send action off to be executed
+                $A.enqueueAction(action);   
+            }            
+        } catch(e) {
+            console.log(e);
         }
     },
     updateCoursesCache: function(component, event, helper){        
@@ -190,5 +212,39 @@
         component.set('v.showCourse', true);
         component.set('v.showCoursesList', false);        
         window.localStorage.setItem('actualCourse', JSON.stringify(courseRecord));
+    },
+    getConfiguration: function(component) {
+        try{
+            console.log('getConfig');
+            var action = component.get('c.getConfig');
+            action.setCallback(this, function(response) {
+                var spinner = $A.get("e.c:ToggleSpinnerEvent");
+                var toastEvent = $A.get("e.force:showToast");
+                var state = response.getState();                
+                if (component.isValid() && state === 'SUCCESS') {                    
+                    var config = response.getReturnValue();
+                    console.log(JSON.parse(config));
+                    component.set('v.compConfig',config);
+                    
+                    this.getCourseFieldSet(component);
+                }else {
+                    var errorMsg = response.getError()[0].message;
+                    toastEvent.setParams({
+                        "title": errorMsg,
+                        "message": " ",
+                        "type": "error"
+                    });
+                    toastEvent.fire(); 
+                    if(spinner){
+                        spinner.setParam('show', false);
+                        spinner.fire();    
+                    }           
+                    
+                }
+            });
+            $A.enqueueAction(action);
+        } catch(e) {
+            console.log(e);
+        }
     }
 })

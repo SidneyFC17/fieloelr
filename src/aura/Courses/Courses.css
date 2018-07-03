@@ -1,2 +1,72 @@
-.THIS {
+.THIS.fielo-courses-list{
+    color: #54698D;
+    max-width: 753px;
+}
+
+.THIS .fielo-course-tab-selector{
+    background-color: #E6EEF1;
+}
+
+
+.THIS .fielo-course-tab-selector .slds-grid .slds-tabs_default{
+    display: inline-flex;
+    width: max-content;
+    background-color: #E6EEF1;
+}
+
+.THIS .fielo-course-tab-selector .slds-grid .slds-tabs_default__nav{
+    display: inline-flex;
+    background-color: #E6EEF1;
+}
+
+
+.THIS .slds-tabs_default__item.slds-is-active::after{
+    background-color: #0070D2;
+}
+
+.THIS .slds-tabs_default__item::after{
+    background-color: #E6EEF1;
+}
+
+.THIS .slds-tabs_default__item {
+	text-transform: none !important;
+    color: #54698D;
+    font: Salesforce Sans;
+}
+
+.THIS .slds-card .slds-card__header h2{
+	text-align: center;
+    font-weight: bold;
+}
+
+.THIS .FieloELRListView .grid {
+    width: 360px;
+}
+
+.THIS .FieloELRListView .grid-item {
+    height: 605px;
+}
+
+.THIS .FieloELRListView .slds-card__header {
+    padding-bottom: 35px;
+    padding-top: 35px;
+    border-bottom: none;
+}
+
+.THIS .FieloELRListView .slds-text-heading_small {
+    font-size: 18px;
+}
+
+.THIS .FieloELRListView .grid .slds-grid div:first-child .subcomponent {
+    padding: 0px;   
+}
+
+.THIS .slds-card__body {
+    height: 420px;
+	width: 100%
+}
+
+.THIS .slds-card__footer {
+    height: 92.5px;
+	width: 100%
 }
