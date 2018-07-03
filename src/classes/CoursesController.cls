@@ -75,7 +75,7 @@ public with sharing class CoursesController {
     public static String getCourses(FieloPLT__Member__c member, List<String> coursesFieldset, List<String> modulesFieldset, Integer quantity, Integer offset, String status, String sortByClause, String dynamicFilter){
         try{
             Set<String> fieldsCourse = new Set<String>(coursesFieldset); 
-            Set<String> fieldsModule = new Set<String>(modulesFieldset); 
+            Set<String> fieldsModule = new Set<String>(modulesFieldset);
             Set<String> fieldsCourseStatus = new Set<String>{'Name'};
             Set<String> fieldsModuleResponse = new Set<String>{'Name'};
             Set<String> statusList = new Set<String>();
@@ -85,6 +85,8 @@ public with sharing class CoursesController {
 				statusList.add('Completed');
             }
             Id memberId = member.Id;
+
+			fieldsModule.add('FieloELR__Order__c');
 
 			Set<String> courseFieldsToQuery = new Set<String>();
 			for(String fieldName:fieldsCourse) {
@@ -112,13 +114,12 @@ public with sharing class CoursesController {
 											offset,
 											sortByClause != null && sortByClause != '' ? 'LastModifiedDate DESC' : sortByClause,
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
-			System.debug(courses);
             return JSON.serialize(courses);
        } catch(DMLException e) {
            throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
              throw new AuraHandledException(e.getMessage());
-        }  
+        }
     }
 
     public static Map<String, String> rangeLabel {get{
@@ -166,5 +167,60 @@ public with sharing class CoursesController {
             throw new AuraHandledException(e.getMessage());
         }
         return null;
+	}
+
+	@AuraEnabled
+	public static String getCourseByCourseStatus(FieloPLT__Member__c member, List<String> coursesFieldset, List<String> modulesFieldset, Integer quantity, Integer offset, String status, String sortByClause, String dynamicFilter) {
+		try{
+            CourseStatusSelector selector = new CourseStatusSelector(new Set<String>{'Id','FieloELR__Course__c'});
+			selector.setLimit(quantity);
+			selector.setOffset(offset);
+			List<CourseStatus__c> courseStatusList = selector.selectByMemberId(new Set<Id>{member.Id});
+			Set<Id> courseIds = new Set<Id>();
+
+			for(CourseStatus__c cs: courseStatusList) {
+				courseIds.add(cs.Course__c);
+			}
+
+			Set<String> fieldsCourse = new Set<String>(coursesFieldset); 
+            Set<String> fieldsModule = new Set<String>(modulesFieldset);
+            Set<String> fieldsCourseStatus = new Set<String>{'Name'};
+            Set<String> fieldsModuleResponse = new Set<String>{'Name'};
+			
+			fieldsModule.add('FieloELR__Order__c');
+
+			Set<String> courseFieldsToQuery = new Set<String>();
+			for(String fieldName:fieldsCourse) {
+				if (fieldName == 'FieloELR__Transactions__r') {
+                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+                } else if (fieldName == 'FieloELR__Trackers__r') {
+                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+                } else {
+					courseFieldsToQuery.add(fieldName);
+				}
+			}
+            
+            List<FieloELR__Course__c> courses = CourseService.getCourses(
+                                            courseFieldsToQuery, 
+											new Set<String>{'Id','Name'},
+											fieldsModule,
+											courseIds,
+											null,
+											member.FieloPLT__Program__c,
+                                            member.Id,
+											false,
+											false,
+											false,
+											quantity,
+											offset,
+											sortByClause != null && sortByClause != '' ? 'LastModifiedDate DESC' : sortByClause,
+											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+
+            return JSON.serialize(courses);
+       } catch(DMLException e) {
+           throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e){
+             throw new AuraHandledException(e.getMessage());
+        }
 	}
 }

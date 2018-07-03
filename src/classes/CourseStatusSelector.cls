@@ -34,11 +34,23 @@ public class CourseStatusSelector extends SObjectSelector {
                     getOrderBy() } ));
     }
 
-        public List<CourseStatus__c> selectByKeyCompleted(Set<String> keys) {
+    public List<CourseStatus__c> selectByKeyCompleted(Set<String> keys) {
         return (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE ExternalKey__c IN : keys and Progress__c = 100' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
+    }
+
+    public List<CourseStatus__c> selectByMemberId(Set<Id> memberIds) {
+        return (List<CourseStatus__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE FieloELR__Member__c IN : memberIds ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
