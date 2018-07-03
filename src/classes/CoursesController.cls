@@ -81,11 +81,24 @@ public with sharing class CoursesController {
             Set<String> statusList = new Set<String>();
             if ( status == '' || status == null) {
                 statusList.add('Active');
+				statusList.add('Scheduled');
+				statusList.add('Completed');
             }
             Id memberId = member.Id;
+
+			Set<String> courseFieldsToQuery = new Set<String>();
+			for(String fieldName:fieldsCourse) {
+				if (fieldName == 'FieloELR__Transactions__r') {
+                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+                } else if (fieldName == 'FieloELR__Trackers__r') {
+                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+                } else {
+					courseFieldsToQuery.add(fieldName);
+				}
+			}
             
             List<FieloELR__Course__c> courses = CourseService.getCourses(
-                                            fieldsCourse, 
+                                            courseFieldsToQuery, 
 											new Set<String>{'Id','Name'},
 											fieldsModule,
 											null,
@@ -99,6 +112,7 @@ public with sharing class CoursesController {
 											offset,
 											sortByClause != null && sortByClause != '' ? 'LastModifiedDate DESC' : sortByClause,
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+			System.debug(courses);
             return JSON.serialize(courses);
        } catch(DMLException e) {
            throw new AuraHandledException(e.getDMLMessage(0));
@@ -140,5 +154,17 @@ public with sharing class CoursesController {
         } catch(Exception e){
              throw new AuraHandledException(e.getMessage());
         }
+	}
+
+	@AuraEnabled
+	public static String getCourseFieldsData(String objectName, String fieldNames) {
+		try{
+            return AuraService.getFieldData(objectName,fieldNames);
+        } catch (DmlException e) {
+            throw new AuraHandledException(e.getDmlMessage(0));
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+        return null;
 	}
 }
