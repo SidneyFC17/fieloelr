@@ -55,7 +55,12 @@ public class Modules extends SObjectDomain {
             Set<Id> courseIds = new Set<Id>();
 
             for(Module__c module : (List<Module__c>)records) {
-                courseIds.add(module.Course__c);
+                if (module.Course__c == null) {
+                    module.addError(Label.CourseIsRequired);
+                    return;
+                } else {
+                    courseIds.add(module.Course__c);
+                }
             }
 
             Map<Id, Course__c> courses = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__Status__c'}).selectById(courseIds));
