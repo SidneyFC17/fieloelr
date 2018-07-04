@@ -356,24 +356,6 @@ TEXT(Course__r.Status__c) = &apos;Completed&apos;)),
         <errorMessage>Module Name cannot be blank</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>NoActiveCourseOnCreation</fullName>
-        <active>true</active>
-        <description>A Module cannot be created with a relation to an active Course, and the Course cannot be modified afterwards.</description>
-        <errorConditionFormula>AND( 
-      ISNEW() ,
-      OR(
-        ISPICKVAL(Course__r.Status__c , 
-         &apos;Active&apos;),
-        ISPICKVAL(Course__r.Status__c , 
-         &apos;Scheduled&apos;),
-        ISPICKVAL(Course__r.Status__c , 
-         &apos;Completed&apos;)
-      )
-   )</errorConditionFormula>
-        <errorDisplayField>Course__c</errorDisplayField>
-        <errorMessage>On module creation, course cannot be active, completed or scheduled</errorMessage>
-    </validationRules>
-    <validationRules>
         <fullName>NoQuestionPoolIfWeightedQuestions</fullName>
         <active>true</active>
         <description>The Module cannot have a value for Question Pool and use Weighted Questions.</description>

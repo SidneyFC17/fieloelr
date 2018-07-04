@@ -515,4 +515,20 @@
         <shortDescription>AnswerCannotBeEdited</shortDescription>
         <value>An answer cannot be edited</value>
     </labels>
+    <labels>
+        <fullName>OnModuleCreationError</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>OnModuleCreationError</shortDescription>
+        <value>On module creation, course cannot be active, completed or scheduled</value>
+    </labels>
+    <labels>
+        <fullName>CourseIsRequired</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CourseIsRequired</shortDescription>
+        <value>The course is mandatory</value>
+    </labels>
 </CustomLabels>
