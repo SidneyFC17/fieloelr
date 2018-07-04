@@ -50,6 +50,32 @@ public class Modules extends SObjectDomain {
         }
     }    
 
+    public override void onValidate() {
+        if(validateAdminFields){
+            Set<Id> courseIds = new Set<Id>();
+
+            for(Module__c module : (List<Module__c>)records) {
+                courseIds.add(module.Course__c);
+            }
+
+            Map<Id, Course__c> courses = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__Status__c'}).selectById(courseIds));
+
+            FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+            Boolean editCourseSettings = false;
+            if (courseSettings != null) {
+                editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+            }
+            
+            String courseStatus;
+            for(Module__c module : (List<Module__c>)records) {
+                courseStatus = courses.get(module.Course__c).Status__c;
+                if ((courseStatus == 'Active' || courseStatus == 'Scheduled' || courseStatus == 'Completed') && editCourseSettings) {
+                    addError(module, Label.OnModuleCreationError);
+                }
+            }
+        }
+    }
+
     public override void onValidate(Map<Id,SObject> existingRecords) {
         if(validateAdminFields){
             if (!isDelete) {
@@ -66,8 +92,8 @@ public class Modules extends SObjectDomain {
                         activatedModules.add(module);
                     }
                    //get PublicSettings field that check if Edit Courses is authorized
-                FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
-                Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+                    FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+                    Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
                    //If the field is true, there is no check 
                     if(editCourseSettings == false){
                         //check if the user is trying to change the active status of the course
