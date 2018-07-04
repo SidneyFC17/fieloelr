@@ -248,7 +248,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
 		}
@@ -267,7 +267,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
+			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
 		}
