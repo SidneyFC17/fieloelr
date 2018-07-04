@@ -57,7 +57,7 @@
                 var detailFieldsList = courseDetailFields.split(',');
                 fieldsList.join(detailFieldsList);
                 fieldset.push({
-                    "apiName": "FieloELR__ExternalURL__c",
+                    "apiName": "Id",
                     "type": "subcomponent",
                     "subcomponent": "c:CourseContent",
                     "label": {
@@ -102,7 +102,7 @@
                         {
                             "daysToBeConsideredNew": component.get('v.daysToBeConsideredNew'),
                             "daysToBeConsideredWarning": component.get('v.daysToBeConsideredWarning')
-                    	}
+                        }
                     )
                 });
                 fieldset.push({
@@ -116,7 +116,8 @@
                     "config": JSON.stringify(
                         {
                             'fields': component.get('v.courseDetailFields').trim(),
-                            'fieldsMeta': component.get('v.courseDetailFieldMeta')
+                            'fieldsMeta': component.get('v.courseDetailFieldMeta'),
+                            'activeViewName': component.get('v.activeViewName')
                         }
                     )
                 });
@@ -132,17 +133,23 @@
             var member = event.getParam('member');
             component.set('v.member', member);       
             window.localStorage.setItem('member', JSON.stringify(member));
-            helper.loadCourses(component, event, helper, 0);   
+            helper.updateButtons(component);
+            helper.loadCourses(component, event, helper, 0);
         } catch(e) {
             console.log(e);
         }
     },
     handleFilterRecords: function(component, event, helper) {
-        var dynamicFilterString = event.getParam('dynamicFilter');
-        var sortByClause = event.getParam('sortByClause');
-        component.set('v.dynamicFilterString', dynamicFilterString);
-        component.set('v.sortByClause', sortByClause);
-        helper.loadCourses(component, event, helper, 0);
+        try{
+            var dynamicFilterString = event.getParam('dynamicFilter');
+            var sortByClause = event.getParam('sortByClause');
+            console.log(JSON.stringify(event.getParams(), null, 2));
+            component.set('v.dynamicFilterString', dynamicFilterString);
+            component.set('v.sortByClause', sortByClause);
+            helper.loadCourses(component, event, helper, 0);   
+        } catch(e) {
+            console.log(e);
+        }
     },
     handleCourseViewSelected: function(component, event, helper){
         try{
@@ -150,6 +157,15 @@
             var viewName = event.getParam('viewName');
             console.log(viewName);
             component.set('v.activeViewName', viewName);
+            $A.enqueueAction(component.get('c.getFieldSet'));
+            $A.enqueueAction(component.get('c.loadCourses'));
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    loadCourses: function(component, event, helper) {
+        try{
+            helper.loadCourses(component, event, helper, 0);
         } catch(e) {
             console.log(e);
         }

@@ -86,6 +86,7 @@
             var member = component.get('v.member');
             var fieldset = component.get('v.fieldset');
             fieldset = helper.getFieldset(fieldset).fieldset;
+            
             if(fieldset != ''){
                 fieldset += ',FieloELR__SubscriptionMode__c,FieloELR__Status__c';
             }
@@ -104,6 +105,7 @@
             if(fieldset.toLowerCase().indexOf('fieloelr__enddate__c') == -1) {
                 fieldset += ',FieloELR__EndDate__c'
             }
+            
             var modulesFieldset = component.get('v.courseFieldset');
             modulesFieldset = helper.getFieldset(modulesFieldset).fieldset.join(',');        
             if(modulesFieldset != '' && modulesFieldset.indexOf('FieloELR__AttemptsAllowed__c') == -1){
@@ -112,8 +114,17 @@
             var dynamicFilterString = component.get('v.dynamicFilterString');
             console.log(dynamicFilterString);
             var sortByClause = component.get('v.sortByClause');
+            console.log(sortByClause);
             if(member){            
-                var action = component.get('c.getCourses');
+                var action;
+                var activeViewName = component.get('v.activeViewName');
+                
+                if (activeViewName == 'availableCourses') {
+                    action = component.get('c.getCourses');
+                } else {
+                    action = component.get('c.getCourseByCourseStatus');
+                }
+                
                 var params = {
                     'member': member,
                     'coursesFieldset': fieldset,
@@ -246,5 +257,40 @@
         } catch(e) {
             console.log(e);
         }
+    },
+    updateButtons: function(component) {
+        var buttons = [];
+        buttons.push(
+            {
+                "type": "subcomponent",
+                "subcomponent": "c:ViewCourse",
+                "apiName": "Id",
+                "label": {},
+                "showLabel": true,
+                "config": {
+                    "type": "btn",
+                    "variant": "neutral",
+                    "label": $A.get('$Label.c.ViewCourse')
+                }
+            }
+        );
+        buttons.push(
+            {
+                "type": "subcomponent",
+                "subcomponent": "c:CourseAction",
+                "apiName": "Id",
+                "label": {},
+                "showLabel": true,
+                "config": {
+                    "label_viewModule": $A.get('$Label.c.ViewModule'),
+                    "label_joinCourse": $A.get('$Label.c.JoinCourse'),
+                    "activeViewName": component.get('v.activeViewName'),
+                    "variant": "brand",
+                    "memberId": component.get('v.member').Id
+                }
+            }
+        );
+        console.log(buttons);
+        component.set('v.buttons', buttons);
     }
 })

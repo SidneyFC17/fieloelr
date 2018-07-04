@@ -1,0 +1,9 @@
+.THIS {
+    padding: 10px;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.THIS.fielo-course-content {
+    min-height: 104px;
+}

@@ -29,13 +29,13 @@
 }
 
 .THIS .slds-tabs_default__item {
-	text-transform: none !important;
+    text-transform: none !important;
     color: #54698D;
     font: Salesforce Sans;
 }
 
 .THIS .slds-card .slds-card__header h2{
-	text-align: center;
+    text-align: center;
     font-weight: bold;
 }
 
@@ -47,10 +47,48 @@
     height: 605px;
 }
 
-.THIS .FieloELRListView .slds-card__header {
+.THIS .FieloELRListView .grid .slds-card__header {
     padding-bottom: 35px;
     padding-top: 35px;
     border-bottom: none;
+}
+
+.THIS .FieloELRListView .table .slds-card__header {
+    padding-bottom: 35px;
+    padding-top: 35px;
+}
+
+.THIS .FieloELRListView .table div[data-field-name="FieloELR__Description__c"] {
+    position: absolute;
+    top: 94px;
+    left: 358.2px;
+}
+
+.THIS .FieloELRListView .table div[data-field-name="FieloELR__StartDate__c"] {
+    position: absolute;
+    top: 198px;
+    left: 358.2px;
+}
+
+.THIS .FieloELRListView .table .slds-card__header h2 {
+    text-align: left;
+}
+
+
+.THIS .FieloELRListView .slds-grid .slds-p-around_small {
+    padding: 0px;
+}
+
+.THIS .FieloELRListView .table div[data-field-name="FieloELR__Description__c"] {
+    width: 50%;
+}
+
+.THIS .FieloELRListView .table div[data-field-name="FieloELR__StartDate__c"] {
+    width: 50%;
+}
+
+.THIS .FieloELRListView .table .FieloELRFieldsSection {
+    padding-top: 0px;
 }
 
 .THIS .FieloELRListView .slds-text-heading_small {
@@ -61,12 +99,21 @@
     padding: 0px;   
 }
 
-.THIS .slds-card__body {
+.THIS .grid .slds-card__body {
     height: 420px;
-	width: 100%
+    width: 100%
+}
+
+.THIS .table .slds-card__body {
+    height: 251;
+    width: 100%
 }
 
 .THIS .slds-card__footer {
-    height: 92.5px;
-	width: 100%
+    max-height: 92.5px;
+    width: 100%;
+}
+
+.THIS .slds-card__body .fielo-layout__item {
+    width: 100%;
 }

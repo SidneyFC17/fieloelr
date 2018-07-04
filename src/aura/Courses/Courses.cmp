@@ -25,6 +25,7 @@
     <aura:attribute type="sObject[]" name="filterFieldSet" />
     <aura:attribute type="sObject[]" name="courseDetailFieldMeta" />
     <aura:attribute type="sObject[]" name="fieldset" />
+    <aura:attribute type="sObject[]" name="buttons" />
     <aura:attribute type="Object" name="compConfig" />
     
     <!-- MODULE RESPONSE -->
@@ -48,7 +49,7 @@
     <aura:handler name="courseViewSelected" event="c:CourseViewSelected" action="{!c.handleCourseViewSelected}"/>
     <aura:handler name="filterRecords" event="c:FilterRecords" action="{!c.handleFilterRecords}"/>
     
-    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     
     <!-- PAGINADOR -->
     <aura:attribute name="paging" type="Boolean" access="global"  />
@@ -101,7 +102,8 @@
                         columns="{!v.columns}"
                         layout="grid"
                         fieldset="{!v.fieldset}"
-                        title="&nbsp;"/>
+                        title="&nbsp;"
+                        buttons="{!v.buttons}"/>
             
         </aura:if>
     </div>
