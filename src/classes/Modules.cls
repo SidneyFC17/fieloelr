@@ -70,7 +70,7 @@ public class Modules extends SObjectDomain {
             for(Module__c module : (List<Module__c>)records) {
                 courseStatus = courses.get(module.Course__c).Status__c;
                 if ((courseStatus == 'Active' || courseStatus == 'Scheduled' || courseStatus == 'Completed') && !editCourseSettings) {
-                    addError(module, Label.OnModuleCreationError);
+                    module.addError(Label.OnModuleCreationError);
                 }
             }
         }
