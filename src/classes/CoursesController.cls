@@ -112,7 +112,7 @@ public with sharing class CoursesController {
 											true,
 											quantity,
 											offset,
-											sortByClause != null && sortByClause != '' ? 'LastModifiedDate DESC' : sortByClause,
+											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
             return JSON.serialize(courses);
        } catch(DMLException e) {
