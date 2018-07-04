@@ -165,7 +165,15 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+			if (sp!=null) Database.rollback(sp);
+    		if(ApexPages.hasMessages()){
+				result.redirectURL = '';
+				for(ApexPages.Message m : ApexPages.getMessages()){
+					result.addMessage(new RemoteActionResult.RemoteActionMessage(m, '' ));
+				}
+			} else {
+				result.addMessage(new RemoteActionResult.RemoteActionMessage(e));  
+			}
     	}catch(Exception e){
         	if(sp != null){
 	            Database.rollback(sp);
@@ -189,7 +197,15 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
     	}catch(DmlException e){
-    		result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+			if (sp!=null) Database.rollback(sp);
+    		if(ApexPages.hasMessages()){
+				result.redirectURL = '';
+				for(ApexPages.Message m : ApexPages.getMessages()){
+					result.addMessage(new RemoteActionResult.RemoteActionMessage(m, '' ));
+				}
+			} else {
+				result.addMessage(new RemoteActionResult.RemoteActionMessage(e));  
+			}
     	}catch(Exception e){
         	if(sp != null){
 	            Database.rollback(sp);
@@ -213,10 +229,15 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + ((ModuleDependency__c)record).Module__c;
     	}catch(DmlException e){
-    		if(sp != null){
-	            Database.rollback(sp);
-        	}
-    		result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+    		if (sp!=null) Database.rollback(sp);
+			if(ApexPages.hasMessages()){
+				result.redirectURL = '';
+				for(ApexPages.Message m : ApexPages.getMessages()){
+					result.addMessage(new RemoteActionResult.RemoteActionMessage(m, '' ));
+				}
+			} else {
+				result.addMessage(new RemoteActionResult.RemoteActionMessage(e));  
+			}
     	}catch(Exception e){
         	if(sp != null){
 	            Database.rollback(sp);
@@ -248,7 +269,14 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+			if(ApexPages.hasMessages()){
+				result.redirectURL = '';
+				for(ApexPages.Message m : ApexPages.getMessages()){
+					result.addMessage(new RemoteActionResult.RemoteActionMessage(m, '' ));
+				}
+			} else {
+				result.addMessage(new RemoteActionResult.RemoteActionMessage(e));  
+			}
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(ApexPages.Severity.ERROR, e.getMessage()));
 		}
@@ -267,7 +295,14 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			result.redirectURL = '/' + recordId;
 
 		} catch(DmlException e){
-			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
+			if(ApexPages.hasMessages()){
+				result.redirectURL = '';
+				for(ApexPages.Message m : ApexPages.getMessages()){
+					result.addMessage(new RemoteActionResult.RemoteActionMessage(m, '' ));
+				}
+			} else {
+				result.addMessage(new RemoteActionResult.RemoteActionMessage(e));  
+			}
 		} catch(Exception e) {
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(ApexPages.Severity.ERROR, e.getMessage()));
 		}
