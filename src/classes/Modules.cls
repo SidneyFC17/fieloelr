@@ -216,7 +216,7 @@ public class Modules extends SObjectDomain {
             }
         }
 
-        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String> {'Id','ActiveModules__c'}).selectById(courseIds));
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String> {'Id','ActiveModules__c','Status__c'}).selectById(courseIds));
         if(activatedModules != null){
             for(Module__c module : activatedModules) {
                 if(!hasError(module.Id)) {
@@ -231,6 +231,13 @@ public class Modules extends SObjectDomain {
                 if(!hasError(module.Id)) {
                     Course__c course = coursesMap.get(module.Course__c);
                     course.ActiveModules__c--;
+
+                    if (course.Status__c == 'Active' || course.Status__c == 'Scheduled' || course.Status__c == 'Completed') {
+                        if (course.ActiveModules__c == 0) {
+                            addError(module, Label.ActiveCourseMustHaveActiveModules);
+                            return;
+                        }
+                    }
                 }                   
             }
         }
