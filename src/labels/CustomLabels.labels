@@ -531,4 +531,20 @@
         <shortDescription>CourseIsRequired</shortDescription>
         <value>The course is mandatory</value>
     </labels>
+    <labels>
+        <fullName>FieldCannotBeEdited</fullName>
+        <categories>Courses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>FieldCannotBeEdited</shortDescription>
+        <value>This field cannot be edited</value>
+    </labels>
+    <labels>
+        <fullName>ActiveCourseMustHaveActiveModules</fullName>
+        <categories>Courses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ActiveCourseMustHaveActiveModules</shortDescription>
+        <value>Active, Scheduled or Completed courses must have at least one active module</value>
+    </labels>
 </CustomLabels>

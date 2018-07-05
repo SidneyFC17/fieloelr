@@ -2,6 +2,7 @@ public class Modules extends SObjectDomain {
 
     public static Boolean validateAdminFields = true;
     public static Boolean isDelete = false;
+    public static Boolean editCourseSettings = false;
 
     public Modules(List<Module__c> records) {
         super(records);
@@ -12,6 +13,11 @@ public class Modules extends SObjectDomain {
             //If has Admin Permission allow "validateAdminFields"
             if(FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()) != null && FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()).FieloPLT__To__c >= system.now()){
                 validateAdminFields = false;
+            }
+
+            FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+            if (courseSettings != null) {
+                editCourseSettings = courseSettings.EnableEditingWhileActive__c;
             }
 
             return new Modules(sObjectList);
@@ -64,12 +70,6 @@ public class Modules extends SObjectDomain {
             }
 
             Map<Id, Course__c> courses = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__Status__c'}).selectById(courseIds));
-
-            FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
-            Boolean editCourseSettings = false;
-            if (courseSettings != null) {
-                editCourseSettings = courseSettings.EnableEditingWhileActive__c;
-            }
             
             String courseStatus;
             for(Module__c module : (List<Module__c>)records) {
@@ -96,10 +96,8 @@ public class Modules extends SObjectDomain {
                     if(!(oldModule.IsActive__c) && module.IsActive__c) {
                         activatedModules.add(module);
                     }
-                   //get PublicSettings field that check if Edit Courses is authorized
-                    FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
-                    Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
-                   //If the field is true, there is no check 
+                   
+                    //If the field is true, there is no check 
                     if(editCourseSettings == false){
                         //check if the user is trying to change the active status of the course
                         if(oldModule.IsActive__c && module.IsActive__c) {
@@ -218,7 +216,7 @@ public class Modules extends SObjectDomain {
             }
         }
 
-        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String> {'Id','ActiveModules__c'}).selectById(courseIds));
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String> {'Id','ActiveModules__c','Status__c'}).selectById(courseIds));
         if(activatedModules != null){
             for(Module__c module : activatedModules) {
                 if(!hasError(module.Id)) {
@@ -233,6 +231,13 @@ public class Modules extends SObjectDomain {
                 if(!hasError(module.Id)) {
                     Course__c course = coursesMap.get(module.Course__c);
                     course.ActiveModules__c--;
+
+                    if (course.Status__c == 'Active' || course.Status__c == 'Scheduled' || course.Status__c == 'Completed') {
+                        if (course.ActiveModules__c == 0) {
+                            addError(module, Label.ActiveCourseMustHaveActiveModules);
+                            return;
+                        }
+                    }
                 }                   
             }
         }
