@@ -88,7 +88,7 @@ public class ProgramService {
         
         sobjectType sobjectType = settings.getSobjectType();
 
-         if(SecurityUtils.checkObjectIsUpdateable(sobjectType) && SecurityUtils.checkObjectIsInsertable(sobjectType)){
+         if(SecurityUtils.checkObjectIsUpdateable(sobjectType) == true && SecurityUtils.checkObjectIsInsertable(sobjectType)== true){
             upsert settings;
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
