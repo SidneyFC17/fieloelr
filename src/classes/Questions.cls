@@ -192,8 +192,15 @@ public class Questions extends SObjectDomain {
     		}
     	}
 
-    	if (!existingAnswerOptions.isEmpty()) {
-    		delete existingAnswerOptions;
-    	}
+		sobjectType sobjectType = existingAnswerOptions.get(0).getSobjectType();
+
+		if (!existingAnswerOptions.isEmpty()) {
+
+			if (SecurityUtils.checkSObjectIsDeletable(sobjectType)){
+				delete existingAnswerOptions;
+			}else{
+				throw new FieloException(Label.CannotDeleteRecords);
+			}
+		}
     }
 }
