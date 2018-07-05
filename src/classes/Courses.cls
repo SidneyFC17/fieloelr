@@ -48,7 +48,7 @@ public  class Courses extends SObjectDomain{
 
     public override void onValidate(Map<Id,SObject> existingRecords) {
         if(validateAdminFields){
-            //before update
+            //after update
             for(Course__c course : (List<Course__c>)records){
                 Course__c oldCourse = (Course__c)existingRecords.get(course.Id);
                 if(course.ActiveModules__c != oldCourse.ActiveModules__c) {
@@ -72,7 +72,7 @@ public  class Courses extends SObjectDomain{
                 }else if((course.FieloELR__ActiveModules__c != oldCourse.FieloELR__ActiveModules__c) ||
                     (course.FieloELR__HasDependencies__c != oldCourse.FieloELR__HasDependencies__c) ||
                     (course.FieloELR__KeyDependencies__c != oldCourse.FieloELR__KeyDependencies__c)){
-                    addError(course,'This field can\'t be edited');
+                    addError(course, Label.FieldCannotBeEdited);
                 }
 
                 // Date validation

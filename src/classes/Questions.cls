@@ -123,7 +123,7 @@ public class Questions extends SObjectDomain {
         Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
        
        //If the field is true, there is no check 
-        if(editCourseSettings == false  ){															
+        if(editCourseSettings == false){															
 		    for(Question__c question : questions) {
 		    	if(modulesMap.containsKey(question.Module__c)) {
 		    		if (modulesMap.get(question.Module__c).IsActive__c){
