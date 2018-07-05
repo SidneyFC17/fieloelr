@@ -192,9 +192,9 @@ public class Questions extends SObjectDomain {
     		}
     	}
 
-		sobjectType sobjectType = existingAnswerOptions.get(0).getSobjectType();
-
 		if (!existingAnswerOptions.isEmpty()) {
+
+			sobjectType sobjectType = existingAnswerOptions.get(0).getSobjectType();
 
 			if (SecurityUtils.checkSObjectIsDeletable(sobjectType)){
 				delete existingAnswerOptions;
