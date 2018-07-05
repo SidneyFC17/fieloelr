@@ -1,13 +1,12 @@
 @isTest
 public class TestUpdateApprovedModulesBatchSchedule {
-    
-    
+
     @testSetup static void setup(){
         MockUpFactory.InsertTestData();
     }
     
     @isTest
-    static void runFix(){
+    static void runUpdate(){
         Course__c course = [SELECT Id FROM Course__c WHERE Name = 'Course 0' LIMIT 1];
         
         course.SubscriptionMode__c = 'Automatic';
