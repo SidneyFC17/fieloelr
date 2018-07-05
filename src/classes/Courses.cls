@@ -59,6 +59,13 @@ public  class Courses extends SObjectDomain{
                     course.Status__c = oldCourse.Status__c;
                 }
 
+                if(((oldCourse.Status__c == 'Active' && course.Status__c == 'Active') ||
+                    (oldCourse.Status__c == 'Scheduled' && course.Status__c == 'Scheduled') ||
+                    (oldCourse.Status__c == 'Completed' && course.Status__c == 'Completed') &&
+                    (oldCourse.ActiveModules__c != 0 && course.ActiveModules__c == 0))) {
+                    addError(course, Label.ActiveCourseCannotBeEdited);
+                }
+
                //get PublicSettings field that check if Edit Courses is authorized
                FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
                Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
@@ -72,7 +79,7 @@ public  class Courses extends SObjectDomain{
                 }else if((course.FieloELR__ActiveModules__c != oldCourse.FieloELR__ActiveModules__c) ||
                     (course.FieloELR__HasDependencies__c != oldCourse.FieloELR__HasDependencies__c) ||
                     (course.FieloELR__KeyDependencies__c != oldCourse.FieloELR__KeyDependencies__c)){
-                    addError(course,'This field can\'t be edited');
+                    addError(course, Label.FieldCannotBeEdited);
                 }
 
                 // Date validation
