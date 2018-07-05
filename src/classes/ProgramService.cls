@@ -91,7 +91,7 @@ public class ProgramService {
          if(Schema.sObjectType.FieloPLT__Settings__c.isUpdateable() && Schema.sObjectType.FieloPLT__Settings__c.isCreateable()){
             upsert settings;
           }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
+            throw new FieloException(Label.FieloPLT__CannotInsertUpdateRecords);
           }
     }
 }
