@@ -29,6 +29,20 @@ public class CoursesSelector extends SObjectSelector{
         return (List<Course__c>) selectSObjectsById(CourseIds);
     }
 
+    public List<Course__c> selectByIdCustom(Set<Id> courseIds) {
+      String query = String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE Id IN :courseIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } );
+      System.debug('query: ' + query);
+      return (List<Course__c>) Database.query(query);
+    }
+
     public List<Course__c> selectByIdHavingCourseStatus(Set<Id> courseIds) {
       return (List<Course__c>) Database.query(String.format(
                 'SELECT {0} ' +

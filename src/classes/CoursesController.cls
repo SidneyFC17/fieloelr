@@ -170,9 +170,16 @@ public with sharing class CoursesController {
 	}
 
 	@AuraEnabled
-	public static String getCourseByCourseStatus(FieloPLT__Member__c member, List<String> coursesFieldset, List<String> modulesFieldset, Integer quantity, Integer offset, String status, String sortByClause, String dynamicFilter) {
+	public static String getCourseByCourseStatus(FieloPLT__Member__c member, List<String> coursesFieldset, List<String> modulesFieldset, Integer quantity, Integer offset, String status, String sortByClause, String dynamicFilter, Boolean showPointsEarned) {
 		try{
-            CourseStatusSelector selector = new CourseStatusSelector(new Set<String>{'Id','FieloELR__Course__c'});
+			Set<String> courseStatusFields = new Set<String>();
+			if (showPointsEarned != null && showPointsEarned) {
+				courseStatusFields.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Transactions__r');
+				courseStatusFields.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Trackers__r');
+			}
+			courseStatusFields.add('Id');
+			courseStatusFields.add('FieloELR__Course__c');
+            CourseStatusSelector selector = new CourseStatusSelector(courseStatusFields);
 			selector.setLimit(quantity);
 			selector.setOffset(offset);
 			List<CourseStatus__c> courseStatusList = selector.selectByMemberId(new Set<Id>{member.Id});
@@ -182,23 +189,19 @@ public with sharing class CoursesController {
 				courseIds.add(cs.Course__c);
 			}
 
-			Set<String> fieldsCourse = new Set<String>(coursesFieldset); 
-            Set<String> fieldsModule = new Set<String>(modulesFieldset);
-            Set<String> fieldsCourseStatus = new Set<String>{'Name'};
-            Set<String> fieldsModuleResponse = new Set<String>{'Name'};
-			
-			fieldsModule.add('FieloELR__Order__c');
-
 			Set<String> courseFieldsToQuery = new Set<String>();
-			for(String fieldName:fieldsCourse) {
-				if (fieldName == 'FieloELR__Transactions__r') {
-                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
-                } else if (fieldName == 'FieloELR__Trackers__r') {
-                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
-                } else {
+			Set<String> fieldsCourse = new Set<String>(coursesFieldset);
+            Set<String> fieldsModule = new Set<String>(modulesFieldset);
+
+			for(String fieldName: fieldsCourse) {
+				if (fieldName == 'FieloELR__Modules__r') {
+                    courseFieldsToQuery.add('(SELECT Id, Name, FieloELR__Order__c FROM FieloELR__Modules__r WHERE FieloELR__IsActive__c = true) FieloELR__Modules__r');
+				} else {
 					courseFieldsToQuery.add(fieldName);
 				}
 			}
+			
+			fieldsModule.add('FieloELR__Order__c');
             
             List<FieloELR__Course__c> courses = CourseService.getCourses(
                                             courseFieldsToQuery, 
@@ -215,8 +218,12 @@ public with sharing class CoursesController {
 											offset,
 											sortByClause != null && sortByClause != '' ? 'LastModifiedDate DESC' : sortByClause,
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
-
-            return JSON.serialize(courses);
+			
+			Map<String, String> result = new Map<String, String>{
+				'courses' => JSON.serialize(courses),
+				'courseStatus' => JSON.serialize(courseStatusList[0])
+			};
+            return JSON.serialize(result);
        } catch(DMLException e) {
            throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
