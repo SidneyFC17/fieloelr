@@ -18,6 +18,6 @@ public with sharing class TestCoursesController {
 		,mdFieldset
 		,2
 		,2);
-	
-	}*/
+	*/
+	}
 }
