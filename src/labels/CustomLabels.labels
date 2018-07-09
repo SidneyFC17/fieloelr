@@ -547,4 +547,28 @@
         <shortDescription>ActiveCourseMustHaveActiveModules</shortDescription>
         <value>Active, Scheduled or Completed courses must have at least one active module</value>
     </labels>
+    <labels>
+        <fullName>ActiveOption</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ActiveOption</shortDescription>
+        <value>Available</value>
+    </labels>
+    <labels>
+        <fullName>CompletedOption</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CompletedOption</shortDescription>
+        <value>Ended</value>
+    </labels>
+    <labels>
+        <fullName>ScheduledOption</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ScheduledOption</shortDescription>
+        <value>Coming Soon</value>
+    </labels>
 </CustomLabels>
