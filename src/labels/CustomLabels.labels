@@ -4478,4 +4478,12 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <shortDescription>Expiration: Total Points</shortDescription>
         <value>Total</value>
     </labels>
+    <labels>
+        <fullName>CannotInsertUpdateRecords</fullName>
+        <categories>ProgramService.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CannotInsertUpdateRecords</shortDescription>
+        <value>Records cannot be inserted or updated</value>
+    </labels>
 </CustomLabels>
