@@ -85,6 +85,13 @@ public class ProgramService {
     public static void selectProgram(Id programId){
         FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
         settings.FieloPLT__CurrentProgramId__c = programId;
-        upsert settings;
+        
+        sobjectType sobjectType = settings.getSobjectType();
+
+         if(Schema.sObjectType.FieloPLT__Settings__c.isUpdateable() && Schema.sObjectType.FieloPLT__Settings__c.isCreateable()){
+            upsert settings;
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
     }
 }

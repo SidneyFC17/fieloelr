@@ -547,4 +547,12 @@
         <shortDescription>ActiveCourseMustHaveActiveModules</shortDescription>
         <value>Active, Scheduled or Completed courses must have at least one active module</value>
     </labels>
+    <labels>
+        <fullName>CannotInsertUpdateRecords</fullName>
+        <categories>ProgramService.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CannotInsertUpdateRecords</shortDescription>
+        <value>Records cannot be inserted or updated</value>
+    </labels>
 </CustomLabels>
