@@ -88,7 +88,7 @@ public class ProgramService {
         
         sobjectType sobjectType = settings.getSobjectType();
 
-         if(SecurityUtils.checkObjectIsUpdateable(sobjectType) && SecurityUtils.checkObjectIsInsertable(sobjectType)){
+         if(Schema.sObjectType.FieloPLT__Settings__c.isUpdateable() && Schema.sObjectType.FieloPLT__Settings__c.isCreateable()){
             upsert settings;
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
