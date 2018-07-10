@@ -227,15 +227,7 @@ global class CourseService {
 		}
 
 		system.debug(queryCourses);
-		List<Course__c> returnQueryCourses = new List<Course__c>();
-
-		 if(Schema.sObjectType.FieloPLT__Settings__c.isAccessible()){	
-            returnQueryCourses = Database.query(queryCourses);
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
-
-		return returnQueryCourses;
+		return Database.query(queryCourses);
 	}
 
 	//active courses

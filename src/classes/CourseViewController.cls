@@ -277,26 +277,19 @@ public with sharing class CourseViewController extends PageSettingsController {
 
   	@RemoteAction
   	public static RemoteActionResult saveModule( SObject record, List<String> nullFields) {
-
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
-		
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
 			// TODO: Change to Create API
-			if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
-               upsert (Module__c) record;
-            }else{
-               throw new FieloException(Label.CannotInsertUpdateRecords);
-			}
+        	upsert (Module__c) record;
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
-			
     	}catch(DMLException e){
     		if(sp != null){
 	            Database.rollback(sp);
@@ -308,10 +301,10 @@ public with sharing class CourseViewController extends PageSettingsController {
 	            Database.rollback(sp);
         	}
         	result.addMessage(new RemoteActionResult.RemoteActionMessage(e));
-    	}	    	
-	  	
-	  	return result;
+    	}
+    	return result;
   	}
+
   	@RemoteAction
   	public static RemoteActionResult saveCourseDependency( SObject record, List<String> nullFields) {
 		Savepoint sp;
