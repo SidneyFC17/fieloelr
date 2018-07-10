@@ -210,8 +210,17 @@ public with sharing class FormQuestionController {
             }
 
             //done update in different uow to do the update before the insert of AOs to avoid validation rules.
-            uowUpdateAO.commitWork();
-            uow.commitWork();
+             if(Schema.sObjectType.FieloELR__AnswerOption__c.isUpdateable()){
+                        uowUpdateAO.commitWork();
+                    }else{
+                        throw new FieloException(Label.CannotInsertUpdateRecords);
+                    }
+
+                    if(Schema.sObjectType.FieloELR__Question__c.isCreateable()){
+                        uow.commitWork();
+                    }else{
+                        throw new FieloException(Label.CannotInsertRecords);
+                    }
 
           //TODO Crear Label DataSavedSuccessfully
           result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
