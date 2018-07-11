@@ -287,7 +287,11 @@ public with sharing class CourseViewController extends PageSettingsController {
          		record.put(f, null );
 			}
 			// TODO: Change to Create API
-        	upsert (Module__c) record;
+			if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
+               upsert (Module__c) record;
+            }else{
+               throw new FieloException(Label.CannotInsertUpdateRecords);
+			}
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
