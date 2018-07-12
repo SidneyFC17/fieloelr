@@ -1,0 +1,47 @@
+.THIS.breadcrumb-wrapper {
+    height: 50px;
+    margin-left: 15px;
+}
+
+.THIS .slds-text-title_caps{
+    margin-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 0.9rem;
+}
+.THIS .slds-breadcrumb__item:first-child{
+    padding-left: 10px;
+}
+
+.THIS .current-breadcrumb{
+    padding-left: 15px;
+}
+
+.THIS .current-course-title{
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 20px 0px 10px 15px;
+    color: #54698D;
+    padding-left: 10px;  
+}
+
+/*Padding Inside Card*/
+.THIS .slds-p-around_small > .fielo-output:first-child {
+    padding: 1em;
+}
+
+.THIS article{
+    height: 100%;
+}
+
+.THIS article .slds-card__header {
+    display : none;    
+}
+
+.THIS .slds-button_brand{
+    background-color: #0070D2;
+}
+
+.THIS .slds-button_brand:hover{
+    background-color: #007dea;
+}

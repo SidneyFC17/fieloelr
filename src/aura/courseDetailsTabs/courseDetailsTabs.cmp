@@ -1,0 +1,18 @@
+<aura:component >      
+   <aura:attribute type="Course__c" name="course"  /> 
+    <aura:attribute type="String" name="description" />
+    <lightning:tabset>
+        <lightning:tab id="courseDescription" 
+                       label="Description">
+           
+            <p><br></br><h1 class="description"> {!v.course.FieloELR__Description__c} </h1></p>
+        	
+        </lightning:tab>
+        <lightning:tab id="courseModules" 
+                       label="Modules" >
+            Sample Content Two
+        </lightning:tab>
+    </lightning:tabset>    
+    
+ 
+</aura:component>
