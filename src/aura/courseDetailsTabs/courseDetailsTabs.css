@@ -1,0 +1,17 @@
+/*Center the Tabs*/
+.THIS  .slds-tabs_default__nav{
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background-color: #e6eef1;
+}
+
+.THIS .slds-tabs_default__item:hover:after, .THIS .slds-tabs--default__item:hover:after {
+    background-color: #0070D2;
+}
+
+.THIS .slds-tabs_default__item .slds-has-focus {
+    color: #0070D2;
+    outline: 0px;
+}

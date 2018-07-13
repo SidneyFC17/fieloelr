@@ -1,0 +1,56 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,force:lightningQuickAction,force:hasRecordId" 
+                access="global" controller="CourseDetailsController">
+    
+    <aura:attribute name="course" type="sObject" />
+    <aura:attribute name="courses" type="sObject[]" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+
+    <!--Course Card Configs -->    
+    <aura:attribute type="Id" name="recordId" />
+    <aura:attribute type="String" name="columns" default="1" />
+    <aura:attribute type="String" name="courseDetailFields" default="FieloELR__Modules__r,FieloELR__Transactions__r,FieloELR__Trackers__r" />
+    <aura:attribute type="String" name="fields" access="global" />
+    <aura:attribute type="sObject[]" name="buttons" />
+    <aura:attribute type="Object[]" name="courseDetailFieldMeta" />
+    <aura:attribute type="sObject[]" name="fieldset"  />
+    <aura:attribute type="sObject[]" name="layout" default="table" description="table, grid" />
+    
+    
+    <div class="breadcrumb-wrapper">
+        <nav role="navigation" aria-label="Breadcrumbs">
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                <li class="slds-breadcrumb__item slds-text-title_caps"><a href="javascript:void(0);">Courses</a></li>
+                <li class="slds-breadcrumb__item slds-text-title_caps"><span class="current-breadcrumb">{!v.course.Name}</span></li>
+            </ol>
+        </nav>
+    </div>
+    
+    <div>
+       	<h1 class="current-course-title">{!v.course.Name}</h1> 
+    </div> 
+    
+    <lightning:layout class="course-card-layout">
+        <lightning:layoutItem padding="around-small" size="9" class="course-card">
+          
+        <aura:if isTrue="{!v.course != null}">             
+            <c:CardItem     type="landing"
+                            record="{!v.course}"
+                            layout="table"
+                            fieldset="{!v.fieldset}"
+                            buttons="{!v.buttons}"
+                            columns="{!v.columns}"
+                             />
+            </aura:if> 
+            
+            
+        </lightning:layoutItem>    
+    </lightning:layout>
+    <lightning:layout>
+        <lightning:layoutItem padding="around-small" size="9" > 	
+            <c:courseDetailsTabs course="{!v.course}" />
+        </lightning:layoutItem>
+    </lightning:layout> 
+    
+</aura:component>
