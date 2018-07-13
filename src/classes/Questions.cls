@@ -86,10 +86,18 @@ public class Questions extends SObjectDomain {
 	    }
     }
 
+	public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
+		//Update module counter
+		updateModuleRollup(records, Trigger.isDelete);
+	}
+
     public override void onAfterDelete() {
     	isDelete = true;
     	// Delete related answers upon question delete
     	deleteRelatedAnswers(records);
+
+		//Update module counter
+		updateModuleRollup(records, Trigger.isDelete);
     }
 
     private void updateWeights(List<Question__c> questions) {
@@ -203,4 +211,36 @@ public class Questions extends SObjectDomain {
 			}
 		}
     }
+
+	private void updateModuleRollup(List<Question__c> questions, Boolean isDelete) {
+		Set<Id> moduleIds = new Set<Id>();
+	    for(Question__c question : questions) {
+			moduleIds.add(question.Module__c);
+	    }
+
+		Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector(new Set<String> {'Id','IsActive__c','NumberOfQuestions__c'}).selectByIdHavingModuleResponses(moduleIds));
+
+		Map<Id, Module__c> updModulesMap = new Map<Id, Module__c>();
+
+		for(Question__c question : questions) {
+			if (!updModulesMap.containsKey(question.Module__c)) {
+				updModulesMap.put(question.Module__c,
+					new Module__c(
+						Id = question.Module__c,
+						NumberOfQuestions__c = modulesMap.get(question.Module__c).NumberOfQuestions__c != null ? modulesMap.get(question.Module__c).NumberOfQuestions__c : 0
+					)
+				);
+			}
+			if (isDelete) {
+				updModulesMap.get(question.Module__c).NumberOfQuestions__c--;
+			} else {
+				updModulesMap.get(question.Module__c).NumberOfQuestions__c++;
+			}
+	    }
+		
+		if (!updModulesMap.isEmpty()) {
+			update updModulesMap.values();
+		}
+		
+	}
 }

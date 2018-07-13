@@ -33,6 +33,7 @@ public class Modules extends SObjectDomain {
                 courseIds.add(module.Course__c);
             }
             module.KeyDependencies__c = '';
+            module.NumberOfQuestions__c = 0;
         }
         
         List<AggregateResult> aggResult = new ModulesSelector().selectByCourseGroupByCourse(courseIds);
