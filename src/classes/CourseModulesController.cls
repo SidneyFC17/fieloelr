@@ -13,6 +13,7 @@ public with sharing class CourseModulesController {
 			Set<String> fieldsModuleResponse = new Set<String>();
 			fieldsModuleResponse.add('Id');
 			fieldsModuleResponse.add('FieloELR__Module__c');
+			fieldsModuleResponse.add('FieloELR__IsApproved__c');
 
 			if (includePoints != null && includePoints) {
 				fieldsModuleResponse.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Transactions__r');
@@ -37,38 +38,6 @@ public with sharing class CourseModulesController {
 				''
 			);
 
-			List<CourseService.ModuleWrapper> mws = new List<CourseService.ModuleWrapper>();
-			
-			Set<Id> mrIds = new Set<Id>();
-
-			for( CourseService.ModuleWrapper mw:coursesMap[0].modules) {
-				if (mw.moduleResponses != null) {
-					if (!mw.moduleResponses.isEmpty()) {
-						mrIds.addAll(new Map<Id,ModuleResponse__c>(mw.moduleResponses).keySet());
-					}
-				}
-			}
-
-			if (!mrIds.isEmpty()) {
-				Map<Id,ModuleResponse__c> mrMap = new Map<Id,ModuleResponse__c>(new ModuleResponsesSelector(fieldsModuleResponse).selectById(mrIds));
-				Map<Id,List<ModuleResponse__c>> mrMapByModule = new Map<Id,List<ModuleResponse__c>>();
-				for( ModuleResponse__c mr: mrMap.values()) {
-					if (!mrMapByModule.containsKey(mr.Module__c)) {
-						mrMapByModule.put(mr.Module__c, new List<ModuleResponse__c>());
-					}
-					mrMapByModule.get(mr.Module__c).add(mr);
-				}
-
-				for( CourseService.ModuleWrapper mw:coursesMap[0].modules) {
-					if (!mw.moduleResponses.isEmpty()) {
-						mws.add(new CourseService.ModuleWrapper(mw.module, mrMapByModule.get(mw.module.Id)));
-					}
-				}
-
-				coursesMap[0].modules.clear();
-				coursesMap[0].modules.addAll(mws);
-			}
-
 			return JSON.serialize(coursesMap);
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
@@ -78,13 +47,35 @@ public with sharing class CourseModulesController {
 	}
 
 	@AuraEnabled
-	public static String getCourseMap(FieloPLT__Member__c member, Id courseId, String modulesFieldset, Boolean includePoints, Boolean includeQuestions) {
+	public static String getCourseStatus(FieloPLT__Member__c member, Id courseId) {
 		try{
+			Id memberId = member.Id;
 
-			return JSON.serialize(coursesMap);
+			List<FieloELR__CourseStatus__c> courseStatus = CourseService.getCourseStatus(
+				new Set<String>{'Id','FieloELR__Progress__c','FieloELR__Course__c'},
+				new Set<String>{'Id','FieloELR__IsApproved__c','FieloELR__Module__c'},
+				new Set<Id>{courseId},
+				memberId,
+				100,
+				0,
+				'FieloELR__Course__r.FieloELR__Order__c'
+			);
+
+			return JSON.serialize(courseStatus[0]);
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
+	}
+
+	@AuraEnabled
+	public static String getFieldData(String sObjectName, String fields) {
+		try{
+			return AuraService.getFieldData(sObjectName, fields);
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
 	}
