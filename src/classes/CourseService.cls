@@ -286,8 +286,9 @@ global class CourseService {
 		global List<ModuleResponse__c> moduleResponses {get; private set;}
 		global List<ModuleDependency__c> dependencies {get; private set;}
 
-		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses){
+		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses, List<ModuleDependency__c> dependencies){
 			this(module);
+			System.debug(JSON.serializePretty(moduleResponses));
 			this.moduleResponses = moduleResponses;
 			this.numberOfAttempts = this.moduleResponses.size();
 			if(this.numberOfAttempts > 0){
@@ -297,6 +298,9 @@ global class CourseService {
 						break;
 					}
 				}
+			}
+			if (dependencies!=null) {
+				this.dependencies = dependencies;
 			}
 		}
 
@@ -420,21 +424,20 @@ global class CourseService {
 						if (moduleResponseMap.containsKey(mr.FieloELR__Module__c)) {
 							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
 						} else {
-							moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c>());
-							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
+							moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c> {mr} );
 						}
 					}
 				}
 			}
-
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
-					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>()) : new ModuleWrapper(module);
+					ModuleWrapper mw = cs != null ? new ModuleWrapper(
+						module,
+						moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>(),
+						dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>()
+					) : new ModuleWrapper(module);
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
-					}
-					if(dependenciesByModule != null){
-						mw.dependencies = dependenciesByModule.get(module.Id);
 					}
 					cw.modules.add(mw);
 				}
