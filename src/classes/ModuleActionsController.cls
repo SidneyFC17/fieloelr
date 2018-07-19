@@ -9,7 +9,7 @@ public with sharing class ModuleActionsController {
 				moduleId,
 				memberId,
 				new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c'},
-				new Set<String> {'FieloELR__QuestionText__c'},
+				new Set<String> {'FieloELR__QuestionText__c', 'FieloELR__Order__c'},
 				new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c'}
 			);
 			return JSON.serialize(moduleWrapper);
