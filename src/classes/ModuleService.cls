@@ -75,7 +75,7 @@ global class ModuleService {
 		}
 		
 		system.debug(questionQuery);	
-		List<Question__c> questions ;		
+		List<Question__c> questions ;
 
 		if(fieldsAnswerOption != null){
 			Integer currentIndex;

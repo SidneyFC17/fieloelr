@@ -1,6 +1,7 @@
 public with sharing class QuizController {
-   @auraEnabled
-   public static String submitQuiz(String moduleWrapperJson, String quizAnswer){
+
+    @AuraEnabled
+    public static String submitQuiz(String moduleWrapperJson, String quizAnswer){
        try{
            FieloELR.ModuleService.ModuleWrapper moduleWrapper = (FieloELR.ModuleService.ModuleWrapper) JSON.deserializeStrict(moduleWrapperJson, FieloELR.ModuleService.ModuleWrapper.class);
         FieloELR__Module__c module = moduleWrapper.module;
@@ -37,16 +38,44 @@ public with sharing class QuizController {
             questionWrappers.add(questionWrapper);
         }
         FieloELR__ModuleResponse__c submittedMResponse = FieloELR.ModuleService.submitModuleResponse (moduleResponse, questionWrappers);
-        return JSON.serialize(submittedMResponse);      
+        return JSON.serialize(submittedMResponse);
         } catch(DMLException e) {
           throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
           throw new AuraHandledException(e.getMessage());
         }     
     }
+    
+    @AuraEnabled
+    public static QuestionService.QuestionResponseResult submitQuestion(QuestionService.QuestionResponseWrapper questionResponseWrapper) {
+        try{
+			return QuestionService.submitQuestion(questionResponseWrapper);
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 
-    
-    
-    
-    
+    @AuraEnabled
+    public static FieloELR__ModuleResponse__c submitModuleResponse(FieloELR__ModuleResponse__c moduleResponse) {
+        try{
+			return ModuleService.submitModuleResponse(moduleResponse);
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static FieloELR__ModuleResponse__c submitModuleAndQuestionResponses(ModuleResponse__c moduleResponse, List<QuestionService.QuestionResponseWrapper> questionWrappers) {
+        try{
+			return ModuleService.submitModuleResponse(moduleResponse, questionWrappers);
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }

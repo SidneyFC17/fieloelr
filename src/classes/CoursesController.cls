@@ -143,6 +143,7 @@ public with sharing class CoursesController {
 			String baseURL = Network.getLoginUrl(Network.getNetworkId());
 			String uselessString = baseURL.substring(baseURL.lastIndexOf('/')+1);
 			baseURL = baseURL.replace(uselessString, '');
+			baseURL = baseURL.replace('/s/','/');
 
 			lcConfig.put('orgId', UserInfo.getOrganizationId());
 			lcConfig.put('locale', UserInfo.getLocale());
@@ -216,7 +217,7 @@ public with sharing class CoursesController {
 											false,
 											quantity,
 											offset,
-											sortByClause != null && sortByClause != '' ? 'LastModifiedDate DESC' : sortByClause,
+											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC' ,
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
 			
 			Map<String, String> result = new Map<String, String>{
