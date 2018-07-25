@@ -47,9 +47,9 @@ public with sharing class QuizController {
     }
     
     @AuraEnabled
-    public static QuestionService.QuestionResponseResult submitQuestion(QuestionService.QuestionResponseWrapper questionResponseWrapper) {
+    public static String submitQuestion(QuestionService.QuestionResponseWrapper questionResponseWrapper) {
         try{
-			return QuestionService.submitQuestion(questionResponseWrapper);
+			return JSON.serialize(QuestionService.submitQuestion(questionResponseWrapper));
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e) {
@@ -58,9 +58,9 @@ public with sharing class QuizController {
     }
 
     @AuraEnabled
-    public static FieloELR__ModuleResponse__c submitModuleResponse(FieloELR__ModuleResponse__c moduleResponse) {
+    public static String submitModuleResponse(FieloELR__ModuleResponse__c moduleResponse) {
         try{
-			return ModuleService.submitModuleResponse(moduleResponse);
+			return JSON.serialize(ModuleService.submitModuleResponse(moduleResponse));
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e) {
@@ -69,9 +69,9 @@ public with sharing class QuizController {
     }
 
     @AuraEnabled
-    public static FieloELR__ModuleResponse__c submitModuleAndQuestionResponses(ModuleResponse__c moduleResponse, List<QuestionService.QuestionResponseWrapper> questionWrappers) {
+    public static String submitModuleAndQuestionResponses(ModuleResponse__c moduleResponse, List<QuestionService.QuestionResponseWrapper> questionWrappers) {
         try{
-			return ModuleService.submitModuleResponse(moduleResponse, questionWrappers);
+			return JSON.serialize(ModuleService.submitModuleResponse(moduleResponse, questionWrappers));
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e) {
