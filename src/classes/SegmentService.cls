@@ -26,7 +26,12 @@ public class SegmentService {
             	FieloPLT__IsActive__c = true
             );
             uow.registerNew(newSegment);
-            uow.commitWork();
+
+            if(Schema.sObjectType.FieloPLT__Segment__c.isCreateable() ){
+                uow.commitWork();
+            }else{
+                throw new FieloException(Label.CannotInsertUpdateRecords);
+            }
             return newSegment.Id;
         }
 

@@ -104,7 +104,12 @@ public  class Courses extends SObjectDomain{
         // When the course is deleted, must delete related modules
         deleteCourseModules(coursesMap, uow);
 
-        uow.commitWork();
+        if(Schema.sObjectType.Course__c.isDeletable()){
+           uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+        
 
         Map<Id,SObject> deletedModules = uow.m_deletedMapByType.get('FieloELR__Module__c');
         for (Database.DeleteResult dr : uow.getResults(Module__c.SObjectType).deleteResults) {
@@ -178,7 +183,12 @@ public  class Courses extends SObjectDomain{
         if(!coursesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
             uow.registerDirty(coursesMap.values());
-            uow.commitWork();
+
+            if(Schema.sObjectType.Course__c.isUpdateable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 
@@ -215,7 +225,12 @@ public  class Courses extends SObjectDomain{
         if (!coursesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
             uow.registerDirty(coursesMap.values());
-            uow.commitWork();
+
+             if(Schema.sObjectType.Course__c.isUpdateable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 

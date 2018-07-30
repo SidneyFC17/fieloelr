@@ -64,8 +64,17 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 					objectName
 				}
 			);
-			record = Database.query(query);
+
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        if(SecurityUtils.checkObjectIsReadable(convertType)){	
+            record = Database.query(query);
 			setRecord(record);
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
 		}
 	}
   	@RemoteAction
@@ -74,7 +83,16 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
-		List<sObject> result = Database.query(query);
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+		List<sObject> result;
+
+        if(SecurityUtils.checkObjectIsReadable(convertType)){	
+        	 result = Database.query(query);
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
 		return result.get(0);
 	}
 

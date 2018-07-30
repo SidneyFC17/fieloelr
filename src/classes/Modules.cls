@@ -161,7 +161,13 @@ public class Modules extends SObjectDomain {
         }
         //If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
         updateQuestions(new List<Module__c>(modulesToChangeQuestions), modulesToChangeCorrectWeight, modulesToChangeIncorrectWeight, modulesToChangePenaltyPerAttempt, uow);
-        uow.commitWork();
+        
+        if(Schema.sObjectType.Course__c.isUpdateable()){
+             uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+       
     }
 
     // Check the responses for a list of modules
@@ -238,7 +244,12 @@ public class Modules extends SObjectDomain {
         if(!modulesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             uow.registerDirty(modulesMap.values());
-            uow.commitWork();
+
+            if(Schema.sObjectType.Module__c.isUpdateable()){
+                  uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 
@@ -276,7 +287,12 @@ public class Modules extends SObjectDomain {
         if (!modulesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             uow.registerDirty(modulesMap.values());
-            uow.commitWork();
+
+               if(Schema.sObjectType.Module__c.isUpdateable()){
+                  uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 
@@ -325,7 +341,13 @@ public class Modules extends SObjectDomain {
             updateCourses(null, activeModules, uow);
         Courses.validateAdminFields = false;
         Questions.validateAdminFields = false;
-        uow.commitWork();
+
+          if(Schema.sObjectType.Course__c.IsDeleteable() && Schema.sObjectType.Course__c.isUpdateable()){
+             uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
     }
 
 

@@ -64,8 +64,17 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 					objectName
 				}
 			);
-			record = Database.query(query);
-			setRecord(record);
+
+			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+			if(SecurityUtils.checkObjectIsReadable(convertType)){
+
+				record = Database.query(query);
+				setRecord(record);
+
+				}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
 		}
 	}
   	@RemoteAction
@@ -74,7 +83,18 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
-		List<sObject> result = Database.query(query);
+		List<sObject> result;
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+		if(SecurityUtils.checkObjectIsReadable(convertType)){
+
+		 result = Database.query(query);
+		 
+		}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+		
 		return result.get(0);
 	}
 

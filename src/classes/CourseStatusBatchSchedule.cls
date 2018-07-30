@@ -7,7 +7,16 @@ public class CourseStatusBatchSchedule implements Database.Batchable<sobject>, S
     public Database.QueryLocator start(Database.BatchableContext BC) {
         Date today = date.today();
         Date yesterday = date.today().addDays(-1);
-        return Database.getQueryLocator('SELECT Id, FieloELR__Status__c FROM FieloELR__Course__c WHERE (FieloELR__Status__c = \'Scheduled\' AND FieloELR__StartDate__c <=: today) OR (FieloELR__Status__c = \'Active\' AND FieloELR__EndDate__c <=: yesterday)');
+        
+        Database.QueryLocator queryLocator;
+
+        if(Schema.sObjectType.FieloELR__Course__c.isAccessible()){	
+            queryLocator = Database.getQueryLocator('SELECT Id, FieloELR__Status__c FROM FieloELR__Course__c WHERE (FieloELR__Status__c = \'Scheduled\' AND FieloELR__StartDate__c <=: today) OR (FieloELR__Status__c = \'Active\' AND FieloELR__EndDate__c <=: yesterday)');
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+        return queryLocator; 
     }
 
     public void execute(Database.BatchableContext BC, List<sobject> scope) {
@@ -24,7 +33,13 @@ public class CourseStatusBatchSchedule implements Database.Batchable<sobject>, S
         SavePoint sp = Database.setSavePoint();
         try{
             Courses.validateAdminFields = false;
-            uow.commitWork();
+
+            if(Schema.sObjectType.Course__c.isUpdateable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
         }catch(Exception e){
             Database.rollback(sp);
             system.debug(e.getMessage());

@@ -130,8 +130,15 @@ public with sharing class CourseViewController extends PageSettingsController {
 				}
 			);
 			System.debug('init query: '+query);
-			record = Database.query(query);
-			setRecord(record);
+
+			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        	if(SecurityUtils.checkObjectIsReadable(convertType)){	
+            	record = Database.query(query);
+				setRecord(record);
+         	 }else{
+           	 	throw new FieloException(Label.CannotAccessRecords);
+         	 }
 		}
 	}
 
@@ -153,18 +160,29 @@ public with sharing class CourseViewController extends PageSettingsController {
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
 		System.debug('retrieve query: '+query);
-		List<Course__c> result = Database.query(query);
+		List<Course__c> result;
+		
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-		if(result[0].Segment__r.FieloPLT__RelatedSegments__c != null){
-			system.debug(result[0].Segment__r.FieloPLT__RelatedSegments__c);
-	      	List<String> segIds15 = result[0].Segment__r.FieloPLT__RelatedSegments__c.split(';');
-	      	List<Id> segIds18 = segIds15;
-	      	result[0].Segment__r.FieloPLT__RelatedSegments__c = '';
-	      	for(Id id18: segIds18){
-		        result[0].Segment__r.FieloPLT__RelatedSegments__c += id18 + ';';
-	      	}
-	      	result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
-	    }
+        if(SecurityUtils.checkObjectIsReadable(convertType)){
+
+			result = Database.query(query);
+
+			if(result[0].Segment__r.FieloPLT__RelatedSegments__c != null){
+				system.debug(result[0].Segment__r.FieloPLT__RelatedSegments__c);
+				List<String> segIds15 = result[0].Segment__r.FieloPLT__RelatedSegments__c.split(';');
+				List<Id> segIds18 = segIds15;
+				result[0].Segment__r.FieloPLT__RelatedSegments__c = '';
+				for(Id id18: segIds18){
+					result[0].Segment__r.FieloPLT__RelatedSegments__c += id18 + ';';
+				}
+				result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
+			}
+
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
 		return result.get(0);
 	}
 

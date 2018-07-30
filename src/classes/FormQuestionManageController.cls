@@ -31,8 +31,17 @@ public with sharing class FormQuestionManageController {
           		String query = 'SELECT  ' + fields;
           		query += ' FROM ' + csObjectName;
           		query += ' WHERE Id = : recordId ';
-          		
+          	
+			SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
+
+        if(SecurityUtils.checkObjectIsReadable(convertType)){
+
           		recordObject = Database.query(query)[0];
+
+		 }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
         	} else {
           		recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
         	}
@@ -150,10 +159,18 @@ public with sharing class FormQuestionManageController {
                   					query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
                 				}
                 				query += ' LIMIT 500';
+
+							SObjectType convertType = Schema.getGlobalDescribe().get(describe.getReferenceTo().get(0));
+
+        					if(SecurityUtils.checkObjectIsReadable(convertType)){
+
                 				for ( SObject o : Database.query(query) ) {
                   					// Substring para que matche con el multipicklist (para multisegment)
                    					options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
                 				}
+							}else{
+            					throw new FieloException(Label.CannotAccessRecords);
+         					 }
               				}
               				mapPicklistOptions.put( f.Name , options);
             			}
@@ -184,8 +201,21 @@ public with sharing class FormQuestionManageController {
             }
 
 	        sp = Database.setSavepoint();
-	        update (FieloELR__Module__c) module;
-            update (List<FieloELR__Question__c>) questions;
+	        
+
+			if(Schema.sObjectType.FieloELR__Module__c.isCreateable()){
+           		update (FieloELR__Module__c) module;
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
+		  if(Schema.sObjectType.FieloELR__Question__c.isCreateable()){
+            	update (List<FieloELR__Question__c>) questions;
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
+            
 	        //TODO Crear Label DataSavedSuccessfully
 	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 
@@ -216,7 +246,18 @@ public with sharing class FormQuestionManageController {
       query += ' FROM ' + objectName;
 	    query += ' WHERE ID = :recordId' ;
 	    query += ' LIMIT 1';
-	    List<sObject> result = Database.query(query);
+		List<sObject> result;
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        if(SecurityUtils.checkObjectIsReadable(convertType)){
+
+		result = Database.query(query);
+
+		}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
 	    if ( result.size() > 0 ) {
       		return result.get(0);
     	}

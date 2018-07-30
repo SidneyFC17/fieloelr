@@ -33,7 +33,15 @@ public with sharing class BackendHeaderRecordController {
         query += !fields.isEmpty() ?  ', ' + String.join(new List<String>(fields), ',') : '';
         query += ' FROM ' + csObjectName;
         query += ' WHERE Id = : recordId ';
-        cRecord = Database.query(query)[0];
+        
+        SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
+
+        if(SecurityUtils.checkObjectIsReadable(convertType)){	
+            cRecord = Database.query(query)[0];
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
         queryRecordNotDone = false;
       }
       return cRecord;

@@ -259,7 +259,17 @@ public with sharing class RelatedListController {
       query += ' OFFSET '+ String.valueOf(offset);
     }
 
-    return Database.query(query);
+    List<SObject> listObjects;
+
+    SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+    if(SecurityUtils.checkObjectIsReadable(convertType)){
+            listObjects = Database.query(query);
+      }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+        return listObjects;
   }    
   /*
   @RemoteAction

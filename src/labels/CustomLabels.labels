@@ -441,6 +441,14 @@
         <value>You cannot delete these records.</value>
     </labels>
     <labels>
+        <fullName>CannotAccessRecords</fullName>
+        <categories>ModulesSelector.cls</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Records: No Accessed</shortDescription>
+        <value>	Records cannot be Accessed.</value>
+    </labels>
+    <labels>
         <fullName>CannotInsertRecords</fullName>
         <categories>SObjectUnitOfWork.cls</categories>
         <language>en_US</language>

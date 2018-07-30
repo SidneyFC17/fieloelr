@@ -26,7 +26,10 @@ public class CourseDependenciesSelector extends SObjectSelector{
     }
 
     public List<CourseDependency__c> selectDependenciesAndPredecessors(Set<Id> recordIds) {
-      return (List<CourseDependency__c>) Database.query(String.format(
+
+        if(Schema.sObjectType.CourseDependency__c.isAccessible()){
+
+        List<CourseDependency__c> listCourse = (List<CourseDependency__c>) Database.query(String.format(
                 'SELECT {0} ' +               
                   'FROM {1} ' +
                   'WHERE Course__c IN :recordIds OR Predecessor__c IN :recordIds' ,
@@ -35,10 +38,19 @@ public class CourseDependenciesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+        return listCourse;
     }
 
     public List<CourseDependency__c> selectByPredecessor(Set<Id> recordIds) {
-        return (List<CourseDependency__c>) Database.query(String.format(
+
+        if(Schema.sObjectType.CourseDependency__c.isAccessible()){			
+
+       List<CourseDependency__c> listCourse = (List<CourseDependency__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE Predecessor__c IN :recordIds ' +
@@ -47,5 +59,11 @@ public class CourseDependenciesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+        
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+        return listCourse;
     }
 }
