@@ -166,7 +166,7 @@ public with sharing class FormModuleReorderController {
 
         sobjectType sobjectType = records.get(0).getSobjectType();
          
-          SecurityUtils.checkObjectIsInsertable(sobjectType)
+          SecurityUtils.checkObjectIsInsertable(sobjectType);
             update records;
         
           //TODO Crear Label DataSavedSuccessfully
