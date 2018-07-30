@@ -166,12 +166,9 @@ public with sharing class FormModuleReorderController {
 
         sobjectType sobjectType = records.get(0).getSobjectType();
          
-          if(SecurityUtils.checkObjectIsInsertable(sobjectType)){
+          SecurityUtils.checkObjectIsInsertable(sobjectType)
             update records;
-          }else{
-            throw new FieloException(Label.CannotDeleteRecords);
-          }
-
+        
           //TODO Crear Label DataSavedSuccessfully
           result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 
