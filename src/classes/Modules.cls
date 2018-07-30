@@ -342,7 +342,7 @@ public class Modules extends SObjectDomain {
         Courses.validateAdminFields = false;
         Questions.validateAdminFields = false;
 
-          if(Schema.sObjectType.Course__c.IsDeleteable() && Schema.sObjectType.Course__c.isUpdateable()){
+          if(Schema.sObjectType.Course__c.isDeletable() && Schema.sObjectType.Course__c.isUpdateable()){
              uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);

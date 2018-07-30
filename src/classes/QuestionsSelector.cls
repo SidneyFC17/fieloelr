@@ -194,7 +194,7 @@ public class QuestionsSelector extends SObjectSelector {
 
     public List<AggregateResult> selectByModuleGroupByModule(Set<Id> moduleIds) {
 
-        List<Question__c> listQuestion;
+        List<AggregateResult> listQuestion;
 
        if(Schema.sObjectType.Question__c.isAccessible()){	
         listQuestion =  [SELECT MAX(Order__c) order, Module__c FROM Question__c WHERE Module__c in : moduleIds GROUP BY Module__c];

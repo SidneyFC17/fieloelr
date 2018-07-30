@@ -155,7 +155,7 @@ public with sharing class FormQuestionManageController {
                 				}
                 				query += ' LIMIT 500';
 
-							SObjectType convertType = Schema.getGlobalDescribe().get(describe.getReferenceTo().get(0));
+							SObjectType convertType = describe.getReferenceTo().get(0);
 
         					SecurityUtils.checkObjectIsReadable(convertType);
 

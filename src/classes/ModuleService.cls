@@ -182,9 +182,11 @@ global class ModuleService {
 		String moduleResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleResponseClone), ',');
 		moduleResponseQuery += ' FROM ModuleResponse__c WHERE Id =: moduleResponseId ';
 
+		ModuleResponse__c moduleResponse;
+
 		if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
 
-		ModuleResponse__c moduleResponse = Database.query(moduleResponseQuery);
+		moduleResponse = Database.query(moduleResponseQuery);
 
 		}else{
             throw new FieloException(Label.CannotAccessRecords);
