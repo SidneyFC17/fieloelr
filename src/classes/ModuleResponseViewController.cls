@@ -67,7 +67,7 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 
 			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-			SecurityUtils.checkObjectIsReadable(convertType)
+			SecurityUtils.checkObjectIsReadable(convertType);
 
 				record = Database.query(query);
 				setRecord(record);
@@ -84,7 +84,7 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-		SecurityUtils.checkObjectIsReadable(convertType)
+		SecurityUtils.checkObjectIsReadable(convertType);
 
 		 result = Database.query(query);
 		 

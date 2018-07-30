@@ -47,7 +47,7 @@ public with sharing class QuestionViewController extends PageSettingsController 
 
 			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        	SecurityUtils.checkObjectIsReadable(convertType)
+        	SecurityUtils.checkObjectIsReadable(convertType);
 
 				record = Database.query(query);
 				setRecord(record);

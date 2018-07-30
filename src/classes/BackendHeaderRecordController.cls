@@ -36,7 +36,7 @@ public with sharing class BackendHeaderRecordController {
         
         SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
 
-        SecurityUtils.checkObjectIsReadable(convertType)
+        SecurityUtils.checkObjectIsReadable(convertType);
             cRecord = Database.query(query)[0];
 
         queryRecordNotDone = false;

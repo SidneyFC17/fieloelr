@@ -98,7 +98,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        SecurityUtils.checkObjectIsReadable(convertType)
+        SecurityUtils.checkObjectIsReadable(convertType);
 
 			record = Database.query(query);
 			setRecord(record);
@@ -256,7 +256,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        SecurityUtils.checkObjectIsReadable(convertType)
+        SecurityUtils.checkObjectIsReadable(convertType);
 
 			result = Database.query(query);
 
@@ -334,7 +334,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        SecurityUtils.checkObjectIsReadable(convertType)
+        SecurityUtils.checkObjectIsReadable(convertType);
 
 			 listObjects = Database.query(query);
 			 

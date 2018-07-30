@@ -33,7 +33,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
     public List<ModuleResponse__c> selectByIdAndSubmitted(Set<Id> recordIds) {
 
 
-        List<ModuleResponse__c> listModuleDependency;
+        List<ModuleResponse__c> listModuleResponse;
 
      if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
 
@@ -55,7 +55,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
     }
 
     public List<ModuleResponse__c> selectByIdWithQuestionResponses(Set<Id> moduleResponseIds) {
-        List<ModuleResponse__c> listModuleDependency;
+        List<ModuleResponse__c> listModuleResponse;
 
      if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
 
@@ -87,7 +87,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
     }
 
     public List<ModuleResponse__c> selectByKeyAndApproved(Set<String> keys) {
-        List<ModuleResponse__c> listModuleDependency;
+        List<ModuleResponse__c> listModuleResponse;
 
      if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
 
@@ -119,7 +119,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
         query += 'ORDER BY {2}';
         system.debug('query: ' + query);
 
-    List<ModuleResponse__c> listModuleDependency;
+    List<ModuleResponse__c> listModuleResponse;
 
      if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
 
@@ -141,7 +141,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
                     'FROM {1} ' +
                     'WHERE Module__r.Course__c IN :  coursesIds';
 
-     List<ModuleResponse__c> listModuleDependency;
+     List<ModuleResponse__c> listModuleResponse;
 
      if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
 
@@ -159,7 +159,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
 
     public List<ModuleResponse__c> selectByIdHavingCourseStatus(Set<Id> recordIds) {
 
-    List<ModuleResponse__c> listModuleDependency;
+    List<ModuleResponse__c> listModuleResponse;
 
      if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
 
@@ -182,7 +182,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
     
     public List<ModuleResponse__c> selectByIdWithQuestionPool(Set<Id> moduleResponseIds) {
     
-    List<ModuleResponse__c> listModuleDependency;
+    List<ModuleResponse__c> listModuleResponse;
 
      if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
 
