@@ -27,7 +27,12 @@ public class ModuleDependenciesSelector extends SObjectSelector {
     }
 
     public List<ModuleDependency__c> selectByModule(Set<Id> moduleIds) {
-        return (List<ModuleDependency__c>) Database.query(String.format(
+
+    List<ModuleDependency__c> listModuleDependency;
+
+     if(Schema.sObjectType.ModuleDependency__c.isAccessible()){	
+
+        listModuleDependency = (List<ModuleDependency__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE (Module__c IN :moduleIds OR Predecessor__c IN :moduleIds) ' +
@@ -36,10 +41,21 @@ public class ModuleDependenciesSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listModuleDependency;
     }
 
     public List<ModuleDependency__c> selectByPredecessor(Set<Id> moduleIds) {
-        return (List<ModuleDependency__c>) Database.query(String.format(
+
+    List<ModuleDependency__c> listModuleDependency;
+
+     if(Schema.sObjectType.ModuleDependency__c.isAccessible()){	
+
+        listModuleDependency = (List<ModuleDependency__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE Predecessor__c IN :moduleIds ' +
@@ -48,5 +64,11 @@ public class ModuleDependenciesSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+         }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listModuleDependency;
     }
 }

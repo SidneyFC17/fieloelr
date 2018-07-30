@@ -26,7 +26,12 @@ public class SegmentsSelector extends SObjectSelector{
 
     public List<FieloPLT__Segment__c> selectByProgramAndWithoutProgramWithCriteria(Id programId, Set<String> criterionFields){
         String metaSegmentRTName = 'Metasegment';
-        return (List<FieloPLT__Segment__c>) Database.query(
+
+         List<FieloPLT__Segment__c> listSegment;
+
+     if(Schema.sObjectType.FieloPLT__Segment__c.isAccessible()){	
+
+        listSegment = (List<FieloPLT__Segment__c>) Database.query(
                 String.format(
                 'select {0}, ' +
                 '(SELECT ' + String.join(new List<String>(criterionFields),',') + ' FROM FieloPLT__SegmentCriteria__r) ' +
@@ -37,5 +42,11 @@ public class SegmentsSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ) );
+
+                     }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listSegment;
     }
 }

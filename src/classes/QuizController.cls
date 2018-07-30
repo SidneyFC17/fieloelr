@@ -36,7 +36,13 @@ public with sharing class QuizController {
             }
             questionWrappers.add(questionWrapper);
         }
+
+        
+
         FieloELR__ModuleResponse__c submittedMResponse = FieloELR.ModuleService.submitModuleResponse (moduleResponse, questionWrappers);
+        
+
+        
         return JSON.serialize(submittedMResponse);      
         } catch(DMLException e) {
           throw new AuraHandledException(e.getDMLMessage(0));

@@ -219,7 +219,11 @@ public class CourseStatus extends SObjectDomain {
         // When the course status is deleted, must delete related module responses
         deleteCourseStatusModuleResponses(courseStatusMap, uow);
 
-        uow.commitWork();
+         if(Schema.sObjectType.Course__c.isDeletable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
 
         Map<Id,SObject> deletedModuleResponses = uow.m_deletedMapByType.get('FieloELR__ModuleResponse__c');
         for (Database.DeleteResult dr : uow.getResults(ModuleResponse__c.SObjectType).deleteResults) {

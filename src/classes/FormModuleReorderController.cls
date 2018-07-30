@@ -32,7 +32,12 @@ public with sharing class FormModuleReorderController {
               query += ' FROM ' + csObjectName;
               query += ' WHERE Id = : recordId ';
               
+        SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
+
+        SecurityUtils.checkObjectIsReadable(convertType);
+  
               recordObject = Database.query(query)[0];
+
           } else {
               recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
           }
@@ -129,10 +134,15 @@ public with sharing class FormModuleReorderController {
                             query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
                         }
                         query += ' LIMIT 500';
+
+                    SObjectType convertType = describe.getReferenceTo().get(0);
+
+                    SecurityUtils.checkObjectIsReadable(convertType);
+
                         for ( SObject o : Database.query(query) ) {
                             // Substring para que matche con el multipicklist (para multisegment)
                             options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
-                        }
+                         }
                       }
                       mapPicklistOptions.put( f.Name , options);
                   }
@@ -152,7 +162,13 @@ public with sharing class FormModuleReorderController {
       try{
 
           sp = Database.setSavepoint();
-          update records;
+          
+
+        sobjectType sobjectType = records.get(0).getSobjectType();
+         
+          SecurityUtils.checkObjectIsInsertable(sobjectType);
+            update records;
+        
           //TODO Crear Label DataSavedSuccessfully
           result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 

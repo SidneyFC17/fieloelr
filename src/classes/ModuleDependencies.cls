@@ -30,7 +30,13 @@ public class ModuleDependencies extends SObjectDomain {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
         updateModules(records, uow);
         Modules.validateAdminFields = false;
-        uow.commitWork();
+
+        if(Schema.sObjectType.Module__c.isCreateable()){
+           uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
     }
 
     public override void onAfterDelete() {
@@ -38,7 +44,11 @@ public class ModuleDependencies extends SObjectDomain {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             updateModules(records, uow);
             Modules.validateAdminFields = false;
-            uow.commitWork();
+            if(Schema.sObjectType.Module__c.isCreateable()){
+                 uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }  
 
