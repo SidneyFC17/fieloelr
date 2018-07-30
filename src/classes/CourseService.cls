@@ -33,9 +33,6 @@ global class CourseService {
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
-		
-
-
 	}
 
 	public static void inactivateCourses(Set<Id> courseIds){
@@ -285,7 +282,7 @@ global class CourseService {
 		}
 
 		 if(Schema.sObjectType.FieloPLT__Settings__c.isAccessible()){	
-             return Database.query(queryCourseStatus)
+             return Database.query(queryCourseStatus);
           }else{
             throw new FieloException(Label.CannotAccessRecords);
           }

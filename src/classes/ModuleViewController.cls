@@ -98,15 +98,10 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){
+        SecurityUtils.checkObjectIsReadable(convertType)
 
 			record = Database.query(query);
 			setRecord(record);
-
-			 }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
 		}
 	}
 
@@ -261,13 +256,9 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){
+        SecurityUtils.checkObjectIsReadable(convertType)
 
 			result = Database.query(query);
-
-		 }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
 
 		return result.get(0);
 	}
@@ -343,14 +334,10 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){
+        SecurityUtils.checkObjectIsReadable(convertType)
 
 			 listObjects = Database.query(query);
-
-		 }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
+			 
 		  return listObjects;
 	}
 

@@ -263,12 +263,9 @@ public with sharing class RelatedListController {
 
     SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-    if(SecurityUtils.checkObjectIsReadable(convertType)){
+    SecurityUtils.checkObjectIsReadable(convertType)
             listObjects = Database.query(query);
-      }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
+    
         return listObjects;
   }    
   /*

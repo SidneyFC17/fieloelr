@@ -36,11 +36,8 @@ public with sharing class BackendHeaderRecordController {
         
         SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){	
+        SecurityUtils.checkObjectIsReadable(convertType)
             cRecord = Database.query(query)[0];
-          }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
 
         queryRecordNotDone = false;
       }

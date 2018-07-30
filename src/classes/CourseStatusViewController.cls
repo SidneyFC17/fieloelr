@@ -68,12 +68,11 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){	
+        SecurityUtils.checkObjectIsReadable(convertType)
             record = Database.query(query);
+
 			setRecord(record);
-          }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+         
 
 		}
 	}
@@ -87,11 +86,9 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 		List<sObject> result;
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){	
+        SecurityUtils.checkObjectIsReadable(convertType)
         	 result = Database.query(query);
-          }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+          
 
 		return result.get(0);
 	}

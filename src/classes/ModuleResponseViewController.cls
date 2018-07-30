@@ -67,14 +67,11 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 
 			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-			if(SecurityUtils.checkObjectIsReadable(convertType)){
+			SecurityUtils.checkObjectIsReadable(convertType)
 
 				record = Database.query(query);
 				setRecord(record);
 
-				}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
 		}
 	}
   	@RemoteAction
@@ -87,14 +84,10 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-		if(SecurityUtils.checkObjectIsReadable(convertType)){
+		SecurityUtils.checkObjectIsReadable(convertType)
 
 		 result = Database.query(query);
 		 
-		}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-		
 		return result.get(0);
 	}
 

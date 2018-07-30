@@ -47,14 +47,10 @@ public with sharing class QuestionViewController extends PageSettingsController 
 
 			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        	if(SecurityUtils.checkObjectIsReadable(convertType)){
+        	SecurityUtils.checkObjectIsReadable(convertType)
 
 				record = Database.query(query);
 				setRecord(record);
-				
-			  }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
 
 		}
 	}

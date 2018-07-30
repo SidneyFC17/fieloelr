@@ -133,12 +133,10 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        	if(SecurityUtils.checkObjectIsReadable(convertType)){	
+        	SecurityUtils.checkObjectIsReadable(convertType)
             	record = Database.query(query);
 				setRecord(record);
-         	 }else{
-           	 	throw new FieloException(Label.CannotAccessRecords);
-         	 }
+         	
 		}
 	}
 
@@ -164,7 +162,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 		
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){
+        SecurityUtils.checkObjectIsReadable(convertType)
 
 			result = Database.query(query);
 
@@ -178,10 +176,6 @@ public with sharing class CourseViewController extends PageSettingsController {
 				}
 				result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
 			}
-
-			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
 
 		return result.get(0);
 	}

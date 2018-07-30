@@ -34,14 +34,9 @@ public with sharing class FormQuestionManageController {
           	
 			SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){
+        SecurityUtils.checkObjectIsReadable(convertType)
 
           		recordObject = Database.query(query)[0];
-
-		 }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
         	} else {
           		recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
         	}
@@ -162,15 +157,12 @@ public with sharing class FormQuestionManageController {
 
 							SObjectType convertType = Schema.getGlobalDescribe().get(describe.getReferenceTo().get(0));
 
-        					if(SecurityUtils.checkObjectIsReadable(convertType)){
+        					SecurityUtils.checkObjectIsReadable(convertType)
 
                 				for ( SObject o : Database.query(query) ) {
                   					// Substring para que matche con el multipicklist (para multisegment)
                    					options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
                 				}
-							}else{
-            					throw new FieloException(Label.CannotAccessRecords);
-         					 }
               				}
               				mapPicklistOptions.put( f.Name , options);
             			}
@@ -250,13 +242,9 @@ public with sharing class FormQuestionManageController {
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-        if(SecurityUtils.checkObjectIsReadable(convertType)){
+        SecurityUtils.checkObjectIsReadable(convertType)
 
 		result = Database.query(query);
-
-		}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
 
 	    if ( result.size() > 0 ) {
       		return result.get(0);
