@@ -298,7 +298,7 @@ public class TestModuleViewController {
         );
 
         List<FieloELR__Module__c> moduleRecords1 = ModuleViewController.getRecords(
-            'Module__c',
+            'FieloELR__Module__c',
             'Course__c',
             3,
             'Name',
@@ -308,7 +308,7 @@ public class TestModuleViewController {
     
 
         List<FieloELR__Module__c> moduleRecords2 = ModuleViewController.getRecords(
-            'Module__c',
+            'FieloELR__Module__c',
             'Course__c',
             3,
             null,
