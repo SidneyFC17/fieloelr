@@ -289,7 +289,14 @@ public class ExportService{
     }
 
     public static void saveData(SObjectUnitOfWork uow, List<MultiSegmentRelation> multiSegmentRelations){
-        uow.commitWork();
+        
+
+        if(Schema.sObjectType.Course__c.isCreateable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
         if(multiSegmentRelations != null){
             Set<String> segmentCombinations = new Set<String>();
             for(MultiSegmentRelation msr : multiSegmentRelations){
@@ -320,7 +327,12 @@ public class ExportService{
                     metaSegmentsByComb.put(msr.segmentsCombination, newMetaSegment);
                 }
             }
-            uowMetaSegments.commitWork();
+
+            if(Schema.sObjectType.FieloPLT__Segment__c.isCreateable() && Schema.sObjectType.FieloPLT__Segment__c.isUpdateable()){
+                 uowMetaSegments.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }          
         }
     }
 
@@ -603,6 +615,7 @@ public class ExportService{
     }
 
     public static void saveIncentives(SObjectUnitOfWork uow){
+        
         uow.commitWork();
     }
 

@@ -32,7 +32,12 @@ public with sharing class FormQuestionController {
               query += ' FROM ' + csObjectName;
               query += ' WHERE Id = : recordId ';
               
-              recordObject = Database.query(query)[0];
+            SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
+
+        SecurityUtils.checkObjectIsReadable(convertType);
+
+            recordObject = Database.query(query)[0];
+
           } else {
               recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
           }
@@ -143,6 +148,11 @@ public with sharing class FormQuestionController {
                             query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
                         }
                         query += ' LIMIT 500';
+
+                     SObjectType convertType = describe.getReferenceTo().get(0);
+
+                    SecurityUtils.checkObjectIsReadable(convertType);
+
                         for ( SObject o : Database.query(query) ) {
                             // Substring para que matche con el multipicklist (para multisegment)
                             options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
@@ -164,7 +174,17 @@ public with sharing class FormQuestionController {
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName' ;
         query += ' LIMIT 1';
-        List<sObject> result = Database.query(query);
+        
+        List<sObject> result;
+
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+
+            result = Database.query(query);
+
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
         return (FieloPLT__PageSettings__c) result.get(0);
     }
 
@@ -254,7 +274,16 @@ public with sharing class FormQuestionController {
       query += ' FROM ' + objectName;
       query += ' WHERE ID = :recordId' ;
       query += ' LIMIT 1';
-      List<sObject> result = Database.query(query);
+      List<sObject> result;
+      
+     if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+
+       result = Database.query(query);
+
+    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
       if ( result.size() > 0 ) {
           return result.get(0);
       }

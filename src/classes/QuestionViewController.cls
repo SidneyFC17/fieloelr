@@ -44,8 +44,14 @@ public with sharing class QuestionViewController extends PageSettingsController 
 					objectName
 				}
 			);
-			record = Database.query(query);
-			setRecord(record);
+
+			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        	SecurityUtils.checkObjectIsReadable(convertType);
+
+				record = Database.query(query);
+				setRecord(record);
+
 		}
 	}
 

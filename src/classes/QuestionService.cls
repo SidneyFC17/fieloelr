@@ -196,7 +196,13 @@ global class QuestionService {
 
 		SavePoint sp = Database.setSavePoint();
 		try{
-			uow.commitWork();
+
+			if(Schema.sObjectType.ModuleResponse__c.isCreateable() ){
+            uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;
@@ -209,7 +215,11 @@ global class QuestionService {
 		uow.registerDirty(qResponseQuery);
 		try{
 			QuestionResponses.validateAdminFields = false;
-			uow.commitWork();
+			if(Schema.sObjectType.QuestionResponse__c.isUpdateable() ){
+            uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;

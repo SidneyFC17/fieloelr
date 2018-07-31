@@ -178,7 +178,13 @@ public class ModuleResponses extends SObjectDomain {
 
         if(!mrWithNewCourseStatus.isEmpty()){
             CourseStatus.validateAdminFields = false;
-            uow.commitWork();
+
+            if(Schema.sObjectType.CourseStatus__c.isCreateable()){
+                  uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
             SObjectUnitOfWork.DatabaseResult results = uow.getResults(CourseStatus__c.SObjectType);
             
             Map<String,List<String>> errorMsgByCoursest = new Map<String,List<String>>();
@@ -507,7 +513,13 @@ public class ModuleResponses extends SObjectDomain {
 
         Boolean validateAdminFields = CourseStatus.validateAdminFields;
         CourseStatus.validateAdminFields = false;
-        uow.commitWork();
+
+        if(Schema.sObjectType.CourseStatus__c.isCreateable() && Schema.sObjectType.CourseStatus__c.isUpdateable()){
+             uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
         CourseStatus.validateAdminFields = validateAdminFields;        
     }
 }

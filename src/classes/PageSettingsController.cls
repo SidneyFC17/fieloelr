@@ -729,7 +729,15 @@ public with sharing abstract class PageSettingsController {
         }
         // ORDER BY & LIMIT 
         query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 100 ';
-        return Database.query(query);
+        
+        List<FieloPLT__PageSettings__c> listPageSettings;
+
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+            listPageSettings =  Database.query(query);
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+        return listPageSettings;
     }
 
     private List<FieloPLT__PageSettings__c> getRelatedForms( Set<String> objects, Id programId ) {
@@ -742,8 +750,16 @@ public with sharing abstract class PageSettingsController {
             query += ' AND ( FieloPLT__Program__c = :programId OR FieloPLT__Program__c = null )';
         }
         // ORDER BY & LIMIT 
-        query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 100 ';            
-        return Database.query(query);        
+        query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 100 ';         
+
+        List<FieloPLT__PageSettings__c> listPageSettings;
+
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+            listPageSettings =  Database.query(query);
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+        return listPageSettings;       
     }   
 
     /***** METODOS STATICOS DE SOPORTE *****/
@@ -829,7 +845,13 @@ public with sharing abstract class PageSettingsController {
         // ORDER BY & LIMIT 
         query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 1 ';
 
-        List<FieloPLT__PageSettings__c> pageSetting = Database.query(query);
+        List<FieloPLT__PageSettings__c> pageSetting;
+        
+         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+            pageSetting =  Database.query(query);
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
 
         return pageSetting.isEmpty() ? null : pageSetting.get(0);       
     }
@@ -866,6 +888,8 @@ public with sharing abstract class PageSettingsController {
              query += ' ORDER BY FieloPLT__Type__c, FieloPLT__RecordType__c, FieloPLT__Order__c ASC LIMIT 100 ';
         }
 
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+
         for(FieloPLT__PageSettings__c pageSetting: Database.query(query)){
             if(pageSetting.FieloPLT__PageSettingsAssignments__r.isEmpty()){
                 listPageSettings.add(pageSetting);
@@ -873,6 +897,11 @@ public with sharing abstract class PageSettingsController {
                 listPageSettings.add(pageSetting);
             }            
         }
+
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+        
         return listPageSettings;
     }
 }

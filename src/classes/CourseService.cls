@@ -27,7 +27,12 @@ global class CourseService {
 		}
 
 		Courses.validateAdminFields = false;
-		uow.commitWork();
+
+			if(Schema.sObjectType.Course__c.isUpdateable()){
+            	uow.commitWork();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 	}
 
 	public static void inactivateCourses(Set<Id> courseIds){
@@ -46,7 +51,12 @@ global class CourseService {
 		}
 
 		Courses.validateAdminFields = false;
-		uow.commitWork();
+
+		if(Schema.sObjectType.Course__c.isUpdateable()){
+            	uow.commitWork();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 	}
 
 	public static void createFromModel( Course__c record, Id modelId){
@@ -134,8 +144,13 @@ global class CourseService {
 				query += ' OFFSET ' + offset;
 			}
 		}
-
-		return Database.query(query);
+		
+		if(Schema.sObjectType.Course__c.isAccessible()){	
+            return Database.query(query);
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+		return null;
 	}
 
 	global static List<Course__c> getCourses(Set<String> fieldsCourse, 
@@ -232,7 +247,7 @@ global class CourseService {
 		 if(Schema.sObjectType.FieloPLT__Settings__c.isAccessible()){	
             returnQueryCourses = Database.query(queryCourses);
           }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
+            throw new FieloException(Label.CannotAccessRecords);
           }
 
 		return returnQueryCourses;
@@ -266,7 +281,13 @@ global class CourseService {
 			}
 		}
 
-		return Database.query(queryCourseStatus);
+		 if(Schema.sObjectType.FieloPLT__Settings__c.isAccessible()){	
+             return Database.query(queryCourseStatus);
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+		return null;
 	}
 
 	global class CourseWrapper{
@@ -394,13 +415,21 @@ global class CourseService {
 				Set<String> fieldsModuleDependencyClone = new Set<String>(fieldsModuleDependency);
 				fieldsModuleDependencyClone.add('FieloELR__Module__c');
 				String queryModuleDependencies = 'SELECT ' + String.join(new List<String>(fieldsModuleDependencyClone), ',') + ' FROM ModuleDependency__c WHERE Module__c in : modules';
-				for(ModuleDependency__c md : Database.query(queryModuleDependencies)){
+				
+
+				if(Schema.sObjectType.ModuleDependency__c.isAccessible()){	
+
+           			for(ModuleDependency__c md : Database.query(queryModuleDependencies)){
 					if(dependenciesByModule.containsKey(md.Module__c)){
 						dependenciesByModule.get(md.Module__c).add(md);
 					}else{
 						dependenciesByModule.put(md.Module__c, new List<ModuleDependency__c>{md});
 					}
 				}
+
+         		 }else{
+           			 throw new FieloException(Label.CannotAccessRecords);
+          		}
 			}
 
 			if(!filterByDependencies){
@@ -459,6 +488,9 @@ global class CourseService {
 			cdQuery += ' AND Course__c in : courses';
 		}
 		Map<Id,Set<String>> cdKeysByCourse = new Map<Id,Set<String>>();
+
+		if(Schema.sObjectType.CourseDependency__c.isAccessible()){	
+
 		for(CourseDependency__c cd : Database.query(cdQuery)){
 			if(cdKeysByCourse.containsKey(cd.Course__c)){
 				cdKeysByCourse.get(cd.Course__c).add(String.valueOf(cd.Predecessor__c));
@@ -466,6 +498,10 @@ global class CourseService {
 				cdKeysByCourse.put(cd.Course__c, new Set<String>{String.valueOf(cd.Predecessor__c)});
 			}
 		}
+
+		}else{
+           			 throw new FieloException(Label.CannotAccessRecords);
+          		}
 
 		Set<String> cdStringKeys = new Set<String>();
 		for(Id courseId : cdKeysByCourse.keySet()){
@@ -479,6 +515,9 @@ global class CourseService {
 	private static Set<String> getMDStringKeys(List<Module__c> modules, Id memberId){
 		String mdQuery = 'SELECT Module__c, Predecessor__c FROM ModuleDependency__c WHERE Predecessor__c in (SELECT Module__c FROM ModuleResponse__c WHERE Member__c =: memberId AND IsApproved__c = true AND Module__c in : modules) AND Module__c in : modules';
 		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
+
+		if(Schema.sObjectType.ModuleDependency__c.isAccessible()){	
+
 		for(ModuleDependency__c md : Database.query(mdQuery)){
 			if(mdKeysByCourse.containsKey(md.Module__c)){
 				mdKeysByCourse.get(md.Module__c).add(String.valueOf(md.Predecessor__c));
@@ -486,6 +525,10 @@ global class CourseService {
 				mdKeysByCourse.put(md.Module__c, new Set<String>{String.valueOf(md.Predecessor__c)});
 			}
 		}
+
+		}else{
+           			 throw new FieloException(Label.CannotAccessRecords);
+          		}
 
 		Set<String> mdStringKeys = new Set<String>();
 		for(Id moduleId : mdKeysByCourse.keySet()){
@@ -505,7 +548,11 @@ global class CourseService {
 		}
 		SavePoint sp = Database.setSavePoint();
 		try{
-			uow.commitWork();
+			if(Schema.sObjectType.Course__c.isUpdateable()){
+            	uow.commitWork();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;
@@ -514,43 +561,83 @@ global class CourseService {
 	
 	public static void testTemporalTriggers(){
 		try{
-			insert new AnswerOption__c();
+			if(Schema.sObjectType.AnswerOption__c.isUpdateable()){
+            	insert new AnswerOption__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Answer__c();
+			if(Schema.sObjectType.Answer__c.isUpdateable()){
+            	insert new Answer__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new CourseDependency__c();
+			if(Schema.sObjectType.CourseDependency__c.isUpdateable()){
+            	insert new CourseDependency__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Course__c();
+			if(Schema.sObjectType.Course__c.isUpdateable()){
+            	insert new Course__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new CourseStatus__c();
+			if(Schema.sObjectType.CourseStatus__c.isUpdateable()){
+            	insert new CourseStatus__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new ModuleDependency__c();
+			if(Schema.sObjectType.ModuleDependency__c.isUpdateable()){
+            	insert new ModuleDependency__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new ModuleResponse__c();
+			if(Schema.sObjectType.ModuleResponse__c.isUpdateable()){
+            	insert new ModuleResponse__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Module__c();
+			if(Schema.sObjectType.Module__c.isUpdateable()){
+            	insert new Module__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Question__c();
+			if(Schema.sObjectType.Question__c.isUpdateable()){
+            	insert new Question__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new QuestionResponse__c();
+			if(Schema.sObjectType.QuestionResponse__c.isUpdateable()){
+            	insert new QuestionResponse__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 	}
 

@@ -64,8 +64,14 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 					objectName
 				}
 			);
-			record = Database.query(query);
-			setRecord(record);
+
+			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+			SecurityUtils.checkObjectIsReadable(convertType);
+
+				record = Database.query(query);
+				setRecord(record);
+
 		}
 	}
   	@RemoteAction
@@ -74,7 +80,14 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
-		List<sObject> result = Database.query(query);
+		List<sObject> result;
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+		SecurityUtils.checkObjectIsReadable(convertType);
+
+		 result = Database.query(query);
+		 
 		return result.get(0);
 	}
 
