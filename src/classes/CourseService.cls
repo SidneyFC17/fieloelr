@@ -302,6 +302,17 @@ global class CourseService {
 			if (dependencies!=null) {
 				this.dependencies = dependencies;
 			}
+			if (this.dependencies!=null) {
+				Set<String> mdStringKeys;
+				if (!moduleResponses.isEmpty()) {
+					mdStringKeys = getMDStringKeys(new List<Module__c>{module}, moduleResponses[0].Member__c);
+					this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
+				} else {
+					this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+				}
+				
+			}
+			
 		}
 
 		public ModuleWrapper(Module__c module){
@@ -364,7 +375,7 @@ global class CourseService {
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, status, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
-		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__Module__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__Member__c','FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__NumberofApprove__c','FieloELR__Module__c'};
 		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}

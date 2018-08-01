@@ -1,4 +1,55 @@
-public with sharing class ModuleDetailController {
+public with sharing class ModuleResponseDetailController {
+	
+	@AuraEnabled
+	public static string getModuleResponse(String moduleResponseId, String fieldsModuleResponse, String fieldsQuestion, String fieldsAnswerOption) {
+		try{
+			Map<String, Schema.DescribeSObjectResult> describeMap = new Map<String, Schema.DescribeSObjectResult>();
+			Schema.DescribeSObjectResult[] descResult = Schema.describeSObjects(new String[]{'FieloELR__Course__c','FieloELR__Module__c','FieloELR__Question__c','FieloELR__CourseStatus__c','FieloELR__ModuleResponse__c','FieloELR__AnswerOption__c'});
+			for (Schema.DescribeSObjectResult result: descResult) {
+				describeMap.put(result.getName(),result);
+			}
+			
+			Set<String> fieldSetModuleResponse = new Set<String>();
+			Set<String> fieldSetQuestion = new Set<String>();
+			Set<String> fieldSetAnswerOption = new Set<String>();
+
+			if( !Module__c.sObjectType.getDescribe().isAccessible() )
+				throw new FieloPLT.FieloException('Insufficient permission to access modules.');
+			if( !ModuleResponse__c.sObjectType.getDescribe().isAccessible() )
+				throw new FieloPLT.FieloException('Insufficient permission to access module responses.');
+			if( !Course__c.sObjectType.getDescribe().isAccessible() )
+				throw new FieloPLT.FieloException('Insufficient permission to access courses.');
+			if( !CourseStatus__c.sObjectType.getDescribe().isAccessible() )
+				throw new FieloPLT.FieloException('Insufficient permission to access course status.');
+
+			fieldSetModuleResponse.addAll(fieldsModuleResponse.split(','));
+			fieldSetQuestion.addAll(fieldsQuestion.split(','));
+			fieldSetAnswerOption.addAll(fieldsAnswerOption.split(','));
+
+            return JSON.serialize(FieloELR.ModuleService.getModuleResponse(
+				moduleResponseId,
+				fieldSetModuleResponse,
+				fieldSetQuestion,
+				fieldSetAnswerOption
+			));
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+	}
+
+	@AuraEnabled
+	public static String getFieldData(String sObjectName, String fields) {
+		try{
+			return AuraService.getFieldData(sObjectName, fields);
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+	}
+
 	@AuraEnabled
 	public static String getModule(FieloPLT__Member__c member, String moduleId, String moduleFields, String moduleResponseFields) {
 		try{
@@ -43,17 +94,6 @@ public with sharing class ModuleDetailController {
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
-            throw new AuraHandledException(e.getMessage());
-        }
-	}
-
-	@AuraEnabled
-	public static String getFieldData(String sObjectName, String fields) {
-		try{
-			return AuraService.getFieldData(sObjectName, fields);
-		} catch(DMLException e) {
-           	throw new AuraHandledException(e.getDMLMessage(0));
-        } catch(Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
 	}

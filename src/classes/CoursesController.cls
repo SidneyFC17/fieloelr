@@ -180,6 +180,8 @@ public with sharing class CoursesController {
 			}
 			courseStatusFields.add('Id');
 			courseStatusFields.add('FieloELR__Course__c');
+			courseStatusFields.add('FieloELR__Progress__c');
+
             CourseStatusSelector selector = new CourseStatusSelector(courseStatusFields);
 			selector.setLimit(quantity);
 			selector.setOffset(offset);
@@ -222,7 +224,7 @@ public with sharing class CoursesController {
 			
 			Map<String, String> result = new Map<String, String>{
 				'courses' => JSON.serialize(courses),
-				'courseStatus' => JSON.serialize(courseStatusList[0])
+				'courseStatus' => JSON.serialize(courseStatusList)
 			};
             return JSON.serialize(result);
        } catch(DMLException e) {
