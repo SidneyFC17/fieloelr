@@ -5,6 +5,8 @@
     <aura:attribute name="fieldName" type="String" />
 
     <aura:if isTrue="{!v.config.type == 'btn'}">
-        <lightning:button label="{!v.config.label}" name="{!v.config.label}" onclick="{!c.gotoDetail}" variant="{!v.config.variant}" />
+        <div class="fielo-view-course" data-course-id="{!v.record.Id}">
+            <lightning:button label="{!v.config.label}" name="{!v.config.label}" onclick="{!c.gotoDetail}" variant="{!v.config.variant}" />
+        </div>
     </aura:if>
 </aura:component>

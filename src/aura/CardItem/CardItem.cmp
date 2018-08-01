@@ -47,8 +47,8 @@
                 </lightning:layout>
                 <aura:set attribute="else">
                     <div class="{!v.layout}">
-                        <lightning:layout horizontalAlign="center" >
-                            <lightning:layoutItem >
+                        <lightning:layout class="fielo-layout" horizontalAlign="center" >
+                            <lightning:layoutItem class="fielo-layout__item">
                                 <aura:iteration items="{!v.fieldset}" var="field">
                                     <div class="{!field.type + ' item'}">
                                         <aura:if isTrue="{!field.showLabel}">

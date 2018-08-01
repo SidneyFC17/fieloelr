@@ -1,0 +1,12 @@
+.THIS.fielo-question-header-container{
+    display: inline-flex;
+}
+
+.THIS .slds-card__header {
+    padding-left: 24px;
+}
+
+.THIS .fielo-question__toggle-button-container{
+    width: fit-content;
+	padding-right: 27px;
+}

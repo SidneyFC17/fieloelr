@@ -4,7 +4,9 @@
             console.log('FieldsSection.doInit');
             var config = JSON.parse(component.get('v.config'));
             var activeViewName = config.activeViewName;
-            console.log(activeViewName);
+            if (config.courseStatus) {
+                var courseStatus = JSON.parse(config.courseStatus);
+            }
             var record = component.get('v.record');
             var course = [];
             var courseField = {};
@@ -30,22 +32,24 @@
                         if (!pointsEarned) {
                             pointsEarned = 0;
                         }
-                        if (record[field]) {
-                            if (record[field].records) {
-                                record[field].records.forEach(function(row) {
-                                    if (field == 'FieloELR__Transactions__r') {
-                                        if (row.FieloPLT__Points__c) {
-                                        	pointsEarned += row.FieloPLT__Points__c;    
-                                        }
-                                    } else {
-                                        if (row.FieloPLT__Transaction__r) {
-                                            if (row.FieloPLT__Transaction__r.FieloPLT__Points__c) {
-                                                pointsEarned += row.FieloPLT__Transaction__r.FieloPLT__Points__c;
+                        if (courseStatus) {
+                            if (courseStatus[field]) {
+                                if (courseStatus[field].records) {
+                                    courseStatus[field].records.forEach(function(row) {
+                                        if (field == 'FieloELR__Transactions__r') {
+                                            if (row.FieloPLT__Points__c) {
+                                                pointsEarned += row.FieloPLT__Points__c;    
+                                            }
+                                        } else {
+                                            if (row.FieloPLT__Transaction__r) {
+                                                if (row.FieloPLT__Transaction__r.FieloPLT__Points__c) {
+                                                    pointsEarned += row.FieloPLT__Transaction__r.FieloPLT__Points__c;
+                                                }
                                             }
                                         }
-                                    }
-                                });
-                                pointField.value = pointsEarned;;
+                                    });
+                                    pointField.value = pointsEarned;;
+                                }
                             }
                         }
                     }
@@ -57,7 +61,7 @@
                 
                 if(record.FieloELR__Status__c) {
                     if (record.FieloELR__Status__c == 'Scheduled') {
-                    	component.set('v.className', ' fielo-section--scheduled');
+                        component.set('v.className', ' fielo-section--scheduled');
                     } else {
                         component.set('v.className', ' fielo-section--active');
                     }

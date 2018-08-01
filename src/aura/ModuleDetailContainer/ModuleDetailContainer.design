@@ -1,0 +1,3 @@
+<design:component>
+        <design:attribute label="Courses Page" name="coursesPage" datasource="apex://CommutyPages"/>
+</design:component>

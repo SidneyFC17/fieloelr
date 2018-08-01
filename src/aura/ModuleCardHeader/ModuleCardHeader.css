@@ -1,0 +1,12 @@
+.THIS.fielo-module-header-container{
+    display: inline-flex;
+}
+
+.THIS .fielo-module__toggle-button-container{
+    width: fit-content;
+	padding-right: 27px;
+}
+
+.THIS a:link{
+    color: #0070D2;
+}

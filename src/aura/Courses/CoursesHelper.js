@@ -85,29 +85,18 @@
             }           
             var member = component.get('v.member');
             var fieldset = component.get('v.fieldset');
-            fieldset = helper.getFieldset(fieldset).fieldset;
+            fieldset = helper.getFieldFromFieldset(fieldset).fieldset.join(',');
             
             if(fieldset != ''){
-                fieldset += ',FieloELR__SubscriptionMode__c,FieloELR__Status__c';
-            }
-            if(fieldset.toLowerCase().indexOf('fieloelr__image__c') == -1) {
-                fieldset += ',FieloELR__Image__c'
-            }
-            if(fieldset.toLowerCase().indexOf('fieloelr__externalurl__c') == -1) {
-                fieldset += ',FieloELR__ExternalURL__c'
-            }
-            if(fieldset.toLowerCase().indexOf('fieloelr__description__c') == -1) {
-                fieldset += ',FieloELR__Description__c'
-            }
-            if(fieldset.toLowerCase().indexOf('fieloelr__startdate__c') == -1) {
-                fieldset += ',FieloELR__StartDate__c'
-            }
-            if(fieldset.toLowerCase().indexOf('fieloelr__enddate__c') == -1) {
-                fieldset += ',FieloELR__EndDate__c'
+                this.requiredFields.forEach(function(fieldName) {
+                    if (fieldset.toLowerCase().indexOf(fieldName.toLowerCase()) == -1) {
+                        fieldset += ',' + fieldName;
+                    }
+                });
             }
             
             var modulesFieldset = component.get('v.courseFieldset');
-            modulesFieldset = helper.getFieldset(modulesFieldset).fieldset.join(',');        
+            modulesFieldset = helper.getFieldFromFieldset(modulesFieldset).fieldset.join(',');
             if(modulesFieldset != '' && modulesFieldset.indexOf('FieloELR__AttemptsAllowed__c') == -1){
                 modulesFieldset += ',FieloELR__AttemptsAllowed__c';
             }
@@ -118,6 +107,7 @@
             if(member){            
                 var action;
                 var activeViewName = component.get('v.activeViewName');
+                var showPointsEarned = component.get('v.showPointsEarned');
                 
                 if (activeViewName == 'availableCourses') {
                     action = component.get('c.getCourses');
@@ -132,7 +122,8 @@
                     'quantity': quantity + 1,
                     'offset': offset,
                     'sortByClause': sortByClause,
-                    'dynamicFilter': dynamicFilterString
+                    'dynamicFilter': dynamicFilterString,
+                    'showPointsEarned': showPointsEarned
                 };
                 action.setParams(params);
                 // Add callback behavior for when response is received
@@ -143,12 +134,20 @@
                     if (component.isValid() && state === 'SUCCESS') {                    
                         var member = component.get('v.member');
                         var memberId = member.Id;                                     
-                        var coursesList = JSON.parse(response.getReturnValue());
+                        var result = JSON.parse(response.getReturnValue());
+                        console.log(JSON.stringify(result, null, 2));
+                        var coursesList;
+                        var courseStatus;
+                        if (activeViewName == 'availableCourses') {
+                            coursesList = result;
+                        } else {
+                            coursesList = JSON.parse(result.courses);
+                            courseStatus = JSON.parse(result.courseStatus);
+                        }
                         component.set('v.coursesList', coursesList);
-                        component.set('v.showCourse', false);
-                        component.set('v.showModule', false);
-                        component.set('v.showModuleResponse', false);
+                        component.set('v.courseStatus', courseStatus);
                         component.set('v.showCoursesList', true);
+                        helper.getFieldSet(component);
                     } else {
                         var errorMsg = response.getError()[0].message;
                         toastEvent.setParams({
@@ -185,7 +184,7 @@
         }
         window.localStorage.setItem('coursesCache', JSON.stringify(coursesCache));        
     },
-    getFieldset : function(fieldset) {
+    getFieldFromFieldset : function(fieldset) {
         var fields = {fieldset: ['Name'], subcomponents: []};
         fieldset.forEach(function(field){            
             if(field.type != 'subcomponent'){
@@ -292,5 +291,133 @@
         );
         console.log(buttons);
         component.set('v.buttons', buttons);
-    }
+    },
+    getFieldSet: function(component) {
+        try{
+            console.log('getFieldsetAction');
+            var config = component.get('v.configDefault');
+            var title, fields, fieldset;
+            config = JSON.parse(config);
+            // TITLE
+            var titleValue = component.get('v.titleValue').trim();
+            if(titleValue.length > 0){
+                if (titleValue.indexOf('{') == 0) {
+                    title = JSON.parse(titleValue);
+                } else {
+                    title = {
+                        "value": component.get('v.titleValue'),
+                        "type": "text"
+                    };                    
+                }
+            }
+            if (title) {
+                titleValue = '';
+                var type = title.type.toLowerCase();
+                var value = title.value;
+                if(type == 'label'){
+                    var label = '$Label.' + value;
+                    titleValue = $A.get(label);
+                    component.set('v.title', titleValue);                
+                }else{
+                    titleValue = value;
+                    component.set('v.title', titleValue);
+                }
+            }
+            // TITLE
+            
+            // FIELDSET
+            fieldset = [], fields = [];                        
+            var fieldsConfig = component.get('v.fields').trim();
+            var courseDetailFields = component.get('v.courseDetailFields').trim();
+            if(fieldsConfig.length == 0){
+                fieldset = config.fieldset;                
+            } else if (fieldsConfig.indexOf('[') == 0) {
+                fieldset = JSON.parse(fieldsConfig);
+            } else {
+                var newField, nameAndType, apiName, type;
+                var fieldsList = fieldsConfig.split(',');
+                var detailFieldsList = courseDetailFields.split(',');
+                fieldsList.join(detailFieldsList);
+                fieldset.push({
+                    "apiName": "Id",
+                    "type": "subcomponent",
+                    "subcomponent": "c:CourseContent",
+                    "label": {
+                        "type": "default"
+                    },
+                    "showLabel": false,
+                    "config": component.get('v.compConfig')
+                });
+                fieldsList.forEach(function(field){
+                    nameAndType = field.split('/');
+                    apiName = nameAndType[0].trim();
+                    type = nameAndType[1] ? nameAndType[1].trim().toLowerCase() : 'output';
+                    if (apiName.toLowerCase() != 'name' && apiName.toLowerCase() != 'fieloelr__description__c') {
+                        newField = {
+                            'apiName': apiName,
+                            'type': type,
+                            'label': {},
+                            'showLabel': true
+                        }
+                        fieldset.push(newField);
+                    } else if (apiName.toLowerCase() == 'fieloelr__description__c') {
+                        fieldset.push({
+                            "apiName": "FieloELR__Description__c",
+                            "type": "subcomponent",
+                            "subcomponent": "c:CourseDescription",
+                            "label": {
+                                "type": "default"
+                            },
+                            "showLabel": false
+                        });
+                    }
+                });
+                fieldset.push({
+                    "apiName": "FieloELR__StartDate__c",
+                    "type": "subcomponent",
+                    "subcomponent": "c:CourseDatesContainer",
+                    "label": {
+                        "type": "default"
+                    },
+                    "showLabel": false,
+                    "config": JSON.stringify(
+                        {
+                            "daysToBeConsideredNew": component.get('v.daysToBeConsideredNew'),
+                            "daysToBeConsideredWarning": component.get('v.daysToBeConsideredWarning')
+                        }
+                    )
+                });
+                fieldset.push({
+                    "apiName": "Id",
+                    "type": "subcomponent",
+                    "subcomponent": "c:CourseFieldsSection",
+                    "label": {
+                        "type": "default"
+                    },
+                    "showLabel": false,
+                    "config": JSON.stringify(
+                        {
+                            'fields': component.get('v.courseDetailFields').trim(),
+                            'fieldsMeta': component.get('v.courseDetailFieldMeta'),
+                            'activeViewName': component.get('v.activeViewName'),
+                            'courseStatus': JSON.stringify(component.get('v.courseStatus'))
+                        }
+                    )
+                });
+            }
+            component.set('v.fieldset', fieldset);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    requiredFields: [
+        'Name',
+        'FieloELR__SubscriptionMode__c',
+        'FieloELR__Status__c',
+        'FieloELR__Image__c',
+        'FieloELR__ExternalURL__c',
+        'FieloELR__Description__c',
+        'FieloELR__StartDate__c',
+        'FieloELR__EndDate__c'
+    ]
 })

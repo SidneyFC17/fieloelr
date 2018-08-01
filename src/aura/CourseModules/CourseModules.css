@@ -1,0 +1,12 @@
+.THIS.fielo-modules-container {
+    color: #54698D;
+    max-width: 753px;
+}
+
+.THIS .fielo-module-card-container > header{
+    display: none;
+}
+
+.THIS .fielo-module-card-container > header ~ header{
+    display: unset;
+}

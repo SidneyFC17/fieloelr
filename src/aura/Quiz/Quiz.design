@@ -1,0 +1,6 @@
+<design:component label="FieloELR - Quiz">
+    <design:attribute label="Submit Mode" name="submitMode" datasource="Question,Module"/>
+    <design:attribute label="Presentation Mode" name="presentationMode" datasource="All at once,One By One"/>
+    <design:attribute label="Feedback Mode" name="feedbackMode" datasource="Immediate,At the End"/>
+    <design:attribute label="Display Question Name" name="showQuestionName"/>
+</design:component>

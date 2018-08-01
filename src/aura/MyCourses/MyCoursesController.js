@@ -44,7 +44,7 @@
                 fieldset.push({
                   "apiName": "Name",
                   "type": "subcomponent",
-                  "subcomponent": "FieloELR:ShowRecord",
+                  "subcomponent": "c:ShowRecord",
                   "label": {
                     "type": "default"
                   },
@@ -72,7 +72,7 @@
                     fieldset.push({
                       "apiName": "FieloELR__Progress__c",
                       "type": "subcomponent",
-                      "subcomponent": "FieloELR:ProgressBar",
+                      "subcomponent": "c:ProgressBar",
                       "config": {
                         "layout": "bar"
                       },
@@ -111,7 +111,7 @@
                 fieldset.push({
                     "apiName": "Name",
                     "type": "subcomponent",
-                    "subcomponent": "FieloELR:ModuleCheck",
+                    "subcomponent": "c:ModuleCheck",
                     "label": {
                       "type": "label",
                       "value": "c.SuccessfullyCompleted"
@@ -120,7 +120,7 @@
                   })
                 fieldset.push({"apiName":"TakeModule",
                                "type":"subcomponent",
-                               "subcomponent":"FieloELR:TakeModule",
+                               "subcomponent":"c:TakeModule",
                                "label":{"type":"text","value":""},
                                "showLabel":false
                               })

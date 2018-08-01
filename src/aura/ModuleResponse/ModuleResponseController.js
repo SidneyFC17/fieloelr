@@ -2,7 +2,7 @@
     doInit : function(component, event, helper) {        
         var moduleResponse = component.get('v.moduleResponse');        
         var fieldsModuleResponse = component.get('v.fieldsModuleResponse');        
-        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");        
+        var spinner = $A.get("e.c:ToggleSpinnerEvent");        
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -17,7 +17,7 @@
             var toastEvent = $A.get("e.force:showToast");
             var message;
             var state = response.getState();         
-            var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");                
+            var spinner = $A.get("e.c:ToggleSpinnerEvent");                
             if (component.isValid() && state === 'SUCCESS') {                    
                 var moduleResponse = JSON.parse(response.getReturnValue());                
                 component.set('v.moduleResponseQuestions', moduleResponse);

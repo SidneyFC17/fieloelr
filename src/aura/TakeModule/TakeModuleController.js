@@ -11,7 +11,7 @@
     },
     takeModule: function(component, event, helper){
         var toastEvent = $A.get("e.force:showToast");
-        var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+        var spinner = $A.get("e.c:ToggleSpinnerEvent");
         if(spinner){
             spinner.setParam('show', true);
             spinner.fire();    
@@ -26,8 +26,8 @@
             })
             // Add callback behavior for when response is received
             action.setCallback(this, function(response) {
-                var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
-                var takeModuleEvent = $A.get("e.FieloELR:TakeModuleEvent");
+                var spinner = $A.get("e.c:ToggleSpinnerEvent");
+                var takeModuleEvent = $A.get("e.c:TakeModuleEvent");
                 var state = response.getState();
                 if (component.isValid() && state === 'SUCCESS') {
                     var moduleWrapper = JSON.parse(response.getReturnValue());     
@@ -57,7 +57,7 @@
     },
     showModule: function(component){
         var moduleResponse = component.get('v.moduleResponse');
-        var moduleResponseEvent = $A.get("e.FieloELR:ShowModuleResponseEvent");        
+        var moduleResponseEvent = $A.get("e.c:ShowModuleResponseEvent");        
         var moduleName = component.get('v.record').Name;
         if(moduleResponseEvent){            
             moduleResponseEvent.setParam('moduleResponse', moduleResponse);

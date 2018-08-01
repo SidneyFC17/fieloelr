@@ -1,2 +1,18 @@
-.THIS {
+.THIS.fielo-module-quiz {
+    color: #54698D;
+    max-width: 753px;
+}
+
+.THIS .fielo-question-separator {
+    width: 95%;
+    padding-left: 5%;
+}
+
+.THIS .fielo-question-separator hr{
+	margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.THIS .fielo-question-separator:first-child {
+    display:none;
 }

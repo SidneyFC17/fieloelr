@@ -18,10 +18,9 @@
         try{
             var navEvt = $A.get("e.force:navigateToSObject");
             navEvt.setParams({
-                "recordId": component.get('v.moduleId'),
-                "slideDevName": "detail"
+                "recordId": component.get('v.moduleId')
             });
-            navEvt.fire();   
+            navEvt.fire();
         } catch(e) {
             console.log(e);
         }
@@ -50,8 +49,7 @@
                     var courseId = response.getReturnValue();
                     var navEvt = $A.get("e.force:navigateToSObject");
                     navEvt.setParams({
-                        "recordId": courseId,
-                        "slideDevName": "detail"
+                        "recordId": courseId
                     });
                     navEvt.fire();  
                 }else {

@@ -1,10 +1,10 @@
 <aura:component controller="CourseAction">
-    <aura:attribute name="record" type="sObject"/>
-    <aura:attribute name="name" type="String" />
-    <aura:attribute name="config" type="String" />
-    <aura:attribute name="fieldName" type="String" />
-    <aura:attribute name="moduleNumber" type="String" />
-    <aura:attribute name="moduleId" type="String" />
+    <aura:attribute type="sObject" name="record"/>
+    <aura:attribute type="String" name="name"/>
+    <aura:attribute type="String" name="config"/>
+    <aura:attribute type="String" name="fieldName"/>
+    <aura:attribute type="String" name="moduleNumber"/>
+    <aura:attribute type="String" name="moduleId"/>
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     
@@ -26,7 +26,6 @@
                                 <lightning:button label="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
                             </aura:set>
                         </aura:if>
-                        
                     </aura:set>
                 </aura:if>
             </aura:set>
