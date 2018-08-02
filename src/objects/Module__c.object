@@ -120,6 +120,46 @@
                     <default>false</default>
                     <label>Youtube Video</label>
                 </value>
+                <value>
+                    <fullName>MP4</fullName>
+                    <default>false</default>
+                    <label>MP4</label>
+                </value>
+                <value>
+                    <fullName>MP3</fullName>
+                    <default>false</default>
+                    <label>MP3</label>
+                </value>
+                <value>
+                    <fullName>Static Resource</fullName>
+                    <default>false</default>
+                    <label>Static Resource</label>
+                </value>
+                <value>
+                    <fullName>Carousel</fullName>
+                    <default>false</default>
+                    <label>Carousel</label>
+                </value>
+                <value>
+                    <fullName>Vimeo</fullName>
+                    <default>false</default>
+                    <label>Vimeo</label>
+                </value>
+                <value>
+                    <fullName>Audio Ogg</fullName>
+                    <default>false</default>
+                    <label>Audio Ogg</label>
+                </value>
+                <value>
+                    <fullName>WebM</fullName>
+                    <default>false</default>
+                    <label>WebM</label>
+                </value>
+                <value>
+                    <fullName>Video Ogg</fullName>
+                    <default>false</default>
+                    <label>Video Ogg</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
@@ -248,6 +288,31 @@
                     <fullName>Negative Weight</fullName>
                     <default>false</default>
                     <label>Negative Weight</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>QuestionDisplayMode__c</fullName>
+        <defaultValue>&apos;All at once&apos;</defaultValue>
+        <externalId>false</externalId>
+        <label>Question Display Mode</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>One by one</fullName>
+                    <default>false</default>
+                    <label>One by one</label>
+                </value>
+                <value>
+                    <fullName>All at once</fullName>
+                    <default>false</default>
+                    <label>All at once</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
