@@ -1,3 +1,11 @@
 <design:component label="FieloELR - Module Response Detail">
-        <design:attribute label="Courses Page" name="coursesPage" datasource="apex://CommutyPages"/>
+    
+    <design:attribute label="Use Default UX" name="useDefaultUX" description="When ticked this component uses Fielos Advanced User Experience." default="true"/>
+    
+    <design:attribute label="Passed Module Fields" name="modulefields_passed" description="Enter the API name of the fields you want to display for the module when the member already passed on it." default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
+    
+    <design:attribute label="Not Passed Module Fields" name="modulefields_notpassed" description="Enter the API name of the fields you want to display for the module when the member did not pass on it." default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
+    
+    <design:attribute label="Display Question Name" name="showQuestionName" description="When ticked displays the question name field aside the question number." default="false"/>
+    
 </design:component>

@@ -1,6 +1,5 @@
 <aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="ModuleDetailController">
     <aura:attribute type="String" name="recordId" description="Module Id"/>
-    <aura:attribute type="String" name="coursesPage" />
     <aura:attribute type="String" name="moduleHeaderText" />
     <aura:attribute type="sObject" name="module" />
     <aura:attribute type="sObject" name="course" />
