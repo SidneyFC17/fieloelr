@@ -8,7 +8,7 @@ public with sharing class ModuleActionsController {
 			ModuleService.ModuleWrapper moduleWrapper = ModuleService.takeModule(
 				moduleId,
 				memberId,
-				new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c', 'FieloELR__GiveImmediateFeedback__c', 'FieloELR__QuestionDisplayMode__c', 'FieloELR__QuestionSubmissionMode__c'},
+				new Set<String> {'Id', 'FieloELR__AttemptsAllowed__c', 'FieloELR__QuestionDisplayMode__c'},
 				new Set<String> {'Name', 'FieloELR__QuestionText__c', 'FieloELR__Order__c'},
 				new Set<String> {'FieloELR__AnswerOptionText__c','FieloELR__MatchingText__c'}
 			);
