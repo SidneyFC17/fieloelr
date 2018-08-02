@@ -1,4 +1,3 @@
-
 {
   "exportType" : "update",
   "configObjects" : [ {
@@ -9,7 +8,7 @@
     "fieldsToExclude" : "fieloplt__prefix__c"
   }, {
     "apiName" : "fieloplt__action__c",
-    "fieldsToExclude" : "fieloplt__rulesquantity__c,fieloplt__missionsquantity__c,fieloplt__criteriafields__c"
+    "fieldsToExclude" : "fieloplt__rulesquantity__c,fieloplt__missionsquantity__c,fieloplt__criteriafields__c,fieloplt__templatesquantity__c"
   } ],
   "migrationRecords" : [ {
     "objectAPIName" : "fieloplt__library__c",
@@ -19,7 +18,7 @@
         "value" : "FieloELR"
       }, {
         "apiName" : "fieloplt__version__c",
-        "value" : "1.004"
+        "value" : "1.005"
       }, {
         "apiName" : "fieloplt__externalid__c",
         "value" : "FieloELR"
@@ -201,6 +200,9 @@
               }, {
                 "apiName" : "fieloplt__reportmetadata__c",
                 "value" : "{\"size\":\"small\",\"styleClass\":\"\",\"cacheResults\":true,\"hideOnError\":false,\"rendered\":true,\"showRefreshButton\":true}"
+              }, {
+                "apiName" : "fieloplt__reportobjectivefield__c",
+                "value" : "s!FieloPLT__Member__c.FieloPLT__MemberRecord__c"
               }, {
                 "apiName" : "fieloplt__reporttype__c",
                 "value" : "Standard"
@@ -926,6 +928,9 @@
             "apiName" : "fieloplt__object__c",
             "value" : "FieloELR__Module__c"
           }, {
+            "apiName" : "fieloplt__order__c",
+            "value" : "0"
+          }, {
             "apiName" : "fieloplt__sections__c",
             "value" : "{\r\n\t\"Name\":\"Information\",\r\n\t\"Rows\": [ \t\t\r\n\t\t\t[ \t\t\t\r\n\t\t\t\t{\"Name\":\"Name\",\"Type\":\"input\"} \t\t\r\n\t\t\t],\r\n\t\t\t[\r\n\t\t\t\t{\"Name\":\"FieloELR__Description__c\",\"Type\":\"input\"}\t\t\r\n\t\t\t],\r\n\t\t\t[\t\r\n\t\t\t\t{\"Name\":\"FieloELR__Course__c\",\"Type\":\"lookup\"}\r\n\t\t\t],\r\n\t\t\t[ \t\t\t\t\t\t\t\r\n\t\t\t\t{\"Name\":\"FieloELR__ApprovalGrade__c\",\"Type\":\"input\"}\t\t\t\t\r\n\t\t\t],\r\n\t\t\t[\r\n\t\t\t\t{\"Name\":\"FieloELR__AttemptsAllowed__c\",\"Type\":\"input\"}\r\n\t\t\t]\r\n\t] \r\n}"
           }, {
@@ -934,6 +939,37 @@
           }, {
             "apiName" : "fieloplt__externalid__c",
             "value" : "00D6A0000001u5v-a0L6A000000BU2z"
+          }, {
+            "apiName" : "fieloplt__iscustom__c",
+            "value" : "false"
+          } ],
+          "relatedList" : [ {
+            "objectAPIName" : "fieloplt__programassignment__c",
+            "records" : [ ]
+          } ]
+        }, {
+          "fieldsValues" : [ {
+            "apiName" : "name",
+            "value" : "Module > Edit (Community Setings)"
+          }, {
+            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
+            "value" : "FieloELR",
+            "refObject" : "fieloplt__library__c"
+          }, {
+            "apiName" : "fieloplt__object__c",
+            "value" : "FieloELR__Module__c"
+          }, {
+            "apiName" : "fieloplt__order__c",
+            "value" : "2"
+          }, {
+            "apiName" : "fieloplt__sections__c",
+            "value" : "{\"Rows\":[[],[{\"WhereCondition\":null,\"Value\":null,\"Type\":\"picklist\",\"SearchField\":null,\"Required\":true,\"ReadOnly\":null,\"onchange\":null,\"Name\":\"FieloELR__QuestionDisplayMode__c\",\"MetaField\":null,\"Label\":null,\"id\":null}],[{\"WhereCondition\":null,\"Value\":null,\"Type\":\"picklist\",\"SearchField\":null,\"Required\":null,\"ReadOnly\":null,\"onchange\":null,\"Name\":\"FieloELR__ContentType__c\",\"MetaField\":null,\"Label\":null,\"id\":null}],[{\"WhereCondition\":null,\"Value\":null,\"Type\":\"input\",\"SearchField\":null,\"Required\":null,\"ReadOnly\":null,\"onchange\":null,\"Name\":\"FieloELR__Content__c\",\"MetaField\":null,\"Label\":null,\"id\":null}]],\"Name\":\"Community Settings\",\"id\":null,\"CssClass\":null}"
+          }, {
+            "apiName" : "fieloplt__type__c",
+            "value" : "Edit"
+          }, {
+            "apiName" : "fieloplt__externalid__c",
+            "value" : "00D6A0000001vVQ-a0L6A000005WJSg"
           }, {
             "apiName" : "fieloplt__iscustom__c",
             "value" : "false"
