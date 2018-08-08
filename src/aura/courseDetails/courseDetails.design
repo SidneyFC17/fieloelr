@@ -1,0 +1,3 @@
+<design:component label="FieloELR - Course Detail">
+	<design:attribute label="Course Detail Fields" name="detailFields" description="Enter the API names of fields to include in the Module list, separated by commas." default="FieloELR__Modules__r,FieloELR__Transactions__r,FieloELR__Trackers__r"/>
+</design:component>

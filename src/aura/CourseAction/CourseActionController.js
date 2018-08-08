@@ -2,14 +2,15 @@
     doInit: function(component, event, helper) {
         try{
             var record = component.get('v.record');
-            var order = '1';
-            if (record.FieloELR__Modules__r) {
-                if (record.FieloELR__Modules__r.records) {
-                    order = String(record.FieloELR__Modules__r.records[0].FieloELR__Order__c);
-                    component.set('v.moduleId', record.FieloELR__Modules__r.records[0].Id);
-                }
+            var config = component.get('v.config');
+            helper.getNextModule(component);
+            var nextModule = component.get('v.nextModule');
+            var order;
+            if (nextModule) {
+                order = String(nextModule.FieloELR__Order__c);
+				component.set('v.moduleId', nextModule.Id);
+                component.set('v.moduleNumber', order);
             }
-            component.set('v.moduleNumber', order);
         } catch(e) {
             console.log(e);
         }

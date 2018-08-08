@@ -23,7 +23,6 @@
     background-color: #4BCA81;
 }
 
-
 .THIS .fielo-section__field {
     text-align: left;
     padding-left: 8px;
@@ -54,4 +53,8 @@
 
 .THIS .fielo-progress-value {
     padding-left: 3px;
+}
+
+.THIS .slds-progress-bar__value {
+    background-color: #04844B;
 }

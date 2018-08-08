@@ -944,6 +944,22 @@
         <value>First complete the previous modules</value>
     </labels>
     <labels>
+        <fullName>Description</fullName>
+        <categories>courseDetailsTabs.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>Detail</fullName>
+        <categories>courseDetailsTabs.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Detail</shortDescription>
+        <value>Detail</value>
+    </labels>
+    <labels>
         <fullName>Displaying</fullName>
         <language>en_US</language>
         <protected>false</protected>

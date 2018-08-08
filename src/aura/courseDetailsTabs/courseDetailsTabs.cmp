@@ -1,25 +1,28 @@
 <aura:component >      
     <aura:attribute type="Course__c" name="course"  /> 
     <aura:attribute type="String" name="description" />
-   
-    <lightning:tabset>
-            <aura:if isTrue="{!v.course.FieloELR__Description__c != null}">
-                <lightning:tab id="courseDescription" 
-                            label="Description">
-                
-                    <p><br></br><h1 class="description"> {!v.course.FieloELR__Description__c} </h1></p>
-                    
-                </lightning:tab>
-                <aura:set attribute="else">
-                    <div class="display-none-tab"></div>
-                </aura:set>
-            </aura:if>
-            
-            <lightning:tab id="courseModules" 
-                        label="Modules" >
-                Sample Content Two
-            </lightning:tab>
-        </lightning:tabset>    
-        
- 
+    <aura:attribute type="String" name="selectedView" default="detail" />
+    <aura:attribute type="String" name="recordId" />
+    
+    <aura:registerEvent name="courseViewSelected" type="c:CourseViewSelected"/>
+    
+    <aura:method name="selectView" action="{!c.selectView}"> 
+        <aura:attribute type="String" name="viewName"/>
+    </aura:method>
+    
+    <div class="slds-col slds-align_absolute-center">
+        <div class="slds-tabs_default">
+            <ul class="slds-tabs_default__nav" role="tablist">
+                <aura:if isTrue="{!v.course.FieloELR__Description__c != null}">
+                    <li aura:id="descriptiontab" class="slds-tabs_default__item slds-is-active" title="{!$Label.c.Detail}" role="presentation">
+                        <a class="slds-tabs_default__link" href="javascript:void(0);" onclick="{!c.handleTabClick}" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="detail">{!$Label.c.Detail}</a>
+                    </li>
+                </aura:if>
+                <li aura:id="modulestab" class="slds-tabs_default__item" title="{!$Label.c.Modules}" role="presentation">
+                    <a class="slds-tabs_default__link" href="javascript:void(0);" onclick="{!c.handleTabClick}" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="modules">{!$Label.c.Modules}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
 </aura:component>

@@ -9,12 +9,11 @@
         component.set('v.quantity', quantity);        
         helper.getLabels(component, event, helper);        
         var records = component.get('v.records');
-        console.log('chegou controller list '); //DELETE
         if(records ){
-            helper.setRecords(component, event);                
+            helper.setRecords(component, event);
         } else {
             helper.queryRecords(component, event, helper);
-        }                
+        }
     },
     toggleLayout: function(component, event, helper){
         var layout = component.get('v.layout');

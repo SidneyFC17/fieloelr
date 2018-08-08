@@ -1,31 +1,35 @@
 <design:component label="FieloELR - Courses" >
     <design:attribute label="Title" name="titleValue" description="Enter the title to be displayed at the top of the component." default="Courses"
                     />
-    <design:attribute label="Layout" name="layout" description="Choose 'Table' to view Courses in list format or 'Grid' to view them in tile format"
+    <design:attribute label="Layout" name="layout" description="Choose 'Table' to display courses in list format or 'Grid' to display them in tile format."
                       datasource='table,grid' default="table"
                       />
-    <design:attribute label="Number of Columns" name="columns" description="Choose the number of columns to be displayed, if using Grid view."
+    <design:attribute label="# of Columns (Grid Only)" name="columns" description="If using Grid layout, choose the number of columns you want to be displayed."
                       />
-    <design:attribute label="Paging" name="paging" description="Tick this box to allow Courses to be displayed in pages." default="true"
+    <design:attribute label="Enable Paging" name="paging" description="Check this box to allow courses to be displayed in pages." default="true"
                       />
-    <design:attribute label="Records per page" name="quantity" description="Enter the number of Courses to be displayed per page, if using Paging." default="5"
+    <design:attribute label="# of Courses per Page" name="quantity" description="If Paging is enabled, enter the maximum number of courses you want to be displayed on a single page." default="5"
                       />
-    <design:attribute label="Fieldset" name="fields" description="Enter the API names of fields to include in the Course list, separated by commas." 
+    <design:attribute label="Course Fields" name="fields" description="Enter the API names of the fields you want to include in the course list, separated by commas." 
                       default='Name,FieloELR__Description__c'
                       />
-    <design:attribute label="Course Detail Layout" name="courseLayout" description="Choose 'Table' to view Modules in list format or 'Grid' to view them in tile format." 
+    <!-- WILL BE DELETED -->
+    <design:attribute label="Module Layout" name="courseLayout" description="Choose 'Table' to display modules in list format or 'Grid' to display them in tile format." 
                       datasource='table,grid' default="table"
                       />
-    <design:attribute label="Course Detail Number of Columns" name="courseColumns" description="Choose the number of columns to be displayed, if using Grid view."
-                      />    
-    <design:attribute label="Course Detail Fieldset" name="courseDetailFields" description="Enter the API names of fields to include in the Module list, separated by commas." 
+    <!-- WILL BE DELETED -->
+    <design:attribute label="# of Module Columns (Grid Only)" name="courseColumns" description="If using Grid layout for modules, choose the number of columns you want to be displayed."
+                      />
+    <!-- WILL BE DELETED -->
+    <design:attribute label="Module Fields" name="courseDetailFields" description="Enter the API names of the fields you want to include in the module list, separated by commas." 
                       default='Name,FieloELR__Description__c'
-                      />    
-    <design:attribute label="Module Response Fieldset" name="moduleResponseFields" description="Enter the API names of fields to include in the Module Response detail, separated by commas" 
+                      />
+    <!-- WILL BE DELETED -->
+    <design:attribute label="Module Response Fields" name="moduleResponseFields" description="Enter the API names of the fields you want to include when displaying module feedback, separated by commas." 
                       default='FieloELR__NumberOfAttempt__c'
                       />
     
-    <design:attribute label="Days to mark the course as new" name="daysToBeConsideredNew" description="Enter the number of days to consider a course as new. This will place a 'new' badge aside the course period." 
-                      default='100'
+    <design:attribute label="# of Days to Show Courses as New" name="daysToBeConsideredNew" description="Enter the number of days after start date that you want courses to be shown as new. This will display a &quot;New&quot; badge next to the course period. If left blank, no courses will be shown as new." 
+                      default='60'
                       />
 </design:component>

@@ -1,5 +1,7 @@
 <aura:component controller="CourseAction">
     <aura:attribute type="sObject" name="record"/>
+    <aura:attribute type="sObject" name="nextModule"/>
+    <aura:attribute type="Boolean" name="hasNextModule"/>
     <aura:attribute type="String" name="name"/>
     <aura:attribute type="String" name="config"/>
     <aura:attribute type="String" name="fieldName"/>
@@ -9,26 +11,28 @@
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     
     <div class="fielo-course-action" data-module-id="{!v.moduleId}" data-member-id="{!v.config.memberId}">
-        <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Scheduled'}">
-            <aura:if isTrue="{!v.record.FieloELR__SubscriptionMode__c == 'Automatic'}">
-                <lightning:button label="{!v.config.label_viewModule + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule + ' ' + v.moduleNumber}" variant="{!v.config.variant}" disabled="true" />
-                <aura:set attribute="else">
-                    <lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" variant="{!v.config.variant}" disabled="true"/>
-                </aura:set>
-            </aura:if>
-            <aura:set attribute="else">
+        <aura:if isTrue="{!v.hasNextModule}">
+            <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Scheduled'}">
                 <aura:if isTrue="{!v.record.FieloELR__SubscriptionMode__c == 'Automatic'}">
-                    <lightning:button label="{!v.config.label_viewModule + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
+                    <lightning:button label="{!v.config.label_viewModule + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule + ' ' + v.moduleNumber}" variant="{!v.config.variant}" disabled="true" />
                     <aura:set attribute="else">
-                        <aura:if isTrue="{!v.config.activeViewName == 'availableCourses'}">
-                            <lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" onclick="{!c.callJoinCourse}" variant="{!v.config.variant}" />
-                            <aura:set attribute="else">
-                                <lightning:button label="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
-                            </aura:set>
-                        </aura:if>
+                        <lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" variant="{!v.config.variant}" disabled="true"/>
                     </aura:set>
                 </aura:if>
-            </aura:set>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.record.FieloELR__SubscriptionMode__c == 'Automatic'}">
+                        <lightning:button label="{!v.config.label_viewModule + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!v.config.activeViewName == 'availableCourses'}">
+                                <lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" onclick="{!c.callJoinCourse}" variant="{!v.config.variant}" />
+                                <aura:set attribute="else">
+                                    <lightning:button label="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
+                                </aura:set>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
         </aura:if>
     </div>
 </aura:component>

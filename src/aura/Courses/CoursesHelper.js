@@ -1,7 +1,6 @@
 ({
     getFilterFieldSet: function(component) {
         try{
-            console.log('getFilterFieldSet');
             var action = component.get('c.getFilterFieldset');
             action.setParams({
                 'objectName': 'FieloELR__Course__c',
@@ -13,7 +12,7 @@
                 var spinner = $A.get("e.c:ToggleSpinnerEvent");
                 var toastEvent = $A.get("e.force:showToast");
                 var state = response.getState();                
-                if (component.isValid() && state === 'SUCCESS') {                    
+                if (component.isValid() && state === 'SUCCESS') {
                     var objectInfo = JSON.parse(response.getReturnValue());
                     component.set('v.filterFieldSet',objectInfo.fields);
                 }else {
@@ -27,8 +26,7 @@
                     if(spinner){
                         spinner.setParam('show', false);
                         spinner.fire();    
-                    }           
-                    
+                    }
                 }
             });
             $A.enqueueAction(action);
@@ -38,7 +36,6 @@
     },
     getCourseFieldSet: function(component) {
         try{
-            console.log('getFilterFieldSet');
             var action = component.get('c.getCourseFieldsData');
             action.setParams({
                 'objectName': 'FieloELR__Course__c',
@@ -50,7 +47,6 @@
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
                     var objectInfo = JSON.parse(response.getReturnValue());
-                    console.log(objectInfo.fields);
                     component.set('v.courseDetailFieldMeta',objectInfo.fields);
                     
                     var getFieldsetAction = component.get('c.getFieldSet');
@@ -101,9 +97,9 @@
                 modulesFieldset += ',FieloELR__AttemptsAllowed__c';
             }
             var dynamicFilterString = component.get('v.dynamicFilterString');
-            console.log(dynamicFilterString);
+            // console.log(dynamicFilterString);
             var sortByClause = component.get('v.sortByClause');
-            console.log(sortByClause);
+            // console.log(sortByClause);
             if(member){            
                 var action;
                 var activeViewName = component.get('v.activeViewName');
@@ -135,7 +131,7 @@
                         var member = component.get('v.member');
                         var memberId = member.Id;                                     
                         var result = JSON.parse(response.getReturnValue());
-                        console.log(JSON.stringify(result, null, 2));
+                        // console.log(JSON.stringify(result, null, 2));
                         var coursesList;
                         var courseStatus;
                         if (activeViewName == 'availableCourses') {
@@ -148,6 +144,7 @@
                         component.set('v.courseStatus', courseStatus);
                         component.set('v.showCoursesList', true);
                         helper.getFieldSet(component);
+                        helper.updateButtons(component);
                     } else {
                         var errorMsg = response.getError()[0].message;
                         toastEvent.setParams({
@@ -233,7 +230,7 @@
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
                     var config = response.getReturnValue();
-                    console.log(JSON.parse(config));
+                    //onsole.log(JSON.parse(config));
                     component.set('v.compConfig',config);
                     
                     this.getCourseFieldSet(component);
@@ -269,7 +266,8 @@
                 "config": {
                     "type": "btn",
                     "variant": "neutral",
-                    "label": $A.get('$Label.c.ViewCourse')
+                    "label": $A.get('$Label.c.ViewCourse'),
+                    "courseStatus": component.get('v.courseStatus')
                 }
             }
         );
@@ -284,17 +282,17 @@
                     "label_viewModule": $A.get('$Label.c.ViewModule'),
                     "label_joinCourse": $A.get('$Label.c.JoinCourse'),
                     "activeViewName": component.get('v.activeViewName'),
+                    "courseStatus": component.get('v.courseStatus'),
                     "variant": "brand",
                     "memberId": component.get('v.member').Id
                 }
             }
         );
-        console.log(buttons);
+        // console.log(buttons);
         component.set('v.buttons', buttons);
     },
     getFieldSet: function(component) {
         try{
-            console.log('getFieldsetAction');
             var config = component.get('v.configDefault');
             var title, fields, fieldset;
             config = JSON.parse(config);

@@ -11,7 +11,7 @@
     <aura:attribute type="String" name="courseFilterFields" access="global" default="FieloELR__Status__c,FieloELR__StartDate__c,FieloELR__EndDate__c"/>
     <aura:attribute type="String" name="courseRangedFilterFields" access="global" default="FieloELR__StartDate__c,FieloELR__EndDate__c"/>
     
-    <aura:attribute type="String" name="courseDetailFields" access="global" default="FieloELR__Modules__r,FieloELR__Transactions__r,FieloELR__Trackers__r"/>
+    <aura:attribute type="String" name="courseDetailFields" access="global" default="FieloELR__Modules__r,FieloELR__Transactions__r,FieloELR__Trackers__r,FieloELR__Progres__c"/>
     <aura:attribute type="String" name="courseLayout" access="global" />    
     <aura:attribute name="courseColumns" type="String" access="global" />
     <aura:attribute name="fields" type="String" access="global" />        

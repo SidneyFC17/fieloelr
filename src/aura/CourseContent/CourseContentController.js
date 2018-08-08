@@ -6,7 +6,6 @@
             if (record.FieloELR__Image__c) {
                 if (config.orgId && config.communityURL) {
                     var imageURL = config.communityURL + 'servlet/servlet.ImageServer?id=' + record.FieloELR__Image__c + '&oid=' + config.orgId;
-                    console.log(imageURL);
                     component.set('v.imageURL', imageURL);
                 }
             }

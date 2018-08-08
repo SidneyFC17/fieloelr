@@ -1,7 +1,4 @@
 ({
-    doInit : function(component, event, helper) {
-        
-    },
     updateMember: function(component, event, helper){
         try{
             var member = event.getParam('member');
@@ -29,6 +26,15 @@
                     component.set('v.isCollapsed', !isCollapsed);
                 }
             }
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    handleCourseViewSelected: function(component, event, helper) {
+        try{
+            event.stopPropagation();
+            var viewName = event.getParam('viewName');
+            component.set('v.activeViewName', viewName);
         } catch(e) {
             console.log(e);
         }

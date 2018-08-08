@@ -9,7 +9,7 @@ public with sharing class CourseModulesController {
 			List<CourseService.CourseWrapper> coursesMap;
 			
 			coursesMap = CourseService.getCoursesMap(
-				new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
+				new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Description__c','FieloELR__Status__c'},
 				new Set<String>{'Id','Name'},
 				fieldsModule,
 				new Set<String>{'Id','FieloELR__Predecessor__r.Name'},

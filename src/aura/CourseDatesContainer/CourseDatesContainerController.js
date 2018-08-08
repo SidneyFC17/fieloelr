@@ -1,10 +1,8 @@
 ({
     doInit: function(component, event, helper) {
-        console.log('CourseDatesContainer.doInit');
         try{
             var config = JSON.parse(component.get('v.config'));
             var record = component.get('v.record');
-            console.log('record.FieloELR__StartDate__c: ' + record.FieloELR__StartDate__c);
             var newDateRange = 0;
             if (config) {
                 if (config.daysToBeConsideredNew && record.FieloELR__StartDate__c) {

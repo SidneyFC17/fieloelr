@@ -1,41 +1,57 @@
 ({
-    getConfig: function (component) {
+    getDetailFields: function(component) {
+        try{
+            var detailFields = component.get('v.detailFields');
+            detailFields = detailFields.split(',');
+            var courseFields = [];
+            var courseStatusFields = [];
+            var apiNames = [];
+            var objectName, fieldName;
+            detailFields.forEach(function(fullApiName) {
+                apiNames = fullApiName.split('.');
+                if (apiNames.length == 1) {
+                    courseFields.push(apiNames[0]);
+                } else {
+                    objectName = apiNames[0];
+                    fieldName = apiNames[1];
+                    if (objectName.trim().toLowerCase() == 'fieloelr__course__c') {
+                        courseFields.push(fieldName);
+                    } else if(objectName.trim().toLowerCase() == 'fieloelr__coursestatus__c') {
+                        courseStatusFields.push(fieldName);
+                    }
+                }
+                component.set('v.courseDetailFields', courseFields.join(','));
+                component.set('v.courseStatusDetailFields', courseStatusFields.join(','));
+            });
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    getFieldsMeta: function(component, objectName, fieldNames) {
         try {
-            console.log('getConfig');
-            var action = component.get('c.getConfig');
+            var action = component.get('c.getFieldsMetadata');
             action.setParams({
-                'recordId': component.get('v.recordId'),
-                'memberId': component.get('v.member').Id,
-                'csFields': 'FieloELR__Transactions__r,FieloELR__Trackers__r,FieloELR__Course_Accomplished__c'
+                'objectName': objectName,
+                'fieldNames': fieldNames
             });
             action.setCallback(this, function (response) {
-                var spinner = $A.get("e.c:ToggleSpinnerEvent");
-                var toastEvent = $A.get("e.force:showToast");
                 var state = response.getState();
                 if (component.isValid() && state === 'SUCCESS') {
-                    console.log('getConfig'+ response.getReturnValue()); //DELETE
-                    var config = JSON.parse(response.getReturnValue());
-                    component.set('v.compConfig', config);
-                    if (config.joinedCourse) {
-                        component.set('v.activeViewName', 'myCourses');
-                        //component.set('v.courseStatus', config.courseStatus);
-                        //console.log(config.courseStatus);//DELETE
+                    var result = JSON.parse(response.getReturnValue());
+                    var fieldsMap = {};
+                    if (result.fields) {
+                        result.fields.forEach(function(fieldInfo) {
+                            fieldsMap[fieldInfo.attributes.name] = fieldInfo;
+                        });
                     }
-                    console.log(JSON.stringify(config, null, 2));
-                    this.loadCourseStatus(component);
+                    if (objectName.toLowerCase() == 'fieloelr__course__c') {
+                        component.set('v.courseFieldsMeta', fieldsMap);
+                    } else if(objectName.toLowerCase() == 'fieloelr__coursestatus__c') {
+                        component.set('v.courseStatusFieldsMeta', fieldsMap);
+                    }
                 } else {
                     var errorMsg = response.getError()[0].message;
-                    toastEvent.setParams({
-                        "title": errorMsg,
-                        "message": " ",
-                        "type": "error"
-                    });
-                    toastEvent.fire();
-                    if (spinner) {
-                        spinner.setParam('show', false);
-                        spinner.fire();
-                    }
-
+                    this.showMessage('error', errorMsg);
                 }
             });
             $A.enqueueAction(action);
@@ -43,10 +59,89 @@
             console.log(e);
         }
     },
-
-
+    getConfig: function (component) {
+        try {
+            var action = component.get('c.getConfig');
+            action.setParams({
+                'recordId': component.get('v.recordId'),
+                'memberId': component.get('v.member').Id
+            });
+            action.setCallback(this, function (response) {
+                var spinner = $A.get("e.c:ToggleSpinnerEvent");
+                var toastEvent = $A.get("e.force:showToast");
+                var state = response.getState();
+                if (component.isValid() && state === 'SUCCESS') {
+                    var config = JSON.parse(response.getReturnValue());
+                    component.set('v.compConfig', config);
+                    if (config.joinedCourse) {
+                        component.set('v.activeViewName', 'myCourses');
+                    } else {
+                        component.set('v.activeViewName', 'availableCourses');
+                    }
+                    this.retrieveCourse(component);
+                } else {
+                    var errorMsg = response.getError()[0].message;
+                    helper.showMessage('error', errorMsg);
+                }
+            });
+            $A.enqueueAction(action);
+        } catch (e) {
+            console.log(e);
+        }
+    },
+    retrieveCourse: function (component) {
+        try {
+            var action = component.get("c.getCourse");
+            action.setParams({
+                member: component.get('v.member'),
+                courseId: component.get("v.recordId"),
+                courseFields: this.addCourseRequiredFields(component.get("v.courseDetailFields")),
+                moduleFields: 'Id,Name,FieloELR__Order__c',
+                showPointsEarned: true
+            });
+            action.setCallback(this, function (response) {
+                var state = response.getState();
+                if (state === "SUCCESS") {
+                    var result = JSON.parse(response.getReturnValue());
+                    if (result.courses) {
+                        var courses = JSON.parse(result.courses);
+                        component.set("v.course", courses[0]);
+                        if (result.courseStatus) {
+                            var courseStatus = JSON.parse(result.courseStatus);
+                            component.set("v.courseStatus", courseStatus);
+                        }
+                        this.loadCourseStatus(component);
+                    }
+                } else {
+                    var errorMsg = response.getError()[0].message;
+                    this.showMessage('error', errorMsg);
+                }
+            });
+            $A.enqueueAction(action);
+        } catch (e) {
+            console.log(e);
+        }
+    },
+    addCourseRequiredFields: function(courseFields) {
+        try{
+            var courseFieldSet = [];
+            var fieldList = courseFields.split(',');
+            fieldList.forEach(function(fieldName) {
+                if (courseFieldSet.join(',').toLowerCase().indexOf(fieldName.toLowerCase()) == -1) {
+                    courseFieldSet.push(fieldName);
+                }
+            });
+            this.courseRequiredFields.forEach(function(fieldName) {
+                if (courseFieldSet.join(',').toLowerCase().indexOf(fieldName.toLowerCase()) == -1) {
+                    courseFieldSet.push(fieldName);
+                }
+            });
+            return courseFieldSet.join(',');
+        } catch(e) {
+            console.log(e);
+        }
+    },
     setFieldSet: function (component) {
-        console.log("setFieldSet CourseDetailsHelper"); //DELETE
         //FIELDSET
         try {
             var fieldList = component.get('v.fields');
@@ -61,7 +156,7 @@
                 "showLabel": false,
                 "config": JSON.stringify(component.get('v.compConfig'))
             });
-
+            
             //COURSE DESCRIPTION SUBCOMPONENT
             fieldset.push({
                 "apiName": "FieloELR__Description__c",
@@ -71,7 +166,7 @@
                     "type": "default"
                 },
                 "showLabel": false
-
+                
             })
             //DATE SUBCOMPONENT 
             fieldset.push({
@@ -89,34 +184,31 @@
                     }
                 )
             });
-
             fieldset.push({
                 "apiName": "Id",
                 "type": "subcomponent",
-                "subcomponent": "c:FieldsSection",
+                "subcomponent": "c:CourseFieldsSection",
                 "label": {
                     "type": "default"
                 },
                 "showLabel": false,
                 "config": JSON.stringify(
                     {
-                        'fields': component.get('v.courseDetailFields').trim(),
-                        'fieldsMeta': component.get('v.courseDetailFieldMeta'),
-                        'courseStatus': component.get('v.courseStatus')
+                        'activeViewName': component.get('v.courseStatus') ? 'myCourses' : 'availableCourses',
+                        'fields': component.get('v.detailFields').trim(),
+                        'fieldsMeta': component.get('v.courseFieldsMeta'),
+                        'csFieldsMeta': component.get('v.courseStatusFieldsMeta'),
+                        'courseStatus': JSON.stringify(component.get('v.courseStatus'))
                     }
                 )
             });
-
-            console.log(fieldset); //DELETE
             component.set('v.fieldset', fieldset);
             this.getFieldNames(component);
         } catch (e) {
             console.log(e);
         }
-    },
-
+    },    
     loadCourseStatus: function (component) {
-        console.log("loadCourseStatus"); //DELETE
         try {
             var courseId = component.get('v.recordId');
             var member = component.get('v.member');
@@ -124,51 +216,37 @@
             var params = {
                 'member': member,
                 'courseId': courseId,
-                'includePoints': false
+                'includePoints': true
             };
             action.setParams(params);
             action.setCallback(this, function (response) {
                 var spinner = $A.get("e.c:ToggleSpinnerEvent");
-                var toastEvent = $A.get("e.force:showToast");
                 var state = response.getState();
-                console.log(state); //DELETE
-                var moduleResponses = JSON.parse(response.getReturnValue());
-                console.log(moduleResponses); //DELETE
-                if (moduleResponses.length !== 0) {
-                    component.set('v.moduleResponses', moduleResponses);
-                    console.log(moduleResponses[0].FieloELR__CourseStatus__r); //DELETE
-                    var courseStatus = moduleResponses[0].FieloELR__CourseStatus__r;
-                    if (courseStatus.length !== 0) {
-                        component.set('v.courseStatus', courseStatus);
+                if (component.isValid() && state === 'SUCCESS') {
+                    var moduleResponses = JSON.parse(response.getReturnValue());
+                    if (moduleResponses.length !== 0) {
+                        component.set('v.moduleResponses', moduleResponses);
                     }
-                    else {
-                        console.log('Course Not Joined 1');
-                    };
-
+                    this.setFieldSet(component);
+                    this.setButtons(component);
                 } else {
-
-                    console.log('Course Not Joined 2');
-                 
+                    var errorMsg = response.getError()[0].message;
+                    this.showMessage('error', errorMsg);
                 }
-                this.setFieldSet(component);
             });
             $A.enqueueAction(action);
         } catch (e) {
             console.log(e);
         }
     },
-
     getFieldNames: function (component) {
-        console.log('getFieldNames'); //DELETE
         var fieldNames = [];
         var fieldset = component.get('v.fieldset');
-        fieldset.forEach((fieldInfo) => {
+        fieldset.forEach(function(fieldInfo){
             if (fieldNames.indexOf(fieldInfo.apiName) == -1) {
                 fieldNames.push(fieldInfo.apiName);
             }
-
         });
-
         var courseDetailFields = component.get('v.courseDetailFields');
         courseDetailFields = courseDetailFields.split(' , ');
         courseDetailFields.forEach(function (fieldName) {
@@ -176,62 +254,9 @@
                 fieldNames.push(fieldName);
             }
         });
-
-        component.set('v.fields', fieldNames.join(' , '));
-        this.retrieveCourse(component);
-        console.log(fieldNames); //DELETE
+        component.set('v.fields', fieldNames.join(','));
     },
-
-    retrieveCourse: function (component) {
-        try {
-            console.log('retrieveCourse');
-            var action = component.get('c.getCourseRecord');
-            var fieldNames = component.get('v.fields');
-            this.requiredFields.forEach(function (fieldName) {
-                if (fieldNames.toLowerCase().indexOf(fieldName.toLowerCase()) == -1) {
-                    fieldNames += ',' + fieldName;
-                }
-            });
-            action.setParams({
-                'recordId': component.get('v.recordId'),
-                'fields': fieldNames
-            });
-            action.setCallback(this, function (response) {
-                try {
-                    var spinner = $A.get("e.c:ToggleSpinnerEvent");
-                    var toastEvent = $A.get("e.force:showToast");
-                    var state = response.getState();
-                    if (component.isValid() && state === 'SUCCESS') {
-                        var record = JSON.parse(response.getReturnValue());
-                        component.set('v.record', record);
-                        component.set('v.displayCard', true);
-                        this.updateButtons(component);
-                    } else {
-                        var errorMsg = response.getError()[0].message;
-                        toastEvent.setParams({
-                            "title": errorMsg,
-                            "message": " ",
-                            "type": "error"
-                        });
-                        toastEvent.fire();
-                        if (spinner) {
-                            spinner.setParam('show', false);
-                            spinner.fire();
-                        }
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
-            });
-            $A.enqueueAction(action);
-        } catch (e) {
-            console.log(e);
-        }
-        this.setButtons(component);
-    },
-
     setButtons: function (component) {
-        console.log('buttons'); //DELETE
         var buttons = [{
             "type": "subcomponent",
             "subcomponent": "c:CourseAction",
@@ -243,18 +268,40 @@
                 "label_joinCourse": $A.get('$Label.c.JoinCourse'),
                 "activeViewName": component.get('v.activeViewName'),
                 "variant": "brand",
-                "memberId": component.get('v.member').Id
+                "memberId": component.get('v.member').Id,
+                "moduleResponses": component.get('v.moduleResponses')
             }
         }]
         component.set("v.buttons", buttons);
         this.setCardColor(component);
     },
-
     setCardColor: function (component) {
         var status = component.get('v.course.FieloELR__Status__c');
-        console.log(status);
         if (status == 'Completed'){
             component.set('v.classNameCard', 'fielo-closed-course')
         }
-    }
+    },
+    showMessage: function(type, message) {
+        try{
+            var toastEvent = $A.get("e.force:showToast");
+            toastEvent.setParams({
+                "title": message,
+                "message": " ",
+                "type": type
+            });
+            toastEvent.fire();     
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    courseRequiredFields: [
+        'Name',
+        'FieloELR__SubscriptionMode__c',
+        'FieloELR__Status__c',
+        'FieloELR__Image__c',
+        'FieloELR__ExternalURL__c',
+        'FieloELR__Description__c',
+        'FieloELR__StartDate__c',
+        'FieloELR__EndDate__c'
+    ]
 })

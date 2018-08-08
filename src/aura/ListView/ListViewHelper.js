@@ -23,9 +23,7 @@
                 component.set('v.lastPage', true);
             }            
         }
-        console.log(records); //DELETE
         component.set('v.renderRecords', records);
-        console.log('chegou helper list view'); //DELETE
         var title = component.get('v.title');
         if(title && title.length > 0){
             component.set('v.showTitle', true);
@@ -128,8 +126,6 @@
                     });
                     toastEvent.fire(); 
                 }
-                
-                
             }else {
                 var errorMsg = response.getError()[0].message;
                 toastEvent.setParams({
@@ -143,8 +139,7 @@
                 spinner.setParam('show', false);
                 spinner.fire();    
             }           
-        });      
-        
+        });
         $A.enqueueAction(getRecords);
     }
 })

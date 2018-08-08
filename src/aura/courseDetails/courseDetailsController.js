@@ -1,45 +1,51 @@
 ({
-    // Load expenses from Salesforce
     doInit: function (component, event, helper) {
-
-        var buttons;
-        // Create the action
-        var action = component.get("c.getCourse");
-        //Add Parameter with de current Page Record Id
-        action.setParams({ courseId: component.get("v.recordId") });
-        // Add callback behavior for when response is received
-        action.setCallback(this, function (response) {
-            var state = response.getState();
-            console.log('chegou aqui:' + state);
-            if (state === "SUCCESS") {
-                console.log(response.getReturnValue()); //DELETE]
-                var courses = [];
-                var course = response.getReturnValue();
-                courses.push(course);
-                component.set("v.course", course);
-                component.set("v.courses", courses);
-                
+        try{
+            helper.getDetailFields(component);
+            if (component.get('v.courseDetailFields')) {
+            	helper.getFieldsMeta(component, 'FieloELR__Course__c', helper.addCourseRequiredFields(component.get("v.courseDetailFields")));
             }
-
-            else {
-                console.log("Failed with state: " + state);
+            if (component.get('v.courseStatusDetailFields')) {
+            	helper.getFieldsMeta(component, 'FieloELR__CourseStatus__c', component.get('v.courseStatusDetailFields'));
             }
-        });
-        $A.enqueueAction(action);
-
-
+        } catch(e) {
+            console.log(e);
+        }
     },
     updateMember: function (component, event, helper) {
         try {
-            console.log('updateMember');
             var member = event.getParam('member');
             component.set('v.member', member);
             window.localStorage.setItem('member', JSON.stringify(member));
+            
+            /* Call order
+             * - helper.getConfig
+             * - helper.retrieveCourse
+             * - helper.loadCourseStatus
+             * - helper.setFieldSet
+             * - helper.setButtons
+             **/
             helper.getConfig(component);
         } catch (e) {
             console.log(e);
         }
+    },
+    backToCourses: function(component, event, helper) {
+        try{
+            $A
+            .get("e.force:navigateToObjectHome")
+            .setParams({"scope": "FieloELR__Course__c"})
+            .fire();
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    refreshContent: function(component, event, helper) {
+        try{
+            console.log('refreshContent');
+            $A.get("e.force:refreshView").fire();
+        } catch(e) {
+            console.log(e);
+        }
     }
-
-
 })

@@ -180,7 +180,9 @@ public with sharing class CoursesController {
 			}
 			courseStatusFields.add('Id');
 			courseStatusFields.add('FieloELR__Course__c');
+			courseStatusFields.add('FieloELR__Member__c');
 			courseStatusFields.add('FieloELR__Progress__c');
+			courseStatusFields.add('(SELECT Id, FieloELR__NumberofApprove__c, FieloELR__Module__c, FieloELR__Module__r.FieloELR__Order__c FROM FieloELR__ModuleResponses__r)');
 
             CourseStatusSelector selector = new CourseStatusSelector(courseStatusFields);
 			selector.setLimit(quantity);

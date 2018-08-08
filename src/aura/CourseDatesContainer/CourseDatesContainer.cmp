@@ -9,8 +9,8 @@
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     
-    <aura:if isTrue="{!or(v.record.FieloELR__StartDate__c != null, v.record.FieloELR__EndDate__c!=null)}">
-        <div aura:id="dates-container" class="fielo-dates-container">
+    <div aura:id="dates-container" class="fielo-dates-container">
+        <aura:if isTrue="{!or(v.record.FieloELR__StartDate__c != null, v.record.FieloELR__EndDate__c!=null)}">
             <lightning:layout class="fielo-date-grid" verticalAlign="start" horizontalAlign="start">
                 <lightning:layoutItem class="fielo-dates-left">
                     <lightning:layout class="fielo-badge-values" verticalAlign="center" horizontalAlign="end">
@@ -23,7 +23,6 @@
                                     &nbsp;
                                 </aura:set>
                             </aura:if>
-                            
                         </lightning:layoutItem>
                     </lightning:layout>
                 </lightning:layoutItem>
@@ -79,6 +78,6 @@
                     &nbsp;
                 </lightning:layoutItem>
             </lightning:layout>
-        </div>
-    </aura:if>
+        </aura:if>
+    </div>
 </aura:component>

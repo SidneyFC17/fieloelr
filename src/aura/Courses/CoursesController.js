@@ -20,7 +20,6 @@
     },
     updateMember: function(component, event, helper){
         try{
-            console.log('updateMember');
             var member = event.getParam('member');
             component.set('v.member', member);       
             window.localStorage.setItem('member', JSON.stringify(member));

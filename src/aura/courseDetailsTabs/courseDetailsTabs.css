@@ -5,6 +5,7 @@
     -ms-flex-pack: center;
     justify-content: center;
     background-color: #e6eef1;
+    padding-left: 0px;
 }
 
 .THIS .slds-tabs_default__item:hover:after, .THIS .slds-tabs--default__item:hover:after {
@@ -23,11 +24,6 @@
 .THIS li > .slds-tabs_default__link {
     font-size: 13px;
     text-transform: none;
-    font-weight: 550;
-}
-
-.THIS  .slds-active .slds-tabs_default__link{
-    font-weight: 550;
 }
 
 .THIS .description {

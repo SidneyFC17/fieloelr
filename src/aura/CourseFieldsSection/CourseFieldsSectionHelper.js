@@ -7,19 +7,22 @@
             var fieldMeta;
             var courseStatusList;
             var courseStatus;
+            var fieldMap;
             if (config) {
                 if (config.activeViewName) {
                     component.set('v.activeViewName', config.activeViewName);
                 }
                 if (config.fieldMeta) {
-                    var fieldsMeta = {};
-                    config.fieldMeta.forEach(function(fieldInfo) {
-                        fieldsMeta[fieldInfo.attributes.name] = fieldInfo;
-                    });
-                    component.set('v.fieldMeta', fieldsMeta);
+                    if (config.fieldMeta instanceof Array) {
+                        var fieldsMeta = {};
+                        config.fieldMeta.forEach(function(fieldInfo) {
+                            fieldsMeta[fieldInfo.attributes.name] = fieldInfo;
+                        });
+                        component.set('v.fieldMeta', fieldsMeta);    
+                    }
                 }
-                if (config.courseStatus) {
-                    component.set('v.fieldMeta', config.fieldMeta);
+                if (config.csFieldMeta) {
+                    component.set('v.csFieldMeta', config.csFieldMeta);
                 }
                 if (config.courseStatus) {
                     courseStatusList = JSON.parse(config.courseStatus);

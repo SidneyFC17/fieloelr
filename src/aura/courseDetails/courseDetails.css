@@ -1,93 +1,7 @@
-.THIS.breadcrumb-wrapper {
-    height: 50px;
-    margin-left: 15px;
-}
-
-.THIS .slds-text-title_caps{
-    margin-top: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: 0.9rem;
-}
-.THIS .slds-breadcrumb__item:first-child{
-    padding-left: 10px;
-}
-
-.THIS .current-breadcrumb{
-    padding-left: 15px;
-}
-
-.THIS .current-course-title{
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin: 20px 0px 10px 15px;
+.THIS {
     color: #54698D;
-    padding-left: 10px;  
 }
 
-
-.THIS .slds-button_brand{
-    background-color: #0070D2;
-}
-
-.THIS .slds-button_brand:hover{
-    background-color: #007dea;
-}
-
-
-/*Padding Inside Card
-.THIS .slds-p-around_small > .fielo-output:first-child {
-    padding: 1em;
-}
-
-.THIS article{
-    height: 100%;
-}
-
-.THIS article .slds-card__header {
-    border-top : none;
-    border-left: none;
-        
-}
-Tirar as shadows da box do header e botar na div de content
-
-
-.THIS.fielo-card-container {
-    color: #54698D;
-    max-width: 753px;
-    padding: 0px;
-}
-
-.THIS .FieloELRCardItem{
-    padding: 0px;
-}
-
-.THIS .table .slds-card__header {
-    padding-bottom: 35px;
-    padding-top: 35px;
-}
-
-.THIS .table div[data-field-name="FieloELR__Description__c"] {
-    position: absolute;
-    top: 94px;
-    left: 358.2px;
-}
-
-.THIS .table div[data-field-name="FieloELR__StartDate__c"] {
-    position: absolute;
-    top: 198px;
-    left: 358.2px;
-}
-
-.THIS .slds-card .slds-card__header h2{
-    font-weight: bold;
-}
-
-.THIS .slds-text-heading_small {
-    font-size: 18px;
-}
-
-*/
 .THIS .table .FieloELRFieldsSection {
     padding-top: 0px;
 }
@@ -117,7 +31,7 @@ Tirar as shadows da box do header e botar na div de content
 }
 
 .THIS .fielo-course-card .slds-card{
-    border-radius: .55rem;
+    padding: 0px;
 }
 
 .THIS .fielo-closed-course .slds-card{
@@ -129,7 +43,6 @@ Tirar as shadows da box do header e botar na div de content
 }
 
 /* CSS Grid Implementation  */
-
 .THIS .FieloELRCardItem .slds-p-around_small{
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -151,14 +64,11 @@ Tirar as shadows da box do header e botar na div de content
 .THIS .FieloELRCardItem .slds-p-around_small .fielo-output:nth-child(3){
     grid-column: 7/12;
     grid-row: 2/3;
-    padding-right: 23px;
-
 }
 
 .THIS .FieloELRCardItem .slds-p-around_small .fielo-output:nth-child(4){
     grid-column: 1/13;
     grid-row: 3/4;
-    /* grid-gap: 0.3rem; */
     width: 100%;
 }
 
@@ -170,4 +80,31 @@ Tirar as shadows da box do header e botar na div de content
     .THIS .FieloELRCourseDetails .FieloELRCardItem{
         width: 100%;     
     }
+}
+
+.THIS .fielo-card-container {
+    max-width: 753px;
+    padding: 0px;
+}
+
+.THIS .fielo-course-container {
+    padding: 0px;
+}
+
+.THIS .FieloELRCardItem {
+    padding: 0px;
+}
+
+.THIS {
+    max-width: 753px;
+}
+
+.THIS .slds-p-around_small{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+
+.THIS .fielo-breadcrumb__current{
+    padding-left: 0.5rem;
 }

@@ -30,11 +30,12 @@
                         courseWrapper[0].modules.forEach(function(moduleWrapper) {
                             moduleWrapperList.push(moduleWrapper);
                         });
+                        component.set('v.course', courseWrapper[0].course);
                         component.set('v.nextModuleId', this.getNextModuleId(moduleWrapperList));
                         component.set('v.moduleWrapperList', moduleWrapperList);
                         component.set('v.showModules', true);
-                        console.log(JSON.stringify(moduleWrapperList, null, 2));
                         this.loadFieldsMetadata(component);
+                        this.selectView(component);
                     } else {
                         toastEvent.setParams({
                             "title": 'No course found',
@@ -207,7 +208,6 @@
     },
     loadModuleResponseFieldsMetadata: function(component) {
         try{
-            console.log('loadFieldsMetadata');
             var action = component.get('c.getFieldData');
             action.setParams({
                 'sObjectName': 'FieloELR__ModuleResponse__c',
@@ -239,6 +239,42 @@
                 }
             });
             $A.enqueueAction(action);            
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    selectView: function(component) {
+        try {
+            if (window.localStorage) {
+                var viewResults = Boolean(window.localStorage.getItem('viewResults'));
+                window.localStorage.removeItem('viewResults');
+                if (viewResults) {
+                    component.set('v.activeViewName', 'modules');
+                    var tabsCmp = component.find('tabs');
+                    if (tabsCmp) {
+                        tabsCmp.selectView('modules');
+                        console.log(tabsCmp.get('v.selectedView'));
+                    }
+                }
+            }
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    oldSelectView: function(component) {
+        try{
+            var hash = window.location.hash;
+            if (hash) {
+                console.log('hash: ' + hash);
+                if (hash == '#results') {
+                    component.set('v.activeViewName', 'modules');
+                    var tabsCmp = component.find('tabs');
+                    if (tabsCmp) {
+                        tabsCmp.selectView('modules');
+                        console.log(tabsCmp.get('v.selectedView'));
+                    }
+                }
+            }
         } catch(e) {
             console.log(e);
         }
