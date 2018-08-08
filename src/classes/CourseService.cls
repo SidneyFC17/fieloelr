@@ -28,7 +28,7 @@ global class CourseService {
 
 		Courses.validateAdminFields = false;
 
-			if(Schema.sObjectType.Course__c.isUpdateable()){
+			if(Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
             	uow.commitWork();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -244,7 +244,7 @@ global class CourseService {
 		system.debug(queryCourses);
 		List<Course__c> returnQueryCourses = new List<Course__c>();
 
-		 if(Schema.sObjectType.FieloPLT__Settings__c.isAccessible()){	
+		 if(Schema.sObjectType.Course__c.isAccessible()){	
             returnQueryCourses = Database.query(queryCourses);
           }else{
             throw new FieloException(Label.CannotAccessRecords);

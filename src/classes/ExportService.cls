@@ -291,7 +291,7 @@ public class ExportService{
     public static void saveData(SObjectUnitOfWork uow, List<MultiSegmentRelation> multiSegmentRelations){
         
 
-        if(Schema.sObjectType.Course__c.isCreateable()){
+        if(Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
                 uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
