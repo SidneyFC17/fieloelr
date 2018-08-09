@@ -35,6 +35,13 @@
                 component.set('v.startsIn', $A.get('$Label.c.StartsIn').replace('\{0\}',String(diffDays)));
                 component.set('v.className', '');
             }
+            
+            if (record.FieloELR__StartDate__c) {
+                component.set('v.startDate', $A.localizationService.formatDate(record.FieloELR__StartDate__c));
+            }
+            if (record.FieloELR__EndDate__c) {
+                component.set('v.endDate', $A.localizationService.formatDate(record.FieloELR__EndDate__c));
+            }
         } catch(e) {
             console.log(e);
         }

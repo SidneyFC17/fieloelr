@@ -1,5 +1,7 @@
 <aura:component>
     <aura:attribute type="String" name="name"/>
+    <aura:attribute type="String" name="startDate"/>
+    <aura:attribute type="String" name="endDate"/>
     <aura:attribute type="String" name="config"/>
     <aura:attribute type="String" name="startsIn"/>
     <aura:attribute type="String" name="className"/>
@@ -32,7 +34,7 @@
                             <lightning:layout verticalAlign="center" horizontalAlign="end">
                                 <lightning:layoutItem class="fielo-date-value-output fielo-course-startdate">
                                     <aura:if isTrue="{!v.record.FieloELR__StartDate__c != null}">
-                                        <lightning:formattedDateTime value="{!v.record.FieloELR__StartDate__c}" />
+                                        <lightning:formattedText value="{!v.startDate}" />
                                         <aura:set attribute="else">
                                             &nbsp;
                                         </aura:set>
@@ -44,7 +46,7 @@
                             <lightning:layout verticalAlign="center" horizontalAlign="start">
                                 <lightning:layoutItem class="fielo-date-value-output fielo-course-enddate">
                                     <aura:if isTrue="{!v.record.FieloELR__EndDate__c != null}">
-                                        <lightning:formattedDateTime value="{!v.record.FieloELR__EndDate__c}" />
+                                        <lightning:formattedText value="{!v.endDate}" />
                                         <aura:set attribute="else">
                                             &nbsp;
                                         </aura:set>
