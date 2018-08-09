@@ -2,6 +2,7 @@
     getAttributes: function(component) {
         try{
             var config = JSON.parse(component.get('v.config'));
+            console.log(JSON.stringify(config, null, 2));
             var record = component.get('v.record');
             var activeViewName;
             var fieldMeta;
@@ -12,12 +13,18 @@
                 if (config.activeViewName) {
                     component.set('v.activeViewName', config.activeViewName);
                 }
+                if (config.fieldMeta instanceof String) {
+                    config.fieldMeta = JSON.parse(config.fieldMeta);
+                }
                 if (config.fieldMeta) {
                     if (config.fieldMeta instanceof Array) {
                         var fieldsMeta = {};
                         config.fieldMeta.forEach(function(fieldInfo) {
                             fieldsMeta[fieldInfo.attributes.name] = fieldInfo;
                         });
+                        component.set('v.fieldMeta', fieldsMeta);    
+                    }
+                    if (config.fieldMeta instanceof Object) {
                         component.set('v.fieldMeta', fieldsMeta);    
                     }
                 }

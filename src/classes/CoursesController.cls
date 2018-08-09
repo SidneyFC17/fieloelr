@@ -159,7 +159,7 @@ public with sharing class CoursesController {
 	}
 
 	@AuraEnabled
-	public static String getCourseFieldsData(String objectName, String fieldNames) {
+	public static String getFieldsMetadata(String objectName, String fieldNames) {
 		try{
             return AuraService.getFieldData(objectName,fieldNames);
         } catch (DmlException e) {

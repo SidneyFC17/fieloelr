@@ -1,3 +1,3 @@
-<design:component label="FieloELR - Course Detail">
-	<design:attribute label="Course Detail Fields" name="detailFields" description="Enter the API names of fields to include in the Module list, separated by commas." default="FieloELR__Modules__r,FieloELR__Transactions__r,FieloELR__Trackers__r"/>
+<design:component label="FieloELR - Course Details">
+	<design:attribute label="Course Detail Fields" name="detailFields" description="Enter the API names of the fields you want to be displayed in course detail views, separated by commas." default="FieloELR__Course__c.FieloELR__Modules__r,FieloELR__CourseStatus__c.FieloELR__Transactions__r,FieloELR__CourseStatus__c.FieloELR__Trackers__r,FieloELR__CourseStatus__c.FieloELR__Progres__c"/>
 </design:component>

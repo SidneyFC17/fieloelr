@@ -1,34 +1,20 @@
 <design:component label="FieloELR - Courses" >
     <design:attribute label="Title" name="titleValue" description="Enter the title to be displayed at the top of the component." default="Courses"
                     />
-    <design:attribute label="Layout" name="layout" description="Choose 'Table' to display courses in list format or 'Grid' to display them in tile format."
-                      datasource='table,grid' default="table"
-                      />
+
     <design:attribute label="# of Columns (Grid Only)" name="columns" description="If using Grid layout, choose the number of columns you want to be displayed."
                       />
+
     <design:attribute label="Enable Paging" name="paging" description="Check this box to allow courses to be displayed in pages." default="true"
                       />
+
     <design:attribute label="# of Courses per Page" name="quantity" description="If Paging is enabled, enter the maximum number of courses you want to be displayed on a single page." default="5"
                       />
-    <design:attribute label="Course Fields" name="fields" description="Enter the API names of the fields you want to include in the course list, separated by commas." 
-                      default='Name,FieloELR__Description__c'
+
+    <design:attribute label="Course Fields" name="detailFields" description="Enter the API names of the fields you want to include in the course list, separated by commas." 
+                      default='FieloELR__Course__c.FieloELR__Modules__r,FieloELR__CourseStatus__c.FieloELR__Transactions__r,FieloELR__CourseStatus__c.FieloELR__Trackers__r,FieloELR__CourseStatus__c.FieloELR__Progres__c'
                       />
-    <!-- WILL BE DELETED -->
-    <design:attribute label="Module Layout" name="courseLayout" description="Choose 'Table' to display modules in list format or 'Grid' to display them in tile format." 
-                      datasource='table,grid' default="table"
-                      />
-    <!-- WILL BE DELETED -->
-    <design:attribute label="# of Module Columns (Grid Only)" name="courseColumns" description="If using Grid layout for modules, choose the number of columns you want to be displayed."
-                      />
-    <!-- WILL BE DELETED -->
-    <design:attribute label="Module Fields" name="courseDetailFields" description="Enter the API names of the fields you want to include in the module list, separated by commas." 
-                      default='Name,FieloELR__Description__c'
-                      />
-    <!-- WILL BE DELETED -->
-    <design:attribute label="Module Response Fields" name="moduleResponseFields" description="Enter the API names of the fields you want to include when displaying module feedback, separated by commas." 
-                      default='FieloELR__NumberOfAttempt__c'
-                      />
-    
+
     <design:attribute label="# of Days to Show Courses as New" name="daysToBeConsideredNew" description="Enter the number of days after start date that you want courses to be shown as new. This will display a &quot;New&quot; badge next to the course period. If left blank, no courses will be shown as new." 
                       default='60'
                       />

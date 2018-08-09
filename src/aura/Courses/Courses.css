@@ -179,35 +179,35 @@
     margin: 3px 0 0 7px ;
 }
 
-.THIS .fielo-section__layout div:first-child{
-    margin-right: 0;
-    color: red;
+.THIS .fielo-dates-center{
+    margin-right: 25px;
 }
 
 
+/* DATE COMPONENT NULL */
 
-/*
- DATE COMPONENT NULL
-.THIS.subcomponent:nth-child(2){
+.THIS .no-date .subcomponent:nth-child(2){
 	margin-top: 50px;
 }
 
-.THIS.subcomponent:nth-child(3){
+.THIS .no-date .subcomponent:nth-child(3){
 	display:none;
 }
 
-.THIS .subcomponent:last-child{
+.THIS .no-date .subcomponent:last-child{
 	margin-top: 40px;
 }
 
-DESCRIPTION NULL
+/*DESCRIPTION NULL */
 
-
-
-
-
-
-CSS Grid Field Section */
+.THIS .no-description .subcomponent:nth-child(2){
+	display:none;
+}
+.THIS .no-description .subcomponent:nth-child(3){
+	margin: 67px 0;
+}
+    
+/* CSS Grid Field Section */
 
 .THIS .grid .fielo-section-layout{
     display:grid;

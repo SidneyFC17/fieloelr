@@ -1,6 +1,7 @@
 ({
     doInit : function(component, event, helper) {
         try{
+            helper.getFields(component);
             helper.getFilterFieldSet(component);
             helper.getCourseFieldSet(component);
             helper.getConfiguration(component);

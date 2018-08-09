@@ -6,11 +6,12 @@
     <aura:attribute type="Boolean" name="showImages" default="false" />
     <aura:attribute type="sObject" name="record" />    
     <aura:attribute type="String" name="columns" />
+    <aura:attribute type="String" name="noDescrpNoDate" />
     <aura:attribute type="sObject[]" name="buttons" />
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     
-    <div class="{!'slds-large-size_1-of-' + (v.layout == 'grid' ? v.columns : '1') + ' grid-item slds-p-around--small slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-align_center'}">
+    <div class="{!  v.noDescrpNoDate + ' slds-large-size_1-of-' + (v.layout == 'grid' ? v.columns : '1') + ' grid-item slds-p-around--small slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-align_center'}">
         <aura:if isTrue="{!v.type == 'view'}">
             <div class="title"> {!v.record.Name}</div>
         </aura:if>
