@@ -87,7 +87,8 @@
                         }
                     }
                 });
-                if (pointField){
+                console.log('activeViewName: ' + activeViewName);
+                if (pointField && activeViewName.toLowerCase() == 'mycourses'){
                     course.push(pointField);
                 }
                 component.set('v.fields', course);

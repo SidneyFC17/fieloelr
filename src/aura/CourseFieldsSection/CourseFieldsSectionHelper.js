@@ -2,7 +2,6 @@
     getAttributes: function(component) {
         try{
             var config = JSON.parse(component.get('v.config'));
-            console.log(JSON.stringify(config, null, 2));
             var record = component.get('v.record');
             var activeViewName;
             var fieldMeta;
