@@ -37,3 +37,11 @@
 .THIS .fielo-quiz-container .slds-card__header{
     padding-left: unset;
 }
+
+.THIS .fielo-section__field{
+    margin-left: 5px;
+}
+.THIS .fielo-section__field-value, .THIS .slds-form-element__label {
+    font-size: 0.8rem;
+    
+}

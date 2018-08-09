@@ -257,7 +257,8 @@
         component.set('v.fields', fieldNames.join(','));
     },
     setButtons: function (component) {
-        var buttons = [{
+        var buttons = [];
+        buttons.push({
             "type": "subcomponent",
             "subcomponent": "c:CourseAction",
             "apiName": "Id",
@@ -266,12 +267,12 @@
             "config": {
                 "label_viewModule": $A.get('$Label.c.ViewModule'),
                 "label_joinCourse": $A.get('$Label.c.JoinCourse'),
-                "activeViewName": component.get('v.activeViewName'),
+                "activeViewName": component.get('v.courseStatus').length > 0 ? 'myCourses' : 'availableCourses',
                 "variant": "brand",
                 "memberId": component.get('v.member').Id,
                 "moduleResponses": component.get('v.moduleResponses')
             }
-        }]
+        });
         component.set("v.buttons", buttons);
         this.setCardColor(component);
     },

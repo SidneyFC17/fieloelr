@@ -23,6 +23,10 @@
                 }
             }
             
+            if (config.activeViewName) {
+                component.set('v.activeViewName', config.activeViewName);
+            }
+            
             // Get Module Responses
             if (config.moduleResponses) {
                 moduleResponses = config.moduleResponses;

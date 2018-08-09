@@ -7,6 +7,7 @@
     <aura:attribute type="String" name="fieldName"/>
     <aura:attribute type="String" name="moduleNumber"/>
     <aura:attribute type="String" name="moduleId"/>
+    <aura:attribute type="String" name="activeViewName"/>
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     
@@ -23,7 +24,7 @@
                     <aura:if isTrue="{!v.record.FieloELR__SubscriptionMode__c == 'Automatic'}">
                         <lightning:button label="{!v.config.label_viewModule + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
                         <aura:set attribute="else">
-                            <aura:if isTrue="{!v.config.activeViewName == 'availableCourses'}">
+                            <aura:if isTrue="{!v.activeViewName == 'availableCourses'}">
                                 <lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" onclick="{!c.callJoinCourse}" variant="{!v.config.variant}" />
                                 <aura:set attribute="else">
                                     <lightning:button label="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
