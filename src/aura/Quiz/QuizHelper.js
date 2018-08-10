@@ -151,17 +151,22 @@
                         component.set('v.correctQuestions', correctQuestions);
                         component.set('v.incorrectQuestions', incorrectQuestions);
                         component.set('v.noMoreAttemptsQuestions', noMoreAttemptsQuestions);
+                        this.getQuestionStatus(component);
+                        correctQuestions = component.get('v.correctQuestions');
+                        incorrectQuestions = component.get('v.incorrectQuestions');
+                        noMoreAttemptsQuestions = component.get('v.noMoreAttemptsQuestions');
+                        
                         this.showResults(component);
                         if (type == 'module') {
                             // Last Question
-                            console.log('Question ' + (currentQuestionIndex+1) + ' of ' + moduleResponseWrapper.questions.length);
-                            if (currentQuestionIndex == moduleResponseWrapper.questions.length-1) {
+                            var submittedQuestions = correctQuestions.length + noMoreAttemptsQuestions.length;
+                            console.log('submittedQuestions: ' + submittedQuestions + ' of ' + moduleResponseWrapper.questions.length);
+                            if (submittedQuestions == moduleResponseWrapper.questions.length) {
                                 this.checkModuleAndFinish(component);
-                            } else {
+                            } /*else {
                                 this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
-                            }    
+                            } */
                         }
-                        
                     }
                 } else {
                     var errorMsg = response.getError()[0].message;
@@ -205,7 +210,7 @@
             console.log(e);
         }
     },
-    checkModuleAndFinish: function(component) {
+    getQuestionStatus: function(component) {
         try{
             var correctQuestions = component.get('v.correctQuestions');
             var incorrectQuestions = component.get('v.incorrectQuestions');
@@ -216,9 +221,21 @@
                     incorrectQuestions.splice(incorrectQuestions.indexOf(id), 1);
                 }
             });
+            component.set('v.correctQuestions', correctQuestions);
+            component.get('v.incorrectQuestions', incorrectQuestions);
+            component.get('v.noMoreAttemptsQuestions', noMoreAttemptsQuestions);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    checkModuleAndFinish: function(component) {
+        try{
+            var incorrectQuestions = component.get('v.incorrectQuestions');
             
             if (incorrectQuestions.length == 0) {
                 $A.enqueueAction(component.get('c.callSubmitModule'));
+            } else {
+                this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
             }
         } catch(e) {
             console.log(e);

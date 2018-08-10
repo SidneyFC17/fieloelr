@@ -106,7 +106,7 @@
         }
     },
     callSubmitModule: function(component, event, helper) {
-        try{
+        try {
             var moduleResponseWrapper = component.get('v.moduleResponseWrapper');
             var moduleResponse = {};
             moduleResponse.Id = moduleResponseWrapper.moduleResponse.Id;
@@ -117,7 +117,7 @@
             action.setCallback(this, function(response) {
                 var spinner = $A.get("e.c:ToggleSpinnerEvent");
                 var state = response.getState();
-                if (component.isValid() && state === 'SUCCESS') {                    
+                if (component.isValid() && state === 'SUCCESS') {
                     var result = JSON.parse(response.getReturnValue());
                     console.log(JSON.stringify(result, null, 2));
                     helper.showMessage('success', $A.get('$Label.c.ModuleSubmitted'));

@@ -42,7 +42,7 @@
     display: none;
 }
 
-/* CSS Grid Implementation  */
+/* CSS Grid Card Implementation  */
 .THIS .FieloELRCardItem .slds-p-around_small{
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -108,3 +108,52 @@
 .THIS .fielo-breadcrumb__current{
     padding-left: 0.5rem;
 }
+
+.THIS .slds-card{
+    border-radius: 0.6rem;
+}
+
+/* CSS Grid Field Section Implementation */
+
+.THIS .fielo-section-layout{
+    display: grid;
+    grid-template-columns: repeat(10, 1fr );
+    grid-gap: 0.5em;
+    width: 100%;
+}
+
+.THIS
+
+.THIS .fielo-section__field:first-child{
+    grid-column: 1/2;
+    margin-left: 20px;
+}
+
+.THIS .fielo-section__field:nth-child(2){
+    grid-column: 2/4;
+}
+
+.THIS .fielo-section__field:nth-child(3){
+    grid-column: 4/5;
+    min-width: 100px;
+}
+
+.THIS .slds-progress-bar_large{
+    width: 85%;
+}
+
+.THIS .slds-form-element__label {
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+}
+
+.THIS .fielo-section__field-value{
+    font-size: 18px;
+}
+
+.THIS .fielo-section__field{
+    min-height: 4rem;
+    padding-top: 5px;
+}
+
+/* End Field Section */

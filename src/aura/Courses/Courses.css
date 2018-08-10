@@ -207,7 +207,7 @@
 	margin: 67px 0;
 }
     
-/* CSS Grid Field Section */
+/* CSS Grid Field Section Vertical*/
 
 .THIS .grid .fielo-section-layout{
     display:grid;
@@ -227,5 +227,29 @@
 
 .THIS .fielo-section__field:nth-child(3){
     grid-column: 8/12;
+    min-width: 100px;
+}
+
+/* CSS Grid Field Section Horizontal */
+
+.THIS .table .fielo-section-layout{
+    display: grid;
+    grid-template-columns: repeat(10, 1fr );
+    grid-gap: 0.5em;
+    width: 100%;
+}
+
+
+.THIS .table .fielo-section__field:first-child{
+    grid-column: 1/2;
+    margin-left: 20px;
+}
+
+.THIS .table .fielo-section__field:nth-child(2){
+    grid-column: 2/4;
+}
+
+.THIS .table .fielo-section__field:nth-child(3){
+    grid-column: 4/5;
     min-width: 100px;
 }
