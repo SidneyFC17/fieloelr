@@ -11,6 +11,7 @@ public with sharing class CourseDetailsController {
 			courseStatusFields.add('Id');
 			courseStatusFields.add('FieloELR__Course__c');
 			courseStatusFields.add('FieloELR__Progress__c');
+			courseStatusFields.add('FieloELR__ApprovedModules__c');
 
 			CourseStatusSelector selector = new CourseStatusSelector(courseStatusFields);
 			String key = courseId + member.Id;

@@ -122,6 +122,25 @@
             console.log(e);
         }
     },
+    addCourseStatusRequiredFields: function(courseStatusFields) {
+        try {
+            var courseStatusFieldSet = [];
+            var fieldList = courseStatusFields.split(',');
+            fieldList.forEach(function(fieldName) {
+                if (courseStatusFieldSet.join(',').toLowerCase().indexOf(fieldName.toLowerCase()) == -1) {
+                    courseStatusFieldSet.push(fieldName);
+                }
+            });
+            this.courseStatusRequiredFields.forEach(function(fieldName) {
+                if (courseStatusFieldSet.join(',').toLowerCase().indexOf(fieldName.toLowerCase()) == -1) {
+                    courseStatusFieldSet.push(fieldName);
+                }
+            });
+            return courseStatusFieldSet.join(',');
+        } catch(e) {
+            console.log(e);
+        }
+    },
     addCourseRequiredFields: function(courseFields) {
         try{
             var courseFieldSet = [];
@@ -304,5 +323,10 @@
         'FieloELR__Description__c',
         'FieloELR__StartDate__c',
         'FieloELR__EndDate__c'
+    ],
+    courseStatusRequiredFields: [
+        'Name',
+        'FieloELR__ApprovedModules__c',
+        'FieloELR__Progress__c'
     ]
 })

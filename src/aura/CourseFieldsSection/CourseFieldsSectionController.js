@@ -29,8 +29,17 @@
                         if (field == 'FieloELR__Modules__r') {
                             courseField.label = $A.get('$Label.c.Modules');
                             if (record[field]) {
+                                if (courseStatus) {
+                                    if (courseStatus['FieloELR__ApprovedModules__c']) {
+                                        courseField.value = courseStatus['FieloELR__ApprovedModules__c'] + ' / ';
+                                    } else {
+                                        courseField.value = '';
+                                    }
+                                } else {
+                                    courseField.value = '';
+                                }
                                 if (record[field].records) {
-                                    courseField.value = record[field].records.length;
+                                    courseField.value += record[field].records.length;
                                 }
                             }
                         } else {

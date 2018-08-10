@@ -6,7 +6,7 @@
             	helper.getFieldsMeta(component, 'FieloELR__Course__c', helper.addCourseRequiredFields(component.get("v.courseDetailFields")));
             }
             if (component.get('v.courseStatusDetailFields')) {
-            	helper.getFieldsMeta(component, 'FieloELR__CourseStatus__c', component.get('v.courseStatusDetailFields'));
+            	helper.getFieldsMeta(component, 'FieloELR__CourseStatus__c', helper.addCourseStatusRequiredFields(component.get('v.courseStatusDetailFields')));
             }
         } catch(e) {
             console.log(e);
