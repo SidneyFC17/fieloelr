@@ -6,6 +6,7 @@
     <aura:attribute type="Boolean" name="showQuestionName"/>
     <aura:attribute type="String" name="status"/>
     <aura:attribute type="String" name="mode"/>
+    <aura:attribute type="Integer" name="questionNumber"/>
     <aura:attribute type="String" name="iconName" default="utility:chevrondown"/>
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
@@ -20,7 +21,7 @@
     <div class="fielo-question-card-item" data-member-id="{!v.member.Id}">
         <lightning:card class="fielo-question-card">
             <aura:set attribute="title">
-                <c:QuestionCardHeader record="{!v.question}" iconName="{!v.iconName}" showQuestionName="{!v.showQuestionName}" status="{!v.status}"/>
+                <c:QuestionCardHeader record="{!v.question}" iconName="{!v.iconName}" showQuestionName="{!v.showQuestionName}" status="{!v.status}" questionNumber="{!v.questionNumber}"/>
             </aura:set>
             <aura:set attribute="actions">
                 <div class="fielo-question__status">

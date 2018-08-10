@@ -1,6 +1,7 @@
 <aura:component >
     <aura:attribute type="sObject" name="record" />
     <aura:attribute type="String" name="iconName" default="utility:chevrondown"/>
+    <aura:attribute type="Integer" name="questionNumber"/>
     <aura:attribute type="Boolean" name="showQuestionName"/>
     <aura:attribute type="String" name="status"/>
     

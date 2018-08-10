@@ -39,15 +39,15 @@
             
             <lightning:card title="" class="fielo-questions-container">
                 <aura:if isTrue="{! and(v.module.FieloELR__QuestionDisplayMode__c == 'All at once', v.questions.length > 0) }">
-                    <aura:iteration var="question" items="{!v.questions}">
+                    <aura:iteration var="question" items="{!v.questions}" indexVar="questionNumber">
                         <div class="fielo-question-separator">
                             <hr/>
                         </div>
-                        <c:QuestionCardItem aura:id="question-card" question="{!question}" showQuestionName="{!v.showQuestionName}"/>
+                        <c:QuestionCardItem aura:id="question-card" question="{!question}" showQuestionName="{!v.showQuestionName}" questionNumber="{!questionNumber + 1}"/>
                     </aura:iteration>
                 </aura:if>
                 <aura:if isTrue="{! and(v.module.FieloELR__QuestionDisplayMode__c == 'One by one', v.currentQuestion.Id != null, v.currentQuestion.Id != '') }">
-                    <c:QuestionCardItem aura:id="unique-question-card" question="{!v.currentQuestion}" showQuestionName="{!v.showQuestionName}"/>
+                    <c:QuestionCardItem aura:id="unique-question-card" question="{!v.currentQuestion}" showQuestionName="{!v.showQuestionName}" questionNumber="{!v.currentQuestionIndex + 1}"  />
                 </aura:if>
                 <aura:set attribute="footer">
                     <div class="slds-p-top--small">

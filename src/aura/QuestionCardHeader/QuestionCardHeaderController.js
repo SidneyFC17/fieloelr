@@ -2,11 +2,12 @@
     doInit: function(component, event, helper) {
         try{
             var record = component.get('v.record');
+            var questionNumber = component.get('v.questionNumber');
             var showQuestionName = component.get('v.showQuestionName');
             
             var questionHeaderText = '<b>' +
                 $A.get('$Label.c.Question') + ' ' +
-                record.FieloELR__Order__c + '</b>';
+                questionNumber + '</b>';
             if (showQuestionName) {
                 questionHeaderText += ': ' + record.Name;
             }
