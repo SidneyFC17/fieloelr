@@ -163,9 +163,9 @@
                             console.log('submittedQuestions: ' + submittedQuestions + ' of ' + moduleResponseWrapper.questions.length);
                             if (submittedQuestions == moduleResponseWrapper.questions.length) {
                                 this.checkModuleAndFinish(component);
-                            } /*else {
+                            } else {
                                 this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
-                            } */
+                            }
                         }
                     }
                 } else {
