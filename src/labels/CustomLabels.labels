@@ -298,7 +298,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>AvailableCourses</shortDescription>
-        <value>Available courses</value>
+        <value>Available Courses</value>
     </labels>
     <labels>
         <fullName>AvailableRewards</fullName>
@@ -2429,7 +2429,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ModuleSubmitted</shortDescription>
-        <value>Module completed</value>
+        <value>Module submitted</value>
     </labels>
     <labels>
         <fullName>Modules</fullName>
@@ -4068,7 +4068,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>To</shortDescription>
-        <value>To</value>
+        <value>to</value>
     </labels>
     <labels>
         <fullName>Tools</fullName>
