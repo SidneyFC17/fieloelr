@@ -247,8 +247,9 @@
         try {
             if (window.localStorage) {
                 var viewResults = Boolean(window.localStorage.getItem('viewResults'));
+                var course = component.get('v.course');
                 window.localStorage.removeItem('viewResults');
-                if (viewResults) {
+                if (viewResults || course.FieloELR__Description__c == null || course.FieloELR__Description__c == undefined || course.FieloELR__Description__c == '') {
                     component.set('v.activeViewName', 'modules');
                     var tabsCmp = component.find('tabs');
                     if (tabsCmp) {

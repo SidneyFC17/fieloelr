@@ -1,0 +1,7 @@
+<design:component label="FieloELR - Quiz">
+    
+    <design:attribute label="Presentation Mode" name="presentationMode" datasource="All at once,One By One" default="One By One"/>
+    
+    <design:attribute label="Display Question Name" name="showQuestionName" description="When ticked displays the question name field aside the question number." default="false"/>
+    
+</design:component>
