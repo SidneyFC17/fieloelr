@@ -15,10 +15,12 @@
     <aura:attribute type="String" name="courseDetailFields"/>
     <aura:attribute type="String" name="courseStatusDetailFields"/>
     <aura:attribute type="String" name="courseLayout" access="global" />
-    <aura:attribute name="courseColumns" type="String" access="global" />
-    <aura:attribute name="fields" type="String" default="Name,FieloELR__Description__c"/>
+    <aura:attribute type="String" name="sortByFields" access="global" default="FieloELR__StartDate__c,FieloELR__EndDate__c"/>
+    <aura:attribute type="String" name="courseColumns" access="global" />
+    <aura:attribute type="String" name="fields" default="Name,FieloELR__Description__c"/>
     <!-- DESIGN ATTRIBUTES -->
     
+    <aura:attribute type="String" name="sortByOptions"/>
     <aura:attribute type="Boolean" name="showCoursesList" default="false" />
     <aura:attribute type="Boolean" name="showCourse" default="false" />
     <aura:attribute type="Boolean" name="showPointsEarned" default="true" />
@@ -92,7 +94,7 @@
                           filterFields="{!v.courseFilterFields}"
                           rangedFields="{!v.courseRangedFilterFields}"
                           showSortBy="true"
-                          sortByOptions="[{'value':'LastModifiedDate', 'label':'Last Modified Date'},{'value':'CreatedDate', 'label':'Created Date'},{'value':'FieloELR__StartDate__c', 'label':'Start Date'},{'value':'FieloELR__EndDate__c', 'label':'End Date'}]"/>
+                          sortByOptions="{!v.sortByOptions}" />
             </aura:if>
         </div>
         

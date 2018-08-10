@@ -480,5 +480,40 @@
         'FieloELR__Description__c',
         'FieloELR__StartDate__c',
         'FieloELR__EndDate__c'
-    ]
+    ],
+    getSortByOptions: function(component) {
+        // [{'value':'LastModifiedDate', 'label':'Last Modified Date'},{'value':'CreatedDate', 'label':'Created Date'},{'value':'FieloELR__StartDate__c', 'label':'Start Date'},{'value':'FieloELR__EndDate__c', 'label':'End Date'}]            
+        // FieloELR__StartDate__c,FieloELR__EndDate__c
+		try {
+            var action = component.get('c.getFieldsMetadata');
+            action.setParams({
+                'objectName': 'FieloELR__Course__c',
+                'fieldNames': component.get('v.sortByFields')
+            });
+            action.setCallback(this, function (response) {
+                var state = response.getState();
+                if (component.isValid() && state === 'SUCCESS') {
+                    var result = JSON.parse(response.getReturnValue());
+                    var options = [];
+                    if (result.fields) {
+                        result.fields.forEach(function(fieldInfo) {
+                            options.push({
+                                'value': fieldInfo.attributes.name,
+                                'label': fieldInfo.attributes.label
+                            });
+                        });
+                    }
+                    if (options) {
+                    	component.set('v.sortByOptions', options);    
+                    }
+                } else {
+                    var errorMsg = response.getError()[0].message;
+                    this.showMessage('error', errorMsg);
+                }
+            });
+            $A.enqueueAction(action);
+        } catch (e) {
+            console.log(e);
+        }       
+    }
 })
