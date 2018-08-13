@@ -122,11 +122,10 @@
     width: 100%;
 }
 
-.THIS
 
 .THIS .fielo-section__field:first-child{
     grid-column: 1/2;
-    margin-left: 20px;
+    padding-left: 15px;
 }
 
 .THIS .fielo-section__field:nth-child(2){

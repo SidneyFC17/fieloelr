@@ -2135,7 +2135,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>MaximumAttempts</shortDescription>
-        <value>Maximum attempts reached</value>
+        <value>Your question attempt limit has been reached</value>
     </labels>
     <labels>
         <fullName>Member</fullName>
