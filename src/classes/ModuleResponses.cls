@@ -1,6 +1,7 @@
 public class ModuleResponses extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
     public static Set<Id> approvedIds = new Set<Id>();
+    public static Set<Id> submittedIds = new Set<Id>();
     public static Boolean validateAdminFields = true;
     public static Boolean disableCommit = false;
     public static SObjectUnitOfWork questionResponseUOW;
@@ -178,13 +179,7 @@ public class ModuleResponses extends SObjectDomain {
 
         if(!mrWithNewCourseStatus.isEmpty()){
             CourseStatus.validateAdminFields = false;
-
-            if(Schema.sObjectType.CourseStatus__c.isCreateable()){
-                  uow.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
-
+            uow.commitWork();
             SObjectUnitOfWork.DatabaseResult results = uow.getResults(CourseStatus__c.SObjectType);
             
             Map<String,List<String>> errorMsgByCoursest = new Map<String,List<String>>();
@@ -223,26 +218,30 @@ public class ModuleResponses extends SObjectDomain {
                 if(((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsSubmitted__c){
                     moduleResponse.addError(Label.ValidateModuleResponseSubmitted);
                 }
-                if(moduleResponse.IsApproved__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c){
-                    moduleResponse.IsApproved__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c;
-                }
-                if(moduleResponse.GradeValue__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradeValue__c){
-                    moduleResponse.GradeValue__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradeValue__c;
-                }
-                if(moduleResponse.GradePercent__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c){
-                    moduleResponse.GradePercent__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c;
+                if (!submittedIds.contains(moduleResponse.Id)) {
+                    //This part may run twice due to Workflow Rules, Rollups or Workflow proccesses.
+                    // if it is a submittion we should not unset the values.
+                    if(moduleResponse.IsApproved__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c){
+                        moduleResponse.IsApproved__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IsApproved__c;
+                    }
+                    if(moduleResponse.GradeValue__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradeValue__c){
+                        moduleResponse.GradeValue__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradeValue__c;
+                    }
+                    if(moduleResponse.GradePercent__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c){
+                        moduleResponse.GradePercent__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).GradePercent__c;
+                    }
+                    if(moduleResponse.CorrectQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c){
+                        moduleResponse.CorrectQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c;
+                    }
+                    if(moduleResponse.IncorrectQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IncorrectQuestions__c){
+                        moduleResponse.IncorrectQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IncorrectQuestions__c;
+                    }
+                    if(moduleResponse.TotalQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c){
+                        moduleResponse.TotalQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c;
+                    }
                 }
                 if(moduleResponse.ExternalKey__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).ExternalKey__c){
                     moduleResponse.ExternalKey__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).ExternalKey__c;
-                }
-                if(moduleResponse.CorrectQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c){
-                    moduleResponse.CorrectQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).CorrectQuestions__c;
-                }
-                if(moduleResponse.IncorrectQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IncorrectQuestions__c){
-                    moduleResponse.IncorrectQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).IncorrectQuestions__c;
-                }
-                if(moduleResponse.TotalQuestions__c != ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c){
-                    moduleResponse.TotalQuestions__c = ((ModuleResponse__c)existingRecords.get(moduleResponse.Id)).TotalQuestions__c;
                 }
                 moduleIds.add(moduleResponse.Module__c);
             }
@@ -266,12 +265,14 @@ public class ModuleResponses extends SObjectDomain {
             //Add only submitted records.
             if( moduleResp.IsSubmitted__c ){
                 if( !((ModuleResponse__c)existingRecords.get(moduleResp.Id)).IsSubmitted__c){
-                    moduleResp.SubmitDate__c = System.now();
-                    submittedRecords.add(moduleResp);
+                    if(!submittedIds.contains(moduleResp.Id)) {
+                        submittedIds.add(moduleResp.Id);
+                        moduleResp.SubmitDate__c = System.now();
+                        submittedRecords.add(moduleResp);
+                    }
                 }
             }
         }
-
         if(!submittedRecords.isEmpty()){
             setGradeAndApprovalFlag(submittedRecords);
         }
@@ -391,6 +392,9 @@ public class ModuleResponses extends SObjectDomain {
                 if (moduleResponse.TotalQuestions__c == null) {
                     moduleResponse.TotalQuestions__c = 0;
                 }
+                system.debug(
+                    JSON.serializePretty(existingModuleResponseMap)
+                );
                 for (QuestionResponse__c questionResponse: existingModuleResponseMap.get(moduleResponse.Id).QuestionResponses__r) {
                     moduleResponse.GradeValue__c += questionResponse.PartialGradevalue__c;
                     if (questionResponse.IsCorrect__c) {
@@ -513,13 +517,7 @@ public class ModuleResponses extends SObjectDomain {
 
         Boolean validateAdminFields = CourseStatus.validateAdminFields;
         CourseStatus.validateAdminFields = false;
-
-        if(Schema.sObjectType.CourseStatus__c.isCreateable() && Schema.sObjectType.CourseStatus__c.isUpdateable()){
-             uow.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
-
+        uow.commitWork();
         CourseStatus.validateAdminFields = validateAdminFields;        
     }
 }
