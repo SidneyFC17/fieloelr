@@ -6,7 +6,8 @@
                 $A.get('$Label.c.Module') + ' ' +
                 record.FieloELR__Order__c + ': <b>' +
                 record.Name + '</b>';
-            component.find('moduleHeaderText').set('v.value', moduleHeaderText);   
+            component.find('moduleHeaderText').set('v.value', moduleHeaderText);
+            component.set('v.moduleName', record.Name);
         } catch(e) {
             console.log(e);
         }

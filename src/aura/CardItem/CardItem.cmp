@@ -16,7 +16,7 @@
             <div class="title"> {!v.record.Name}</div>
         </aura:if>
         <lightning:card class="{!v.layout + ' ' + v.type}">                
-            <aura:set attribute="title"><aura:if isTrue="{!v.type == 'landing'}">{!v.record.Name}</aura:if></aura:set>            
+            <aura:set attribute="title"><aura:if isTrue="{!v.type == 'landing'}"><div class="record-name" title="{!v.record.Name}">{!v.record.Name}</div></aura:if></aura:set>            
             <aura:set attribute="footer">
                 <aura:iteration items="{!v.buttons}" var="btn">
                     <c:OutputField config="{!btn.config}" subcomponent="{!btn.subcomponent}" record="{!v.record}" fieldName="{!btn.apiName}" type="{!btn.type}" class="{!btn.cssClass}"/>
