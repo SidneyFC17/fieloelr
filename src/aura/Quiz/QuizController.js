@@ -10,7 +10,6 @@
                     moduleResponseWrapper = JSON.parse(moduleResponseWrapper);
                     var recordId = component.get('v.recordId');
                     if (!recordId) {
-                        console.log('getting override id');
                         recordId = component.get('v.overrideId');
                     }
                     if (moduleResponseWrapper.module && moduleResponseWrapper.moduleResponse) {

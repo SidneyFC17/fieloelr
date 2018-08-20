@@ -85,8 +85,6 @@
             var moduleResponseWrapper = component.get('v.moduleResponseWrapper');
             var currentQuestionIndex = component.get('v.currentQuestionIndex');
             var questionResponseWrapper = this.getQuestionWrapper(component);
-            console.log('submitting question: ' + questionResponseWrapper.question.FieloELR__Order__c);
-            
             var action = component.get('c.submitQuestion');
             action.setParams({
                 'questionResponseWrapper': JSON.stringify(questionResponseWrapper)
@@ -160,10 +158,10 @@
                         if (type == 'module') {
                             // Last Question
                             var submittedQuestions = correctQuestions.length + noMoreAttemptsQuestions.length;
-                            console.log('submittedQuestions: ' + submittedQuestions + ' of ' + moduleResponseWrapper.questions.length);
                             if (submittedQuestions == moduleResponseWrapper.questions.length) {
                                 this.checkModuleAndFinish(component);
-                            } else {
+                            } 
+                            if (incorrectQuestions.length > 0) {
                                 this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
                             }
                         }
