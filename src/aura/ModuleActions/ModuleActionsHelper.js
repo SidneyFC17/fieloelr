@@ -23,7 +23,7 @@
                 } else {
                     if (numberOfAttempts == 0) {
                         
-                        if ((course.FieloELR__SubscriptionMode__c == 'Automatic' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency) {
+                        if ((course.FieloELR__SubscriptionMode__c == 'Automatic' && course.FieloELR__Status__c == 'Active' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency) {
                             component.set('v.actions', ['take']);
                         } else {
                             component.set('v.actions', ['take-readonly']);
