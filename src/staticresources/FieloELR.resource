@@ -1,3 +1,4 @@
+
 {
   "exportType" : "update",
   "configObjects" : [ {
@@ -18,7 +19,7 @@
         "value" : "FieloELR"
       }, {
         "apiName" : "fieloplt__version__c",
-        "value" : "1.005"
+        "value" : "1.006"
       }, {
         "apiName" : "fieloplt__externalid__c",
         "value" : "FieloELR"
@@ -1161,6 +1162,46 @@
           }, {
             "apiName" : "fieloplt__standardactions__c",
             "value" : "Edit;Delete;View;Settings"
+          }, {
+            "apiName" : "fieloplt__standardrelated__c",
+            "value" : "CombinedAttachments"
+          }, {
+            "apiName" : "fieloplt__type__c",
+            "value" : "View"
+          }, {
+            "apiName" : "fieloplt__externalid__c",
+            "value" : "00D6A0000001vVQ-a0L6A000002Q1MV"
+          }, {
+            "apiName" : "fieloplt__iscustom__c",
+            "value" : "true"
+          } ],
+          "relatedList" : [ {
+            "objectAPIName" : "fieloplt__programassignment__c",
+            "records" : [ ]
+          } ]
+        }, {
+          "fieldsValues" : [ {
+            "apiName" : "name",
+            "value" : "Module > View"
+          }, {
+            "apiName" : "fieloplt__fieldset__c",
+            "value" : "{\"Name\":\"Name\"},  {\"Name\":\"FieloELR__Course__r.Name\"}, {\"Name\":\"FieloELR__IsActive__c\"}, {\"Name\":\"FieloELR__WeightedQuestions__c\"}, {\"Name\":\"FieloELR__PenaltyMode__c\"}"
+          }, {
+            "apiName" : "fieloplt__library__c.fieloplt__externalid__c",
+            "value" : "FieloELR",
+            "refObject" : "fieloplt__library__c"
+          }, {
+            "apiName" : "fieloplt__object__c",
+            "value" : "FieloELR__Module__c"
+          }, {
+            "apiName" : "fieloplt__order__c",
+            "value" : "1"
+          }, {
+            "apiName" : "fieloplt__standardactions__c",
+            "value" : "Edit;Delete;View;Settings"
+          }, {
+            "apiName" : "fieloplt__standardrelated__c",
+            "value" : "CombinedAttachments"
           }, {
             "apiName" : "fieloplt__type__c",
             "value" : "View"

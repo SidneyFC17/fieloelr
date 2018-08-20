@@ -39,13 +39,15 @@
 			/>
 		</apex:panelGroup>
 
+		<!--
 		<c:PhotoUpload record="{!record}" 
           folderName="FieloPLT__FieloImages" 
           fieldName="FieloELR__Image__c" 
           externalURLName="FieloELR__ExternalURL__c" 
           sObjectName="{!objectName}"
         />
-
+		-->
+		
 		<apex:repeat value="{!relatedSettings}" var="rel">
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c = 'FieloELR__Question__c'}">
           <c:RelatedList namespace="FieloELR" heading="{! $ObjectType[rel.FieloPLT__TargetObject__c].labelPlural}"
