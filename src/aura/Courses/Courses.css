@@ -48,12 +48,20 @@
 }
 
 .THIS .FieloELRListView .grid .slds-card__header {
-    padding: 28px 15px;
+    padding: 28px 20px;
     border-bottom: none;
 }
 
 .THIS .FieloELRListView .table .slds-card__header {
 	padding: 30px 20px;
+}
+
+.THIS .slds-card .slds-text-heading_small{
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+    overflow: hidden;
+    width: 100%;
+    display: inline-block;
 }
 
 .THIS .FieloELRListView .table div[data-field-name="FieloELR__Description__c"] {

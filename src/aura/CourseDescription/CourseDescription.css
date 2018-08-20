@@ -8,4 +8,5 @@
 .THIS.fielo-course-content {
     min-height: 104px;
     max-height: 104px;
+    word-break: normal;
 }
