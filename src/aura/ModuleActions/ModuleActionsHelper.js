@@ -2,6 +2,9 @@
     getHeaderActions: function(component) {
         try{
             var moduleWrapper = component.get('v.moduleWrapper');
+            var course = component.get('v.course');
+            var courseStatus = component.get('v.courseStatus');
+            var joined = courseStatus != null;
             var location = component.get('v.location');
             var module;
             var actions = [];
@@ -19,7 +22,8 @@
                     component.set('v.actions', ['passed']);
                 } else {
                     if (numberOfAttempts == 0) {
-                        if (moduleWrapper.allowedForDependency) {
+                        
+                        if ((course.FieloELR__SubscriptionMode__c == 'Automatic' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency) {
                             component.set('v.actions', ['take']);
                         } else {
                             component.set('v.actions', ['take-readonly']);

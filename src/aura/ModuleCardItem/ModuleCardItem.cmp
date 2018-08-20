@@ -10,6 +10,8 @@
     <aura:attribute type="Object" name="MRfieldsMeta"/>
     <aura:attribute type="sObject[]" name="moduleResponses"/>
     <aura:attribute type="sObject" name="moduleResponse"/>
+    <aura:attribute type="sObject" name="course"/>
+    <aura:attribute type="sObject" name="courseStatus"/>
     <aura:attribute type="String" name="nextModuleInCourse"/>
     <aura:attribute type="String" name="iconName" default="utility:chevronright"/>
     
@@ -25,7 +27,7 @@
                 <c:ModuleCardHeader record="{!v.moduleWrapper.module}" iconName="{!v.iconName}"/>
             </aura:set>
             <aura:set attribute="actions">
-                <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}"/>
+                <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
             </aura:set>
             <div class="fielo-module-content">
                 <aura:if isTrue="{!v.showModuleContent}">

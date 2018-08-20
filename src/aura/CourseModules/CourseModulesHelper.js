@@ -31,6 +31,7 @@
                             moduleWrapperList.push(moduleWrapper);
                         });
                         component.set('v.course', courseWrapper[0].course);
+                        component.set('v.courseStatus', courseWrapper[0].courseStatus);
                         component.set('v.nextModuleId', this.getNextModuleId(moduleWrapperList));
                         component.set('v.moduleWrapperList', moduleWrapperList);
                         component.set('v.showModules', true);
@@ -250,24 +251,6 @@
                 var course = component.get('v.course');
                 window.localStorage.removeItem('viewResults');
                 if (viewResults || course.FieloELR__Description__c == null || course.FieloELR__Description__c == undefined || course.FieloELR__Description__c == '') {
-                    component.set('v.activeViewName', 'modules');
-                    var tabsCmp = component.find('tabs');
-                    if (tabsCmp) {
-                        tabsCmp.selectView('modules');
-                        console.log(tabsCmp.get('v.selectedView'));
-                    }
-                }
-            }
-        } catch(e) {
-            console.log(e);
-        }
-    },
-    oldSelectView: function(component) {
-        try{
-            var hash = window.location.hash;
-            if (hash) {
-                console.log('hash: ' + hash);
-                if (hash == '#results') {
                     component.set('v.activeViewName', 'modules');
                     var tabsCmp = component.find('tabs');
                     if (tabsCmp) {

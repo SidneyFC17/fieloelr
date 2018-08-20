@@ -48,6 +48,7 @@ public with sharing class CourseModulesController {
 			fieldsModuleResponse.add('FieloELR__SubmitDate__c');
 			fieldsModuleResponse.add('FieloELR__CorrectQuestions__c');
 			fieldsModuleResponse.add('FieloELR__IncorrectQuestions__c');
+			fieldsModuleResponse.add('FieloELR__CourseStatus__r.Id');
 			fieldsModuleResponse.add('FieloELR__CourseStatus__r.FieloELR__Progress__c');
 
 			if (includePoints != null && includePoints) {
