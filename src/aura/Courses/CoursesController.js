@@ -47,11 +47,12 @@
         try{
             event.stopPropagation();
             var viewName = event.getParam('viewName');
-            console.log(viewName);
+            component.set('v.showFilter', false);
             component.set('v.activeViewName', viewName);
             helper.updateButtons(component);
             $A.enqueueAction(component.get('c.getFieldSet'));
             $A.enqueueAction(component.get('c.loadCourses'));
+            component.set('v.showFilter', true);
         } catch(e) {
             console.log(e);
         }

@@ -24,6 +24,7 @@
     <aura:attribute type="Boolean" name="showCoursesList" default="false" />
     <aura:attribute type="Boolean" name="showCourse" default="false" />
     <aura:attribute type="Boolean" name="showPointsEarned" default="true" />
+    <aura:attribute type="Boolean" name="showFilter" default="true" />
     
     <aura:attribute type="Course__c[]" name="coursesList" />
     <aura:attribute type="sObject[]" name="courseStatus" />
@@ -89,7 +90,7 @@
         </aura:if>
         
         <div class="fielo-courses-filter-container slds-p-top_small slds-p-bottom_small">
-            <aura:if isTrue="{!v.filterFieldSet.length > 0}">
+            <aura:if isTrue="{!and(v.showFilter, v.filterFieldSet.length > 0)}">
                 <c:Filter fieldset="{!v.filterFieldSet}"
                           filterFields="{!v.courseFilterFields}"
                           rangedFields="{!v.courseRangedFilterFields}"
