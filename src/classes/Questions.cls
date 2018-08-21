@@ -86,7 +86,7 @@ public class Questions extends SObjectDomain {
 	    }
     }
 
-	public override void onAfterUpdate(Map<Id,SObject> existingRecords) {
+	public override void onAfterInsert() {
 		//Update module counter
 		updateModuleRollup(records, Trigger.isDelete);
 	}
