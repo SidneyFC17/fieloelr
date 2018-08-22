@@ -22,7 +22,7 @@
     <aura:handler name="courseViewSelected" event="c:CourseViewSelected" action="{!c.handleCourseViewSelected}"/>
     <!-- <aura:handler name="init" action="{!c.doInit}" value="{!this}"/> -->
     
-    <div class="fielo-modules-container" data-course-id="{!v.recordId}" data-next-module="{!v.nextModuleId}">
+    <div class="fielo-modules-container" data-course-id="{!v.recordId}" data-next-module="{!v.nextModuleId}" data-coursestatus-id="{!v.courseStatus.Id}">
         
         <aura:if isTrue="{! v.showModules }">
             <div class="slds-p-bottom_large">

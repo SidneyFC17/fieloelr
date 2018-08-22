@@ -239,7 +239,8 @@
                 }else {
                     prerequisitesField.value = $A.get('$Label.c.None');
                 }
-            } 
+            }
+            console.log(JSON.stringify(moduleWrapper.dependencies, null, 2));
             if (moduleWrapper.dependencies) {
                 prerequisitesField.hasDependency = moduleWrapper.dependencies.length > 0;
                 prerequisitesField.dependencyText = $A.get('$Label.c.DependencyHelpText') + ': ';
@@ -255,7 +256,7 @@
                             prerequisitesField.dependencyText += ', ';
                         }    
                     }
-                    prerequisitesField.dependencyText += moduleName;
+                    prerequisitesField.dependencyText += '"' + moduleName + '"';
                 });
             }
             return prerequisitesField;    
