@@ -225,8 +225,6 @@ global class CourseService {
 				queryCourses += ' OFFSET ' + offset;
 			}
 		}
-
-		system.debug(queryCourses);
 		return Database.query(queryCourses);
 	}
 
@@ -288,7 +286,6 @@ global class CourseService {
 
 		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses, List<ModuleDependency__c> dependencies){
 			this(module);
-			System.debug(JSON.serializePretty(moduleResponses));
 			this.moduleResponses = moduleResponses;
 			this.numberOfAttempts = this.moduleResponses.size();
 			if(this.numberOfAttempts > 0){
@@ -313,6 +310,15 @@ global class CourseService {
 				
 			}
 			
+		}
+
+		public ModuleWrapper(Module__c module, List<ModuleDependency__c> dependencies){
+			this.module = module;
+			if (dependencies!=null) {
+				this.dependencies = dependencies;
+			}
+			this.allowedForDependency = !(module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+			this.isApproved = false;
 		}
 
 		public ModuleWrapper(Module__c module){
@@ -377,7 +383,7 @@ global class CourseService {
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
 		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__Member__c','FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__NumberofApprove__c','FieloELR__Module__c'};
 		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
-			coursesStatusMap.put(cs.Course__c, cs);
+			coursesStatusMap.put(cs.Course__c, cs);		
 		}
 
 		List<CourseWrapper> courseWrappers = new List<CourseWrapper>();
@@ -446,7 +452,7 @@ global class CourseService {
 						module,
 						moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>(),
 						dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>()
-					) : new ModuleWrapper(module);
+					) : new ModuleWrapper(module, dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>());
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					}
