@@ -29,7 +29,9 @@
                                 } else {
                                     component.set('v.actions', ['take-readonly']);
                                 }        
-                            }
+                            }else {
+                                component.set('v.actions', ['take-readonly']);
+                            } 
                             
                         }
                     } else if (numberOfAttempts >= attemptsAllowed || !moduleWrapper.isApproved) {
@@ -61,9 +63,12 @@
                     if (numberOfAttempts >= attemptsAllowed) {
                         component.set('v.actions', ['view']);
                     } else {
+                        console.log(JSON.stringify(course, null, 2));
                         if (course) {
                             if (course.FieloELR__Status__c == 'Active') {
                                 component.set('v.actions', ['view','retake']);
+                            } else {
+                                component.set('v.actions', ['view','retake-readonly']);
                             }
                         }
                     }
@@ -73,6 +78,8 @@
                             if (course) {
                                 if (course.FieloELR__Status__c == 'Active') {
                                     component.set('v.actions', ['view','retake']);
+                                } else {
+                                    component.set('v.actions', ['view','retake-readonly']);
                                 }
                             }
                         } else {
@@ -81,6 +88,7 @@
                     }
                 }
             }
+            console.log(component.get('v.actions'));
         } catch(e) {
             console.log(e);
         }

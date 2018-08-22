@@ -21,13 +21,15 @@
         <aura:attribute type="Boolean" name="collapse" />
     </aura:method>
     
-    <div class="fielo-module-card-item" data-member-id="{!v.member.Id}">
+    <div class="fielo-module-card-item" data-member-id="{!v.member.Id}" data-course-id="{!v.course.Id}">
         <lightning:card class="fielo-module-card">
             <aura:set attribute="title">
                 <c:ModuleCardHeader record="{!v.moduleWrapper.module}" iconName="{!v.iconName}"/>
             </aura:set>
             <aura:set attribute="actions">
-                <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
+                <aura:if isTrue="{!v.course.Id != null}">
+                	<c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
+				</aura:if>
             </aura:set>
             <div class="fielo-module-content">
                 <aura:if isTrue="{!v.showModuleContent}">
@@ -41,6 +43,7 @@
                                      modulefields_notpassed="{!v.modulefields_notpassed}"
                                      modulefields_nottaken="{!v.modulefields_nottaken}"
                                      member="{!v.member}"
+                                     course="{!v.course}"
                                      />
                 </aura:if>
             </div>

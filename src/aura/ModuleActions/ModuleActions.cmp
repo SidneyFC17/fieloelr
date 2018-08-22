@@ -55,6 +55,10 @@
                             <lightning:button label="{!$Label.c.RetakeQuiz}" variant="brand" onclick="{!c.callTakeModule}"/>
                         </aura:if>
                     </aura:if>
+                    
+                    <aura:if isTrue="{!action == 'retake-readonly'}">
+                        <lightning:button label="{!$Label.c.RetakeQuiz}" variant="brand" disabled="true"/>
+                    </aura:if>
                 </aura:set>
             </aura:if>
         </aura:iteration>
