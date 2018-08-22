@@ -10,7 +10,7 @@
                     var today = new Date();
                     var timeDiff = Math.abs(today.getTime() - startDate.getTime());
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    component.set('v.isNew', diffDays < config.daysToBeConsideredNew);
+                    component.set('v.isNew', diffDays <= config.daysToBeConsideredNew);
                 }
             }
             if (record.FieloELR__EndDate__c) {
@@ -20,7 +20,8 @@
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                 component.set('v.daysLeft', diffDays);
                 if (config.daysToBeConsideredWarning) {
-                    if (diffDays < config.daysToBeConsideredWarning) {
+                    console.log(diffDays + ' <= ' + Number(config.daysToBeConsideredWarning));
+                    if (diffDays <= Number(config.daysToBeConsideredWarning)) {
                         component.set('v.className', 'fielo-font--warning');
                     } else {
                         component.set('v.className', 'fielo-font--early');

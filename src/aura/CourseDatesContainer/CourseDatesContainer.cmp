@@ -60,17 +60,21 @@
                             <lightning:layoutItem class="fielo-date-timeline">
                                 <c:CourseDates name="{!v.name}" record="{!v.record}" config="{!v.config}" />
                                 <aura:if isTrue="{!v.record.FieloELR__EndDate__c != null}">
-                                    <div class="{! 'fielo-dates-daycounter ' + v.className}">
-                                        <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Active'}">
+                                    <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Active'}">
+                                        <div class="{! 'fielo-dates-daycounter ' + v.className}">
                                             {!v.daysLeft + ' ' + $Label.c.daysLeft}
-                                        </aura:if>
-                                        <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Scheduled'}">
+                                        </div>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Scheduled'}">
+                                        <div class="fielo-font--early">
                                             {!v.startsIn}
-                                        </aura:if>
-                                        <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Completed'}">
+                                        </div>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Completed'}">
+                                        <div class="fielo-font--ended">
                                             {!$Label.c.CourseCompleted}
-                                        </aura:if>
-                                    </div>
+                                        </div>
+                                    </aura:if>
                                 </aura:if>
                             </lightning:layoutItem>
                         </lightning:layout>
