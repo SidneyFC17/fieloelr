@@ -22,13 +22,16 @@
                     component.set('v.actions', ['passed']);
                 } else {
                     if (numberOfAttempts == 0) {
-                        
-                        if ((course.FieloELR__SubscriptionMode__c == 'Automatic' && course.FieloELR__Status__c == 'Active' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency) {
-                            component.set('v.actions', ['take']);
-                        } else {
-                            component.set('v.actions', ['take-readonly']);
+                        if (course) {
+                            if (course.FieloELR__Status__c == 'Active') {
+                                if ((course.FieloELR__SubscriptionMode__c == 'Automatic' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency) {
+                                    component.set('v.actions', ['take']);
+                                } else {
+                                    component.set('v.actions', ['take-readonly']);
+                                }        
+                            }
+                            
                         }
-                        
                     } else if (numberOfAttempts >= attemptsAllowed || !moduleWrapper.isApproved) {
                         component.set('v.actions', ['notpassed']);
                     }
@@ -42,6 +45,7 @@
         try{
             var moduleWrapper = component.get('v.moduleWrapper');
             var location = component.get('v.location');
+            var course = component.get('v.course');
             var module;
             var actions = [];
             var attemptsAllowed;
@@ -58,12 +62,20 @@
                     if (numberOfAttempts >= attemptsAllowed) {
                         component.set('v.actions', ['view']);
                     } else {
-                        component.set('v.actions', ['view','retake']);
+                        if (course) {
+                            if (course.FieloELR__Status__c == 'Active') {
+                                component.set('v.actions', ['view','retake']);
+                            }
+                        }
                     }
                 } else {
                     if (numberOfAttempts != 0) {
                         if (numberOfAttempts < attemptsAllowed) {
-                            component.set('v.actions', ['view','retake']);
+                            if (course) {
+                                if (course.FieloELR__Status__c == 'Active') {
+                                    component.set('v.actions', ['view','retake']);
+                                }
+                            }
                         } else {
                             component.set('v.actions', ['view']);
                         }

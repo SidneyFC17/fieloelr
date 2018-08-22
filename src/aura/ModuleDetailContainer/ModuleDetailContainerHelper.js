@@ -184,7 +184,9 @@
         'FieloELR__Content__c',
         'FieloELR__ContentType__c',
         'FieloELR__ExternalURL__c',
-        'FieloELR__QuestionDisplayMode__c'
+        'FieloELR__QuestionDisplayMode__c',
+        'FieloELR__Course__r.FieloELR__Status__c',
+        'FieloELR__Course__r.FieloELR__SubscriptionMode__c'
     ],
     requiredModuleResponseFields: [
         'Id',

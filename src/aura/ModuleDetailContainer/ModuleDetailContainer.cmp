@@ -41,7 +41,7 @@
                 </aura:set>
                 <aura:set attribute="actions">
                     <aura:if isTrue="{! and(v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                        <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" showStatus="false"/>
+                        <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" showStatus="false" course="{!v.course}"/>
                     </aura:if>
                 </aura:set>
                 <div class="fielo-module-content">
@@ -63,8 +63,8 @@
                                 </div>
                             </aura:set>
                             <aura:set attribute="actions">
-                                <aura:if isTrue="{! and(v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                                    <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}"/> 
+                                <aura:if isTrue="{! and(v.course.Id != null, v.moduleResponseReady == true, v.moduleInProgress == false) }">
+                                    <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}"/> 
                                 </aura:if>
                             </aura:set>
                         </lightning:card>
