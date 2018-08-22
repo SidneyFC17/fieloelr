@@ -11,7 +11,7 @@
             
             if (config.fields) {
                 var fields = config.fields.split(',');
-                var field, objectName, apiNames, pointsEarned = 0, pointField, courseField, course = [];
+                var field, objectName, apiNames, pointsEarned = 0, pointField, courseField, course = [], pointFieldAdded = false;
                 fields.forEach(function(fullApiName) {
                     apiNames = fullApiName.split('.');
                     if (apiNames.length == 1) {
@@ -21,6 +21,7 @@
                         objectName = apiNames[0];
                         field = apiNames[1];
                     }
+                    console.log('Field name: ' + fullApiName);
                     courseField = {};
                     courseField.objectName = objectName;
                     courseField.name = field;
@@ -52,9 +53,18 @@
                     }
                     if (objectName.toLowerCase() == 'fieloelr__coursestatus__c') {
                         if (field == 'FieloELR__Transactions__r' || field == 'FieloELR__Trackers__r') {
+                            pointField = course.filter(function(f) {
+                                return f.name == 'points';
+                            });
+                            if (pointField.length > 0) {
+                                pointField = pointField[0]
+                            } else {
+                                pointField = null;
+                            }
                             if (!pointField) {
                                 pointField = {};
                                 pointField.label = $A.get('$Label.c.PointsEarned');
+                                pointField.name = 'points';
                             }
                             if (!pointsEarned) {
                                 pointsEarned = 0;
@@ -79,6 +89,10 @@
                                     }
                                 }
                             }
+                            if (pointField && activeViewName.toLowerCase() == 'mycourses' && !pointFieldAdded){
+                                pointFieldAdded = true;
+                                course.push(pointField);
+                            }
                         } else if (field == 'FieloELR__Progress__c') {
                             if (courseStatus) {
                                 course.push({
@@ -97,10 +111,10 @@
                     }
                 });
                 console.log('activeViewName: ' + activeViewName);
-                if (pointField && activeViewName.toLowerCase() == 'mycourses'){
-                    course.push(pointField);
-                }
+                
                 component.set('v.fields', course);
+                
+                console.log(JSON.stringify(course, null, 2));
                 
                 if(record.FieloELR__Status__c) {
                     if (record.FieloELR__Status__c == 'Scheduled') {

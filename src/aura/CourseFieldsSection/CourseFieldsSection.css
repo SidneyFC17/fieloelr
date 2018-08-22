@@ -27,7 +27,7 @@
     text-align: left;
     padding-left: 8px;
 }
-    
+
 .THIS .slds-form-element__label{
     color: #FFFFFF;
 }
@@ -44,7 +44,7 @@
 }
 
 .THIS .fielo-progress-container {
-	width: 100%;    
+    width: 100%;    
 }
 
 .THIS .fielo-progress-container .fielo-progress-bar{
@@ -57,4 +57,19 @@
 
 .THIS .slds-progress-bar__value {
     background-color: #04844B;
+}
+
+.THIS .fielo-section__field-value .slds-button {
+    padding-bottom: 7px;
+}
+
+.THIS .not-active {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: #04844B;
+}
+
+.THIS .fielo-section--completed .not-active{
+    color: white;
 }

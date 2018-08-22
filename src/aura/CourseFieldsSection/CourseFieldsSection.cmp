@@ -21,7 +21,7 @@
                         <aura:if isTrue="{!field.name == 'FieloELR__Progress__c'}">
                             <aura:if isTrue="{!field.value >= 100}">
                                 <span class="fielo-section__field-value">
-                                    {!field.value + '%'}
+                                    {!field.value + '%'}<lightning:buttonIcon iconName="utility:success" variant="bare" class="not-active"/>
                                 </span>
                                 <aura:set attribute="else">
                                     <lightning:layout class="fielo-section__field-value" horizontalAlign="start" verticalAlign="center">

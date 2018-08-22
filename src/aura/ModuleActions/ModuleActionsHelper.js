@@ -57,7 +57,6 @@
                 attemptsAllowed = moduleWrapper.module.FieloELR__AttemptsAllowed__c ?
                     moduleWrapper.module.FieloELR__AttemptsAllowed__c :
                 numberOfAttempts + 1; // if FieloELR__AttemptsAllowed__c is null, then its unlimited
-                
                 if (moduleWrapper.isApproved) {
                     if (numberOfAttempts >= attemptsAllowed) {
                         component.set('v.actions', ['view']);
