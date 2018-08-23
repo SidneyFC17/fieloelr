@@ -757,6 +757,14 @@
         <value>Your answer is correct</value>
     </labels>
     <labels>
+        <fullName>CorrectQuestions</fullName>
+        <categories>ModuleFieldsSection.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CorrectQuestions</shortDescription>
+        <value>correct</value>
+    </labels>
+    <labels>
         <fullName>CourseActivated</fullName>
         <categories>CourseViewController.cls</categories>
         <language>en_US</language>

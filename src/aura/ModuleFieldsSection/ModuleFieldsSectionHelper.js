@@ -90,6 +90,14 @@
                                     
                                     if (module[fieldName]) {
                                         singleField.value = module[fieldName];
+                                        
+                                        if (fieldName.toLowerCase() == 'fieloelr__numberofquestions__c') {
+                                            if (moduleResponse) {
+                                                if (moduleResponse['FieloELR__CorrectQuestions__c']) {
+                                                    singleField.value += ' (' + moduleResponse['FieloELR__CorrectQuestions__c'] + ' ' + $A.get('$Label.c.CorrectQuestions') + ')';
+                                                }
+                                            }
+                                        }
                                     }
                                     fieldValues.push(singleField);
                                 } else if (objectName == 'FieloELR__ModuleResponse__c') {
@@ -136,6 +144,14 @@
                                     
                                     if (module[fieldName]) {
                                         singleField.value = module[fieldName];
+                                        
+                                        if (fieldName.toLowerCase() == 'fieloelr__numberofquestions__c') {
+                                            if (moduleResponse) {
+                                                if (moduleResponse['FieloELR__CorrectQuestions__c']) {
+                                                    singleField.value += ' (' + moduleResponse['FieloELR__CorrectQuestions__c'] + ' ' + $A.get('$Label.c.CorrectQuestions') + ')';
+                                                }
+                                            }
+                                        }
                                     }
                                     fieldValues.push(singleField);
                                 } else if (objectName == 'FieloELR__ModuleResponse__c') {
