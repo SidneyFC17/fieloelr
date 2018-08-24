@@ -45,3 +45,11 @@
     font-size: 0.8rem;
     
 }
+
+.THIS .slds-rich-text-editor__output span {
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+    overflow: hidden;
+    width: 75%;
+    display: inline-block;
+}

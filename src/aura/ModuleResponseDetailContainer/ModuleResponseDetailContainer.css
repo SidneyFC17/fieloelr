@@ -36,3 +36,11 @@
 .THIS .fielo-quiz-container .slds-card__header{
     padding-left: ;
 }
+
+.THIS .slds-rich-text-editor__output span {
+    text-overflow: ellipsis;
+    /* white-space: nowrap; */
+    overflow: hidden;
+    width: 75%;
+    display: inline-block;
+}

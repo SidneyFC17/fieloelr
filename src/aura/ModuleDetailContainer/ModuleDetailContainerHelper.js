@@ -35,6 +35,7 @@
                             moduleWrapper.module.FieloELR__Order__c + ': <b>' +
                             moduleWrapper.module.Name + '</b>';
                         component.find('moduleHeaderText').set('v.value', moduleHeaderText);   
+                        component.set('v.moduleHeaderText', moduleWrapper.module.Name);
                     } catch(e) {
                         console.log(e);
                     }

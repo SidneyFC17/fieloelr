@@ -44,7 +44,7 @@
             
             <lightning:card class="fielo-module-card">
                 <aura:set attribute="title">
-                    <div class="fielo-module-title">
+                    <div class="fielo-module-title" title="{!v.moduleHeaderText}">
                         <lightning:formattedRichText aura:id="moduleHeaderText" />
                     </div>
                 </aura:set>
