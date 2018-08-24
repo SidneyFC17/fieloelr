@@ -2,6 +2,7 @@
     <aura:attribute type="Object" name="moduleWrapper"/>
     <aura:attribute type="sObject" name="course"/>
     <aura:attribute type="sObject" name="courseStatus"/>
+    <aura:attribute type="sObject" name="nextModule"/>
     <aura:attribute type="FieloPLT__Member__c" name="member"/>
     <aura:attribute type="String" name="location" default="header"/>
     <aura:attribute type="String" name="passedClassName"/>
@@ -13,7 +14,7 @@
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     
-    <div class="fielo-module-actions-container" data-module-id="{!v.moduleWrapper.module.Id}" data-member-id="{!v.member.Id}" data-location="{!v.location}">
+    <div class="fielo-module-actions-container" data-module-id="{!v.moduleWrapper.module.Id}" data-member-id="{!v.member.Id}" data-location="{!v.location}" data-course-id="{!v.course.Id}">
         <aura:iteration items="{!v.actions}" var="action">
             <aura:if isTrue="{!v.location == 'header'}">
                 <aura:if isTrue="{!action == 'passed'}">
@@ -58,6 +59,10 @@
                     
                     <aura:if isTrue="{!action == 'retake-readonly'}">
                         <lightning:button label="{!$Label.c.RetakeQuiz}" variant="brand" disabled="true"/>
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!action == 'view-nextmodule'}">
+                        <lightning:button label="{! $Label.c.ViewModule + ' ' + v.nextModule.FieloELR__Order__c}" name="{!v.config.label_viewModule  + ' ' + v.nextModule.FieloELR__Order__c}" onclick="{!c.callViewModule}" variant="brand" />
                     </aura:if>
                 </aura:set>
             </aura:if>

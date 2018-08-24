@@ -1,6 +1,6 @@
 ({
     getHeaderActions: function(component) {
-        try{
+        try {
             var moduleWrapper = component.get('v.moduleWrapper');
             var course = component.get('v.course');
             var courseStatus = component.get('v.courseStatus');
@@ -17,11 +17,12 @@
                 numberOfAttempts = moduleWrapper.numberOfAttempts ?
                     moduleWrapper.numberOfAttempts :
                 0;
-                
                 if (moduleWrapper.isApproved) {
                     component.set('v.actions', ['passed']);
                 } else {
                     if (numberOfAttempts == 0) {
+                        console.log(JSON.stringify(course, null, 2));
+                        console.log('joined: ' + joined);
                         if (course) {
                             if (course.FieloELR__Status__c == 'Active') {
                                 if ((course.FieloELR__SubscriptionMode__c == 'Automatic' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency) {
@@ -29,7 +30,7 @@
                                 } else {
                                     component.set('v.actions', ['take-readonly']);
                                 }        
-                            }else {
+                            } else {
                                 component.set('v.actions', ['take-readonly']);
                             } 
                             
@@ -48,6 +49,7 @@
             var moduleWrapper = component.get('v.moduleWrapper');
             var location = component.get('v.location');
             var course = component.get('v.course');
+            var nextModule = component.get('v.nextModule');
             var module;
             var actions = [];
             var attemptsAllowed;
@@ -86,6 +88,14 @@
                         }
                     }
                 }
+            }
+            if (nextModule) {
+                var actions = component.get('v.actions');
+                if (!actions) {
+                    actions = [];
+                }
+                actions.push('view-nextmodule');
+                component.set('v.actions', actions);
             }
         } catch(e) {
             console.log(e);
@@ -160,6 +170,18 @@
                 }
             }
             
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    viewModule: function(component) {
+        try{
+            $A
+            .get("e.force:navigateToSObject")
+            .setParams({
+                "recordId": component.get('v.nextModule').Id
+            })
+            .fire();
         } catch(e) {
             console.log(e);
         }

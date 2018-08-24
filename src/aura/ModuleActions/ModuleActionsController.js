@@ -21,5 +21,12 @@
         } catch(e) {
             console.log(e);
         }
+    },
+    callViewModule: function(component, event, helper) {
+        try{
+            helper.viewModule(component);
+        } catch(e) {
+            console.log(e);
+        }
     }
 })

@@ -59,6 +59,22 @@ public with sharing class ModuleDetailController {
 	}
 
 	@AuraEnabled
+	public static String getCourseStatus(FieloPLT__Member__c member, String courseId) {
+		try{
+			String key = courseId + member.Id;
+			String courseStatusQuery = 'SELECT Id, Name, (SELECT Id, Name, FieloELR__Module__c, FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponses__r ORDER BY FieloELR__Module__r.FieloELR__Order__c, FieloELR__NumberOfAttempt__c ) FROM FieloELR__CourseStatus__c WHERE FieloELR__ExternalKey__c = :key';
+
+			List<FieloELR__CourseStatus__c> courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
+
+			return JSON.serialize(courseStatus);
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
+	}
+
+	@AuraEnabled
 	public static String getConfig() {
 		try{
             Map<String,String> lcConfig = new Map<String,String>();

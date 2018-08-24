@@ -99,6 +99,30 @@ public with sharing class ModuleResponseDetailController {
 	}
 
 	@AuraEnabled
+	public static String getCourseModules(FieloPLT__Member__c member, String courseId) {
+		try{
+			String courseQuery = 'SELECT Id, Name, (SELECT Id, Name, FieloELR__Order__c FROM FieloELR__Modules__r ORDER BY FieloELR__Order__c) FROM FieloELR__Course__c WHERE Id = :courseId';
+
+			List<FieloELR__Course__c> courses = (List<FieloELR__Course__c>) Database.query(courseQuery);
+
+			String key = courseId + member.Id;
+
+			String courseStatusQuery = 'SELECT Id, Name, (SELECT Id, Name, FieloELR__Module__c, FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponses__r ORDER BY FieloELR__Module__r.FieloELR__Order__c, FieloELR__NumberOfAttempt__c ) FROM FieloELR__CourseStatus__c WHERE FieloELR__ExternalKey__c = :key';
+
+			List<FieloELR__CourseStatus__c> courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
+
+			return JSON.serialize(new Map<String,Object>{
+				'courses' => (Object) courses,
+				'courseStatus' => (Object) courseStatus
+			});
+		} catch(DMLException e) {
+           	throw new AuraHandledException(e.getDMLMessage(0));
+        } catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
+	}
+
+	@AuraEnabled
 	public static String getConfig() {
 		try{
             Map<String,String> lcConfig = new Map<String,String>();

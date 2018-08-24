@@ -26,7 +26,13 @@
                             component.set('v.moduleWrapper', moduleWrapper);
                             component.set('v.module', moduleWrapper.module);
                             component.set('v.course', moduleWrapper.module.FieloELR__Course__r);
+                            if (moduleWrapper.module.FieloELR__Course__r) {
+                                this.getCourseStructure(component);
+                            }
                             component.set('v.moduleResponses', moduleWrapper.moduleResponses);
+                            if (moduleWrapper.moduleResponses[0]) {
+                                component.set('v.courseStatus', moduleWrapper.moduleResponses[0].FieloELR__CourseStatus__r);    
+                            }
                             this.getLastModuleResponse(component);
                             this.showQuiz(component);
                             var moduleHeaderText = '' +
@@ -158,6 +164,80 @@
                 }
             });
             $A.enqueueAction(action);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    getCourseStructure: function(component) {
+        try{
+            var action = component.get('c.getCourseModules');
+            var course = component.get('v.course');
+            var member = component.get('v.member');
+            var params = {
+                'member': member,
+                'courseId': course.Id
+            };
+            action.setParams(params);
+            action.setCallback(this, function(response) {
+                var toastEvent = $A.get("e.force:showToast");
+                var state = response.getState();
+                if (component.isValid() && state === 'SUCCESS') {
+                    try {
+                        var courseStructure = JSON.parse(response.getReturnValue());
+                        component.set('v.courseStructure', courseStructure);
+                        this.getNextModule(component);
+                    } catch(e) {
+                        console.log(e);
+                    }
+                } else {
+                    var errorMsg = response.getError()[0].message;
+                    toastEvent.setParams({
+                        "title": errorMsg,
+                        "message": " ",
+                        "type": "error"
+                    });
+                    toastEvent.fire(); 
+                }
+            });
+            $A.enqueueAction(action);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    getNextModule: function(component) {
+        try{
+            
+            var moduleWrapper = component.get('v.moduleWrapper');
+            var courseStructure = component.get('v.courseStructure');
+            var modules, moduleResponses;
+            if (courseStructure) {
+                modules = courseStructure.courses[0].FieloELR__Modules__r.records;
+                moduleResponses = courseStructure.courseStatus[0].FieloELR__ModuleResponses__r.records;
+            }
+            var approvedModules = [];
+            var nextModule;
+            if (moduleResponses) {
+                moduleResponses.forEach(function(mr) {
+                    if (mr.FieloELR__NumberofApprove__c == 1) {
+                        approvedModules.push(mr.FieloELR__Module__c);
+                    }
+                });
+                console.log(JSON.stringify(approvedModules, null, 2));
+                var approvedModulesSet = new Set(approvedModules);
+                var hasNext = false;
+                if (approvedModules.length == 0 && modules.length > 0) {
+                    hasNext = true;
+                    nextModule = modules[0];
+                } else if (modules.length > 0){
+                    hasNext = modules.some(function(m) {
+                        nextModule = m;
+                        return !approvedModulesSet.has(m.Id);
+                    });
+                }
+            }
+            component.set('v.nextModule', nextModule);
+            component.set('v.showBodyActions', false);
+            component.set('v.showBodyActions', true);
         } catch(e) {
             console.log(e);
         }
@@ -354,6 +434,7 @@
         'FieloELR__NumberOfQuestions__c',
         'FieloELR__ApprovalGrade__c',
         'FieloELR__Course__r.Name',
+        'FieloELR__Course__r.FieloELR__Status__c',
         'FieloELR__Content__c',
         'FieloELR__ContentType__c',
         'FieloELR__ExternalURL__c',

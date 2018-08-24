@@ -3,10 +3,13 @@
     <aura:attribute type="String" name="coursesPage" />
     <aura:attribute type="String" name="moduleHeaderText" />
     <aura:attribute type="Object" name="moduleResponseResult" />
+    <aura:attribute type="Object" name="courseStructure" />
     <aura:attribute type="Object" name="config" />
     <aura:attribute type="sObject" name="module" />
     <aura:attribute type="sObject" name="course" />
+    <aura:attribute type="sObject" name="courseStatus" />
     <aura:attribute type="sObject" name="moduleResponse" />
+    <aura:attribute type="sObject" name="nextModule" />
     <aura:attribute type="sObject[]" name="moduleResponses" />
     <aura:attribute type="Object" name="moduleWrapper" />
     <aura:attribute type="FieloPLT__Member__c" name="member" />
@@ -18,6 +21,7 @@
     <aura:attribute type="Boolean" name="isCollapsed" default="false"/>
     <aura:attribute type="Boolean" name="showQuiz" default="false"/>
     <aura:attribute type="Boolean" name="showQuestionName"/>
+    <aura:attribute type="Boolean" name="showBodyActions" default="true"/>
     <aura:attribute type="String" name="modulefields_passed" description="Modules Fields To Display when module is already taken and passed" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
     <aura:attribute type="String" name="modulefields_notpassed" description="Modules Fields To Display when module is already taken and not passed" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
     <aura:attribute type="String" name="modulefields_nottaken" description="Modules Fields To Display when module not taken yet" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__KeyDependencies__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
@@ -46,7 +50,7 @@
                 </aura:set>
                 <aura:set attribute="actions">
                     <aura:if isTrue="{! and(v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                        <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" showStatus="false"/>
+                        <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}" showStatus="false"/>
                     </aura:if>
                 </aura:set>
                 <div class="fielo-module-content">
@@ -68,8 +72,8 @@
                                 </div>
                             </aura:set>
                             <aura:set attribute="actions">
-                                <aura:if isTrue="{! and(v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                                    <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" showViewResultsButton="false"/> 
+                                <aura:if isTrue="{! and(v.showBodyActions == true, v.moduleResponseReady == true, v.moduleInProgress == false) }">
+                                    <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}" showViewResultsButton="false" nextModule="{!v.nextModule}"/>
                                 </aura:if>
                             </aura:set>
                         </lightning:card>

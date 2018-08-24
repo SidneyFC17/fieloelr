@@ -17,11 +17,18 @@
                 if (component.isValid() && state === 'SUCCESS') {
                     try {
                         var moduleWrapper = JSON.parse(response.getReturnValue());
-                        //console.log(JSON.stringify(moduleWrapper, null, 2));
                         component.set('v.moduleWrapper', moduleWrapper);
                         component.set('v.module', moduleWrapper.module);
                         component.set('v.course', moduleWrapper.module.FieloELR__Course__r);
                         component.set('v.moduleResponses', moduleWrapper.moduleResponses);
+                        if (moduleWrapper.moduleResponses.FieloELR__CourseStatus__r) {
+                            component.set('v.courseStatus', moduleWrapper.moduleResponses.FieloELR__CourseStatus__r);
+                            component.set('v.showHeaderActions', false);
+                            component.set('v.showHeaderActions', true);
+                            component.set('v.showBodyActions', false);
+                            component.set('v.showBodyActions', true);
+                        }
+                        this.getCourseStatus(component);
                         this.getLastModuleResponse(component);
                         var moduleHeaderText = '' +
                             $A.get('$Label.c.Module') + ' ' +
@@ -154,6 +161,45 @@
                     try {
                         var config = JSON.parse(response.getReturnValue());
                         component.set('v.config', config);
+                    } catch(e) {
+                        console.log(e);
+                    }
+                } else {
+                    var errorMsg = response.getError()[0].message;
+                    toastEvent.setParams({
+                        "title": errorMsg,
+                        "message": " ",
+                        "type": "error"
+                    });
+                    toastEvent.fire(); 
+                }
+            });
+            $A.enqueueAction(action);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    getCourseStatus: function(component) {
+        try{
+            var action = component.get('c.getCourseStatus');
+            var course = component.get('v.course');
+            var member = component.get('v.member');
+            var params = {
+                'member': member,
+                'courseId': course.Id
+            };
+            action.setParams(params);
+            action.setCallback(this, function(response) {
+                var toastEvent = $A.get("e.force:showToast");
+                var state = response.getState();
+                if (component.isValid() && state === 'SUCCESS') {
+                    try {
+                        var courseStatus = JSON.parse(response.getReturnValue());
+                        component.set('v.courseStatus', courseStatus[0]);
+                        component.set('v.showHeaderActions', false);
+                        component.set('v.showHeaderActions', true);
+                        component.set('v.showBodyActions', false);
+                        component.set('v.showBodyActions', true);
                     } catch(e) {
                         console.log(e);
                     }

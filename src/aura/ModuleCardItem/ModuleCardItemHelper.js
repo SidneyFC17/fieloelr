@@ -1,7 +1,6 @@
 ({
     getLastModuleResponse : function(component) {
         try{
-            console.log('getLastModuleResponse');
             var moduleResponses = component.get('v.moduleResponses');
             var moduleWrapper = component.get('v.moduleWrapper');
             var passed = moduleWrapper.isApproved;
