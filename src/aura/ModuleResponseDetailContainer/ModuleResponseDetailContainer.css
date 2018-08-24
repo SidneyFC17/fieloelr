@@ -37,10 +37,14 @@
     padding-left: ;
 }
 
-.THIS .slds-rich-text-editor__output span {
+.THIS .fielo-module-card .slds-rich-text-editor__output span {
     text-overflow: ellipsis;
     /* white-space: nowrap; */
     overflow: hidden;
     width: 75%;
     display: inline-block;
+}
+
+.THIS .fielo-module-content-container header{
+    padding-right: 0px;
 }

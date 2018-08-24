@@ -157,13 +157,18 @@
                         this.showResults(component);
                         if (type == 'module') {
                             // Last Question
-                            var submittedQuestions = correctQuestions.length + noMoreAttemptsQuestions.length;
+                            console.log(JSON.stringify({
+                                'correctQuestions': correctQuestions,
+                                'noMoreAttemptsQuestions': noMoreAttemptsQuestions,
+                                'incorrectQuestions': incorrectQuestions
+                            }, null, 2));
+                            var submittedQuestions = correctQuestions.length + noMoreAttemptsQuestions.length + incorrectQuestions.length;
                             if (submittedQuestions == moduleResponseWrapper.questions.length) {
                                 this.checkModuleAndFinish(component);
+                                if (incorrectQuestions.length > 0) {
+                                    this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
+                                }
                             } 
-                            if (incorrectQuestions.length > 0) {
-                                this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
-                            }
                         }
                     }
                 } else {
@@ -229,11 +234,13 @@
     checkModuleAndFinish: function(component) {
         try{
             var incorrectQuestions = component.get('v.incorrectQuestions');
+            var noMoreAttemptsQuestions = component.get('v.noMoreAttemptsQuestions');
             
             if (incorrectQuestions.length == 0) {
                 $A.enqueueAction(component.get('c.callSubmitModule'));
-            } else {
-                this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
+                if (noMoreAttemptsQuestions.length > 0){
+                    this.showMessage('error', $A.get('$Label.c.MaximumAttempts'));
+                }
             }
         } catch(e) {
             console.log(e);
