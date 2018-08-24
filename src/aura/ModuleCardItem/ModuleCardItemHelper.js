@@ -8,7 +8,8 @@
             if (moduleResponses) {
                 if (passed) {
                     moduleResponses = moduleResponses.filter(function(mr) {
-                        return mr.FieloELR__IsApproved__c &&
+                        return mr.FieloELR__Module__c == moduleWrapper.module.Id &&
+                            mr.FieloELR__IsApproved__c &&
                             mr.FieloELR__NumberofApprove__c == 1;
                     });
                 } else {

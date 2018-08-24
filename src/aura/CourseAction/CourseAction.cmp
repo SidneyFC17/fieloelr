@@ -25,7 +25,12 @@
                         <lightning:button label="{!v.config.label_viewModule + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
                         <aura:set attribute="else">
                             <aura:if isTrue="{!v.activeViewName == 'availableCourses'}">
-                                <lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" onclick="{!c.callJoinCourse}" variant="{!v.config.variant}" />
+                                <aura:if isTrue="{!v.record.FieloELR__Status__c == 'Active'}">
+                                	<lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" onclick="{!c.callJoinCourse}" variant="{!v.config.variant}" />
+                                    <aura:set attribute="else">
+                                        <lightning:button label="{!v.config.label_joinCourse}" name="{!v.config.label_joinCourse}" onclick="{!c.callJoinCourse}" variant="{!v.config.variant}" disabled="true"/>
+                                    </aura:set>    
+                                </aura:if>
                                 <aura:set attribute="else">
                                     <lightning:button label="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" name="{!v.config.label_viewModule  + ' ' + v.moduleNumber}" onclick="{!c.gotoModuleDetail}" variant="{!v.config.variant}" />
                                 </aura:set>

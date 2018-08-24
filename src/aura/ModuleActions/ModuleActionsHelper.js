@@ -63,7 +63,6 @@
                     if (numberOfAttempts >= attemptsAllowed) {
                         component.set('v.actions', ['view']);
                     } else {
-                        console.log(JSON.stringify(course, null, 2));
                         if (course) {
                             if (course.FieloELR__Status__c == 'Active') {
                                 component.set('v.actions', ['view','retake']);
@@ -88,7 +87,6 @@
                     }
                 }
             }
-            console.log(component.get('v.actions'));
         } catch(e) {
             console.log(e);
         }
@@ -97,7 +95,6 @@
         try{
             var action = component.get('c.takeModule');
             var member = component.get('v.member');
-            console.log(JSON.stringify(member, null, 2));
             var moduleWrapper = component.get('v.moduleWrapper');
             var params = {
                 'member': member,

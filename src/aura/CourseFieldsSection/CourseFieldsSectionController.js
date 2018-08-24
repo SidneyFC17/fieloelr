@@ -21,7 +21,6 @@
                         objectName = apiNames[0];
                         field = apiNames[1];
                     }
-                    console.log('Field name: ' + fullApiName);
                     courseField = {};
                     courseField.objectName = objectName;
                     courseField.name = field;
@@ -110,12 +109,7 @@
                         }
                     }
                 });
-                console.log('activeViewName: ' + activeViewName);
-                
                 component.set('v.fields', course);
-                
-                console.log(JSON.stringify(course, null, 2));
-                
                 if(record.FieloELR__Status__c) {
                     if (record.FieloELR__Status__c == 'Scheduled') {
                         component.set('v.className', ' fielo-section--scheduled');

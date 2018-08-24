@@ -20,7 +20,6 @@
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                 component.set('v.daysLeft', diffDays);
                 if (config.daysToBeConsideredWarning) {
-                    console.log(diffDays + ' <= ' + Number(config.daysToBeConsideredWarning));
                     if (diffDays <= Number(config.daysToBeConsideredWarning)) {
                         component.set('v.className', 'fielo-font--warning');
                     } else {
