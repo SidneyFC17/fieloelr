@@ -192,29 +192,6 @@
 }
 
 
-/* DATE COMPONENT NULL */
-
-.THIS .no-date .subcomponent:nth-child(2){
-	margin-top: 50px;
-}
-
-.THIS .no-date .subcomponent:nth-child(3){
-	display:none;
-}
-
-.THIS .no-date .subcomponent:last-child{
-	margin-top: 40px;
-}
-
-/*DESCRIPTION NULL */
-
-.THIS .no-description .subcomponent:nth-child(2){
-	display:none;
-}
-.THIS .no-description .subcomponent:nth-child(3){
-	margin: 67px 0;
-}
-    
 /* CSS Grid Field Section Vertical*/
 
 .THIS .grid .fielo-section-layout{
@@ -260,4 +237,50 @@
 .THIS .table .fielo-section__field:nth-child(3){
     grid-column: 4/5;
     min-width: 100px;
+}
+
+/* DATE COMPONENT NULL */
+
+.THIS .no-date .grid .subcomponent:nth-child(2){
+	margin-top: 50px;
+}
+
+.THIS .no-date .grid .subcomponent:nth-child(3){
+	display:none;
+}
+
+.THIS .no-date .grid .subcomponent:last-child{
+	margin-top: 40px;
+}
+
+/*DESCRIPTION NULL */
+
+.THIS .no-description .grid .subcomponent:nth-child(2){
+	display:none;
+}
+.THIS .no-description .grid .subcomponent:nth-child(3){
+	margin: 67px 0;
+}
+
+/* DATE COMPONENT NULL */
+
+.THIS .no-date .table .fielo-output:nth-child(2){
+	margin-top: 50px;
+}
+
+.THIS .no-date .table .fielo-output:nth-child(3){
+	display:none;
+}
+
+.THIS .no-date .table .fielo-output:last-child{
+	margin-top: 40px;
+}
+
+/*DESCRIPTION NULL */
+
+.THIS .no-description .table div[data-field-name="FieloELR__Description__c"]{
+	display:none;
+}
+.THIS .no-description .table div[data-field-name="FieloELR__StartDate__c"]{
+	top: 148px;
 }
