@@ -111,8 +111,24 @@ public with sharing class ModuleResponseDetailController {
 
 			List<FieloELR__CourseStatus__c> courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
 
+			List<CourseService.CourseWrapper> courseWrappers = CourseService.getCoursesMap(
+											new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
+											new Set<String>{'Id','Name'},
+											new Set<String>{'Id','Name'},
+											null,
+											new Set<Id>{courseId},
+											member.FieloPLT__Program__c,
+                                            member.Id,
+											false,
+											false,
+											null, 
+											null, 
+											'LastModifiedDate DESC' ,
+											'');
+
 			return JSON.serialize(new Map<String,Object>{
 				'courses' => (Object) courses,
+				'wrappers' => (Object) courseWrappers,
 				'courseStatus' => (Object) courseStatus
 			});
 		} catch(DMLException e) {

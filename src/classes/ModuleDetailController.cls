@@ -59,14 +59,32 @@ public with sharing class ModuleDetailController {
 	}
 
 	@AuraEnabled
-	public static String getCourseStatus(FieloPLT__Member__c member, String courseId) {
+	public static String getCourseData(FieloPLT__Member__c member, String courseId) {
 		try{
 			String key = courseId + member.Id;
-			String courseStatusQuery = 'SELECT Id, Name, (SELECT Id, Name, FieloELR__Module__c, FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponses__r ORDER BY FieloELR__Module__r.FieloELR__Order__c, FieloELR__NumberOfAttempt__c ) FROM FieloELR__CourseStatus__c WHERE FieloELR__ExternalKey__c = :key';
+			String courseStatusQuery = 'SELECT Id, Name, FieloELR__Course__c, (SELECT Id, Name, FieloELR__Module__c, FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponses__r ORDER BY FieloELR__Module__r.FieloELR__Order__c, FieloELR__NumberOfAttempt__c ) FROM FieloELR__CourseStatus__c WHERE FieloELR__ExternalKey__c = :key';
 
 			List<FieloELR__CourseStatus__c> courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
 
-			return JSON.serialize(courseStatus);
+			List<CourseService.CourseWrapper> courseWrappers = CourseService.getCoursesMap(
+											new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
+											new Set<String>{'Id','Name'},
+											new Set<String>{'Id','Name'},
+											null,
+											new Set<Id>{courseId},
+											member.FieloPLT__Program__c,
+                                            member.Id,
+											false,
+											false,
+											null, 
+											null, 
+											'LastModifiedDate DESC' ,
+											'');
+
+			return JSON.serialize(new Map<String, Object>{
+				'courseStatus' => courseStatus,
+				'courseWrapper' => courseWrappers
+			});
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){

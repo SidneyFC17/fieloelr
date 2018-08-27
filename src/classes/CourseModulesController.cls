@@ -8,6 +8,11 @@ public with sharing class CourseModulesController {
 			Set<String> fieldsCourse = new Set<String> ( courseFields.split(',') );
 			Set<String> fieldsModule = new Set<String> ( modulesFieldset.split(',') );
 
+			fieldsModule.add('Id');
+			fieldsModule.add('FieloELR__AttemptsAllowed__c');
+			fieldsModule.add('FieloELR__IsActive__c');
+			fieldsModule.add('FieloELR__KeyDependencies__c');
+
 			fieldsCourse.add('Id');
 			fieldsCourse.add('FieloELR__SubscriptionMode__c');
 			fieldsCourse.add('FieloELR__Description__c');

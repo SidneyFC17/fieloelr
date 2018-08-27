@@ -114,8 +114,29 @@ public with sharing class CoursesController {
 											offset,
 											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
-            return JSON.serialize(courses);
-       } catch(DMLException e) {
+
+			Set<Id> courseIds = new Map<Id, FieloELR__Course__c>(courses).keyset();
+
+			List<CourseService.CourseWrapper> courseWrappers = CourseService.getCoursesMap(
+											new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
+											new Set<String>{'Id','Name'},
+											new Set<String>{'Id','Name'},
+											null,
+											courseIds,
+											member.FieloPLT__Program__c,
+                                            memberId,
+											false,
+											false,
+											quantity, 
+											offset, 
+											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
+											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+
+            return JSON.serialize( new Map<String, Object>{
+				'list' => courses,
+				'wrappers' => courseWrappers
+			});
+       	} catch(DMLException e) {
            throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
              throw new AuraHandledException(e.getMessage());

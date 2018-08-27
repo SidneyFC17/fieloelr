@@ -300,16 +300,16 @@ global class CourseService {
 				this.dependencies = dependencies;
 			}
 			if (this.dependencies!=null) {
-				Set<String> mdStringKeys;
-				if (!moduleResponses.isEmpty()) {
-					mdStringKeys = getMDStringKeys(new List<Module__c>{module}, moduleResponses[0].Member__c);
-					this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
-				} else {
-					this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+				if (!this.dependencies.isEmpty()) {
+					Set<String> mdStringKeys;
+					if (!moduleResponses.isEmpty()) {
+						mdStringKeys = getMDStringKeys(new List<Module__c>{module}, moduleResponses[0].Member__c);
+						this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
+					} else {
+						this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+					}
 				}
-				
 			}
-			
 		}
 
 		public ModuleWrapper(Module__c module, List<ModuleDependency__c> dependencies){
@@ -451,8 +451,11 @@ global class CourseService {
 					ModuleWrapper mw = cs != null ? new ModuleWrapper(
 						module,
 						moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>(),
-						dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>()
-					) : new ModuleWrapper(module, dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>());
+						dependenciesByModule != null ? 
+							(dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) :
+							new List<ModuleDependency__c>()
+							) :
+							new ModuleWrapper(module, dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>());
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					}
