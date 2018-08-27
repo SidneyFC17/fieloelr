@@ -28,7 +28,7 @@
                             component.set('v.showBodyActions', false);
                             component.set('v.showBodyActions', true);
                         }
-                        this.getCourseStatus(component);
+                        this.getCourseData(component);
                         this.getLastModuleResponse(component);
                         var moduleHeaderText = '' +
                             $A.get('$Label.c.Module') + ' ' +
@@ -180,9 +180,9 @@
             console.log(e);
         }
     },
-    getCourseStatus: function(component) {
+    getCourseData: function(component) {
         try{
-            var action = component.get('c.getCourseStatus');
+            var action = component.get('c.getCourseData');
             var course = component.get('v.course');
             var member = component.get('v.member');
             var params = {
@@ -195,7 +195,10 @@
                 var state = response.getState();
                 if (component.isValid() && state === 'SUCCESS') {
                     try {
-                        var courseStatus = JSON.parse(response.getReturnValue());
+                        var result = JSON.parse(response.getReturnValue());
+                        var courseStatus = result.courseStatus;
+                        var courseWrapper = result.courseWrapper;
+                        component.set('v.courseWrapper', courseWrapper[0]);
                         component.set('v.courseStatus', courseStatus[0]);
                         component.set('v.showHeaderActions', false);
                         component.set('v.showHeaderActions', true);

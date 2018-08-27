@@ -12,6 +12,7 @@
     <aura:attribute type="sObject" name="nextModule" />
     <aura:attribute type="sObject[]" name="moduleResponses" />
     <aura:attribute type="Object" name="moduleWrapper" />
+    <aura:attribute type="Object" name="courseWrapper" />
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     <aura:attribute type="Object[]" name="fieldsMeta" description="Module "/>
     <aura:attribute type="Object" name="MRfieldsMeta"/>
@@ -50,7 +51,7 @@
                 </aura:set>
                 <aura:set attribute="actions">
                     <aura:if isTrue="{! and(v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                        <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}" showStatus="false"/>
+                        <c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}" showStatus="false"/>
                     </aura:if>
                 </aura:set>
                 <div class="fielo-module-content">
@@ -73,7 +74,7 @@
                             </aura:set>
                             <aura:set attribute="actions">
                                 <aura:if isTrue="{! and(v.showBodyActions == true, v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                                    <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}" showViewResultsButton="false" nextModule="{!v.nextModule}"/>
+                                    <c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}" showViewResultsButton="false" nextModule="{!v.nextModule}"/>
                                 </aura:if>
                             </aura:set>
                         </lightning:card>

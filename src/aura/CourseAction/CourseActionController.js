@@ -4,6 +4,7 @@
             var record = component.get('v.record');
             var config = component.get('v.config');
             helper.getNextModule(component);
+            helper.getAllowedForDependency(component);
             var nextModule = component.get('v.nextModule');
             var order;
             if (nextModule) {

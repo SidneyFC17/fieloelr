@@ -27,6 +27,8 @@
     <aura:attribute type="Boolean" name="showFilter" default="true" />
     
     <aura:attribute type="Course__c[]" name="coursesList" />
+    <aura:attribute type="Object[]" name="coursesWrappers" />
+    <aura:attribute type="String[]" name="allowedForDependencyCourses" />
     <aura:attribute type="sObject[]" name="courseStatus" />
     <aura:attribute type="sObject[]" name="courseFieldset" />
     <aura:attribute type="sObject[]" name="filterFieldSet" />

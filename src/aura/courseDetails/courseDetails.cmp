@@ -15,6 +15,7 @@
     <aura:attribute type="Object" name="courseFieldsMeta" />
     <aura:attribute type="Object" name="courseStatusFieldsMeta" />
     <aura:attribute type="Object[]" name="moduleResponses" />
+    <aura:attribute type="String[]" name="allowedForDependencyCourses" />
     <aura:attribute type="String" name="classNameCard" />
     <aura:attribute type="String" name="columns" default="1" />
     <aura:attribute type="String" name="courseDetailFields"/>

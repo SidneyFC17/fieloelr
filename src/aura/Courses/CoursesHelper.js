@@ -99,10 +99,10 @@
     getCourseFieldSet: function(component) {
         try{
             if (component.get('v.courseDetailFields')) {
-            	this.getFieldsMeta(component, 'FieloELR__Course__c', this.addCourseRequiredFields(component.get("v.courseDetailFields")));
+                this.getFieldsMeta(component, 'FieloELR__Course__c', this.addCourseRequiredFields(component.get("v.courseDetailFields")));
             }
             if (component.get('v.courseStatusDetailFields')) {
-            	this.getFieldsMeta(component, 'FieloELR__CourseStatus__c', component.get('v.courseStatusDetailFields'));
+                this.getFieldsMeta(component, 'FieloELR__CourseStatus__c', component.get('v.courseStatusDetailFields'));
             }
         } catch(e) {
             console.log(e);
@@ -187,13 +187,28 @@
                         var member = component.get('v.member');
                         var memberId = member.Id;                                     
                         var result = JSON.parse(response.getReturnValue());
-                        // console.log(JSON.stringify(result, null, 2));
+                        var courseWrappers;
                         var coursesList;
                         var courseStatus;
                         activeViewName = component.get('v.activeViewName');
                         console.log('activeViewName: ' + activeViewName);
                         if (activeViewName == 'availableCourses') {
-                            coursesList = result;
+                            coursesList = result.list;
+                            courseWrappers = result.wrappers;
+                            component.set('v.courseWrappers', courseWrappers);
+                            var allowedForDependencyCourses = [];
+                            console.log(JSON.stringify(courseWrappers, null, 2));
+                            var allowedForDependency
+                            courseWrappers.forEach(function(cw) {
+                                allowedForDependency = cw.allowedForDependency;
+                                allowedForDependency = allowedForDependency != null ?
+                                    allowedForDependency :
+                                	true;
+                                if (allowedForDependency) {
+                                    allowedForDependencyCourses.push(cw.course.Id);
+                                }
+                            });
+                            component.set('v.allowedForDependencyCourses', allowedForDependencyCourses);
                         } else {
                             coursesList = JSON.parse(result.courses);
                             courseStatus = JSON.parse(result.courseStatus);
@@ -341,7 +356,8 @@
                     "activeViewName": component.get('v.activeViewName'),
                     "courseStatus": component.get('v.courseStatus'),
                     "variant": "brand",
-                    "memberId": component.get('v.member').Id
+                    "memberId": component.get('v.member').Id,
+                    "allowedForDependencyCourses": component.get('v.allowedForDependencyCourses')
                 }
             }
         );
@@ -445,26 +461,26 @@
                 if (component.get('v.courseDetailFields') &&
                     component.get('v.courseFieldsMeta') &&
                     component.get('v.courseStatusFieldsMeta') &&
-                   	component.get('v.activeViewName')
+                    component.get('v.activeViewName')
                    )
-                fieldset.push({
-                    "apiName": "Id",
-                    "type": "subcomponent",
-                    "subcomponent": "c:CourseFieldsSection",
-                    "label": {
-                        "type": "default"
-                    },
-                    "showLabel": false,
-                    "config": JSON.stringify(
-                        {
-                            'fields': component.get('v.detailFields').trim(),
-                            'fieldsMeta': component.get('v.courseFieldsMeta'),
-                            'csFieldsMeta': component.get('v.courseStatusFieldsMeta'),
-                            'activeViewName': component.get('v.activeViewName'),
-                            'courseStatus': JSON.stringify(component.get('v.courseStatus'))
-                        }
-                    )
-                });
+                    fieldset.push({
+                        "apiName": "Id",
+                        "type": "subcomponent",
+                        "subcomponent": "c:CourseFieldsSection",
+                        "label": {
+                            "type": "default"
+                        },
+                        "showLabel": false,
+                        "config": JSON.stringify(
+                            {
+                                'fields': component.get('v.detailFields').trim(),
+                                'fieldsMeta': component.get('v.courseFieldsMeta'),
+                                'csFieldsMeta': component.get('v.courseStatusFieldsMeta'),
+                                'activeViewName': component.get('v.activeViewName'),
+                                'courseStatus': JSON.stringify(component.get('v.courseStatus'))
+                            }
+                        )
+                    });
             }
             component.set('v.fieldset', fieldset);
         } catch(e) {
@@ -482,9 +498,7 @@
         'FieloELR__EndDate__c'
     ],
     getSortByOptions: function(component) {
-        // [{'value':'LastModifiedDate', 'label':'Last Modified Date'},{'value':'CreatedDate', 'label':'Created Date'},{'value':'FieloELR__StartDate__c', 'label':'Start Date'},{'value':'FieloELR__EndDate__c', 'label':'End Date'}]            
-        // FieloELR__StartDate__c,FieloELR__EndDate__c
-		try {
+        try {
             var action = component.get('c.getFieldsMetadata');
             action.setParams({
                 'objectName': 'FieloELR__Course__c',
@@ -504,7 +518,7 @@
                         });
                     }
                     if (options) {
-                    	component.set('v.sortByOptions', options);    
+                        component.set('v.sortByOptions', options);    
                     }
                 } else {
                     var errorMsg = response.getError()[0].message;

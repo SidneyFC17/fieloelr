@@ -2,6 +2,7 @@
     getHeaderActions: function(component) {
         try {
             var moduleWrapper = component.get('v.moduleWrapper');
+            var courseWrapper = component.get('v.courseWrapper');
             var course = component.get('v.course');
             var courseStatus = component.get('v.courseStatus');
             var joined = courseStatus != null;
@@ -10,6 +11,13 @@
             var actions = [];
             var attemptsAllowed;
             var numberOfAttempts;
+            var courseAllowedForDependency = true;
+            if (courseWrapper) {
+                courseAllowedForDependency = courseWrapper.allowedForDependency;
+                courseAllowedForDependency = courseAllowedForDependency != null ?
+                    courseAllowedForDependency :
+                true;    
+            }
             if (moduleWrapper) {
                 attemptsAllowed = moduleWrapper.module.FieloELR__AttemptsAllowed__c ?
                     moduleWrapper.module.FieloELR__AttemptsAllowed__c :
@@ -21,11 +29,9 @@
                     component.set('v.actions', ['passed']);
                 } else {
                     if (numberOfAttempts == 0) {
-                        console.log(JSON.stringify(course, null, 2));
-                        console.log('joined: ' + joined);
                         if (course) {
                             if (course.FieloELR__Status__c == 'Active') {
-                                if ((course.FieloELR__SubscriptionMode__c == 'Automatic' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency) {
+                                if ((course.FieloELR__SubscriptionMode__c == 'Automatic' || course.FieloELR__SubscriptionMode__c == 'Manual' && joined) && moduleWrapper.allowedForDependency && courseAllowedForDependency) {
                                     component.set('v.actions', ['take']);
                                 } else {
                                     component.set('v.actions', ['take-readonly']);
@@ -47,6 +53,7 @@
     getBodyActions: function(component) {
         try{
             var moduleWrapper = component.get('v.moduleWrapper');
+            var courseWrapper = component.get('v.courseWrapper');
             var location = component.get('v.location');
             var course = component.get('v.course');
             var nextModule = component.get('v.nextModule');
@@ -54,11 +61,21 @@
             var actions = [];
             var attemptsAllowed;
             var numberOfAttempts;
+            var courseAllowedForDependency = true;
+            if (courseWrapper) {
+                courseAllowedForDependency = courseWrapper.allowedForDependency;
+                courseAllowedForDependency = courseAllowedForDependency != null ?
+                    courseAllowedForDependency :
+                true;    
+            }
             if (moduleWrapper) {
+                if (moduleWrapper.module.Id == 'a0o6A000001aOPmQAM') {
+                    console.log(JSON.stringify(moduleWrapper, null, 2));
+                }
                 numberOfAttempts = moduleWrapper.numberOfAttempts ?
                     moduleWrapper.numberOfAttempts :
                 0;
-                attemptsAllowed = moduleWrapper.module.FieloELR__AttemptsAllowed__c ?
+                attemptsAllowed = moduleWrapper.module.FieloELR__AttemptsAllowed__c != null ?
                     moduleWrapper.module.FieloELR__AttemptsAllowed__c :
                 numberOfAttempts + 1; // if FieloELR__AttemptsAllowed__c is null, then its unlimited
                 if (moduleWrapper.isApproved) {
@@ -66,7 +83,7 @@
                         component.set('v.actions', ['view']);
                     } else {
                         if (course) {
-                            if (course.FieloELR__Status__c == 'Active') {
+                            if (course.FieloELR__Status__c == 'Active' && courseAllowedForDependency && moduleWrapper.allowedForDependency) {
                                 component.set('v.actions', ['view','retake']);
                             } else {
                                 component.set('v.actions', ['view','retake-readonly']);
@@ -94,7 +111,11 @@
                 if (!actions) {
                     actions = [];
                 }
-                actions.push('view-nextmodule');
+                if (courseAllowedForDependency && moduleWrapper.allowedForDependency) {
+                    actions.push('view-nextmodule');
+                } else {
+                    actions.push('view-nextmodule-readonly');
+                }
                 component.set('v.actions', actions);
             }
         } catch(e) {

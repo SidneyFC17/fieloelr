@@ -1,5 +1,6 @@
 <aura:component controller="ModuleActionsController">
     <aura:attribute type="Object" name="moduleWrapper"/>
+    <aura:attribute type="Object" name="courseWrapper"/>
     <aura:attribute type="sObject" name="course"/>
     <aura:attribute type="sObject" name="courseStatus"/>
     <aura:attribute type="sObject" name="nextModule"/>
@@ -63,6 +64,10 @@
                     
                     <aura:if isTrue="{!action == 'view-nextmodule'}">
                         <lightning:button label="{! $Label.c.ViewModule + ' ' + v.nextModule.FieloELR__Order__c}" name="{!v.config.label_viewModule  + ' ' + v.nextModule.FieloELR__Order__c}" onclick="{!c.callViewModule}" variant="brand" />
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!action == 'view-nextmodule-readonly'}">
+                        <lightning:button label="{! $Label.c.ViewModule + ' ' + v.nextModule.FieloELR__Order__c}" name="{!v.config.label_viewModule  + ' ' + v.nextModule.FieloELR__Order__c}" variant="brand" disabled="true"/>
                     </aura:if>
                 </aura:set>
             </aura:if>

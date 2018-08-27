@@ -102,15 +102,33 @@
             action.setCallback(this, function (response) {
                 var state = response.getState();
                 if (state === "SUCCESS") {
-                    var result = JSON.parse(response.getReturnValue());
-                    if (result.courses) {
-                        var courses = JSON.parse(result.courses);
-                        component.set("v.course", courses[0]);
-                        if (result.courseStatus) {
-                            var courseStatus = JSON.parse(result.courseStatus);
-                            component.set("v.courseStatus", courseStatus);
-                        }
-                        this.loadCourseStatus(component);
+                    try{
+                        var result = JSON.parse(response.getReturnValue());
+                        if (result.courses) {
+                            var courses = JSON.parse(result.courses);
+                            component.set("v.course", courses[0]);
+                            var courseWrappers = JSON.parse(result.wrappers);
+                            component.set("v.courseWrappers", courseWrappers);
+                            var allowedForDependencyCourses = [];
+                            var allowedForDependency;
+                            courseWrappers.forEach(function(cw) {
+                                allowedForDependency = cw.allowedForDependency;
+                                allowedForDependency = allowedForDependency != null ?
+                                    allowedForDependency :
+                                	true;
+                                if (allowedForDependency) {
+                                    allowedForDependencyCourses.push(cw.course.Id);
+                                }
+                            });
+                            component.set('v.allowedForDependencyCourses', allowedForDependencyCourses);
+                            if (result.courseStatus) {
+                                var courseStatus = JSON.parse(result.courseStatus);
+                                component.set("v.courseStatus", courseStatus);
+                            }
+                            this.loadCourseStatus(component);
+                        }   
+                    } catch(e) {
+                        console.log(e);
                     }
                 } else {
                     var errorMsg = response.getError()[0].message;
@@ -289,7 +307,8 @@
                 "activeViewName": component.get('v.courseStatus').length > 0 ? 'myCourses' : 'availableCourses',
                 "variant": "brand",
                 "memberId": component.get('v.member').Id,
-                "moduleResponses": component.get('v.moduleResponses')
+                "moduleResponses": component.get('v.moduleResponses'),
+                "allowedForDependencyCourses": component.get('v.allowedForDependencyCourses')
             }
         });
         component.set("v.buttons", buttons);

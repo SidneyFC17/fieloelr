@@ -186,6 +186,7 @@
                     try {
                         var courseStructure = JSON.parse(response.getReturnValue());
                         component.set('v.courseStructure', courseStructure);
+                        component.set('v.courseWrapper', courseStructure.wrappers[0]);
                         this.getNextModule(component);
                     } catch(e) {
                         console.log(e);

@@ -1,5 +1,6 @@
 <aura:component>
     <aura:attribute type="Object" name="moduleWrapper" />
+    <aura:attribute type="Object" name="courseWrapper" />
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     <aura:attribute type="Boolean" name="showModuleContent" default="false"/>
     <aura:attribute type="Boolean" name="useDefaultUX" default="true"/>
@@ -28,12 +29,13 @@
             </aura:set>
             <aura:set attribute="actions">
                 <aura:if isTrue="{!v.course.Id != null}">
-                	<c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
+                	<c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
 				</aura:if>
             </aura:set>
             <div class="fielo-module-content">
                 <aura:if isTrue="{!v.showModuleContent}">
                     <c:ModuleContent 
+                                     courseWrapper="{!v.courseWrapper}"
                                      moduleWrapper="{!v.moduleWrapper}"
                                      fieldsMeta="{!v.fieldsMeta}"
                                      MRfieldsMeta="{!v.MRfieldsMeta}"

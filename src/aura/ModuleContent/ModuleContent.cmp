@@ -1,5 +1,6 @@
 <aura:component >
     <aura:attribute type="Object" name="moduleWrapper"/>
+    <aura:attribute type="Object" name="courseWrapper"/>
     <aura:attribute type="FieloPLT__Member__c" name="member"/>
     <aura:attribute type="sObject" name="course"/>
     <aura:attribute type="sObject" name="moduleResponse"/>
@@ -28,7 +29,7 @@
                 </div>
             </aura:set>
             <aura:set attribute="actions">
-                <c:ModuleActions moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}"/> 
+                <c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}"/> 
             </aura:set>
             <div class="fielo-module-description">
                 {!v.moduleWrapper.module.FieloELR__Description__c}
