@@ -1,4 +1,21 @@
 ({
+    doInit: function(component, event, helper) {
+        try{
+            var hasDetails = helper.hasDetails(component);
+            console.log('hasDetails: ' + hasDetails);
+            component.set('v.hasDetails', hasDetails);
+            component.set('v.tabsReady', true);
+            if(!hasDetails) {
+                var descriptionTab = component.find('descriptiontab');
+                if (descriptionTab instanceof Array) {
+                    descriptionTab = descriptionTab[0];
+                }
+                $A.util.addClass(descriptionTab, 'hide-tab');
+            }
+        } catch(e) {
+            console.log(e);
+        }
+    },
     handleTabClick : function(component, event, helper) {
         try{
             var viewName = event.target.id;

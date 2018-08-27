@@ -12,27 +12,21 @@
         } catch(e) {
             console.log(e);
         }
-    }
-    /*
-    lazyLoadTabs: function (cmp, event) {
-        var tab = event.getSource();
-        switch (tab.get('v.id')) {
-            case 'courseDescription' :
-                this.injectComponent('c:', tab);
-                break;
-            case 'courseModules' :
-                this.injectComponent('c:', tab);
-                break;
-        }
     },
-    injectComponent: function (name, target) {
-        $A.createComponent(name, {
-        }, function (contentComponent, status, error) {
-            if (status === "SUCCESS") {
-                target.set('v.body', contentComponent);
-            } else {
-                throw new Error(error);
-            }
-        });
-    }*/
+    hasDetails: function(component) {
+        try{
+            var course = component.get('v.course');
+            var courseFields = component.get('v.courseDetailFields');
+            courseFields = courseFields.split(',');
+            var hasDetails = true;
+            hasDetails = courseFields.some(function(fieldName) {
+               return course[fieldName] != null &&
+                   course[fieldName] != undefined &&
+                   course[fieldName] != '';
+            });
+            return hasDetails;
+        } catch(e) {
+            console.log(e);
+        }
+    }
 })

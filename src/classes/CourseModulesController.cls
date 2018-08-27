@@ -1,16 +1,23 @@
 public with sharing class CourseModulesController {
 	@AuraEnabled
-	public static String getCourseMap(FieloPLT__Member__c member, Id courseId, String modulesFieldset) {
+	public static String getCourseMap(FieloPLT__Member__c member, Id courseId, String courseFields, String modulesFieldset) {
 		try{
 			Id memberId = member.Id;
 			Id programId = member.FieloPLT__Program__c;
+			
+			Set<String> fieldsCourse = new Set<String> ( courseFields.split(',') );
 			Set<String> fieldsModule = new Set<String> ( modulesFieldset.split(',') );
+
+			fieldsCourse.add('Id');
+			fieldsCourse.add('FieloELR__SubscriptionMode__c');
+			fieldsCourse.add('FieloELR__Description__c');
+			fieldsCourse.add('FieloELR__Status__c');
 
 			List<CourseService.CourseWrapper> coursesMap;
 			
 			coursesMap = CourseService.getCoursesMap(
-				new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Description__c','FieloELR__Status__c'},
-				new Set<String>{'Id','Name'},
+				fieldsCourse,
+				new Set<String>{'Id','Name','FieloELR__Predecessor__r.Name'},
 				fieldsModule,
 				new Set<String>{'Id','FieloELR__Predecessor__r.Name'},
 				new Set<Id>{courseId},

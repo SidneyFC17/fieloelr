@@ -8,6 +8,6 @@
     min-height: 458px;
 }
 
-.THIS .fielo-module-content-viewer {
+.THIS.fielo-module-content-viewer{
     max-height: 458px;
 }

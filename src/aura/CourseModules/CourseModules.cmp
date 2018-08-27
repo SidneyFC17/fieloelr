@@ -1,6 +1,7 @@
 <aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="CourseModulesController">
     <aura:attribute type="String" name="recordId" description="Course Id"/>
     <aura:attribute type="String" name="fields" description="Modules Fields To Query" default="Id,Name,FieloELR__Description__c,FieloELR__AttemptsAllowed__c,FieloELR__Order__c"/>
+    <aura:attribute type="String" name="courseDetailFields" description="Course Fields To Display in the details tab" default="FieloELR__Description__c,FieloELR__KeyDependencies__c"/>
     <aura:attribute type="String" name="modulefields_passed" description="Modules Fields To Display when module is already taken and passed" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
     <aura:attribute type="String" name="modulefields_notpassed" description="Modules Fields To Display when module is already taken and not passed" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
     <aura:attribute type="String" name="modulefields_nottaken" description="Modules Fields To Display when module not taken yet" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__KeyDependencies__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
@@ -9,6 +10,8 @@
     <aura:attribute type="Object[]" name="moduleWrapperList" description="Complex type list of Modules to display"/>
     <aura:attribute type="Object[]" name="fieldsMeta"/>
     <aura:attribute type="Object" name="MRfieldsMeta"/>
+    <aura:attribute type="Object" name="CoursefieldsMeta"/>
+    <aura:attribute type="Object" name="courseWrapper"/>
     <aura:attribute type="sObject" name="course"/>
     <aura:attribute type="sObject" name="courseStatus"/>
     <aura:attribute type="sObject[]" name="moduleResponses"/>
@@ -30,7 +33,7 @@
                     <div class="slds-grid">
                         <div class="slds-col">
                         </div>
-                        <c:courseDetailsTabs aura:id="tabs" course="{!v.course}" recordId="{!v.recordId}"/>
+                        <c:courseDetailsTabs aura:id="tabs" course="{!v.course}" recordId="{!v.recordId}" courseDetailFields="{!v.courseDetailFields}"/>
                         <div class="slds-col">
                         </div>
                     </div>
@@ -39,7 +42,9 @@
             
             
             <aura:if isTrue="{!v.activeViewName == 'detail'}">
-                <p><h1 class="description"> {!v.course.FieloELR__Description__c} </h1></p>
+                <aura:if isTrue="{! v.CoursefieldsMeta != null }">
+                    <c:CourseDetailFieldset record="{!v.course}" fields="{!v.courseDetailFields}" fieldMeta="{!v.CoursefieldsMeta}" dependencies="{!v.courseWrapper.course.FieloELR__PredecessorCourses__r.records}"/>
+                </aura:if>
                 <aura:set attribute="else">
                     <div class="display-none-tab"></div>
                 </aura:set>

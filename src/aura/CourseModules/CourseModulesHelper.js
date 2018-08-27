@@ -5,6 +5,7 @@
             var member = component.get('v.member');
             var action = component.get('c.getCourseMap');
             var modulesFieldset = component.get('v.fields');
+            var courseFields = component.get('v.courseDetailFields');
             var includePoints = component.get('v.includePoints');
             var includeCompletedOn = component.get('v.includeCompletedOn');
             var includeQuestions = component.get('v.includeQuestions');
@@ -14,6 +15,7 @@
             var params = {
                 'member': member,
                 'courseId': courseId,
+                'courseFields': courseFields,
                 'modulesFieldset': modulesFieldset,
                 'includePoints': includePoints,
                 'includeQuestions': includeQuestions
@@ -31,11 +33,13 @@
                             moduleWrapperList.push(moduleWrapper);
                         });
                         component.set('v.course', courseWrapper[0].course);
+                        component.set('v.courseWrapper', courseWrapper[0]);
                         component.set('v.courseStatus', courseWrapper[0].courseStatus);
                         component.set('v.nextModuleId', this.getNextModuleId(moduleWrapperList));
                         component.set('v.moduleWrapperList', moduleWrapperList);
                         component.set('v.showModules', true);
-                        this.loadFieldsMetadata(component);
+                        this.loadFieldsMetadata(component, 'FieloELR__Module__c', component.get('v.fields'));
+                        this.loadFieldsMetadata(component, 'FieloELR__Course__c', component.get('v.courseDetailFields'));
                         this.selectView(component);
                     } else {
                         toastEvent.setParams({
@@ -123,12 +127,12 @@
         'FieloELR__Member__c',
         'FieloELR__CourseStatus__r.FieloELR__Progress__c'
     ],
-    loadFieldsMetadata: function(component) {
+    loadFieldsMetadata: function(component, objectName, fields) {
         try{
             var action = component.get('c.getFieldData');
             action.setParams({
-                'sObjectName': 'FieloELR__Module__c',
-                'fields': component.get('v.fields')
+                'sObjectName': objectName,
+                'fields': fields
             });
             action.setCallback(this, function(response) {
                 var spinner = $A.get("e.c:ToggleSpinnerEvent");
@@ -136,7 +140,15 @@
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
                     var objectInfo = JSON.parse(response.getReturnValue());
-                    component.set('v.fieldsMeta', objectInfo.fields);
+                    if (objectName == 'FieloELR__Module__c') {
+                        component.set('v.fieldsMeta', objectInfo.fields);
+                    } else if (objectName == 'FieloELR__Course__c') {
+                        var CoursefieldsMeta = {};
+                        objectInfo.fields.forEach(function(field) {
+                            CoursefieldsMeta[field.attributes.name] = field;
+                        });
+                        component.set('v.CoursefieldsMeta', CoursefieldsMeta);
+                    }
                 } else {
                     var errorMsg = response.getError()[0].message;
                     toastEvent.setParams({
@@ -250,7 +262,7 @@
                 var viewResults = Boolean(window.localStorage.getItem('viewResults'));
                 var course = component.get('v.course');
                 window.localStorage.removeItem('viewResults');
-                if (viewResults || course.FieloELR__Description__c == null || course.FieloELR__Description__c == undefined || course.FieloELR__Description__c == '') {
+                if (viewResults || !this.hasDetails(component)) {
                     component.set('v.activeViewName', 'modules');
                     var tabsCmp = component.find('tabs');
                     if (tabsCmp) {
@@ -259,6 +271,22 @@
                     }
                 }
             }
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    hasDetails: function(component) {
+        try{
+            var course = component.get('v.course');
+            var courseFields = component.get('v.courseDetailFields');
+            courseFields = courseFields.split(',');
+            var hasDetails = true;
+            hasDetails = courseFields.some(function(fieldName) {
+               return course[fieldName] != null &&
+                   course[fieldName] != undefined &&
+                   course[fieldName] != '';
+            });
+            return hasDetails;
         } catch(e) {
             console.log(e);
         }

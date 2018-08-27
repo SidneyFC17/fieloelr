@@ -29,3 +29,7 @@
 .THIS .description {
     color: #54698d;
 }
+
+.THIS .hide-tab {
+    display: none;
+}
