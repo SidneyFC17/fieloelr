@@ -1,9 +1,12 @@
 ({
     doInit: function(component, event, helper) {
         try{
-            var moduleResponseWrapper = JSON.parse(window.localStorage.getItem('currentModuleReponse'));
-            if (moduleResponseWrapper) {
+            console.log('ModuleDetailContainer.doInit');
+            var currentModuleReponseId = window.localStorage.getItem('currentModuleReponseId');
+            console.log('currentModuleReponseId: ' + currentModuleReponseId);
+            if (currentModuleReponseId) {
                 component.set('v.moduleInProgress', true);
+                window.localStorage.setItem('currentModuleReponseId','');
             }
             helper.getConfig(component);
             helper.getModuleFieldsData(component);

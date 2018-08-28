@@ -5,7 +5,7 @@
     <aura:attribute type="Boolean" name="showQuestionContent" default="true"/>
     <aura:attribute type="Boolean" name="showQuestionName"/>
     <aura:attribute type="String" name="status"/>
-    <aura:attribute type="String" name="mode"/>
+    <aura:attribute type="String" name="mode" default="edit"/>
     <aura:attribute type="Integer" name="questionNumber"/>
     <aura:attribute type="String" name="iconName" default="utility:chevrondown"/>
     

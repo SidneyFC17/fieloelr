@@ -1,7 +1,8 @@
 <aura:component controller="QuizController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
     <aura:attribute type="String" name="recordId"/>
     <aura:attribute type="String" name="overrideId"/>
-    <aura:attribute type="String" name="mode"/>
+    <aura:attribute type="String" name="mode"/>    
+    <aura:attribute type="String[]" name="submittedQuestions"/>
     <aura:attribute type="String[]" name="correctQuestions"/>
     <aura:attribute type="String[]" name="incorrectQuestions"/>
     <aura:attribute type="String[]" name="noMoreAttemptsQuestions"/>

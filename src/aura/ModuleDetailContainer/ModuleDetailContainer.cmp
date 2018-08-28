@@ -44,8 +44,10 @@
                     </div>
                 </aura:set>
                 <aura:set attribute="actions">
-                    <aura:if isTrue="{! and(v.showHeaderActions == true, v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                        <c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" showStatus="false" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
+                    <aura:if isTrue="{!v.moduleInProgress == false}">
+                        <aura:if isTrue="{! and(v.showHeaderActions == true, v.moduleResponseReady == true) }">
+                            <c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="header" member="{!v.member}" showStatus="false" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
+                        </aura:if>
                     </aura:if>
                 </aura:set>
                 <div class="fielo-module-content">
@@ -67,8 +69,10 @@
                                 </div>
                             </aura:set>
                             <aura:set attribute="actions">
-                                <aura:if isTrue="{! and(v.showBodyActions == true, v.course.Id != null, v.moduleResponseReady == true, v.moduleInProgress == false) }">
-                                    <c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
+                                <aura:if isTrue="{!v.moduleInProgress == false}">
+                                    <aura:if isTrue="{! and(v.showBodyActions == true, v.course.Id != null, v.moduleResponseReady == true) }">
+                                        <c:ModuleActions courseWrapper="{!v.courseWrapper}" moduleWrapper="{!v.moduleWrapper}" location="body" member="{!v.member}" course="{!v.course}" courseStatus="{!v.courseStatus}"/>
+                                    </aura:if>
                                 </aura:if>
                             </aura:set>
                         </lightning:card>

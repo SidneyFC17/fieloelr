@@ -69,9 +69,6 @@
                 true;    
             }
             if (moduleWrapper) {
-                if (moduleWrapper.module.Id == 'a0o6A000001aOPmQAM') {
-                    console.log(JSON.stringify(moduleWrapper, null, 2));
-                }
                 numberOfAttempts = moduleWrapper.numberOfAttempts ?
                     moduleWrapper.numberOfAttempts :
                 0;
@@ -137,6 +134,7 @@
                     if (window.localStorage) {
                         window.localStorage.setItem('currentModuleReponse', moduleResponseWrapper);
                         moduleResponseWrapper = JSON.parse(moduleResponseWrapper);
+                        window.localStorage.setItem('currentModuleReponseId', moduleResponseWrapper.module.Id);
                         var navEvt = $A.get("e.force:navigateToSObject");
                         navEvt.setParams({
                             "recordId": moduleResponseWrapper.module.Id

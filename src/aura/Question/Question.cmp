@@ -13,6 +13,7 @@
     <aura:attribute type="String" name="isCorrect" default=""/>
     <aura:attribute type="String" name="icon"/>
     <aura:attribute type="String" name="status"/>
+    <aura:attribute type="String" name="statusClass"/>
     <aura:attribute type="String[]" name="matchingAnswer"/>
     <aura:attribute type="String" name="textValue"/>
     <aura:attribute type="Boolean" name="renderQuestion" default="false"/>
@@ -20,8 +21,9 @@
     
     <aura:method name="getAnswers" action="{!c.getAnswers}"/>
     
-    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
-    <div class="{!v.className + ' question ' + ( or(v.mode == 'view', v.status == 'attemptLimit',v.status == 'passed') ? ' disabled' : '')}" data-mode="{!v.mode}" data-status="{!v.status}">
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+    <div class="{!v.className + ' question ' + ( or(v.mode == 'view', v.status == 'passed', v.status == 'attemptLimit') ? ' disabled' : '')}" data-mode="{!v.mode}" data-status="{!v.status}" data-status-class="{!( or(v.mode == 'view', v.status == 'passed', v.status == 'attemptLimit') ? ' disabled' : '')}">
         <aura:if isTrue="{!v.renderQuestion}">
             <div>
                 <div class="slds-text-heading_small slds-text-align_left" style="display:inline-block"><lightning:formattedRichText value="{!v.title}"></lightning:formattedRichText></div>

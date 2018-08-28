@@ -96,6 +96,7 @@
                     var correctQuestions = component.get('v.correctQuestions');
                     var incorrectQuestions = component.get('v.incorrectQuestions');
                     var noMoreAttemptsQuestions = component.get('v.noMoreAttemptsQuestions');
+                    var submittedQuestions = component.get('v.submittedQuestions');
                     if (!correctQuestions) correctQuestions = [];
                     if (!incorrectQuestions) incorrectQuestions = [];
                     if (!noMoreAttemptsQuestions) noMoreAttemptsQuestions = [];
@@ -145,7 +146,12 @@
                                     }
                                 }
                             }
+                            if (!submittedQuestions) {
+                                submittedQuestions = [];
+                            }
+                            submittedQuestions.push(questionResponseResult.question.Id);
                         }
+                        component.set('v.submittedQuestions', submittedQuestions);
                         component.set('v.correctQuestions', correctQuestions);
                         component.set('v.incorrectQuestions', incorrectQuestions);
                         component.set('v.noMoreAttemptsQuestions', noMoreAttemptsQuestions);
@@ -154,21 +160,30 @@
                         incorrectQuestions = component.get('v.incorrectQuestions');
                         noMoreAttemptsQuestions = component.get('v.noMoreAttemptsQuestions');
                         
-                        this.showResults(component);
+                        console.log(JSON.stringify({
+                            'correctQuestions': correctQuestions,
+                            'incorrectQuestions': incorrectQuestions,
+                            'noMoreAttemptsQuestions': noMoreAttemptsQuestions
+                        }, null, 2));
+                        
                         if (type == 'module') {
                             // Last Question
-                            console.log(JSON.stringify({
-                                'correctQuestions': correctQuestions,
-                                'noMoreAttemptsQuestions': noMoreAttemptsQuestions,
-                                'incorrectQuestions': incorrectQuestions
-                            }, null, 2));
-                            var submittedQuestions = correctQuestions.length + noMoreAttemptsQuestions.length + incorrectQuestions.length;
-                            if (submittedQuestions == moduleResponseWrapper.questions.length) {
+                            if (submittedQuestions.length == moduleResponseWrapper.questions.length) {
+                                var submittedQuestionsSet = new Set(submittedQuestions);
                                 this.checkModuleAndFinish(component);
                                 if (incorrectQuestions.length > 0) {
                                     this.showMessage('error', $A.get('$Label.c.ReviewYourQuestions'));
+                                    incorrectQuestions.forEach(function(id) {
+                                        if (submittedQuestionsSet.has(id) != -1) {
+                                            submittedQuestionsSet.delete(id);
+                                        }
+                                    });
+                                    submittedQuestions = [];
+                                    submittedQuestionsSet.forEach(id => submittedQuestions.push(id));
+                                    component.set('v.submittedQuestions', submittedQuestions);
                                 }
-                            } 
+                                this.showResults(component);
+                            }
                         }
                     }
                 } else {
@@ -194,6 +209,13 @@
             var questionId;
             var status;
             
+            console.log(JSON.stringify({
+                '# questions': questionComps.length,
+                'correctQuestions': correctQuestions,
+                'incorrectQuestions': incorrectQuestions,
+                'noMoreAttemptsQuestions': noMoreAttemptsQuestions
+            }, null, 2));
+            
             questionComps.forEach(function(cmp) {
                 status = null;
                 questionId = cmp.get('v.question').Id;
@@ -205,8 +227,9 @@
                     status = 'notpassed';
                 }
                 if (status) {
+                    cmp.set('v.status', '');
                     cmp.set('v.status', status);
-                    console.log(questionId + ' = ' + status);    
+                    console.log(questionId + ' = ' + status);
                 }
             });
         } catch(e) {
@@ -249,7 +272,7 @@
     refreshQuestionNumber: function(component) {
         try {
             component.set('v.showQuestionNumber', false);
-			component.set('v.showQuestionNumber', true);
+            component.set('v.showQuestionNumber', true);
         } catch(e) {
             console.log(e);
         }

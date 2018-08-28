@@ -119,7 +119,6 @@
                 var state = response.getState();
                 if (component.isValid() && state === 'SUCCESS') {
                     var result = JSON.parse(response.getReturnValue());
-                    console.log(JSON.stringify(result, null, 2));
                     helper.showMessage('success', $A.get('$Label.c.ModuleSubmitted'));
                     var navEvt = $A.get("e.force:navigateToSObject");
                     navEvt.setParams({
