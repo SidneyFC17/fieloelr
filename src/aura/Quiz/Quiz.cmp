@@ -14,6 +14,7 @@
     <aura:attribute type="Boolean" name="showQuestionContent" default="true"/>
     <aura:attribute type="Boolean" name="showActions" default="true"/>
     <aura:attribute type="Boolean" name="hideQuiz" default="false"/>
+    <aura:attribute type="Boolean" name="showQuestionNumber"/>
     
     <!-- Design Attributes -->
     <aura:attribute type="String" name="submitMode"/>
@@ -46,7 +47,7 @@
                         <c:QuestionCardItem aura:id="question-card" question="{!question}" showQuestionName="{!v.showQuestionName}" questionNumber="{!questionNumber + 1}"/>
                     </aura:iteration>
                 </aura:if>
-                <aura:if isTrue="{! and(v.module.FieloELR__QuestionDisplayMode__c == 'One by one', v.currentQuestion.Id != null, v.currentQuestion.Id != '') }">
+                <aura:if isTrue="{! and(v.showQuestionNumber == true, v.module.FieloELR__QuestionDisplayMode__c == 'One by one', v.currentQuestion.Id != null, v.currentQuestion.Id != '') }">
                     <c:QuestionCardItem aura:id="unique-question-card" question="{!v.currentQuestion}" showQuestionName="{!v.showQuestionName}" questionNumber="{!v.currentQuestionIndex + 1}"  />
                 </aura:if>
                 <aura:set attribute="footer">

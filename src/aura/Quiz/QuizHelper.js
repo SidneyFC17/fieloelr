@@ -245,5 +245,13 @@
         } catch(e) {
             console.log(e);
         }
+    },
+    refreshQuestionNumber: function(component) {
+        try {
+            component.set('v.showQuestionNumber', false);
+			component.set('v.showQuestionNumber', true);
+        } catch(e) {
+            console.log(e);
+        }
     }
 })

@@ -20,6 +20,7 @@
                                 if (moduleResponseWrapper.questions.length > 0) {
                                     component.set('v.currentQuestion', moduleResponseWrapper.questions[0]);
                                     component.set('v.currentQuestionIndex', 0);
+                                    helper.refreshQuestionNumber(component);
                                 }
                             }
                             if (moduleResponseWrapper.module) {
@@ -147,6 +148,7 @@
             component.set('v.currentQuestion', null);
             component.set('v.currentQuestion', moduleResponseWrapper.questions[nextQuestionIndex]);
             component.set('v.currentQuestionIndex', nextQuestionIndex);
+            helper.refreshQuestionNumber(component);
         } catch(e) {
             console.log(e);
         }
