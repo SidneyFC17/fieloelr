@@ -111,11 +111,7 @@
                 if (!actions) {
                     actions = [];
                 }
-                if (courseAllowedForDependency && moduleWrapper.allowedForDependency) {
-                    actions.push('view-nextmodule');
-                } else {
-                    actions.push('view-nextmodule-readonly');
-                }
+                actions.push('view-nextmodule');
                 component.set('v.actions', actions);
             }
         } catch(e) {

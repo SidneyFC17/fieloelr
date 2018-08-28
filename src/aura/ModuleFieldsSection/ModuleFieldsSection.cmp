@@ -3,6 +3,8 @@
     <aura:attribute type="sObject" name="module"/>
     <aura:attribute type="Object" name="moduleWrapper"/>
     <aura:attribute type="sObject" name="moduleResponse"/>
+    <aura:attribute type="sObject" name="approvedModuleResponse"/>
+    <aura:attribute type="sObject" name="lastModuleResponse"/>
     <aura:attribute type="String" name="className"/>
     <aura:attribute type="Object[]" name="fieldsMeta"/>
     <aura:attribute type="Object" name="fieldsMetaMap"/>
