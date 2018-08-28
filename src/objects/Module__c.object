@@ -106,11 +106,6 @@
                     <label>Image</label>
                 </value>
                 <value>
-                    <fullName>Link</fullName>
-                    <default>false</default>
-                    <label>Link</label>
-                </value>
-                <value>
                     <fullName>PDF</fullName>
                     <default>false</default>
                     <label>PDF</label>
