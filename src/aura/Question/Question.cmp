@@ -24,7 +24,7 @@
     <div class="{!v.className + ' question ' + ( or(v.mode == 'view', v.status == 'attemptLimit',v.status == 'passed') ? ' disabled' : '')}" data-mode="{!v.mode}" data-status="{!v.status}">
         <aura:if isTrue="{!v.renderQuestion}">
             <div>
-                <div class="slds-text-heading_small slds-text-align_left" style="display:inline-block">{!v.title}</div>
+                <div class="slds-text-heading_small slds-text-align_left" style="display:inline-block"><lightning:formattedRichText value="{!v.title}"></lightning:formattedRichText></div>
             </div>
             <div class="{!v.showContent == true ? '' : 'fielo-question-content--hidden'}">
                 <aura:if isTrue="{!v.type == 'Single Choice'}" >        
