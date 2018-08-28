@@ -131,11 +131,6 @@
                     <label>MP3</label>
                 </value>
                 <value>
-                    <fullName>Static Resource</fullName>
-                    <default>false</default>
-                    <label>Static Resource</label>
-                </value>
-                <value>
                     <fullName>Carousel</fullName>
                     <default>false</default>
                     <label>Carousel</label>
@@ -144,21 +139,6 @@
                     <fullName>Vimeo</fullName>
                     <default>false</default>
                     <label>Vimeo</label>
-                </value>
-                <value>
-                    <fullName>Audio Ogg</fullName>
-                    <default>false</default>
-                    <label>Audio Ogg</label>
-                </value>
-                <value>
-                    <fullName>WebM</fullName>
-                    <default>false</default>
-                    <label>WebM</label>
-                </value>
-                <value>
-                    <fullName>Video Ogg</fullName>
-                    <default>false</default>
-                    <label>Video Ogg</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
