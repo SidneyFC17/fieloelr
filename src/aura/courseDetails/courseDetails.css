@@ -156,3 +156,28 @@
 }
 
 /* End Field Section */
+
+/* DATE COMPONENT NULL */
+
+.THIS .no-date .table .slds-card__body div[data-field-name="FieloELR__Description__c"]{
+	margin-top: 50px;
+    grid-row: 1/3;
+}
+
+.THIS .no-date .table .slds-card__body div[data-field-name="FieloELR__StartDate__c"]{
+	display:none;
+	height: 0px;
+    overflow: hidden;
+}
+
+/*DESCRIPTION NULL */
+
+.THIS .no-description .table .slds-card__body div[data-field-name="FieloELR__Description__c"]{
+	display:none;
+    height: 0px;
+    overflow: hidden;
+}
+.THIS .no-description .table .slds-card__body div[data-field-name="FieloELR__StartDate__c"]{
+	margin-top: 60px;
+    grid-row: 1/3;
+}
