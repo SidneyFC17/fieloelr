@@ -264,16 +264,12 @@
 
 /* DATE COMPONENT NULL */
 
-.THIS .no-date .table .fielo-output:nth-child(2){
-	margin-top: 50px;
-}
-
-.THIS .no-date .table .fielo-output:nth-child(3){
-	display:none;
-}
-
-.THIS .no-date .table .fielo-output:last-child{
+.THIS .no-date .table .slds-card__body div[data-field-name="FieloELR__Description__c"]{
 	margin-top: 40px;
+}
+
+.THIS .no-date .table .slds-card__body div[data-field-name="FieloELR__StartDate__c"]{
+	display:none;
 }
 
 /*DESCRIPTION NULL */
