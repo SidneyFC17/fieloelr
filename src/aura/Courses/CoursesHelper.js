@@ -191,10 +191,15 @@
                         var coursesList;
                         var courseStatus;
                         activeViewName = component.get('v.activeViewName');
-                        console.log('activeViewName: ' + activeViewName);
+                        
                         if (activeViewName == 'availableCourses') {
                             coursesList = result.list;
-                            courseWrappers = result.wrappers;
+                        } else {
+                            coursesList = JSON.parse(result.courses);
+                            courseStatus = JSON.parse(result.courseStatus);
+                        }
+                        courseWrappers = result.wrappers;
+                        if (courseWrappers) {
                             component.set('v.courseWrappers', courseWrappers);
                             var allowedForDependencyCourses = [];
                             console.log(JSON.stringify(courseWrappers, null, 2));
@@ -203,15 +208,12 @@
                                 allowedForDependency = cw.allowedForDependency;
                                 allowedForDependency = allowedForDependency != null ?
                                     allowedForDependency :
-                                	true;
+                                true;
                                 if (allowedForDependency) {
                                     allowedForDependencyCourses.push(cw.course.Id);
                                 }
                             });
                             component.set('v.allowedForDependencyCourses', allowedForDependencyCourses);
-                        } else {
-                            coursesList = JSON.parse(result.courses);
-                            courseStatus = JSON.parse(result.courseStatus);
                         }
                         component.set('v.coursesList', coursesList);
                         component.set('v.courseStatus', courseStatus);

@@ -73,13 +73,5 @@
         } catch(e) {
             console.log(e);
         }
-    },
-    updateComponent: function(component, event, helper) {
-        try {
-            var action = component.get('c.doInit');
-            $A.enqueueAction(action);
-        } catch(e) {
-            console.log(e);
-        }
     }
 })

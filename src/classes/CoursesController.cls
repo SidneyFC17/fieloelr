@@ -245,9 +245,26 @@ public with sharing class CoursesController {
 											offset,
 											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC' ,
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+
+
+			List<CourseService.CourseWrapper> courseWrappers = CourseService.getCoursesMap(
+											new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
+											new Set<String>{'Id','Name'},
+											new Set<String>{'Id','Name'},
+											null,
+											courseIds,
+											member.FieloPLT__Program__c,
+                                            member.Id,
+											false,
+											false,
+											quantity, 
+											offset, 
+											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
+											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
 			
 			Map<String, String> result = new Map<String, String>{
 				'courses' => JSON.serialize(courses),
+				'wrappers' => JSON.serialize(courseWrappers),
 				'courseStatus' => JSON.serialize(courseStatusList)
 			};
             return JSON.serialize(result);
