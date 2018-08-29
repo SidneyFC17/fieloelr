@@ -235,6 +235,9 @@
                         nextModule = m;
                         return !approvedModulesSet.has(m.Id);
                     });
+                    if (!hasNext) {
+                        nextModule = null;
+                    }
                 }
             }
             component.set('v.nextModule', nextModule);

@@ -63,7 +63,9 @@
                     </aura:if>
                     
                     <aura:if isTrue="{!action == 'view-nextmodule'}">
-                        <lightning:button label="{! $Label.c.ViewModule + ' ' + v.nextModule.FieloELR__Order__c}" name="{!v.config.label_viewModule  + ' ' + v.nextModule.FieloELR__Order__c}" onclick="{!c.callViewModule}" variant="brand" />
+                        <aura:if isTrue="{!v.nextModule != null}">
+                            <lightning:button label="{! $Label.c.ViewModule + ' ' + v.nextModule.FieloELR__Order__c}" name="{!v.config.label_viewModule  + ' ' + v.nextModule.FieloELR__Order__c}" onclick="{!c.callViewModule}" variant="brand" />
+                        </aura:if>
                     </aura:if>
                 </aura:set>
             </aura:if>
