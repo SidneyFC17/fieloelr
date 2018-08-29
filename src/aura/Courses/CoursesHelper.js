@@ -181,6 +181,7 @@
                 // Add callback behavior for when response is received
                 action.setCallback(this, function(response) {
                     try{
+                        
                         var spinner = $A.get("e.c:ToggleSpinnerEvent");
                         var toastEvent = $A.get("e.force:showToast");
                         var state = response.getState();                
@@ -196,13 +197,14 @@
                             if (activeViewName == 'availableCourses') {
                                 coursesList = result.list;
                             } else {
-                                coursesList = result.courses);
+                                coursesList = result.courses;
                                 courseStatus = result.courseStatus;
                             }
                             courseWrappers = result.wrappers;
                             if (courseWrappers) {
                                 component.set('v.courseWrappers', courseWrappers);
                                 var allowedForDependencyCourses = [];
+                                console.log(JSON.stringify(courseWrappers, null, 2));
                                 var allowedForDependency
                                 courseWrappers.forEach(function(cw) {
                                     allowedForDependency = cw.allowedForDependency;
@@ -236,7 +238,6 @@
                     } catch(e) {
                         console.log(e);
                     }
-                    
                 });      
                 // Send action off to be executed
                 $A.enqueueAction(action);   
