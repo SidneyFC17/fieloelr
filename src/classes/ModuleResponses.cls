@@ -523,7 +523,7 @@ public class ModuleResponses extends SObjectDomain {
 
         Boolean validateAdminFields = CourseStatus.validateAdminFields;
         CourseStatus.validateAdminFields = false;
-        if(Schema.sObjectType.ApprovedModules__c.isUpdateable()){
+        if(Schema.sObjectType.CourseStatus__c.isUpdateable()){
                 uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
