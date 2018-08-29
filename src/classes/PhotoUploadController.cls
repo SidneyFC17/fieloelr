@@ -97,7 +97,7 @@ public with sharing class PhotoUploadController {
                         documentId = null;
                     }
                     
-                     SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+                     convertType = Schema.getGlobalDescribe().get(objectName);
 
                     SecurityUtils.checkObjectIsReadable(convertType);
                     List<SObject> whereIsUsed = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + fieldName + ' = :documentId  AND Id != :recordId ');
