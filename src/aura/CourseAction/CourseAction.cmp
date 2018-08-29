@@ -13,6 +13,7 @@
     
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:handler name="change" value="{!v.config}" action="{!c.updateComponent}"/>
     
     <div class="fielo-course-action" data-module-id="{!v.moduleId}" data-member-id="{!v.config.memberId}" data-allowedfordependency="{!v.allowedForDependency}">
         <aura:if isTrue="{!v.hasNextModule}">
