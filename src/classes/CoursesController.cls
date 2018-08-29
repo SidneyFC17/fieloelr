@@ -262,10 +262,10 @@ public with sharing class CoursesController {
 											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
 											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
 			
-			Map<String, String> result = new Map<String, String>{
-				'courses' => JSON.serialize(courses),
-				'wrappers' => JSON.serialize(courseWrappers),
-				'courseStatus' => JSON.serialize(courseStatusList)
+			Map<String, Object> result = new Map<String, Object>{
+				'courses' => (Object) courses,
+				'wrappers' => (Object) courseWrappers,
+				'courseStatus' => (Object) courseStatusList
 			};
             return JSON.serialize(result);
        } catch(DMLException e) {
