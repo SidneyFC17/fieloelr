@@ -303,7 +303,7 @@ global class CourseService {
 				if (!this.dependencies.isEmpty()) {
 					Set<String> mdStringKeys;
 					if (!moduleResponses.isEmpty()) {
-						mdStringKeys = getMDStringKeys(new List<Module__c>{module}, moduleResponses[0].Member__c);
+						mdStringKeys = getMDStringKeys(module, moduleResponses[0].Member__c);
 						this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					} else {
 						this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
@@ -312,12 +312,22 @@ global class CourseService {
 			}
 		}
 
-		public ModuleWrapper(Module__c module, List<ModuleDependency__c> dependencies){
+		public ModuleWrapper(Module__c module, List<ModuleDependency__c> dependencies, Id memberId){
 			this.module = module;
 			if (dependencies!=null) {
 				this.dependencies = dependencies;
 			}
-			this.allowedForDependency = !(module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+			if (this.dependencies!=null) {
+				if (!this.dependencies.isEmpty()) {
+					Set<String> mdStringKeys;
+					if (memberId != null) {
+						mdStringKeys = getMDStringKeys(module, memberId);
+						this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
+					} else {
+						this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+					}
+				}
+			}
 			this.isApproved = false;
 		}
 
@@ -448,14 +458,20 @@ global class CourseService {
 			}
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
-					ModuleWrapper mw = cs != null ? new ModuleWrapper(
-						module,
-						moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>(),
-						dependenciesByModule != null ? 
-							(dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) :
-							new List<ModuleDependency__c>()
-							) :
-							new ModuleWrapper(module, dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>());
+					ModuleWrapper mw;
+					if (cs != null) {
+						mw = new ModuleWrapper(
+							module,
+							moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>(),
+							dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>()
+						);
+					} else {
+						mw = new ModuleWrapper(
+							module,
+							dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>(),
+							memberId
+						);
+					}
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
 					}
@@ -489,6 +505,28 @@ global class CourseService {
 			cdStringKeys.add(String.join(listKeys,','));
 		}
 		return cdStringKeys;
+	}
+
+	private static Set<String> getMDStringKeys(Module__c module, Id memberId){
+		Id courseId = module.Course__c;
+		Id module_id = module.Id;
+		String mdQuery = 'SELECT Module__c, Predecessor__c FROM ModuleDependency__c WHERE Predecessor__c in (SELECT Module__c FROM ModuleResponse__c WHERE Member__c =: memberId AND NumberOfApprove__c = 1 AND Module__r.Course__c =: courseId) AND Module__c = :module_id';
+		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
+		for(ModuleDependency__c md : Database.query(mdQuery)){
+			if(mdKeysByCourse.containsKey(md.Module__c)){
+				mdKeysByCourse.get(md.Module__c).add(String.valueOf(md.Predecessor__c));
+			}else{
+				mdKeysByCourse.put(md.Module__c, new Set<String>{String.valueOf(md.Predecessor__c)});
+			}
+		}
+
+		Set<String> mdStringKeys = new Set<String>();
+		for(Id moduleId : mdKeysByCourse.keySet()){
+			List<String> listKeys = new List<String>(mdKeysByCourse.get(moduleId));
+			listKeys.sort();
+			mdStringKeys.add(String.join(listKeys,','));
+		}
+		return mdStringKeys;
 	}
 
 	private static Set<String> getMDStringKeys(List<Module__c> modules, Id memberId){
