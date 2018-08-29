@@ -180,59 +180,63 @@
                 action.setParams(params);
                 // Add callback behavior for when response is received
                 action.setCallback(this, function(response) {
-                    var spinner = $A.get("e.c:ToggleSpinnerEvent");
-                    var toastEvent = $A.get("e.force:showToast");
-                    var state = response.getState();                
-                    if (component.isValid() && state === 'SUCCESS') {                    
-                        var member = component.get('v.member');
-                        var memberId = member.Id;                                     
-                        var result = JSON.parse(response.getReturnValue());
-                        var courseWrappers;
-                        var coursesList;
-                        var courseStatus;
-                        activeViewName = component.get('v.activeViewName');
-                        
-                        if (activeViewName == 'availableCourses') {
-                            coursesList = result.list;
+                    try{
+                        var spinner = $A.get("e.c:ToggleSpinnerEvent");
+                        var toastEvent = $A.get("e.force:showToast");
+                        var state = response.getState();                
+                        if (component.isValid() && state === 'SUCCESS') {                    
+                            var member = component.get('v.member');
+                            var memberId = member.Id;                                     
+                            var result = JSON.parse(response.getReturnValue());
+                            var courseWrappers;
+                            var coursesList;
+                            var courseStatus;
+                            activeViewName = component.get('v.activeViewName');
+                            
+                            if (activeViewName == 'availableCourses') {
+                                coursesList = result.list;
+                            } else {
+                                coursesList = result.courses);
+                                courseStatus = result.courseStatus;
+                            }
+                            courseWrappers = result.wrappers;
+                            if (courseWrappers) {
+                                component.set('v.courseWrappers', courseWrappers);
+                                var allowedForDependencyCourses = [];
+                                var allowedForDependency
+                                courseWrappers.forEach(function(cw) {
+                                    allowedForDependency = cw.allowedForDependency;
+                                    allowedForDependency = allowedForDependency != null ?
+                                        allowedForDependency :
+                                    true;
+                                    if (allowedForDependency) {
+                                        allowedForDependencyCourses.push(cw.course.Id);
+                                    }
+                                });
+                                component.set('v.allowedForDependencyCourses', allowedForDependencyCourses);
+                            }
+                            component.set('v.coursesList', coursesList);
+                            component.set('v.courseStatus', courseStatus);
+                            component.set('v.showCoursesList', true);
+                            helper.getFieldSet(component);
+                            helper.updateButtons(component);
                         } else {
-                            coursesList = JSON.parse(result.courses);
-                            courseStatus = JSON.parse(result.courseStatus);
-                        }
-                        courseWrappers = result.wrappers;
-                        if (courseWrappers) {
-                            component.set('v.courseWrappers', courseWrappers);
-                            var allowedForDependencyCourses = [];
-                            console.log(JSON.stringify(courseWrappers, null, 2));
-                            var allowedForDependency
-                            courseWrappers.forEach(function(cw) {
-                                allowedForDependency = cw.allowedForDependency;
-                                allowedForDependency = allowedForDependency != null ?
-                                    allowedForDependency :
-                                true;
-                                if (allowedForDependency) {
-                                    allowedForDependencyCourses.push(cw.course.Id);
-                                }
+                            var errorMsg = response.getError()[0].message;
+                            toastEvent.setParams({
+                                "title": errorMsg,
+                                "message": " ",
+                                "type": "error"
                             });
-                            component.set('v.allowedForDependencyCourses', allowedForDependencyCourses);
+                            toastEvent.fire(); 
+                            if(spinner){
+                                spinner.setParam('show', false);
+                                spinner.fire();    
+                            }
                         }
-                        component.set('v.coursesList', coursesList);
-                        component.set('v.courseStatus', courseStatus);
-                        component.set('v.showCoursesList', true);
-                        helper.getFieldSet(component);
-                        helper.updateButtons(component);
-                    } else {
-                        var errorMsg = response.getError()[0].message;
-                        toastEvent.setParams({
-                            "title": errorMsg,
-                            "message": " ",
-                            "type": "error"
-                        });
-                        toastEvent.fire(); 
-                        if(spinner){
-                            spinner.setParam('show', false);
-                            spinner.fire();    
-                        }
+                    } catch(e) {
+                        console.log(e);
                     }
+                    
                 });      
                 // Send action off to be executed
                 $A.enqueueAction(action);   
