@@ -431,7 +431,8 @@ public with sharing class SectionController {
                 query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
               }
               query += ' LIMIT 500';
-              SObjectType convertType = Schema.getGlobalDescribe().get(describe.getReferenceTo().get(0));
+              string obj = describe.getReferenceTo().get(0);
+              SObjectType convertType = Schema.getGlobalDescribe().get(obj);
 
               SecurityUtils.checkObjectIsReadable(convertType);
               for ( SObject o : Database.query(query) ) {

@@ -271,7 +271,8 @@ public with sharing class FormController {
               system.debug('## f.WhereCondition: ' + f.WhereCondition);
               system.debug('## query initPicklistMaps: ' + query);
 
-              SObjectType convertType = Schema.getGlobalDescribe().get(describe.getReferenceTo().get(0));
+              string obj = describe.getReferenceTo().get(0);
+              SObjectType convertType = Schema.getGlobalDescribe().get(obj);
 
               SecurityUtils.checkObjectIsReadable(convertType);
               for ( SObject o : Database.query(query) ) {
