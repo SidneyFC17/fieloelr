@@ -38,7 +38,9 @@
             console.log(JSON.stringify(event.getParams(), null, 2));
             component.set('v.dynamicFilterString', dynamicFilterString);
             component.set('v.sortByClause', sortByClause);
-            helper.loadCourses(component, event, helper, 0);   
+            helper.loadCourses(component, event, helper, 0);
+            component.set('v.paging', false);
+            component.set('v.paging', true);
         } catch(e) {
             console.log(e);
         }

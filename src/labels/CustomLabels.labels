@@ -2413,7 +2413,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ModuleContentText</shortDescription>
-        <value>First, view the module content before answering the questions</value>
+        <value>First, view the module content before answer the questions</value>
     </labels>
     <labels>
         <fullName>ModuleInactivated</fullName>
