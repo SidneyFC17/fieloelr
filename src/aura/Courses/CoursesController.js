@@ -51,7 +51,8 @@
             var viewName = event.getParam('viewName');
             component.set('v.showFilter', false);
             component.set('v.activeViewName', viewName);
-            helper.updateButtons(component);
+            component.set('v.dynamicFilterString', null);
+            component.set('v.sortByClause', null);
             $A.enqueueAction(component.get('c.getFieldSet'));
             $A.enqueueAction(component.get('c.loadCourses'));
             component.set('v.showFilter', true);
