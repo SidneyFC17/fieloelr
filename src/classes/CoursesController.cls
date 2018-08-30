@@ -44,7 +44,7 @@ public with sharing class CoursesController {
 				newfieldsInfo.add(fieldMeta);
 
 				// Add Field-To value
-				if (Boolean.valueOf(fieldAttributes.get('isRanged'))) {
+				/* if (Boolean.valueOf(fieldAttributes.get('isRanged'))) {
 					fieldToMeta = new Map<String, Object>(fieldMeta);
 					fieldToAttributes = new Map<String, Object>(fieldAttributes);
 					fieldToAttributes.put('isToField', (Object) 'true');
@@ -59,7 +59,7 @@ public with sharing class CoursesController {
 					}
 					
 					newfieldsInfo.add(fieldToMeta);
-				}
+				}*/
 			}
 			objectInfo.put('fields', (Object) newfieldsInfo);
             return JSON.serialize(objectInfo);

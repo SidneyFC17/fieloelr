@@ -12,7 +12,6 @@
                     'fieldNames': fieldList,
                     'rangedFields': rangedFields
                 });
-                
                 action.setCallback(this, function(response) {
                     try{
                         var toastEvent = $A.get("e.force:showToast");
@@ -28,7 +27,7 @@
                         }else {
                             var errorMsg = response.getError()[0].message;
                             toastEvent.setParams({
-                                "title": "loadInvoices: " + errorMsg,
+                                "title": errorMsg,
                                 "message": " ",
                                 "type": "error"
                             });
@@ -42,7 +41,6 @@
                         console.log(e);
                     }
                 });
-                
                 $A.enqueueAction(action);      
             } else {
                 component.set('v.showFilter', true);
@@ -53,45 +51,13 @@
             console.log(e);
         }
     },
-    updFilterObject: function(component, event, helper) {
-        var filterObject = component.get('v.filterObject');
-        if (!filterObject) {
-            filterObject = {};
-        }
-        if (event.getSource().get("v.value") && event.getSource().get("v.value") != '') {
-            filterObject[event.getSource().get("v.name")] = event.getSource().get("v.value");
-        } else {
-            delete filterObject[event.getSource().get("v.name")];
-        }
-        component.set('v.filterObject', filterObject);
-    },
     updFilterObjectEvt: function(component, event, helper) {
         event.stopPropagation();
-        try {
-            var params = event.getParams();
-            var filterObject = component.get('v.filterObject');
-            if (!filterObject) {
-                filterObject = {};
-            }
-            if (params.fieldName) {
-                if (params.jsType == 'string' || params.isQuoted) {
-                    filterObject[params.fieldName] = String(params.fieldValue);
-                } else if (params.jsType == 'number') {
-                    filterObject[params.fieldName] = Number(params.fieldValue);
-                } else if (params.jsType == 'boolean') {
-                    filterObject[params.fieldName] = Boolean(params.fieldValue);
-                } else {
-                    filterObject[params.fieldName] = params.fieldValue;
-                }
-            }
-            component.set('v.filterObject', filterObject);   
-        } catch(e) {
-            console.log(e);
-        }
     },
     filter: function(component, event, helper) {
         event.stopPropagation();
         var fields = component.get('v.fieldset');
+        helper.getFilterObject(component);
         var filterObject = component.get('v.filterObject');
         var compEvent = component.getEvent("filterRecords");
         var whereClause;

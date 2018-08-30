@@ -15,6 +15,39 @@
         });
         component.set('v.fieldMap', fieldMap);
     },
+    getFilterObject: function(component) {
+        try{
+            var fields = component.find('fielo-filter-input');
+            var addedFields = [];
+            var filterObject = {};
+            var fieldName, fieldValue, jsType, isQuoted;
+            fields.forEach(function(fieldComp) {
+                fieldValue = fieldComp.get('v.fieldValue');
+                fieldName = fieldComp.get('v.fieldMeta').attributes.name;
+                if (addedFields.indexOf(fieldName) != -1) {
+                    fieldName += '-to';
+                }
+                jsType = fieldComp.get('v.fieldMeta').attributes.jsType;
+                isQuoted = fieldComp.get('v.fieldMeta').attributes.isQuoted;
+                if (jsType && fieldValue != null) {
+                    if (jsType == 'string' || isQuoted) {
+                        filterObject[fieldName] = String(fieldComp.get('v.fieldValue'));
+                    } else if (jsType == 'number') {
+                        filterObject[fieldName] = Number(fieldComp.get('v.fieldValue'));
+                    } else if (jsType == 'boolean') {
+                        filterObject[fieldName] = Boolean(fieldComp.get('v.fieldValue'));
+                    } else {
+                        filterObject[fieldName] = fieldComp.get('v.fieldValue');
+                    }
+                }
+                addedFields.push(fieldName);
+            });
+            console.log(JSON.stringify(filterObject, null, 2));
+            component.set('v.filterObject', filterObject);
+        } catch(e) {
+            console.log(e);
+        }
+    },
     assembleWhereClause : function(component, filterObject) {
         try {
             var whereConditions = [];

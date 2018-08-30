@@ -27,14 +27,13 @@
         <div class="fielo-filter-container">
             <lightning:layout verticalAlign="end" horizontalAlign="start">
                 <aura:iteration items="{!v.fieldset}" var="field">
-                    <aura:if isTrue="{!or(field.attributes.isToField == true, field.attributes.isToField == 'true')}">
-                        <lightning:layoutItem>
+                    <aura:if isTrue="{!or(field.attributes.isRanged == true, field.attributes.isRanged == 'true')}">
+                        <lightning:layoutItem class="field-is-ranged">
+                            <c:InputField aura:id="fielo-filter-input" fieldMeta="{!field}"/>
                             <div class="fielo-filter-to-container">
                                 <lightning:formattedText value="{!$Label.c.To}" />
                             </div>
-                        </lightning:layoutItem>
-                        <lightning:layoutItem>
-                            <c:InputField aura:id="fielo-filter-input" fieldMeta="{!field}"/>
+                            <c:InputField aura:id="fielo-filter-input" fieldMeta="{!field}" showLabel="false"/>
                         </lightning:layoutItem>
                         <aura:set attribute="else">
                             <lightning:layoutItem>

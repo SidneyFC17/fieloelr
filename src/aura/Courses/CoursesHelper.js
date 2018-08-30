@@ -204,7 +204,6 @@
                             if (courseWrappers) {
                                 component.set('v.courseWrappers', courseWrappers);
                                 var allowedForDependencyCourses = [];
-                                console.log(JSON.stringify(courseWrappers, null, 2));
                                 var allowedForDependency
                                 courseWrappers.forEach(function(cw) {
                                     allowedForDependency = cw.allowedForDependency;

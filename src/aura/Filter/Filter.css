@@ -53,3 +53,11 @@
 .THIS .filterBtn-container{
     margin-bottom: 10px;
 }
+
+.THIS .field-is-ranged {
+	display: inline-flex;
+}
+
+.THIS .fielo-filter-to-container {
+    padding-top: 40px;
+}

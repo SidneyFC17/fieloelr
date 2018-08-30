@@ -40,7 +40,7 @@
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'date'}">
-        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="Date" label="{!v.fieldMeta.attributes.label}" variant="{!v.showLabel == true ? '' : 'label-hidden'}" onchange="{!c.handleChange}" value="{!v.stringValue}" title="{!v.fieldMeta.attributes.tooltip}"/>
+        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="Date" label="{!v.showLabel == true ? v.fieldMeta.attributes.label : ' '}" onchange="{!c.handleChange}" value="{!v.stringValue}" title="{!v.fieldMeta.attributes.tooltip}"/>
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'text'}">
