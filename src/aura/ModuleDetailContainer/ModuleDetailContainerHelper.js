@@ -17,12 +17,15 @@
                 if (component.isValid() && state === 'SUCCESS') {
                     try {
                         var moduleWrapper = JSON.parse(response.getReturnValue());
+                        var moduleResponses = moduleWrapper.moduleResponses;
                         component.set('v.moduleWrapper', moduleWrapper);
                         component.set('v.module', moduleWrapper.module);
                         component.set('v.course', moduleWrapper.module.FieloELR__Course__r);
                         component.set('v.moduleResponses', moduleWrapper.moduleResponses);
-                        if (moduleWrapper.moduleResponses.FieloELR__CourseStatus__r) {
-                            component.set('v.courseStatus', moduleWrapper.moduleResponses.FieloELR__CourseStatus__r);
+                        if (moduleResponses) {
+                            if (moduleResponses[0]) {
+                            	component.set('v.courseStatus', moduleResponses[0].FieloELR__CourseStatus__r);    
+                            }
                             component.set('v.showHeaderActions', false);
                             component.set('v.showHeaderActions', true);
                             component.set('v.showBodyActions', false);
@@ -34,7 +37,7 @@
                             $A.get('$Label.c.Module') + ' ' +
                             moduleWrapper.module.FieloELR__Order__c + ': <b>' +
                             moduleWrapper.module.Name + '</b>';
-                        component.find('moduleHeaderText').set('v.value', moduleHeaderText);   
+                        component.find('moduleHeaderText').set('v.value', moduleHeaderText);
                         component.set('v.moduleHeaderText', moduleWrapper.module.Name);
                     } catch(e) {
                         console.log(e);

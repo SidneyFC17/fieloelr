@@ -61,6 +61,7 @@ public with sharing class ModuleResponseDetailController {
 			}
 
 			moduleFieldSet.add('FieloELR__KeyDependencies__c');
+			moduleFieldSet.add('FieloELR__Course__c');
 
 			String modulesQuery = 'SELECT ' +
 				String.join(new List<String>(moduleFieldSet), ',') +

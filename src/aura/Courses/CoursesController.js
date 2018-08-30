@@ -38,7 +38,9 @@
             console.log(JSON.stringify(event.getParams(), null, 2));
             component.set('v.dynamicFilterString', dynamicFilterString);
             component.set('v.sortByClause', sortByClause);
-            helper.loadCourses(component, event, helper, 0);   
+            helper.loadCourses(component, event, helper, 0);
+            component.set('v.paging', false);
+            component.set('v.paging', true);
         } catch(e) {
             console.log(e);
         }
@@ -49,10 +51,13 @@
             var viewName = event.getParam('viewName');
             component.set('v.showFilter', false);
             component.set('v.activeViewName', viewName);
-            helper.updateButtons(component);
+            component.set('v.dynamicFilterString', null);
+            component.set('v.sortByClause', null);
             $A.enqueueAction(component.get('c.getFieldSet'));
             $A.enqueueAction(component.get('c.loadCourses'));
             component.set('v.showFilter', true);
+            component.set('v.paging', false);
+            component.set('v.paging', true);
         } catch(e) {
             console.log(e);
         }

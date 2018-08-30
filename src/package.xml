@@ -69,5 +69,12 @@
 		<members>*</members>
 		<name>ReportType</name>
 	</types>
+	<types>
+		<members>Fielo_Templatee/Module_Started</members>
+		<members>Fielo_Templatee/Course_Started</members>
+		<members>Fielo_Templatee/Module_Accomplished</members>
+		<members>Fielo_Templatee/Course_Accomplished</members>
+        <name>EmailTemplate</name>
+    </types>
 	<version>40.0</version>
 </Package>
