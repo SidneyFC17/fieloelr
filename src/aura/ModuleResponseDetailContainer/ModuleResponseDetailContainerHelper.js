@@ -22,16 +22,17 @@
                     var state = response.getState();
                     if (component.isValid() && state === 'SUCCESS') {
                         try {
-                            var moduleWrapper = JSON.parse(response.getReturnValue());
+                            var moduleWrapper = JSON.parse(response.getReturnValue());;
+                            var moduleResponses = moduleWrapper.moduleResponses;
                             component.set('v.moduleWrapper', moduleWrapper);
                             component.set('v.module', moduleWrapper.module);
                             component.set('v.course', moduleWrapper.module.FieloELR__Course__r);
                             if (moduleWrapper.module.FieloELR__Course__r) {
                                 this.getCourseStructure(component);
                             }
-                            component.set('v.moduleResponses', moduleWrapper.moduleResponses);
-                            if (moduleWrapper.moduleResponses[0]) {
-                                component.set('v.courseStatus', moduleWrapper.moduleResponses[0].FieloELR__CourseStatus__r);    
+                            component.set('v.moduleResponses', moduleResponses);
+                            if (moduleResponses[0]) {
+                                component.set('v.courseStatus', moduleResponses[0].FieloELR__CourseStatus__r);
                             }
                             this.getLastModuleResponse(component);
                             this.showQuiz(component);
@@ -250,13 +251,15 @@
     getLastModuleResponse : function(component) {
         try{
             var moduleResponses = component.get('v.moduleResponses');
+            console.log(JSON.stringify(moduleResponses, null, 2));
             var moduleWrapper = component.get('v.moduleWrapper');
             var passed = moduleWrapper.isApproved;
+            console.log('passed: ' + passed);
+            console.log(JSON.stringify(moduleResponses, null, 2));
             if (moduleResponses) {
                 if (passed) {
                     moduleResponses = moduleResponses.filter(function(mr) {
-                        return mr.FieloELR__IsApproved__c &&
-                            mr.FieloELR__NumberofApprove__c == 1;
+                        return mr.FieloELR__NumberofApprove__c == 1;
                     });
                 } else {
                     moduleResponses = moduleResponses.filter(function(mr) {
@@ -265,6 +268,7 @@
                     });
                 }
             }
+            console.log(JSON.stringify(moduleResponses, null, 2));
             if (moduleResponses) {
                 if (moduleResponses.length == 1) {
                     component.set('v.moduleResponse', moduleResponses[0]);

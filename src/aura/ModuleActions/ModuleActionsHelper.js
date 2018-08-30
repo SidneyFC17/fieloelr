@@ -21,6 +21,7 @@
                 true;    
             }
             if (moduleWrapper) {
+                console.log(JSON.stringify(moduleWrapper, null, 2));
                 attemptsAllowed = moduleWrapper.module.FieloELR__AttemptsAllowed__c ?
                     moduleWrapper.module.FieloELR__AttemptsAllowed__c :
                 moduleWrapper.numberOfAttempts + 1; // if FieloELR__AttemptsAllowed__c is null, then its unlimited
