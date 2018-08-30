@@ -36,7 +36,7 @@
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'number'}">
-        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="Number" label="{!v.fieldMeta.attributes.label}" variant="{!v.showLabel == true ? '' : 'label-hidden'}" onchange="{!c.handleChange}" onblur="{!c.formatField}" value="{!v.decimalValue}" step="{!v.fieldMeta.attributes.step}" formatter="{!v.fieldMeta.attributes.formatter}" title="{!v.fieldMeta.attributes.tooltip}" min="{!v.fieldMeta.attributes.min}"/>
+        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="Number" label="{!v.showLabel == true ? v.fieldMeta.attributes.label : ' '}" onchange="{!c.handleChange}" onblur="{!c.formatField}" value="{!v.decimalValue}" step="{!v.fieldMeta.attributes.step}" formatter="{!v.fieldMeta.attributes.formatter}" title="{!v.fieldMeta.attributes.tooltip}" min="{!v.fieldMeta.attributes.min}"/>
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'date'}">
@@ -44,7 +44,7 @@
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'text'}">
-        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" label="{!v.fieldMeta.attributes.label}" variant="{!v.showLabel == true ? '' : 'label-hidden'}" onchange="{!c.handleChange}" value="{!v.stringValue}" title="{!v.fieldMeta.attributes.tooltip}"/>
+        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" label="{!v.showLabel == true ? v.fieldMeta.attributes.label : ' '}" onchange="{!c.handleChange}" value="{!v.stringValue}" title="{!v.fieldMeta.attributes.tooltip}"/>
     </aura:if>
     
 	<aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'reference'}">
@@ -52,18 +52,18 @@
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'time'}">
-        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="time" label="{!v.fieldMeta.attributes.label}" variant="{!v.showLabel == true ? '' : 'label-hidden'}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
+        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="time" label="{!v.showLabel == true ? v.fieldMeta.attributes.label : ' '}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'url'}">
-        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="url" label="{!v.fieldMeta.attributes.label}" variant="{!v.showLabel == true ? '' : 'label-hidden'}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
+        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="url" label="{!v.showLabel == true ? v.fieldMeta.attributes.label : ' '}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'email'}">
-        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="email" label="{!v.fieldMeta.attributes.label}" variant="{!v.showLabel == true ? '' : 'label-hidden'}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
+        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="email" label="{!v.showLabel == true ? v.fieldMeta.attributes.label : ' '}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
     </aura:if>
     
     <aura:if isTrue="{!v.fieldMeta.attributes.inputType == 'datetime'}">
-        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="datetime" label="{!v.fieldMeta.attributes.label}" variant="{!v.showLabel == true ? '' : 'label-hidden'}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
+        <lightning:input aura:id="field-input" name="{!v.fieldMeta.attributes.name}" type="datetime" label="{!v.showLabel == true ? v.fieldMeta.attributes.label : ' '}" onchange="{!c.handleChange}" title="{!v.fieldMeta.attributes.tooltip}"/>
     </aura:if>
 </aura:component>
