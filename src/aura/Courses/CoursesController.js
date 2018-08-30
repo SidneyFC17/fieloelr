@@ -55,6 +55,8 @@
             $A.enqueueAction(component.get('c.getFieldSet'));
             $A.enqueueAction(component.get('c.loadCourses'));
             component.set('v.showFilter', true);
+            component.set('v.paging', false);
+            component.set('v.paging', true);
         } catch(e) {
             console.log(e);
         }
