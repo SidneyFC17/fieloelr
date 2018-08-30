@@ -10,6 +10,7 @@ public with sharing class ModuleDetailController {
 			}
 
 			moduleFieldSet.add('FieloELR__KeyDependencies__c');
+			moduleFieldSet.add('FieloELR__Course__c');
 
 			String modulesQuery = 'SELECT ' +
 				String.join(new List<String>(moduleFieldSet), ',') +
@@ -37,7 +38,13 @@ public with sharing class ModuleDetailController {
 
 			List<ModuleDependency__c> dependencies = (List<ModuleDependency__c>) Database.query(moduleDependencyQuery);
 
-			CourseService.ModuleWrapper mw = new CourseService.ModuleWrapper(modules[0], moduleResponses, dependencies);
+			CourseService.ModuleWrapper mw;
+			
+			if (!moduleResponses.isEmpty()) {
+				mw = new CourseService.ModuleWrapper(modules[0], moduleResponses, dependencies);
+			} else {
+				mw = new CourseService.ModuleWrapper(modules[0], dependencies, member.Id);
+			}
 
 			return JSON.serialize(mw);
 		} catch(DMLException e) {
