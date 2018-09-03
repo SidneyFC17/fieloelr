@@ -71,7 +71,12 @@ public with sharing class CourseModulesController {
 			String queryModuleResponse = 'SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',');
 			queryModuleResponse += ' FROM FieloELR__ModuleResponse__c WHERE FieloELR__CourseStatus__r.FieloELR__ExternalKey__c = :key';
 
-			return JSON.serialize(Database.query(queryModuleResponse));
+			String coursesPoints = CourseService.getCoursePoints(new Set<Id>{courseId}, member.Id);
+
+			return JSON.serialize(new Map<String, Object>{
+				'moduleResponses' => (Object) Database.query(queryModuleResponse),
+				'coursePoints' => JSON.deserializeUntyped(coursesPoints)
+			});
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){

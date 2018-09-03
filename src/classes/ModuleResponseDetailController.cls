@@ -127,10 +127,13 @@ public with sharing class ModuleResponseDetailController {
 											'LastModifiedDate DESC' ,
 											'');
 
+			String coursesPoints = CourseService.getCoursePoints(new Set<Id>{courseId}, member.Id);
+
 			return JSON.serialize(new Map<String,Object>{
 				'courses' => (Object) courses,
 				'wrappers' => (Object) courseWrappers,
-				'courseStatus' => (Object) courseStatus
+				'courseStatus' => (Object) courseStatus,
+				'coursePoints' => JSON.deserializeUntyped(coursesPoints)
 			});
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));

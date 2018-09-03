@@ -88,9 +88,12 @@ public with sharing class ModuleDetailController {
 											'LastModifiedDate DESC' ,
 											'');
 
+			String coursesPoints = CourseService.getCoursePoints(new Set<Id>{courseId}, member.Id);
+
 			return JSON.serialize(new Map<String, Object>{
 				'courseStatus' => courseStatus,
-				'courseWrapper' => courseWrappers
+				'courseWrapper' => courseWrappers,
+				'coursePoints' => JSON.deserializeUntyped(coursesPoints)
 			});
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
