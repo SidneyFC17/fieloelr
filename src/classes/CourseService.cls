@@ -27,7 +27,12 @@ global class CourseService {
 		}
 
 		Courses.validateAdminFields = false;
-		uow.commitWork();
+
+			if(Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
+            	uow.commitWork();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 	}
 
 	public static void inactivateCourses(Set<Id> courseIds){
@@ -46,7 +51,12 @@ global class CourseService {
 		}
 
 		Courses.validateAdminFields = false;
-		uow.commitWork();
+
+		if(Schema.sObjectType.Course__c.isUpdateable()){
+            	uow.commitWork();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 	}
 
 	public static void createFromModel( Course__c record, Id modelId){
@@ -134,8 +144,13 @@ global class CourseService {
 				query += ' OFFSET ' + offset;
 			}
 		}
-
-		return Database.query(query);
+		
+		if(Schema.sObjectType.Course__c.isAccessible()){	
+            return Database.query(query);
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+		return null;
 	}
 
 	global static List<Course__c> getCourses(Set<String> fieldsCourse, 
@@ -225,7 +240,17 @@ global class CourseService {
 				queryCourses += ' OFFSET ' + offset;
 			}
 		}
-		return Database.query(queryCourses);
+
+		system.debug(queryCourses);
+		List<Course__c> returnQueryCourses = new List<Course__c>();
+
+		 if(Schema.sObjectType.Course__c.isAccessible()){	
+            returnQueryCourses = Database.query(queryCourses);
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+		return returnQueryCourses;
 	}
 
 	//active courses
@@ -256,7 +281,13 @@ global class CourseService {
 			}
 		}
 
-		return Database.query(queryCourseStatus);
+		 if(Schema.sObjectType.FieloPLT__Settings__c.isAccessible()){	
+             return Database.query(queryCourseStatus);
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+		return null;
 	}
 
 	global class CourseWrapper{
@@ -284,7 +315,7 @@ global class CourseService {
 		global List<ModuleResponse__c> moduleResponses {get; private set;}
 		global List<ModuleDependency__c> dependencies {get; private set;}
 
-		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses, List<ModuleDependency__c> dependencies){
+		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses){
 			this(module);
 			this.moduleResponses = moduleResponses;
 			this.numberOfAttempts = this.moduleResponses.size();
@@ -296,39 +327,6 @@ global class CourseService {
 					}
 				}
 			}
-			if (dependencies!=null) {
-				this.dependencies = dependencies;
-			}
-			if (this.dependencies!=null) {
-				if (!this.dependencies.isEmpty()) {
-					Set<String> mdStringKeys;
-					if (!moduleResponses.isEmpty()) {
-						mdStringKeys = getMDStringKeys(module, moduleResponses[0].Member__c);
-						this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
-					} else {
-						this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
-					}
-				}
-			}
-		}
-
-		public ModuleWrapper(Module__c module, List<ModuleDependency__c> dependencies, Id memberId){
-			this.module = module;
-			if (dependencies!=null) {
-				this.dependencies = dependencies;
-			}
-			if (this.dependencies!=null) {
-				if (!this.dependencies.isEmpty()) {
-					Set<String> mdStringKeys;
-					if (memberId != null) {
-						mdStringKeys = getMDStringKeys(module, memberId);
-						this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
-					} else {
-						this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
-					}
-				}
-			}
-			this.isApproved = false;
 		}
 
 		public ModuleWrapper(Module__c module){
@@ -391,7 +389,7 @@ global class CourseService {
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, status, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
-		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__Member__c','FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__NumberofApprove__c','FieloELR__Module__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__Module__c'};
 		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}
@@ -417,13 +415,21 @@ global class CourseService {
 				Set<String> fieldsModuleDependencyClone = new Set<String>(fieldsModuleDependency);
 				fieldsModuleDependencyClone.add('FieloELR__Module__c');
 				String queryModuleDependencies = 'SELECT ' + String.join(new List<String>(fieldsModuleDependencyClone), ',') + ' FROM ModuleDependency__c WHERE Module__c in : modules';
-				for(ModuleDependency__c md : Database.query(queryModuleDependencies)){
+				
+
+				if(Schema.sObjectType.ModuleDependency__c.isAccessible()){	
+
+           			for(ModuleDependency__c md : Database.query(queryModuleDependencies)){
 					if(dependenciesByModule.containsKey(md.Module__c)){
 						dependenciesByModule.get(md.Module__c).add(md);
 					}else{
 						dependenciesByModule.put(md.Module__c, new List<ModuleDependency__c>{md});
 					}
 				}
+
+         		 }else{
+           			 throw new FieloException(Label.CannotAccessRecords);
+          		}
 			}
 
 			if(!filterByDependencies){
@@ -451,29 +457,21 @@ global class CourseService {
 						if (moduleResponseMap.containsKey(mr.FieloELR__Module__c)) {
 							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
 						} else {
-							moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c> {mr} );
+							moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c>());
+							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
 						}
 					}
 				}
 			}
+
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
-					ModuleWrapper mw;
-					if (cs != null) {
-						mw = new ModuleWrapper(
-							module,
-							moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>(),
-							dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>()
-						);
-					} else {
-						mw = new ModuleWrapper(
-							module,
-							dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>(),
-							memberId
-						);
-					}
+					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>()) : new ModuleWrapper(module);
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
+					}
+					if(dependenciesByModule != null){
+						mw.dependencies = dependenciesByModule.get(module.Id);
 					}
 					cw.modules.add(mw);
 				}
@@ -490,6 +488,9 @@ global class CourseService {
 			cdQuery += ' AND Course__c in : courses';
 		}
 		Map<Id,Set<String>> cdKeysByCourse = new Map<Id,Set<String>>();
+
+		if(Schema.sObjectType.CourseDependency__c.isAccessible()){	
+
 		for(CourseDependency__c cd : Database.query(cdQuery)){
 			if(cdKeysByCourse.containsKey(cd.Course__c)){
 				cdKeysByCourse.get(cd.Course__c).add(String.valueOf(cd.Predecessor__c));
@@ -497,6 +498,10 @@ global class CourseService {
 				cdKeysByCourse.put(cd.Course__c, new Set<String>{String.valueOf(cd.Predecessor__c)});
 			}
 		}
+
+		}else{
+           			 throw new FieloException(Label.CannotAccessRecords);
+          		}
 
 		Set<String> cdStringKeys = new Set<String>();
 		for(Id courseId : cdKeysByCourse.keySet()){
@@ -507,31 +512,12 @@ global class CourseService {
 		return cdStringKeys;
 	}
 
-	private static Set<String> getMDStringKeys(Module__c module, Id memberId){
-		Id courseId = module.Course__c;
-		Id module_id = module.Id;
-		String mdQuery = 'SELECT Module__c, Predecessor__c FROM ModuleDependency__c WHERE Predecessor__c in (SELECT Module__c FROM ModuleResponse__c WHERE Member__c =: memberId AND NumberOfApprove__c = 1 AND Module__r.Course__c =: courseId) AND Module__c = :module_id';
-		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
-		for(ModuleDependency__c md : Database.query(mdQuery)){
-			if(mdKeysByCourse.containsKey(md.Module__c)){
-				mdKeysByCourse.get(md.Module__c).add(String.valueOf(md.Predecessor__c));
-			}else{
-				mdKeysByCourse.put(md.Module__c, new Set<String>{String.valueOf(md.Predecessor__c)});
-			}
-		}
-
-		Set<String> mdStringKeys = new Set<String>();
-		for(Id moduleId : mdKeysByCourse.keySet()){
-			List<String> listKeys = new List<String>(mdKeysByCourse.get(moduleId));
-			listKeys.sort();
-			mdStringKeys.add(String.join(listKeys,','));
-		}
-		return mdStringKeys;
-	}
-
 	private static Set<String> getMDStringKeys(List<Module__c> modules, Id memberId){
 		String mdQuery = 'SELECT Module__c, Predecessor__c FROM ModuleDependency__c WHERE Predecessor__c in (SELECT Module__c FROM ModuleResponse__c WHERE Member__c =: memberId AND IsApproved__c = true AND Module__c in : modules) AND Module__c in : modules';
 		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
+
+		if(Schema.sObjectType.ModuleDependency__c.isAccessible()){	
+
 		for(ModuleDependency__c md : Database.query(mdQuery)){
 			if(mdKeysByCourse.containsKey(md.Module__c)){
 				mdKeysByCourse.get(md.Module__c).add(String.valueOf(md.Predecessor__c));
@@ -540,6 +526,10 @@ global class CourseService {
 			}
 		}
 
+		}else{
+           			 throw new FieloException(Label.CannotAccessRecords);
+          		}
+
 		Set<String> mdStringKeys = new Set<String>();
 		for(Id moduleId : mdKeysByCourse.keySet()){
 			List<String> listKeys = new List<String>(mdKeysByCourse.get(moduleId));
@@ -547,125 +537,6 @@ global class CourseService {
 			mdStringKeys.add(String.join(listKeys,','));
 		}
 		return mdStringKeys;
-	}
-
-	public static String getCoursePoints(Set<Id> courseIds, Id memberId) {
-		String courseStatusQuery = 'SELECT Id, FieloELR__Course__r.FieloELR__Program__c FROM FieloELR__CourseStatus__c WHERE Member__c = :memberId AND Course__c in :courseIds';
-
-		List<FieloELR__CourseStatus__c> courseStatus = Database.Query(courseStatusQuery);
-
-		Set<Id> programIds = new Set<Id>();
-		Set<Id> courseStatusIds = new Set<Id>();
-
-		for(FieloELR__CourseStatus__c cs: courseStatus) {
-			programIds.add(cs.FieloELR__Course__r.FieloELR__Program__c);
-			courseStatusIds.add(cs.Id);
-		}
-
-		String programPointTypesQuery = 'SELECT Id, FieloPLT__Program__c, FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c FROM FieloPLT__ProgramPointType__c WHERE FieloPLT__Program__c in :programIds';
-
-		List<FieloPLT__ProgramPointType__c> ppts = Database.query(programPointTypesQuery);
-
-		Set<String> transactionPointFields = new Set<String>();
-		Set<String> trackerPointFields = new Set<String>();
-		Map<String, Map<String,Set<String>>> programPointTypesMap = new Map<String, Map<String,Set<String>>>();
-
-		for(FieloPLT__ProgramPointType__c ppt: ppts) {
-			if (!programPointTypesMap.containsKey(ppt.FieloPLT__Program__c)) {
-				programPointTypesMap.put(ppt.FieloPLT__Program__c, new Map<String, Set<String>>{
-					'transactionPointFields' => new Set<String>{ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c},
-					'trackerPointFields' => new Set<String>{}
-				});
-			} else {
-				programPointTypesMap.get(ppt.FieloPLT__Program__c).get('transactionPointFields').add(ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
-				programPointTypesMap.get(ppt.FieloPLT__Program__c).get('trackerPointFields').add('FieloPLT__Transaction__r.' + ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
-			}
-			transactionPointFields.add(ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
-			trackerPointFields.add('FieloPLT__Transaction__r.' + ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
-		}
-
-		courseStatusQuery = 'SELECT Id, FieloELR__Course__c, FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r) FROM FieloELR__CourseStatus__c WHERE Id in :courseStatusIds';
-
-		courseStatus = Database.query(courseStatusQuery);
-
-		String moduleResponseQuery = 'SELECT Id, FieloELR__Module__c, FieloELR__CourseStatus__c, FieloELR__CourseStatus__r.FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r) FROM FieloELR__ModuleResponse__c WHERE FieloELR__CourseStatus__c in :courseStatusIds';
-
-		List<ModuleResponse__c> moduleResponses = Database.query(moduleResponseQuery);
-
-		Map<String, Map<String, Object>> coursePointsMap = new Map<String, Map<String, Object>>();
-		Map<String, Map<String, Decimal>> moduleResponsePointsMap = new Map<String, Map<String, Decimal>>();
-
-		Map<String, Decimal> pointMap;
-		Map<String, Decimal> mrPointMap;
-
-		for (FieloELR__CourseStatus__c cs: courseStatus) {
-			pointMap = new Map<String, Decimal>();
-
-			// Direct Points
-			for(FieloPLT__Transaction__c t: cs.FieloELR__Transactions__r) {
-				for(String fieldName: transactionPointFields) {
-					if (!pointMap.containsKey(fieldName)) {
-						pointMap.put(fieldName, (Decimal)t.get(fieldName));
-					} else {
-						pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)t.get(fieldName));
-					}
-				}
-			}
-			for(FieloPLT__Tracker__c tracker: cs.FieloELR__Trackers__r) {
-				for(String fieldName: transactionPointFields) {
-					if (!pointMap.containsKey(fieldName)) {
-						pointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-					} else {
-						pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-					}
-				}
-			}
-
-			for(FieloELR__ModuleResponse__c mr: moduleResponses) {
-				if (moduleResponsePointsMap.containsKey(mr.FieloELR__Module__c)) {
-					mrPointMap = moduleResponsePointsMap.get(mr.FieloELR__Module__c);
-				} else {
-					mrPointMap = new Map<String, Decimal>();
-				}
-
-				for(FieloPLT__Transaction__c t: mr.FieloELR__Transactions__r) {
-					for(String fieldName: transactionPointFields) {
-						if (!mrPointMap.containsKey(fieldName)) {
-							mrPointMap.put(fieldName, (Decimal)t.get(fieldName));
-						} else {
-							mrPointMap.put(fieldName, (Decimal)mrPointMap.get(fieldName) + (Decimal)t.get(fieldName));
-						}
-						if (!pointMap.containsKey(fieldName)) {
-							pointMap.put(fieldName, (Decimal) t.get(fieldName));
-						} else {
-							pointMap.put(fieldName, (Decimal) pointMap.get(fieldName) + (Decimal) t.get(fieldName));
-						}
-					}
-				}
-				for(FieloPLT__Tracker__c tracker: mr.FieloELR__Trackers__r) {
-					for(String fieldName: transactionPointFields) {
-						if (!mrPointMap.containsKey(fieldName)) {
-							mrPointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-						} else {
-							mrPointMap.put(fieldName, (Decimal)mrPointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-						}
-						// accumulate at course
-						if (!pointMap.containsKey(fieldName)) {
-							pointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-						} else {
-							pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-						}
-					}
-				}
-				moduleResponsePointsMap.put(mr.FieloELR__Module__c, mrPointMap );
-			}
-			//UpdateMap
-			coursePointsMap.put(cs.FieloELR__Course__c, new Map<String, Object>{
-				'points' => (Object) pointMap,
-				'modulesResponsePoints' => (Object) moduleResponsePointsMap
-			});
-		}
-		return JSON.serialize(coursePointsMap);
 	}
 
 	public static void setCourseStatus(Set<Id> courseIds, String newStatus) {
@@ -677,7 +548,11 @@ global class CourseService {
 		}
 		SavePoint sp = Database.setSavePoint();
 		try{
-			uow.commitWork();
+			if(Schema.sObjectType.Course__c.isUpdateable()){
+            	uow.commitWork();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;
@@ -686,43 +561,83 @@ global class CourseService {
 	
 	public static void testTemporalTriggers(){
 		try{
-			insert new AnswerOption__c();
+			if(Schema.sObjectType.AnswerOption__c.isUpdateable()){
+            	insert new AnswerOption__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Answer__c();
+			if(Schema.sObjectType.Answer__c.isUpdateable()){
+            	insert new Answer__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new CourseDependency__c();
+			if(Schema.sObjectType.CourseDependency__c.isUpdateable()){
+            	insert new CourseDependency__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Course__c();
+			if(Schema.sObjectType.Course__c.isUpdateable()){
+            	insert new Course__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new CourseStatus__c();
+			if(Schema.sObjectType.CourseStatus__c.isUpdateable()){
+            	insert new CourseStatus__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new ModuleDependency__c();
+			if(Schema.sObjectType.ModuleDependency__c.isUpdateable()){
+            	insert new ModuleDependency__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new ModuleResponse__c();
+			if(Schema.sObjectType.ModuleResponse__c.isUpdateable()){
+            	insert new ModuleResponse__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Module__c();
+			if(Schema.sObjectType.Module__c.isUpdateable()){
+            	insert new Module__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new Question__c();
+			if(Schema.sObjectType.Question__c.isUpdateable()){
+            	insert new Question__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 
 		try{
-			insert new QuestionResponse__c();
+			if(Schema.sObjectType.QuestionResponse__c.isUpdateable()){
+            	insert new QuestionResponse__c();
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
 		}catch(Exception e){}
 	}
 
