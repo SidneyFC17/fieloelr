@@ -1,25 +1,26 @@
 <aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
     <aura:attribute type="sObject" name="moduleContent" />
     
-    <aura:attribute name="configDefault" type="String" access="global" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"JoinCourse","type":"subcomponent","subcomponent":"FieloELR:JoinCourse","label":{"type":"text","value":"Join Course"},"showLabel":false}],"quantity":6,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"TakeModule","type":"subcomponent","subcomponent":"FieloELR:TakeModule","label":{"type":"text","value":""},"showLabel":false}],"moduleResponse":[{"apiName":"FieloELR__NumberOfAttempt__c","label":{"type":"default"},"type":"output","showLabel":true}]}}'/>
+    <aura:attribute name="configDefault" type="String" default='{"fieldset":[{"apiName":"Name","type":"subcomponent","subcomponent":"FieloELR:ShowRecord","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"JoinCourse","type":"subcomponent","subcomponent":"FieloELR:JoinCourse","label":{"type":"text","value":"Join Course"},"showLabel":false}],"quantity":6,"Course":{"fieldset":[{"apiName":"Name","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__Description__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"FieloELR__ApprovalGrade__c","type":"output","label":{"type":"default"},"showLabel":true},{"apiName":"TakeModule","type":"subcomponent","subcomponent":"FieloELR:TakeModule","label":{"type":"text","value":""},"showLabel":false}],"moduleResponse":[{"apiName":"FieloELR__NumberOfAttempt__c","label":{"type":"default"},"type":"output","showLabel":true}]}}'/>
+    <aura:attribute type="String" name="layout"/>
+    <aura:attribute type="Integer" name="columns"/>
     
     <!-- DESIGN ATTRIBUTES -->
     <aura:attribute type="String" name="titleValue" access="global"/>
-    <aura:attribute type="String" name="layout" access="global" />
-    <aura:attribute type="Integer" name="columns" access="global" />
-    
     <aura:attribute type="String" name="courseFilterFields" access="global" default="FieloELR__Status__c,FieloELR__StartDate__c,FieloELR__EndDate__c"/>
     <aura:attribute type="String" name="courseRangedFilterFields" access="global" default="FieloELR__StartDate__c,FieloELR__EndDate__c"/>
-    
     <aura:attribute type="String" name="detailFields" access="global" default="FieloELR__Course__c.FieloELR__Modules__r,FieloELR__CourseStatus__c.FieloELR__Transactions__r,FieloELR__CourseStatus__c.FieloELR__Trackers__r,FieloELR__CourseStatus__c.FieloELR__Progress__c"/>
-    <aura:attribute type="String" name="courseDetailFields"/>
-    <aura:attribute type="String" name="courseStatusDetailFields"/>
-    <aura:attribute type="String" name="courseLayout" access="global" />
     <aura:attribute type="String" name="sortByFields" access="global" default="FieloELR__StartDate__c,FieloELR__EndDate__c"/>
-    <aura:attribute type="String" name="courseColumns" access="global" />
-    <aura:attribute type="String" name="fields" default="Name,FieloELR__Description__c"/>
+    <aura:attribute type="String" name="pointFields" access="global" default="FieloPLT__Points__c"/>
+    <aura:attribute type="Integer" name="daysToBeConsideredNew" default="10" access="global"/>
+    <aura:attribute type="Integer" name="daysToBeConsideredWarning" default="20" access="global"/>
     <!-- DESIGN ATTRIBUTES -->
     
+    <aura:attribute type="String" name="fields" default="Name,FieloELR__Description__c"/>
+    <aura:attribute type="String" name="courseColumns"/>
+    <aura:attribute type="String" name="courseDetailFields"/>
+    <aura:attribute type="String" name="courseStatusDetailFields"/>
+    <aura:attribute type="String" name="courseLayout" />
     <aura:attribute type="String" name="sortByOptions"/>
     <aura:attribute type="Boolean" name="showCoursesList" default="false" />
     <aura:attribute type="Boolean" name="showCourse" default="false" />
@@ -38,10 +39,11 @@
     <aura:attribute type="Object" name="courseFieldsMeta" />
     <aura:attribute type="Object" name="courseStatusFieldsMeta" />
     <aura:attribute type="Object" name="compConfig" />
+    <aura:attribute type="Object" name="coursePoints" />
     
     <!-- MODULE RESPONSE -->
     <aura:attribute type="sObject[]" name="moduleResponseFieldset" />
-    <aura:attribute type="String" name="moduleResponseFields" access="global" />
+    <aura:attribute type="String" name="moduleResponseFields"/>
     <!-- MODULE RESPONSE -->
     
     <aura:attribute type="String" name="title" default="" />    
@@ -50,8 +52,6 @@
     <aura:attribute type="String" name="sortByClause" default="" />
     <aura:attribute type="String" name="courseTitle" default="" />
     <aura:attribute type="String" name="activeViewName" default="myCourses" />
-    <aura:attribute type="Integer" name="daysToBeConsideredNew" default="10" />
-    <aura:attribute type="Integer" name="daysToBeConsideredWarning" default="20" />
     
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     

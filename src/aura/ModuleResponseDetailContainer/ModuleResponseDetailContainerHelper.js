@@ -188,6 +188,11 @@
                         var courseStructure = JSON.parse(response.getReturnValue());
                         component.set('v.courseStructure', courseStructure);
                         component.set('v.courseWrapper', courseStructure.wrappers[0]);
+                        if (courseStructure.coursePoints) {
+                        	component.set('v.coursePoints', courseStructure.coursePoints);
+                            component.set('v.showDetails', false);
+                            component.set('v.showDetails', true);
+                        }
                         this.getNextModule(component);
                     } catch(e) {
                         console.log(e);
@@ -251,11 +256,8 @@
     getLastModuleResponse : function(component) {
         try{
             var moduleResponses = component.get('v.moduleResponses');
-            console.log(JSON.stringify(moduleResponses, null, 2));
             var moduleWrapper = component.get('v.moduleWrapper');
             var passed = moduleWrapper.isApproved;
-            console.log('passed: ' + passed);
-            console.log(JSON.stringify(moduleResponses, null, 2));
             if (moduleResponses) {
                 if (passed) {
                     moduleResponses = moduleResponses.filter(function(mr) {
@@ -268,7 +270,6 @@
                     });
                 }
             }
-            console.log(JSON.stringify(moduleResponses, null, 2));
             if (moduleResponses) {
                 if (moduleResponses.length == 1) {
                     component.set('v.moduleResponse', moduleResponses[0]);

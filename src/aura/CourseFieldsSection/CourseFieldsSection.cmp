@@ -7,6 +7,7 @@
     <aura:attribute type="String" name="activeViewName"/>
     <aura:attribute type="String" name="config"/>
     <aura:attribute type="String" name="className"/>
+    <aura:attribute type="Integer" name="coursePoint"/>
     <aura:attribute type="Object[]" name="fields"/>
     <aura:attribute type="Object" name="fieldMap"/>
     

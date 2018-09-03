@@ -13,6 +13,8 @@
     },
     setFieldValues: function(component) {
         try{
+            this.getModulePoints(component);
+            var modulePoints = component.get('v.modulePoints');
             var fieldsMetaMap = component.get('v.fieldsMetaMap');
             var MRfieldsMeta = component.get('v.MRfieldsMeta');
             var moduleWrapper = component.get('v.moduleWrapper');
@@ -176,24 +178,16 @@
     getPointsField: function(component) {
         try{
             var pointsField = {};
-            var moduleResponse = component.get('v.moduleResponse');
+            var modulePoints = component.get('v.modulePoints');
             var points = 0;
             pointsField.label = $A.get('$Label.c.Points');
             
-            if (moduleResponse) {
-                if (moduleResponse['FieloELR__Transactions__r']) {
-                    moduleResponse['FieloELR__Transactions__r'].records.forEach(function(transaction) {
-                        points += transaction.FieloPLT__Points__c;
-                    });
-                }
-                
-                if (moduleResponse['FieloELR__Trackers__r']) {
-                    moduleResponse['FieloELR__Trackers__r'].records.forEach(function(tracker) {
-                        points += tracker.FieloPLT__Transaction__r.FieloPLT__Points__c;
-                    });
-                }
+            if (modulePoints) {
+            	pointsField.value = modulePoints;
+            } else {
+                pointsField.value = 0;
             }
-            pointsField.value = points;
+            
             return pointsField;    
         } catch(e) {
             console.log(e);
@@ -300,6 +294,25 @@
             }
             
             return attemptsField;    
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    getModulePoints: function(component) {
+        try{
+            var coursePoints = component.get('v.coursePoints');
+            var module = component.get('v.module');
+            var pointFields = component.get('v.pointFields');
+            pointFields = pointFields ? pointFields : 'FieloPLT__Points__c';
+            if (coursePoints) {
+                if (coursePoints[module.FieloELR__Course__c]) {
+                    if (coursePoints[module.FieloELR__Course__c].modulePoints) {
+                        if (coursePoints[module.FieloELR__Course__c].modulePoints[module.Id]){
+                            component.set('v.modulePoints', coursePoints[module.FieloELR__Course__c].modulePoints[module.Id][pointFields]);
+                        }
+                    }
+                }    
+            }
         } catch(e) {
             console.log(e);
         }

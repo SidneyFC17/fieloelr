@@ -201,6 +201,11 @@
                         var result = JSON.parse(response.getReturnValue());
                         var courseStatus = result.courseStatus;
                         var courseWrapper = result.courseWrapper;
+                        if (result.coursePoints) {
+                            component.set('v.coursePoints', result.coursePoints);
+                            component.set('v.showDetails', false);
+                            component.set('v.showDetails', true);
+                        }
                         component.set('v.courseWrapper', courseWrapper[0]);
                         component.set('v.courseStatus', courseStatus[0]);
                         component.set('v.showHeaderActions', false);

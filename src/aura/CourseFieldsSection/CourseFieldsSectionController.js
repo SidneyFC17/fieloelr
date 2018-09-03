@@ -52,42 +52,10 @@
                     }
                     if (objectName.toLowerCase() == 'fieloelr__coursestatus__c') {
                         if (field == 'FieloELR__Transactions__r' || field == 'FieloELR__Trackers__r') {
-                            pointField = course.filter(function(f) {
-                                return f.name == 'points';
-                            });
-                            if (pointField.length > 0) {
-                                pointField = pointField[0]
-                            } else {
-                                pointField = null;
-                            }
-                            if (!pointField) {
-                                pointField = {};
-                                pointField.label = $A.get('$Label.c.PointsEarned');
-                                pointField.name = 'points';
-                            }
-                            if (!pointsEarned) {
-                                pointsEarned = 0;
-                            }
-                            if (courseStatus) {
-                                if (courseStatus[field]) {
-                                    if (courseStatus[field].records) {
-                                        courseStatus[field].records.forEach(function(row) {
-                                            if (field == 'FieloELR__Transactions__r') {
-                                                if (row.FieloPLT__Points__c) {
-                                                    pointsEarned += row.FieloPLT__Points__c;    
-                                                }
-                                            } else {
-                                                if (row.FieloPLT__Transaction__r) {
-                                                    if (row.FieloPLT__Transaction__r.FieloPLT__Points__c) {
-                                                        pointsEarned += row.FieloPLT__Transaction__r.FieloPLT__Points__c;
-                                                    }
-                                                }
-                                            }
-                                        });
-                                        pointField.value = pointsEarned;;
-                                    }
-                                }
-                            }
+                            pointField = {};
+                            pointField.label = $A.get('$Label.c.PointsEarned');
+                            pointField.name = 'points';
+                            pointField.value = component.get('v.coursePoint');
                             if (pointField && activeViewName.toLowerCase() == 'mycourses' && !pointFieldAdded){
                                 pointFieldAdded = true;
                                 course.push(pointField);

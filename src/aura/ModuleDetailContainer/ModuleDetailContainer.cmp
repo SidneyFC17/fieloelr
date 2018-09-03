@@ -9,6 +9,8 @@
     <aura:attribute type="Object" name="moduleWrapper" />
     <aura:attribute type="Object" name="courseWrapper" />
     <aura:attribute type="Object" name="config" />
+    <aura:attribute type="Object" name="coursePoints" />
+    <aura:attribute type="string" name="pointFields" default="FieloPLT__Points__c"/>
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     <aura:attribute type="Object[]" name="fieldsMeta" description="Module "/>
     <aura:attribute type="Object" name="MRfieldsMeta"/>
@@ -21,6 +23,7 @@
     <aura:attribute type="String" name="modulefields_passed" description="Modules Fields To Display when module is already taken and passed" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
     <aura:attribute type="String" name="modulefields_notpassed" description="Modules Fields To Display when module is already taken and not passed" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__ModuleResponse__c.FieloELR__SubmitDate__c,FieloELR__ModuleResponse__c.FieloELR__GradePercent__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
     <aura:attribute type="String" name="modulefields_nottaken" description="Modules Fields To Display when module not taken yet" default="FieloELR__ModuleResponse__c.FieloELR__Transactions__r,FieloELR__ModuleResponse__c.FieloELR__Tracker__r,FieloELR__KeyDependencies__c,FieloELR__NumberOfQuestions__c,FieloELR__ModuleResponse__c.FieloELR__NumberOfAttempt__c"/>
+    <aura:attribute type="Boolean" name="showDetails" default="true"/>
     
     <aura:handler event="FieloPLT:UpdateMemberEvent" action="{!c.updateMember}"/>
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
@@ -55,17 +58,21 @@
                         <lightning:card class="fielo-module-content-container">
                             <aura:set attribute="title">
                                 <div class="fielo-module-fields-section">
-                                    <c:ModuleFieldsSection
-                                                           moduleWrapper="{!v.moduleWrapper}"
-                                                           module="{!v.module}"
-                                                           moduleResponse="{!v.moduleResponse}"
-                                                           fieldsMeta="{!v.fieldsMeta}"
-                                                           MRfieldsMeta="{!v.MRfieldsMeta}"
-                                                           useDefaultUX="{!v.useDefaultUX}"
-                                                           modulefields_passed="{!v.modulefields_passed}"
-                                                           modulefields_notpassed="{!v.modulefields_notpassed}"
-                                                           modulefields_nottaken="{!v.modulefields_nottaken}"
-                                                           />
+                                    <aura:if isTrue="{! v.showDetails }">
+                                        <c:ModuleFieldsSection
+                                                               moduleWrapper="{!v.moduleWrapper}"
+                                                               module="{!v.module}"
+                                                               moduleResponse="{!v.moduleResponse}"
+                                                               fieldsMeta="{!v.fieldsMeta}"
+                                                               MRfieldsMeta="{!v.MRfieldsMeta}"
+                                                               useDefaultUX="{!v.useDefaultUX}"
+                                                               coursePoints="{!v.coursePoints}"
+                                                               pointFields="{!v.pointFields}"
+                                                               modulefields_passed="{!v.modulefields_passed}"
+                                                               modulefields_notpassed="{!v.modulefields_notpassed}"
+                                                               modulefields_nottaken="{!v.modulefields_nottaken}"
+                                                               />
+                                    </aura:if>
                                 </div>
                             </aura:set>
                             <aura:set attribute="actions">

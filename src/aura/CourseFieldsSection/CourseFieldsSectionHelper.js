@@ -3,17 +3,27 @@
         try{
             var config = JSON.parse(component.get('v.config'));
             var record = component.get('v.record');
-            var activeViewName;
-            var fieldMeta;
-            var courseStatusList;
-            var courseStatus;
-            var fieldMap;
+            var activeViewName, fieldMeta, courseStatusList, courseStatus, fieldMap, coursePoints, pointField;
             if (config) {
                 if (config.activeViewName) {
                     component.set('v.activeViewName', config.activeViewName);
                 }
                 if (config.fieldMeta instanceof String) {
                     config.fieldMeta = JSON.parse(config.fieldMeta);
+                }
+                //TO-DO: handle multi-point programs
+                pointField = config.pointField ? config.pointField : 'FieloPLT__Points__c';
+                if (config.coursePoints) {
+                    coursePoints = JSON.parse(config.coursePoints);
+                    if (coursePoints) {
+                        if (coursePoints[record.Id]) {
+                            if (coursePoints[record.Id].points) {
+                                if (coursePoints[record.Id].points[pointField]) {
+                                    component.set('v.coursePoint', coursePoints[record.Id].points[pointField]);
+                                }
+                            }
+                        }
+                    }
                 }
                 if (config.fieldMeta) {
                     if (config.fieldMeta instanceof Array) {

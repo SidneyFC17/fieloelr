@@ -126,7 +126,11 @@
                                 component.set("v.courseStatus", courseStatus);
                             }
                             this.loadCourseStatus(component);
-                        }   
+                        }
+                        if (result.coursePoints) {
+                            console.log(JSON.stringify(JSON.parse(result.coursePoints), null, 2));
+                            component.set('v.coursePoints', JSON.parse(result.coursePoints));
+                        }
                     } catch(e) {
                         console.log(e);
                     }
@@ -235,7 +239,9 @@
                         'fields': component.get('v.detailFields').trim(),
                         'fieldsMeta': component.get('v.courseFieldsMeta'),
                         'csFieldsMeta': component.get('v.courseStatusFieldsMeta'),
-                        'courseStatus': JSON.stringify(component.get('v.courseStatus'))
+                        'courseStatus': JSON.stringify(component.get('v.courseStatus')),
+                        'pointField': component.get('v.pointFields'),
+                        'coursePoints': JSON.stringify(component.get('v.coursePoints'))
                     }
                 )
             });

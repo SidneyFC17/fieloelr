@@ -153,9 +153,7 @@
                 modulesFieldset += ',FieloELR__AttemptsAllowed__c';
             }
             var dynamicFilterString = component.get('v.dynamicFilterString');
-            // console.log(dynamicFilterString);
             var sortByClause = component.get('v.sortByClause');
-            // console.log(sortByClause);
             if(member){            
                 var action;
                 var activeViewName = component.get('v.activeViewName');
@@ -181,7 +179,6 @@
                 // Add callback behavior for when response is received
                 action.setCallback(this, function(response) {
                     try{
-                        
                         var spinner = $A.get("e.c:ToggleSpinnerEvent");
                         var toastEvent = $A.get("e.force:showToast");
                         var state = response.getState();                
@@ -189,16 +186,15 @@
                             var member = component.get('v.member');
                             var memberId = member.Id;                                     
                             var result = JSON.parse(response.getReturnValue());
-                            var courseWrappers;
-                            var coursesList;
-                            var courseStatus;
+                            var courseWrappers, coursesList, courseStatus, coursePoints;
                             activeViewName = component.get('v.activeViewName');
-                            
                             if (activeViewName == 'availableCourses') {
                                 coursesList = result.list;
                             } else {
                                 coursesList = result.courses;
                                 courseStatus = result.courseStatus;
+                                coursePoints = result.coursePoints;
+                                console.log(JSON.stringify(result.coursePoints, null, 2));
                             }
                             courseWrappers = result.wrappers;
                             if (courseWrappers) {
@@ -219,6 +215,7 @@
                             component.set('v.coursesList', coursesList);
                             component.set('v.courseStatus', courseStatus);
                             component.set('v.showCoursesList', true);
+                            component.set('v.coursePoints', coursePoints);
                             helper.getFieldSet(component);
                             helper.updateButtons(component);
                         } else {
@@ -237,7 +234,7 @@
                     } catch(e) {
                         console.log(e);
                     }
-                });      
+                s});      
                 // Send action off to be executed
                 $A.enqueueAction(action);   
             }            
@@ -483,7 +480,9 @@
                                 'fieldsMeta': component.get('v.courseFieldsMeta'),
                                 'csFieldsMeta': component.get('v.courseStatusFieldsMeta'),
                                 'activeViewName': component.get('v.activeViewName'),
-                                'courseStatus': JSON.stringify(component.get('v.courseStatus'))
+                                'courseStatus': JSON.stringify(component.get('v.courseStatus')),
+                                'pointField': component.get('v.pointFields'),
+                                'coursePoints': JSON.stringify(component.get('v.coursePoints'))
                             }
                         )
                     });

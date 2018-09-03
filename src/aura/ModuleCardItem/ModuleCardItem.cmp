@@ -1,6 +1,8 @@
 <aura:component>
     <aura:attribute type="Object" name="moduleWrapper" />
     <aura:attribute type="Object" name="courseWrapper" />
+    <aura:attribute type="Object" name="coursePoints" />
+    <aura:attribute type="String" name="pointFields" />
     <aura:attribute type="FieloPLT__Member__c" name="member" />
     <aura:attribute type="Boolean" name="showModuleContent" default="false"/>
     <aura:attribute type="Boolean" name="useDefaultUX" default="true"/>
@@ -37,6 +39,8 @@
                     <c:ModuleContent 
                                      courseWrapper="{!v.courseWrapper}"
                                      moduleWrapper="{!v.moduleWrapper}"
+                                     coursePoints="{!v.coursePoints}"
+                                     pointFields="{!v.pointFields}"
                                      fieldsMeta="{!v.fieldsMeta}"
                                      MRfieldsMeta="{!v.MRfieldsMeta}"
                                      moduleResponse="{!v.moduleResponse}"

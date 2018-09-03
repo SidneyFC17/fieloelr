@@ -112,7 +112,8 @@
         'FieloELR__AttemptsAllowed__c',
         'FieloELR__Order__c',
         'FieloELR__NumberOfQuestions__c',
-        'FieloELR__ApprovalGrade__c'
+        'FieloELR__ApprovalGrade__c',
+        'FieloELR__Course__c'
     ],
     requiredModuleResponseFields: [
         'Id',
@@ -125,7 +126,8 @@
         'FieloELR__CorrectQuestions__c',
         'FieloELR__IncorrectQuestions__c',
         'FieloELR__Member__c',
-        'FieloELR__CourseStatus__r.FieloELR__Progress__c'
+        'FieloELR__CourseStatus__r.FieloELR__Progress__c',
+        'FieloELR__CourseStatus__r.FieloELR__Course__c'
     ],
     loadFieldsMetadata: function(component, objectName, fields) {
         try{
@@ -183,9 +185,13 @@
                 var spinner = $A.get("e.c:ToggleSpinnerEvent");
                 var toastEvent = $A.get("e.force:showToast");
                 var state = response.getState();                
-                if (component.isValid() && state === 'SUCCESS') {                    
-                    var moduleResponses = JSON.parse(response.getReturnValue());
+                if (component.isValid() && state === 'SUCCESS') {
+                    var result = JSON.parse(response.getReturnValue());
+                    var moduleResponses = result.moduleResponses;
                     component.set('v.moduleResponses', moduleResponses);
+                    if (result.coursePoints) {
+                        component.set('v.coursePoints', result.coursePoints);
+                    }
                     this.loadModuleResponseFieldsMetadata(component);
                     this.loadModules(component);
                 } else {
