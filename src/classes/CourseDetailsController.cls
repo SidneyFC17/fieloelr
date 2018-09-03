@@ -59,11 +59,14 @@ public with sharing class CourseDetailsController {
 											null, 
 											'LastModifiedDate DESC' ,
 											'');
+
+			String coursesPoints = CourseService.getCoursePoints(new Set<Id>{courseId}, member.Id);
 			
 			Map<String, String> result = new Map<String, String>{
 				'courses' => JSON.serialize(courses),
 				'wrappers' => JSON.serialize(courseWrappers),
-				'courseStatus' => JSON.serialize(courseStatusList)
+				'courseStatus' => JSON.serialize(courseStatusList),
+				'coursePoints' => coursesPoints
 			};
 			return JSON.serialize(result);
 		} catch(DMLException e) {

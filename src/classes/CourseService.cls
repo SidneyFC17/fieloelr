@@ -584,19 +584,29 @@ global class CourseService {
 			trackerPointFields.add('FieloPLT__Transaction__r.' + ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
 		}
 
-		courseStatusQuery = 'SELECT Id, FieloELR__Course__c, FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r) FROM FieloELR__CourseStatus__c WHERE Id in :courseStatusIds';
+		courseStatusQuery = 'SELECT Id, FieloELR__Course__c, FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FROM FieloELR__CourseStatus__c WHERE Id in :courseStatusIds';
 
 		courseStatus = Database.query(courseStatusQuery);
 
-		String moduleResponseQuery = 'SELECT Id, FieloELR__Module__c, FieloELR__CourseStatus__c, FieloELR__CourseStatus__r.FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r) FROM FieloELR__ModuleResponse__c WHERE FieloELR__CourseStatus__c in :courseStatusIds';
+		String moduleResponseQuery = 'SELECT Id, FieloELR__Module__c, FieloELR__CourseStatus__c, FieloELR__CourseStatus__r.FieloELR__Course__c, FieloELR__CourseStatus__r.FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FROM FieloELR__ModuleResponse__c WHERE FieloELR__CourseStatus__c in :courseStatusIds';
 
 		List<ModuleResponse__c> moduleResponses = Database.query(moduleResponseQuery);
 
+		Map<Id, List<ModuleResponse__c>> moduleResponsesByCourseStatus = new Map<Id, List<ModuleResponse__c>>();
+
+		for(ModuleResponse__c singleMR: moduleResponses) {
+			if (moduleResponsesByCourseStatus.containsKey(singleMR.FieloELR__CourseStatus__c)) {
+				moduleResponsesByCourseStatus.get(singleMR.FieloELR__CourseStatus__c).add(singleMR);
+			} else {
+				moduleResponsesByCourseStatus.put(singleMR.FieloELR__CourseStatus__c, new List<ModuleResponse__c>{singleMR});
+			}
+		}
+
 		Map<String, Map<String, Object>> coursePointsMap = new Map<String, Map<String, Object>>();
-		Map<String, Map<String, Decimal>> moduleResponsePointsMap = new Map<String, Map<String, Decimal>>();
+		Map<String, Map<String, Decimal>> modulesPointMap = new Map<String, Map<String, Decimal>>();
 
 		Map<String, Decimal> pointMap;
-		Map<String, Decimal> mrPointMap;
+		Map<String, Decimal> singleModulePointMap;
 
 		for (FieloELR__CourseStatus__c cs: courseStatus) {
 			pointMap = new Map<String, Decimal>();
@@ -621,48 +631,51 @@ global class CourseService {
 				}
 			}
 
-			for(FieloELR__ModuleResponse__c mr: moduleResponses) {
-				if (moduleResponsePointsMap.containsKey(mr.FieloELR__Module__c)) {
-					mrPointMap = moduleResponsePointsMap.get(mr.FieloELR__Module__c);
-				} else {
-					mrPointMap = new Map<String, Decimal>();
-				}
+			if (moduleResponsesByCourseStatus.containsKey(cs.Id)) {
+				for(FieloELR__ModuleResponse__c mr: moduleResponsesByCourseStatus.get(cs.Id)) {
+					if (modulesPointMap.containsKey(mr.FieloELR__Module__c)) {
+						singleModulePointMap = modulesPointMap.get(mr.FieloELR__Module__c);
+					} else {
+						singleModulePointMap = new Map<String, Decimal>();
+					}
 
-				for(FieloPLT__Transaction__c t: mr.FieloELR__Transactions__r) {
-					for(String fieldName: transactionPointFields) {
-						if (!mrPointMap.containsKey(fieldName)) {
-							mrPointMap.put(fieldName, (Decimal)t.get(fieldName));
-						} else {
-							mrPointMap.put(fieldName, (Decimal)mrPointMap.get(fieldName) + (Decimal)t.get(fieldName));
-						}
-						if (!pointMap.containsKey(fieldName)) {
-							pointMap.put(fieldName, (Decimal) t.get(fieldName));
-						} else {
-							pointMap.put(fieldName, (Decimal) pointMap.get(fieldName) + (Decimal) t.get(fieldName));
-						}
-					}
-				}
-				for(FieloPLT__Tracker__c tracker: mr.FieloELR__Trackers__r) {
-					for(String fieldName: transactionPointFields) {
-						if (!mrPointMap.containsKey(fieldName)) {
-							mrPointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-						} else {
-							mrPointMap.put(fieldName, (Decimal)mrPointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-						}
-						// accumulate at course
-						if (!pointMap.containsKey(fieldName)) {
-							pointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
-						} else {
-							pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+					for(FieloPLT__Transaction__c t: mr.FieloELR__Transactions__r) {
+						for(String fieldName: transactionPointFields) {
+							if (!singleModulePointMap.containsKey(fieldName)) {
+								singleModulePointMap.put(fieldName, (Decimal)t.get(fieldName));
+							} else {
+								singleModulePointMap.put(fieldName, (Decimal)singleModulePointMap.get(fieldName) + (Decimal)t.get(fieldName));
+							}
+							if (!pointMap.containsKey(fieldName)) {
+								pointMap.put(fieldName, (Decimal) t.get(fieldName));
+							} else {
+								pointMap.put(fieldName, (Decimal) pointMap.get(fieldName) + (Decimal) t.get(fieldName));
+							}
 						}
 					}
+					for(FieloPLT__Tracker__c tracker: mr.FieloELR__Trackers__r) {
+						for(String fieldName: transactionPointFields) {
+							if (!singleModulePointMap.containsKey(fieldName)) {
+								singleModulePointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+							} else {
+								singleModulePointMap.put(fieldName, (Decimal)singleModulePointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+							}
+							// accumulate at course
+							if (!pointMap.containsKey(fieldName)) {
+								pointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+							} else {
+								pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+							}
+						}
+					}
+					modulesPointMap.put(mr.FieloELR__Module__c, singleModulePointMap );
 				}
-				moduleResponsePointsMap.put(mr.FieloELR__Module__c, mrPointMap );
 			}
+
 			//UpdateMap
 			coursePointsMap.put(cs.FieloELR__Course__c, new Map<String, Object>{
 				'points' => (Object) pointMap,
-				'modulesResponsePoints' => (Object) moduleResponsePointsMap
+				'modulePoints' => (Object) modulesPointMap
 			});
 		}
 		return JSON.serialize(coursePointsMap);
