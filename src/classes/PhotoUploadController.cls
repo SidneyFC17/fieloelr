@@ -77,7 +77,7 @@ public with sharing class PhotoUploadController {
 
         if ( status == 'external' || status == 'existing' ) {
 
-          SObjectType convertType = record.sObjectType;
+          SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
           SecurityUtils.checkObjectIsInsertable(convertType);
           SecurityUtils.checkObjectIsUpdateable(convertType);
@@ -126,7 +126,7 @@ public with sharing class PhotoUploadController {
 
             if(currentDocument.Id != null){
 
-                 SObjectType convertType = currentDocument.sObjectType;
+                  SObjectType convertType = Schema.getGlobalDescribe().get('Document');
 
                     SecurityUtils.checkObjectIsInsertable(convertType);
                     SecurityUtils.checkObjectIsUpdateable(convertType);
@@ -139,7 +139,7 @@ public with sharing class PhotoUploadController {
                 currentDocument.put('FolderId', folderId);
                 currentDocument.put('IsPublic', true);
 
-              SObjectType convertType = currentDocument.sObjectType;
+              SObjectType convertType = Schema.getGlobalDescribe().get('Document');
 
                     SecurityUtils.checkObjectIsInsertable(convertType);
                     SecurityUtils.checkObjectIsUpdateable(convertType);
@@ -155,7 +155,7 @@ public with sharing class PhotoUploadController {
             record.put( externalURLField, result.redirectURL);
 
 
-           SObjectType convertType = record.sObjectType;
+           SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
 
           SecurityUtils.checkObjectIsInsertable(convertType);
           SecurityUtils.checkObjectIsUpdateable(convertType);
@@ -200,7 +200,7 @@ public with sharing class PhotoUploadController {
         record.put(fieldName ,null);
         record.put(externalURLField ,null);
 
-        SObjectType convertType = record.sObjectType;
+         SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
 
           SecurityUtils.checkObjectIsInsertable(convertType);
           SecurityUtils.checkObjectIsUpdateable(convertType);
