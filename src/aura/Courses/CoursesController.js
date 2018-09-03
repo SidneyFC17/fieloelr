@@ -27,6 +27,8 @@
             window.localStorage.setItem('member', JSON.stringify(member));
             helper.updateButtons(component);
             helper.loadCourses(component, event, helper, 0);
+            component.set('v.paging', false);
+            component.set('v.paging', true);
         } catch(e) {
             console.log(e);
         }
