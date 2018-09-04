@@ -17,10 +17,25 @@
     },
     updateMember: function(component, event, helper){
         try{
+            var currentMember = component.get('v.member');
             var member = event.getParam('member');
-            component.set('v.member', member);       
-            window.localStorage.setItem('member', JSON.stringify(member));
-            helper.getModuleData(component);
+            if (currentMember) {
+                var spinner = $A.get("e.FieloPLT:ToggleSpinnerEvent");
+                if(spinner){
+                    spinner.setParam('show', false);
+                    spinner.fire();    
+                }
+                if (currentMember.Id != member.Id) {
+                    $A
+                    .get("e.force:navigateToObjectHome")
+                    .setParams({"scope": "FieloELR__Course__c"})
+                    .fire();
+                }
+            } else {
+            	component.set('v.member', member);
+            	window.localStorage.setItem('member', JSON.stringify(member));
+                helper.getModuleData(component);
+            }
         } catch(e) {
             console.log(e);
         }

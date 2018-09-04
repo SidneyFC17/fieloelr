@@ -250,7 +250,7 @@ public with sharing class CoursesController {
 				'courses' => (Object) courses,
 				'wrappers' => (Object) courseWrappers,
 				'courseStatus' => (Object) courseStatusList,
-				'coursePoints' => JSON.deserializeUntyped(coursesPoints)
+				'coursePoints' => coursesPoints != null ? JSON.deserializeUntyped(coursesPoints) : ''
 			};
             return JSON.serialize(result);
        } catch(DMLException e) {

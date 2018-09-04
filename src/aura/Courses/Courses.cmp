@@ -26,6 +26,8 @@
     <aura:attribute type="Boolean" name="showCourse" default="false" />
     <aura:attribute type="Boolean" name="showPointsEarned" default="true" />
     <aura:attribute type="Boolean" name="showFilter" default="true" />
+    <aura:attribute type="Boolean" name="showBody" default="true" />
+    <aura:attribute type="Boolean" name="spinnerIsRunning" default="false" />
     
     <aura:attribute type="Course__c[]" name="coursesList" />
     <aura:attribute type="Object[]" name="coursesWrappers" />
@@ -73,55 +75,59 @@
     <aura:attribute name="error" type="String" />
     <!-- ERROR -->   
     
-    <div class="{!'fielo-courses-list' + className}">
-        <h3 class="slds-text-heading_large slds-p-top_medium slds-p-bottom_medium"><b>{!v.title}</b></h3>
-        <div class="fielo-course-tab-selector">
-            <div class="slds-grid">
-                <div class="slds-col">
-                </div>
-                <c:CourseViewSelector />
-                <div class="slds-col">
+    <aura:if isTrue="{!v.showBody}">
+        <div class="{!'fielo-courses-list' + className}">
+            <h3 class="slds-text-heading_large slds-p-top_medium slds-p-bottom_medium"><b>{!v.title}</b></h3>
+            <div class="fielo-course-tab-selector">
+                <div class="slds-grid">
+                    <div class="slds-col">
+                    </div>
+                    <c:CourseViewSelector />
+                    <div class="slds-col">
+                    </div>
                 </div>
             </div>
-        </div>
-        <aura:if isTrue="{!v.activeViewName == 'availableCourses'}">
-            <h3 class="slds-text-heading_medium slds-p-top_medium slds-p-bottom_medium"><b>{!$Label.c.AvailableCourses}</b></h3>
-            <aura:set attribute="else">
-                <h3 class="slds-text-heading_medium slds-p-top_medium slds-p-bottom_medium"><b>{!$Label.c.MyCourses}</b></h3>
-            </aura:set>
-        </aura:if>
-        
-        <div class="fielo-courses-filter-container slds-p-top_small slds-p-bottom_small">
-            <aura:if isTrue="{!and(v.showFilter, v.filterFieldSet.length > 0)}">
-                <c:Filter fieldset="{!v.filterFieldSet}"
-                          filterFields="{!v.courseFilterFields}"
-                          rangedFields="{!v.courseRangedFilterFields}"
-                          showSortBy="true"
-                          sortByOptions="{!v.sortByOptions}" />
+            <aura:if isTrue="{!v.activeViewName == 'availableCourses'}">
+                <h3 class="slds-text-heading_medium slds-p-top_medium slds-p-bottom_medium"><b>{!$Label.c.AvailableCourses}</b></h3>
+                <aura:set attribute="else">
+                    <h3 class="slds-text-heading_medium slds-p-top_medium slds-p-bottom_medium"><b>{!$Label.c.MyCourses}</b></h3>
+                </aura:set>
+            </aura:if>
+            
+            <div class="fielo-courses-filter-container slds-p-top_small slds-p-bottom_small">
+                <aura:if isTrue="{!and(v.showFilter, v.filterFieldSet.length > 0)}">
+                    <c:Filter fieldset="{!v.filterFieldSet}"
+                              filterFields="{!v.courseFilterFields}"
+                              rangedFields="{!v.courseRangedFilterFields}"
+                              showSortBy="true"
+                              sortByOptions="{!v.sortByOptions}" />
+                </aura:if>
+            </div>
+            
+            <aura:if isTrue="{!v.showCoursesList}">
+                <aura:if isTrue="{!v.coursesList != null }">
+                    <aura:if isTrue="{!v.fieldset != null}">
+                        <c:ListView showToggleBtn="true"
+                                    showTitle="true"
+                                    layoutType="card"
+                                    objectAPIName="FieloELR__Course__c"
+                                    paging="{!v.paging}"
+                                    quantity="{!v.quantity}"
+                                    records="{!v.coursesList}"
+                                    columns="{!v.columns}"
+                                    layout="grid"
+                                    fieldset="{!v.fieldset}"
+                                    title="&nbsp;"
+                                    buttons="{!v.buttons}"/>
+                    </aura:if>
+                </aura:if>
             </aura:if>
         </div>
         
-        <aura:if isTrue="{!v.showCoursesList}">
-            <c:ListView showToggleBtn="true"
-                        showTitle="true"
-                        layoutType="card"
-                        objectAPIName="FieloELR__Course__c"
-                        paging="{!v.paging}"
-                        quantity="{!v.quantity}"
-                        records="{!v.coursesList}"
-                        columns="{!v.columns}"
-                        layout="grid"
-                        fieldset="{!v.fieldset}"
-                        title="&nbsp;"
-                        buttons="{!v.buttons}"/>
-            
+        <aura:if isTrue="{!v.showError}">
+            <c:Error error="{!v.error}" />
         </aura:if>
-    </div>
-    
-    <c:Spinner />
-    
-    <aura:if isTrue="{!v.showError}">
-        <c:Error error="{!v.error}" />
     </aura:if>
     
+    <c:Spinner />
 </aura:component>

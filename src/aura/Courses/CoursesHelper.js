@@ -18,7 +18,7 @@
                 }else {
                     var errorMsg = response.getError()[0].message;
                     toastEvent.setParams({
-                        "title": errorMsg,
+                        "title": 'getFilterFieldSet: ' + errorMsg,
                         "message": " ",
                         "type": "error"
                     });
@@ -88,7 +88,7 @@
                     }
                 } else {
                     var errorMsg = response.getError()[0].message;
-                    this.showMessage('error', errorMsg);
+                    this.showMessage('error', 'getFieldsMeta: ' + errorMsg);
                 }
             });
             $A.enqueueAction(action);
@@ -110,6 +110,7 @@
     },
     addCourseRequiredFields: function(courseFields) {
         try{
+            console.log('addCourseRequiredFields');
             var courseFieldSet = [];
             var fieldList = courseFields.split(',');
             fieldList.forEach(function(fieldName) {
@@ -175,6 +176,7 @@
                     'dynamicFilter': dynamicFilterString,
                     'showPointsEarned': showPointsEarned
                 };
+                
                 action.setParams(params);
                 // Add callback behavior for when response is received
                 action.setCallback(this, function(response) {
@@ -194,7 +196,6 @@
                                 coursesList = result.courses;
                                 courseStatus = result.courseStatus;
                                 coursePoints = result.coursePoints;
-                                console.log(JSON.stringify(result.coursePoints, null, 2));
                             }
                             courseWrappers = result.wrappers;
                             if (courseWrappers) {
@@ -221,15 +222,15 @@
                         } else {
                             var errorMsg = response.getError()[0].message;
                             toastEvent.setParams({
-                                "title": errorMsg,
+                                "title": 'loadCourses: ' + errorMsg,
                                 "message": " ",
                                 "type": "error"
                             });
                             toastEvent.fire(); 
-                            if(spinner){
-                                spinner.setParam('show', false);
-                                spinner.fire();    
-                            }
+                        }
+                        if(spinner){
+                            spinner.setParam('show', false);
+                            spinner.fire();
                         }
                     } catch(e) {
                         console.log(e);
@@ -242,7 +243,8 @@
             console.log(e);
         }
     },
-    updateCoursesCache: function(component, event, helper){        
+    updateCoursesCache: function(component, event, helper) {
+        console.log('updateCoursesCache');
         var coursesCache = window.localStorage.getItem('coursesCache');        
         var memberId = component.get('v.member');        
         memberId = memberId.Id;        
@@ -270,35 +272,8 @@
         })      
         return fields;
     },
-    setCourseInfo: function(component, event, helper, courseInfo){        
-        var memberId = component.get('v.member').Id;
-        var courseRecord;
-        if(courseInfo){
-            courseRecord = courseInfo;   
-        } else {
-            courseRecord = event.getParam('record');    
-        }        
-        var courseId = courseRecord.Id;
-        var modulesList = [];
-        var modules = courseRecord.modules;
-        var courseCache = JSON.parse(window.localStorage.getItem('coursesStatus'));
-        for(var i = 0; i < modules.length; i++){
-            var newModule = modules[i].module;
-            newModule.moduleResponses = modules[i].moduleResponses;
-            newModule.numberOfAttempts = modules[i].numberOfAttempts;
-            newModule.isApproved = modules[i].isApproved;            
-            newModule.showBtn = !courseCache[memberId][courseId];
-            modulesList.push(newModule);
-        }                        
-        component.set('v.courseTitle', courseRecord.Name);        
-        component.set('v.modules', modulesList);        
-        component.set('v.showCourse', true);
-        component.set('v.showCoursesList', false);        
-        window.localStorage.setItem('actualCourse', JSON.stringify(courseRecord));
-    },
     getConfiguration: function(component) {
         try{
-            console.log('getConfig');
             var action = component.get('c.getConfig');
             action.setCallback(this, function(response) {
                 var spinner = $A.get("e.c:ToggleSpinnerEvent");
@@ -312,7 +287,7 @@
                 }else {
                     var errorMsg = response.getError()[0].message;
                     toastEvent.setParams({
-                        "title": errorMsg,
+                        "title": 'getConfiguration: ' + errorMsg,
                         "message": " ",
                         "type": "error"
                     });
@@ -527,7 +502,7 @@
                     }
                 } else {
                     var errorMsg = response.getError()[0].message;
-                    this.showMessage('error', errorMsg);
+                    this.showMessage('error', 'getSortByOptions: ' + errorMsg);
                 }
             });
             $A.enqueueAction(action);

@@ -6,7 +6,6 @@
             helper.getFilterFieldSet(component);
             helper.getCourseFieldSet(component);
             helper.getConfiguration(component);
-            var title, fields, fieldset;
         } catch(e) {
             console.log(e);
             component.set('v.error', e);
@@ -22,10 +21,20 @@
     },
     updateMember: function(component, event, helper){
         try{
+            var currentMember = component.get('v.member');
             var member = event.getParam('member');
-            component.set('v.member', member);       
+            component.set('v.member', member);
+            if (currentMember) {
+                if (currentMember.Id != member.Id) {
+                    component.set('v.showCoursesList',false);
+                }
+                var spinner = $A.get("e.FieloPLT:ToggleSpinnerEvent");
+                if(spinner){
+                    spinner.setParam('show', false);
+                    spinner.fire();    
+                }
+            }
             window.localStorage.setItem('member', JSON.stringify(member));
-            helper.updateButtons(component);
             helper.loadCourses(component, event, helper, 0);
             component.set('v.paging', false);
             component.set('v.paging', true);
@@ -37,7 +46,6 @@
         try{
             var dynamicFilterString = event.getParam('dynamicFilter');
             var sortByClause = event.getParam('sortByClause');
-            console.log(JSON.stringify(event.getParams(), null, 2));
             component.set('v.dynamicFilterString', dynamicFilterString);
             component.set('v.sortByClause', sortByClause);
             helper.loadCourses(component, event, helper, 0);
@@ -49,6 +57,7 @@
     },
     handleCourseViewSelected: function(component, event, helper){
         try{
+            console.log('handleCourseViewSelected');
             event.stopPropagation();
             var viewName = event.getParam('viewName');
             component.set('v.showFilter', false);
@@ -71,11 +80,12 @@
             console.log(e);
         }
     },
-    reloadCourses: function(component, event, helper){
-        helper.loadCourses(component, event, helper, 0);        
-    },
     paginator: function(component, event, helper){
-        var offset = event.getParam("offset");        
-        helper.loadCourses(component, event, helper, offset);
+        try {
+            var offset = event.getParam("offset");        
+            helper.loadCourses(component, event, helper, offset);
+        } catch(e) {
+            console.log(e);
+        }
     }
 })
