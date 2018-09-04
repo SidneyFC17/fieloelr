@@ -200,7 +200,14 @@ public with sharing class CourseViewController extends PageSettingsController {
 			} else {
 				record.segment__c = null;
         	}
-        	upsert record;
+
+			if(SecurityUtils.canInsert(Course__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Course__c.sObjectType, nullFields)){
+                 upsert record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+        	
+
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
@@ -300,7 +307,11 @@ public with sharing class CourseViewController extends PageSettingsController {
 			}
 			// TODO: Change to Create API
 			if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
-               upsert (Module__c) record;
+				if(SecurityUtils.canInsert(Module__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Module__c.sObjectType, nullFields)){
+                  upsert (Module__c) record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
             }else{
                throw new FieloException(Label.CannotInsertUpdateRecords);
 			}
@@ -334,7 +345,12 @@ public with sharing class CourseViewController extends PageSettingsController {
          		record.put(f, null );
 			}
 			// TODO: Change to Create API
-        	upsert (CourseDependency__c) record;
+			if(SecurityUtils.canInsert(CourseDependency__c.sObjectType, nullFields) && SecurityUtils.canUpdate(CourseDependency__c.sObjectType, nullFields)){
+                 upsert (CourseDependency__c) record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+        	
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );

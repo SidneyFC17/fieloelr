@@ -175,8 +175,12 @@ public with sharing class ModuleViewController extends PageSettingsController {
          		record.put(f, null );
 			}
 
-		 if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
-            upsert record;
+		 if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
+			 if(SecurityUtils.canInsert(Module__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Module__c.sObjectType, nullFields)){
+                  upsert record;
+          }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
           }
@@ -203,7 +207,12 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			}
 
 			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
-            	upsert (Question__c) record;
+				 if(SecurityUtils.canInsert(Question__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Question__c.sObjectType, nullFields)){
+                  	upsert (Question__c) record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+            	
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -230,7 +239,12 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			}
 
 			if(Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
-            	upsert (ModuleDependency__c) record;
+				 if(SecurityUtils.canInsert(ModuleDependency__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleDependency__c.sObjectType, nullFields)){
+                  	upsert (ModuleDependency__c) record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+            	
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -270,7 +284,12 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			Module__c record = new Module__c ( Id = recordId, IsActive__c = true);
 
 			if(Schema.sObjectType.Module__c.isUpdateable()){
-            	update record;
+				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
+                   update record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+            	
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -294,7 +313,11 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			Module__c record = new Module__c ( Id = recordId, IsActive__c = false);
 
 			if(Schema.sObjectType.Module__c.isUpdateable()){
-            	update record;
+				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
+                   update record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}

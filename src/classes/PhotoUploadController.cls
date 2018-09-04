@@ -76,7 +76,15 @@ public with sharing class PhotoUploadController {
         String documentId = null;
 
         if ( status == 'external' || status == 'existing' ) {
+
+          SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+          SecurityUtils.checkObjectIsInsertable(convertType);
+          SecurityUtils.checkObjectIsUpdateable(convertType);
+
             upsert record;
+
+
         } else {
             Id recordId = record.Id;
             Document currentDocument = new Document();
@@ -117,6 +125,12 @@ public with sharing class PhotoUploadController {
             }
 
             if(currentDocument.Id != null){
+
+                  SObjectType convertType = Schema.getGlobalDescribe().get('Document');
+
+                    SecurityUtils.checkObjectIsInsertable(convertType);
+                    SecurityUtils.checkObjectIsUpdateable(convertType);
+
                 update currentDocument;
             } else {
                 currentDocument.put('Name', (String)record.get('Name') );
@@ -124,6 +138,11 @@ public with sharing class PhotoUploadController {
                 // TODO: Ver width y height
                 currentDocument.put('FolderId', folderId);
                 currentDocument.put('IsPublic', true);
+
+              SObjectType convertType = Schema.getGlobalDescribe().get('Document');
+
+                    SecurityUtils.checkObjectIsInsertable(convertType);
+                    SecurityUtils.checkObjectIsUpdateable(convertType);
 
                 upsert currentDocument;
 
@@ -134,6 +153,13 @@ public with sharing class PhotoUploadController {
 
             result.redirectURL = createURL(currentDocument, instance);
             record.put( externalURLField, result.redirectURL);
+
+
+           SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
+
+          SecurityUtils.checkObjectIsInsertable(convertType);
+          SecurityUtils.checkObjectIsUpdateable(convertType);
+
             upsert record;
         }
 
@@ -173,7 +199,14 @@ public with sharing class PhotoUploadController {
         sp = Database.setSavepoint();
         record.put(fieldName ,null);
         record.put(externalURLField ,null);
-        upsert record;
+
+         SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
+
+          SecurityUtils.checkObjectIsInsertable(convertType);
+          SecurityUtils.checkObjectIsUpdateable(convertType);
+
+            upsert record;
+
         //TODO REVISAR SI BORRA DOCUMENTOS HUERFANOS
         result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, label.DataRemovedSuccessfully) );
 
