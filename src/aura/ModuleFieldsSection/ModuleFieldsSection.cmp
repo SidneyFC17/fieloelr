@@ -7,6 +7,7 @@
     <aura:attribute type="sObject" name="moduleResponse"/>
     <aura:attribute type="sObject" name="approvedModuleResponse"/>
     <aura:attribute type="sObject" name="lastModuleResponse"/>
+    <aura:attribute type="sObject" name="firstApproveModuleResponse"/>
     <aura:attribute type="String" name="className"/>
     <aura:attribute type="String" name="pointFields"/>
     <aura:attribute type="Object[]" name="fieldsMeta"/>

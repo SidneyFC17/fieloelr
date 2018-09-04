@@ -278,7 +278,7 @@
         try{
             var attemptsField = {};
             var moduleWrapper = component.get('v.moduleWrapper');
-            var moduleResponse = component.get('v.moduleResponse');
+            var moduleResponse = component.get('v.lastModuleResponse');
             var attempts = moduleResponse && moduleResponse['FieloELR__NumberOfAttempt__c'] != null ?
                 moduleResponse['FieloELR__NumberOfAttempt__c'] :
             0;

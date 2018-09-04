@@ -1,6 +1,7 @@
 ({
     doInit: function(component, event, helper) {
         try{
+            helper.getFirstApproveModuleResponse(component);
             helper.getLastModuleResponse(component);
             var moduleWrapper = component.get('v.moduleWrapper');
             var nextModuleInCourse = component.get('v.nextModuleInCourse');

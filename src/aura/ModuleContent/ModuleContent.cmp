@@ -6,6 +6,8 @@
     <aura:attribute type="FieloPLT__Member__c" name="member"/>
     <aura:attribute type="sObject" name="course"/>
     <aura:attribute type="sObject" name="moduleResponse"/>
+    <aura:attribute type="sObject" name="firstApproveModuleResponse"/>
+    <aura:attribute type="sObject" name="lastModuleResponse"/>
     <aura:attribute type="Object[]" name="fieldsMeta"/>
     <aura:attribute type="Object" name="MRfieldsMeta"/>
     <aura:attribute type="Boolean" name="useDefaultUX" default="true"/>
@@ -23,6 +25,8 @@
                                            pointFields="{!v.pointFields}"
                                            module="{!v.moduleWrapper.module}"
                                            moduleResponse="{!v.moduleResponse}"
+                                           firstApproveModuleResponse="{!v.firstApproveModuleResponse}"
+                                     	   lastModuleResponse="{!v.lastModuleResponse}"
                                            fieldsMeta="{!v.fieldsMeta}"
                                            MRfieldsMeta="{!v.MRfieldsMeta}"
                                            useDefaultUX="{!v.useDefaultUX}"

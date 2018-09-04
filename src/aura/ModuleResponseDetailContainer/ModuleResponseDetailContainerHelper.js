@@ -34,6 +34,7 @@
                             if (moduleResponses[0]) {
                                 component.set('v.courseStatus', moduleResponses[0].FieloELR__CourseStatus__r);
                             }
+                            this.getFirstApproveModuleResponse(component);
                             this.getLastModuleResponse(component);
                             this.showQuiz(component);
                             var moduleHeaderText = '' +
@@ -253,7 +254,7 @@
             console.log(e);
         }
     },
-    getLastModuleResponse : function(component) {
+    getFirstApproveModuleResponse : function(component) {
         try{
             var moduleResponses = component.get('v.moduleResponses');
             var moduleWrapper = component.get('v.moduleWrapper');
@@ -263,16 +264,38 @@
                     moduleResponses = moduleResponses.filter(function(mr) {
                         return mr.FieloELR__NumberofApprove__c == 1;
                     });
-                } else {
-                    moduleResponses = moduleResponses.filter(function(mr) {
-                        return mr.FieloELR__Module__c == moduleWrapper.module.Id &&
-                            mr.FieloELR__NumberOfAttempt__c == moduleWrapper.numberOfAttempts;
-                    });
                 }
             }
             if (moduleResponses) {
                 if (moduleResponses.length == 1) {
+                    component.set('v.firstApproveModuleResponse', moduleResponses[0]);
                     component.set('v.moduleResponse', moduleResponses[0]);
+                }
+            }
+            component.set('v.moduleResponseReady', true);
+        } catch(e) {
+            console.log(e);
+        }
+    },
+    getLastModuleResponse : function(component) {
+        try{
+            var moduleResponses = component.get('v.moduleResponses');
+            var moduleWrapper = component.get('v.moduleWrapper');
+            if (moduleResponses) {
+                moduleResponses = moduleResponses.filter(function(mr) {
+                    return mr.FieloELR__Module__c == moduleWrapper.module.Id;
+                });
+                var lastAttempt = Math.max.apply(Math, moduleResponses.map(function(mr) { return mr.FieloELR__NumberOfAttempt__c; }));
+                moduleResponses = moduleResponses.filter(function(mr) {
+                    return mr.FieloELR__NumberOfAttempt__c == lastAttempt;
+                });
+            }
+            if (moduleResponses) {
+                if (moduleResponses.length == 1) {
+                    component.set('v.lastModuleResponse', moduleResponses[0]);
+                    if (!component.get('v.moduleResponse').Id) {
+                        component.set('v.moduleResponse', moduleResponses[0])
+                    }
                 }
             }
             component.set('v.moduleResponseReady', true);
