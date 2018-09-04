@@ -103,7 +103,13 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-        	upsert record;
+
+			if(SecurityUtils.canInsert(CourseStatus__c.sObjectType, nullFields) && SecurityUtils.canUpdate(CourseStatus__c.sObjectType, nullFields)){
+                   upsert record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+        	
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
@@ -131,7 +137,11 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
          		record.put(f, null );
 			}
 			// TODO: Change to Create API
-        	upsert (ModuleResponse__c) record;
+			if(SecurityUtils.canInsert(ModuleResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleResponse__c.sObjectType, nullFields)){
+                  upsert (ModuleResponse__c) record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
