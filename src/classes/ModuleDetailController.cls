@@ -93,7 +93,7 @@ public with sharing class ModuleDetailController {
 			return JSON.serialize(new Map<String, Object>{
 				'courseStatus' => courseStatus,
 				'courseWrapper' => courseWrappers,
-				'coursePoints' => JSON.deserializeUntyped(coursesPoints)
+				'coursePoints' => coursesPoints != null ? JSON.deserializeUntyped(coursesPoints) : null
 			});
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));

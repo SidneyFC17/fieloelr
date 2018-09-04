@@ -63,9 +63,9 @@ public with sharing class CourseDetailsController {
 			String coursesPoints = CourseService.getCoursePoints(new Set<Id>{courseId}, member.Id);
 			
 			Map<String, String> result = new Map<String, String>{
-				'courses' => JSON.serialize(courses),
-				'wrappers' => JSON.serialize(courseWrappers),
-				'courseStatus' => JSON.serialize(courseStatusList),
+				'courses' => courses != null ? JSON.serialize(courses) : '',
+				'wrappers' => courseWrappers != null ? JSON.serialize(courseWrappers) : '',
+				'courseStatus' => courseStatusList != null ? JSON.serialize(courseStatusList) : '',
 				'coursePoints' => coursesPoints
 			};
 			return JSON.serialize(result);
@@ -88,7 +88,6 @@ public with sharing class CourseDetailsController {
 			Set<String> queryableFields = new Set<String>{'Id','Name'};
 
 			List<CourseStatus__c> csList = new List<CourseStatus__c>(new CourseStatusSelector(queryableFields).selectByKey(new Set<String>{String.valueOf(recordId) + String.valueOf(memberId)}));
-			System.debug(JSON.serialize(csList));
 
 			lcConfig.put('orgId', UserInfo.getOrganizationId());
 			lcConfig.put('locale', UserInfo.getLocale());
@@ -135,9 +134,7 @@ public with sharing class CourseDetailsController {
 			String queryModuleResponse = 'SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',');
 			queryModuleResponse += ' FROM FieloELR__ModuleResponse__c WHERE FieloELR__CourseStatus__r.FieloELR__ExternalKey__c = :key';
 
-			System.debug(JSON.serialize(Database.query(queryModuleResponse)));
-
-			return JSON.serialize(Database.query(queryModuleResponse));
+			return queryModuleResponse != null ? JSON.serialize(Database.query(queryModuleResponse)) : '';
 		} catch(DMLException e) {
 			throw new AuraHandledException(e.getDMLMessage(0));
 		} catch(Exception e){

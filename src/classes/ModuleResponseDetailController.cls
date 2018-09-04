@@ -133,7 +133,7 @@ public with sharing class ModuleResponseDetailController {
 				'courses' => (Object) courses,
 				'wrappers' => (Object) courseWrappers,
 				'courseStatus' => (Object) courseStatus,
-				'coursePoints' => JSON.deserializeUntyped(coursesPoints)
+				'coursePoints' => coursesPoints != null ? JSON.deserializeUntyped(coursesPoints) : ''
 			});
 		} catch(DMLException e) {
            	throw new AuraHandledException(e.getDMLMessage(0));
