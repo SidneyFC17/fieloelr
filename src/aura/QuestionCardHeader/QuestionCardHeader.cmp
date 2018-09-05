@@ -4,6 +4,7 @@
     <aura:attribute type="Integer" name="questionNumber"/>
     <aura:attribute type="Boolean" name="showQuestionName"/>
     <aura:attribute type="String" name="status"/>
+    <aura:attribute type="String" name="questionName"/>
     
     <aura:registerEvent name="toggleQuestionContent" type="c:ToggleQuestionContent"/>
     
@@ -13,7 +14,7 @@
         <div class="fielo-question__toggle-button-container">
             <lightning:buttonIcon iconName="{!v.iconName}" variant="bare" onclick="{! c.toggleQuestionContent }" />
         </div>
-        <div class="fielo-question__name">
+        <div class="fielo-question__name" title="{!v.questionName}">
             <lightning:formattedRichText aura:id="questionHeaderText" />
         </div>
     </div>

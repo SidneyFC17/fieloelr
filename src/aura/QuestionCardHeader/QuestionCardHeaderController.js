@@ -12,6 +12,7 @@
                 questionHeaderText += ': ' + record.Name;
             }
             component.find('questionHeaderText').set('v.value', questionHeaderText);   
+            component.set('v.questionName', record.Name);
         } catch(e) {
             console.log(e);
         }
