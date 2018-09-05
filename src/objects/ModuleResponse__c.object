@@ -89,6 +89,14 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>DummyPassed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Passed 2</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>ExternalKey__c</fullName>
         <externalId>true</externalId>
         <label>External Key</label>
@@ -228,7 +236,7 @@
         <label>Module Response Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Modules Responses</pluralLabel>
+    <pluralLabel>Module Responses</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
