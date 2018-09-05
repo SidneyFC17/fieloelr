@@ -1,7 +1,6 @@
 ({
     doInit : function(component, event, helper) {
         try{
-            console.log('quiz.doInit');
             if (window.localStorage) {
                 var moduleResponseWrapper = window.localStorage.getItem('currentModuleReponse');
                 window.localStorage.removeItem('currentModuleReponse');
@@ -66,7 +65,6 @@
     getQuestionAnswers: function(component, event, helper) {
         try{
             var questionResponseWrapper = helper.getQuestionWrapper(component);
-            console.log(JSON.stringify(questionResponseWrapper, null, 2));
         } catch(e) {
             console.log(e);
         }

@@ -9,7 +9,6 @@
             component.set('v.type', type);
             
             var urls = url.split(',');
-            console.log('url: ' + url);
             if (urls) {
                 var newUrls = [];
                 urls.forEach(function(urlToTest) {
@@ -17,7 +16,6 @@
 						newUrls.push( config.communityURL + urlToTest.replace(new RegExp('^\/'),'') );
                     }
                 });
-                console.log('new urs: ' + newUrls);
                 if (newUrls.length > 0) {
                 	component.set('v.url', newUrls.join(','));    
                 }

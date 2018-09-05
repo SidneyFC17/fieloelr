@@ -160,12 +160,6 @@
                         incorrectQuestions = component.get('v.incorrectQuestions');
                         noMoreAttemptsQuestions = component.get('v.noMoreAttemptsQuestions');
                         
-                        console.log(JSON.stringify({
-                            'correctQuestions': correctQuestions,
-                            'incorrectQuestions': incorrectQuestions,
-                            'noMoreAttemptsQuestions': noMoreAttemptsQuestions
-                        }, null, 2));
-                        
                         if (type == 'module') {
                             // Last Question
                             if (submittedQuestions.length == moduleResponseWrapper.questions.length) {

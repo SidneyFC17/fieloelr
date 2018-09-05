@@ -34,6 +34,7 @@
                         this.getCourseData(component);
                         this.getFirstApproveModuleResponse(component);
                         this.getLastModuleResponse(component);
+                        
                         var moduleHeaderText = '' +
                             $A.get('$Label.c.Module') + ' ' +
                             moduleWrapper.module.FieloELR__Order__c + ': <b>' +
@@ -136,8 +137,7 @@
             if (moduleResponses) {
                 if (passed) {
                     moduleResponses = moduleResponses.filter(function(mr) {
-                        return mr.FieloELR__IsApproved__c &&
-                            mr.FieloELR__NumberofApprove__c == 1;
+                        return mr.FieloELR__NumberofApprove__c == 1;
                     });
                 }
             }

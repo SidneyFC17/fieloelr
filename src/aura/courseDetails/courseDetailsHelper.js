@@ -51,7 +51,7 @@
                     }
                 } else {
                     var errorMsg = response.getError()[0].message;
-                    this.showMessage('error', errorMsg);
+                    this.showMessage('error', 'getFieldsMeta: ' + errorMsg);
                 }
             });
             $A.enqueueAction(action);
@@ -81,7 +81,7 @@
                     this.retrieveCourse(component);
                 } else {
                     var errorMsg = response.getError()[0].message;
-                    helper.showMessage('error', errorMsg);
+                    helper.showMessage('error', 'getConfig: ' + errorMsg);
                 }
             });
             $A.enqueueAction(action);
@@ -128,7 +128,6 @@
                             this.loadCourseStatus(component);
                         }
                         if (result.coursePoints) {
-                            console.log(JSON.stringify(JSON.parse(result.coursePoints), null, 2));
                             component.set('v.coursePoints', JSON.parse(result.coursePoints));
                         }
                     } catch(e) {
@@ -136,7 +135,7 @@
                     }
                 } else {
                     var errorMsg = response.getError()[0].message;
-                    this.showMessage('error', errorMsg);
+                    this.showMessage('error', 'retrieveCourse: ' + errorMsg);
                 }
             });
             $A.enqueueAction(action);
@@ -274,7 +273,7 @@
                     this.setButtons(component);
                 } else {
                     var errorMsg = response.getError()[0].message;
-                    this.showMessage('error', errorMsg);
+                    this.showMessage('error', 'loadCourseStatus: ' + errorMsg);
                 }
             });
             $A.enqueueAction(action);

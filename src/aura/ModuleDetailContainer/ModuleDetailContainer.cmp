@@ -64,7 +64,7 @@
                                         <c:ModuleFieldsSection
                                                                moduleWrapper="{!v.moduleWrapper}"
                                                                module="{!v.module}"
-                                                               moduleResponse="{!v.moduleWrapper.isApprove ? v.firstApproveModuleResponse : v.lastModuleResponse}"
+                                                               moduleResponse="{!v.moduleWrapper.isApproved ? v.firstApproveModuleResponse : v.lastModuleResponse}"
                                                                firstApproveModuleResponse="{!v.firstApproveModuleResponse}"
                                                                lastModuleResponse="{!v.lastModuleResponse}"
                                                                fieldsMeta="{!v.fieldsMeta}"

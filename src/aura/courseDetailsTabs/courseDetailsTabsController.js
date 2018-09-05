@@ -2,7 +2,6 @@
     doInit: function(component, event, helper) {
         try{
             var hasDetails = helper.hasDetails(component);
-            console.log('hasDetails: ' + hasDetails);
             component.set('v.hasDetails', hasDetails);
             component.set('v.tabsReady', true);
             if(!hasDetails) {

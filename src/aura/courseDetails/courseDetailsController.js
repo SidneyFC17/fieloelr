@@ -56,7 +56,6 @@
     },
     refreshContent: function(component, event, helper) {
         try{
-            console.log('refreshContent');
             $A.get("e.force:refreshView").fire();
         } catch(e) {
             console.log(e);

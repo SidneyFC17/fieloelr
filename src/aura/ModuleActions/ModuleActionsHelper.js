@@ -1,7 +1,6 @@
 ({
     getHeaderActions: function(component) {
         try {
-            console.log('getHeaderActions');
             var moduleWrapper = component.get('v.moduleWrapper');
             var courseWrapper = component.get('v.courseWrapper');
             var course = component.get('v.course');
@@ -58,7 +57,6 @@
     },
     getBodyActions: function(component) {
         try{
-            console.log('getBodyActions');
             var moduleWrapper = component.get('v.moduleWrapper');
             var courseWrapper = component.get('v.courseWrapper');
             var location = component.get('v.location');
