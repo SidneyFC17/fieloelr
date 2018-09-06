@@ -229,7 +229,7 @@ global class QuestionService {
 			throw e;
 		}
 
-		SObjectType convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
+		 convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
             SecurityUtils.checkObjectIsReadable(convertType);
 
 

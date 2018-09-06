@@ -339,7 +339,7 @@ public class MockUpFactory {
 
         SObjectType convertType = Schema.getGlobalDescribe().get('ModuleDependency__c');
         	    SecurityUtils.checkObjectIsReadable(convertType);
-         SObjectType convertType = Schema.getGlobalDescribe().get('Module__c');
+        convertType = Schema.getGlobalDescribe().get('Module__c');
         	    SecurityUtils.checkObjectIsReadable(convertType);
 
         List<ModuleDependency__c> moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM ModuleDependency__c];
@@ -364,7 +364,7 @@ public class MockUpFactory {
 
         update modulesMap.values();
 
-         SObjectType convertType = Schema.getGlobalDescribe().get('Course__c');
+          convertType = Schema.getGlobalDescribe().get('Course__c');
         	    SecurityUtils.checkObjectIsReadable(convertType);
 
         Map<Id, Course__c> courses = new Map<Id, Course__c>([SELECT Id FROM Course__c]);
@@ -377,7 +377,7 @@ public class MockUpFactory {
 
         SObjectType convertType = Schema.getGlobalDescribe().get('ModuleDependency__c');
         	    SecurityUtils.checkObjectIsReadable(convertType);
-        SObjectType convertType = Schema.getGlobalDescribe().get('Module__c');
+         convertType = Schema.getGlobalDescribe().get('Module__c');
         	    SecurityUtils.checkObjectIsReadable(convertType);
 
         List<ModuleDependency__c> moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM ModuleDependency__c];
@@ -400,7 +400,7 @@ public class MockUpFactory {
             }
         }
 
-        SObjectType convertType = Schema.getGlobalDescribe().get('Course__c');
+         convertType = Schema.getGlobalDescribe().get('Course__c');
         	    SecurityUtils.checkObjectIsReadable(convertType);
 
         Map<Id, Course__c> courses = new Map<Id, Course__c>([SELECT Id FROM Course__c]);

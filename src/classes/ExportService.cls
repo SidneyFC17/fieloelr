@@ -322,7 +322,7 @@ public class ExportService{
 
             FieloPLT__Program__c program = ProgramService.getActiveProgram();
 
-            SObjectType convertType = Schema.getGlobalDescribe().get('RecordType');
+             convertType = Schema.getGlobalDescribe().get('RecordType');
         	    SecurityUtils.checkObjectIsReadable(convertType);
 
             Id metasegmentRTId = [SELECT Id, Name, DeveloperName FROM RecordType WHERE SObjectType = 'FieloPLT__Segment__c' AND DeveloperName =: 'Metasegment'].Id;
