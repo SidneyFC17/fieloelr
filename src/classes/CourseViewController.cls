@@ -83,6 +83,11 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 		try{
+
+			SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__PageSettings__c');
+        	    SecurityUtils.checkObjectIsReadable(convertType);  
+
+
 			cloneSettings = [SELECT Id, Name, FieloPLT__Sections__c FROM FieloPLT__PageSettings__c WHERE FieloPLT__Type__c = 'Clone' AND FieloPLT__Object__c = 'FieloELR__Course__c' LIMIT 1];
 			cloneSettings.FieloPLT__Sections__c = '[' + cloneSettings.FieloPLT__Sections__c + ']';
 			cloneSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(cloneSettings.FieloPLT__Sections__c, record.Program__c);

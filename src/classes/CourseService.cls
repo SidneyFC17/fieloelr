@@ -62,9 +62,14 @@ global class CourseService {
 	public static void createFromModel( Course__c record, Id modelId){
         if ( !String.isBlank(modelId ) ) {
             SavePoint sp;
-            try {            
+            try {         
+
+				SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Model__c');
+        	    SecurityUtils.checkObjectIsReadable(convertType);  
+
                 FieloPLT__Model__c selectModel = [SELECT Id, FieloPLT__Icon__c, Name, FieloPLT__Description__c, FieloPLT__JSON__c, FieloPLT__Type__c, FieloPLT__Category__c FROM FieloPLT__Model__c WHERE FieloPLT__Type__c = 'Course' AND ID = :modelId ];
-                List<ExportService.MultiSegmentRelation> multiSegmentRelations = new List<ExportService.MultiSegmentRelation>();
+                
+				List<ExportService.MultiSegmentRelation> multiSegmentRelations = new List<ExportService.MultiSegmentRelation>();
                 SObjectUnitOfWork uow = ExportService.importData( selectModel.FieloPLT__JSON__c, multiSegmentRelations);
                 Map<String,Schema.SObjectField> fieldMap = record.getSObjectType().getDescribe().fields.getMap();
                 

@@ -26,6 +26,11 @@ public class AnswerOptionsSelector extends SObjectSelector {
     }
 
     public List<AggregateResult> selectByQuestionGroupByQuestion(Set<Id> questionIds) {
+
+        SObjectType convertType = Schema.getGlobalDescribe().get('AnswerOption__c');
+        SecurityUtils.checkObjectIsReadable(convertType);
+
         return [SELECT MAX(Order__c) order, Question__c FROM AnswerOption__c WHERE Question__c in : questionIds GROUP BY Question__c];
+    
     }
 }

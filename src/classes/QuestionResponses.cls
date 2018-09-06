@@ -31,6 +31,9 @@ public class QuestionResponses extends SObjectDomain {
             }
         }
 
+        SObjectType convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
+            SecurityUtils.checkObjectIsReadable(convertType);
+
         List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, ExternalKey__c FROM QuestionResponse__c WHERE ExternalKey__c in : qrKeys GROUP BY ExternalKey__c];
         Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
         for(AggregateResult qr : aggResult){
