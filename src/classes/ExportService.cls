@@ -396,7 +396,7 @@ public class ExportService{
                         segmentsByName.put(segment.Name, segment);
                     }
 
-                    SObjectType convertType = Schema.getGlobalDescribe().get('Course__c');
+                     convertType = Schema.getGlobalDescribe().get('Course__c');
         	             SecurityUtils.checkObjectIsReadable(convertType);
 
                     for(Course__c course : [SELECT Name, Id FROM Course__c WHERE Program__c =: program.Id]){
