@@ -566,7 +566,7 @@ global class CourseService {
 	
 	public static void testTemporalTriggers(){
 		try{
-			if(Schema.sObjectType.AnswerOption__c.isUpdateable()){
+			if(Schema.sObjectType.AnswerOption__c.isCreateable()){
             	insert new AnswerOption__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -574,7 +574,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.Answer__c.isUpdateable()){
+			if(Schema.sObjectType.Answer__c.isCreateable()){
             	insert new Answer__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -582,7 +582,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.CourseDependency__c.isUpdateable()){
+			if(Schema.sObjectType.CourseDependency__c.isCreateable()){
             	insert new CourseDependency__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -590,7 +590,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.Course__c.isUpdateable()){
+			if(Schema.sObjectType.Course__c.isCreateable()){
             	insert new Course__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -598,7 +598,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.CourseStatus__c.isUpdateable()){
+			if(Schema.sObjectType.CourseStatus__c.isCreateable()){
             	insert new CourseStatus__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -606,7 +606,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.ModuleDependency__c.isUpdateable()){
+			if(Schema.sObjectType.ModuleDependency__c.isCreateable()){
             	insert new ModuleDependency__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -614,7 +614,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.ModuleResponse__c.isUpdateable()){
+			if(Schema.sObjectType.ModuleResponse__c.isCreateable()){
             	insert new ModuleResponse__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -622,7 +622,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.Module__c.isUpdateable()){
+			if(Schema.sObjectType.Module__c.isCreateable()){
             	insert new Module__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -630,7 +630,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.Question__c.isUpdateable()){
+			if(Schema.sObjectType.Question__c.isCreateable()){
             	insert new Question__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -638,7 +638,7 @@ global class CourseService {
 		}catch(Exception e){}
 
 		try{
-			if(Schema.sObjectType.QuestionResponse__c.isUpdateable()){
+			if(Schema.sObjectType.QuestionResponse__c.isCreateable()){
             	insert new QuestionResponse__c();
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
