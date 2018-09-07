@@ -31,6 +31,9 @@ public class ProgramService {
     public static Map<Id,FieloPLT__Program__c> getPrograms(){
 
         if(programMap == null){
+            SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Program__c');
+            SecurityUtils.checkObjectIsReadable(convertType);
+
             programMap = new Map<Id, FieloPLT__Program__c>([SELECT Id, Name FROM FieloPLT__Program__c]);
         }
         return programMap;

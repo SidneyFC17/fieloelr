@@ -195,13 +195,13 @@ public with sharing class FormQuestionManageController {
 	        sp = Database.setSavepoint();
 	        
 
-			if(Schema.sObjectType.FieloELR__Module__c.isCreateable()){
+			if(Schema.sObjectType.FieloELR__Module__c.isUpdateable()){
            		update (FieloELR__Module__c) module;
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
           }
 
-		  if(Schema.sObjectType.FieloELR__Question__c.isCreateable()){
+		  if(Schema.sObjectType.FieloELR__Question__c.isUpdateable()){
             	update (List<FieloELR__Question__c>) questions;
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);

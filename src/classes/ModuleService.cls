@@ -18,8 +18,17 @@ global class ModuleService {
 		
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType,QuestionResponse__c.SObjectType});
 		ModuleResponse__c moduleResponse;
+
+
 		try{
-			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c, (SELECT Id FROM QuestionResponses__r) FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+
+
+			if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
+        		moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c, (SELECT Id FROM QuestionResponses__r) FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+           }
+
 			moduleResponse.Date__c = System.today();
 			moduleResponse.NumberOfAttempt__c++;
 			moduleResponse.IsApproved__c = false;
@@ -154,7 +163,15 @@ global class ModuleService {
 			throw e;
 		}
 
-		return [SELECT Id, Name, Member__c, Module__c, IsSubmitted__c, IsApproved__c, GradePercent__c FROM ModuleResponse__c WHERE Id =: moduleResponse.Id];
+		ModuleResponse__c module;
+
+		if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
+
+			 module = [SELECT Id, Name, Member__c, Module__c, IsSubmitted__c, IsApproved__c, GradePercent__c FROM ModuleResponse__c WHERE Id =: moduleResponse.Id limit 1];
+		}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+		return module;
 	}
 
 	global class ModuleResponseResult{
@@ -216,6 +233,7 @@ global class ModuleService {
 					responsesByQuestion.put(qr.Question__c, new List<QuestionResponse__c>{qr});
 				}
 			}
+
 			
 			Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
 			fieldsQuestionClone.add('FieloELR__Type__c');
