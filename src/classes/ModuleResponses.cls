@@ -424,7 +424,7 @@ public class ModuleResponses extends SObjectDomain {
 
         if(!mrKeys.isEmpty()){
 
-            SObjectType convertType = Schema.getGlobalDescribe().get('ModuleResponse__c');
+            SObjectType convertType = Schema.getGlobalDescribe().get('FieloELR__ModuleResponse__c');
         	    SecurityUtils.checkObjectIsReadable(convertType);
 
             List<AggregateResult> aggResult = [SELECT MAX(NumberOfApprove__c) approveNumber, ExternalKey__c FROM ModuleResponse__c WHERE ExternalKey__c in : mrKeys GROUP BY ExternalKey__c];

@@ -30,9 +30,6 @@ public class QuestionResponses extends SObjectDomain {
                 questionResp.addError(Label.QuestionFieldRequired);
             }
         }
-
-        SObjectType convertType = Schema.getGlobalDescribe().get('FieloELR__QuestionResponse__c');
-            SecurityUtils.checkObjectIsReadable(convertType);
             
 
         List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, ExternalKey__c FROM QuestionResponse__c WHERE ExternalKey__c in : qrKeys GROUP BY ExternalKey__c];
