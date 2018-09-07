@@ -31,6 +31,12 @@ public with sharing class BackEndProgramSelectorController {
 
     public String programsViewId {
         get{
+
+            SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Program__c');
+            SecurityUtils.checkObjectIsReadable(convertType);
+
+            
+
             ApexPages.StandardSetController menuSSC = new ApexPages.StandardSetController([SELECT Name FROM FieloPLT__Program__c LIMIT 1]);
             List<SelectOption> ListViews = menuSSC.getListViewOptions();
             for(SelectOption w : ListViews ){

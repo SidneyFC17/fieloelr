@@ -10,6 +10,10 @@ public with sharing class PhotoUploadController {
         if ( folderId == null ) {
             Folder folder;
             List<String> folderNames = folderUniqueName.split( '__' );
+
+            SObjectType convertType = Schema.getGlobalDescribe().get('Folder');
+            SecurityUtils.checkObjectIsReadable(convertType);
+
             if ( folderNames.size() == 1 ) {
                 folder = [SELECT Id FROM Folder WHERE DeveloperName =: folderUniqueName];
             } else {
@@ -23,6 +27,10 @@ public with sharing class PhotoUploadController {
     public List<PicklistController.Entry>  existingDocuments { get {
         if ( existingDocuments == null ) {
             existingDocuments = new List<PicklistController.Entry>();
+
+            SObjectType convertType = Schema.getGlobalDescribe().get('Document');
+            SecurityUtils.checkObjectIsReadable(convertType);
+
             for ( Document d : [SELECT Id, Name FROM Document WHERE folderId = :folderId ORDER BY LastModifiedDate DESC LIMIT 255] ) {
                existingDocuments.add( new PicklistController.Entry(d.Id, d.Name));
             }
