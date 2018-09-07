@@ -32,7 +32,11 @@ public class QuestionResponses extends SObjectDomain {
         }
             
 
+        if(!Schema.sObjectType.QuestionResponse__c.isAccessible())
+            throw new FieloException(Label.CannotAccessRecords);
+
         List<AggregateResult> aggResult = [SELECT MAX(NumberOfAttempt__c) attemptNumber, ExternalKey__c FROM QuestionResponse__c WHERE ExternalKey__c in : qrKeys GROUP BY ExternalKey__c];
+        
         Map<String,Decimal> maxNumbByKey = new Map<String,Decimal>();
         for(AggregateResult qr : aggResult){
             maxNumbByKey.put((String)qr.get('FieloELR__ExternalKey__c'), (Decimal)qr.get('attemptNumber'));
