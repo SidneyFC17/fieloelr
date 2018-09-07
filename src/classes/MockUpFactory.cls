@@ -60,8 +60,6 @@ public class MockUpFactory {
     public static List<FieloPLT__Segment__c> createSegments(String basename, Integer count, String type){
         List<FieloPLT__Segment__c> results = new List<FieloPLT__Segment__c>();
 
-        SObjectType convertType = Schema.getGlobalDescribe().get('RecordType');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
 
         Id rtId = [SELECT Id FROM RecordType WHERE DeveloperName =: type].Id;
         for(Integer x = 0; x < count; x++){
@@ -337,11 +335,6 @@ public class MockUpFactory {
     public static void activateCourse() {
         Map<Id, Module__c> modulesMap = new Map<Id, Module__c>();
 
-        SObjectType convertType = Schema.getGlobalDescribe().get('ModuleDependency__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
-        convertType = Schema.getGlobalDescribe().get('Module__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
-
         List<ModuleDependency__c> moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM ModuleDependency__c];
         List<Module__c> modules = [SELECT Id FROM Module__c];
 
@@ -364,9 +357,6 @@ public class MockUpFactory {
 
         update modulesMap.values();
 
-          convertType = Schema.getGlobalDescribe().get('Course__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
-
         Map<Id, Course__c> courses = new Map<Id, Course__c>([SELECT Id FROM Course__c]);
 
         CourseService.activateCourses(courses.keySet());
@@ -375,10 +365,6 @@ public class MockUpFactory {
     public static void inactivateCourse() {
         Map<Id, Module__c> modulesMap = new Map<Id, Module__c>();
 
-        SObjectType convertType = Schema.getGlobalDescribe().get('ModuleDependency__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
-         convertType = Schema.getGlobalDescribe().get('Module__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
 
         List<ModuleDependency__c> moduleDependencies = [SELECT Id, Module__r.Course__r.Id, Module__r.Id, Module__r.Name, Predecessor__r.Id, Predecessor__r.Name FROM ModuleDependency__c];
         List<Module__c> modules = [SELECT Id FROM Module__c];
@@ -400,8 +386,7 @@ public class MockUpFactory {
             }
         }
 
-         convertType = Schema.getGlobalDescribe().get('Course__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
+
 
         Map<Id, Course__c> courses = new Map<Id, Course__c>([SELECT Id FROM Course__c]);
 
@@ -496,8 +481,6 @@ public class MockUpFactory {
         }
         insert questionResponses;
 
-        SObjectType convertType = Schema.getGlobalDescribe().get('AnswerOptions__r');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
 
         Map<Id, Question__c> questionMap = new Map<Id, Question__c>([SELECT Id, Type__c, (SELECT Id, AnswerOptionText__c, MatchingText__c, IsCorrect__c FROM AnswerOptions__r) FROM Question__c WHERE Id in : new Map<Id,Question__c>(moduleWrapper.questions).keySet()]);
         List<QuestionResponse__c> needUpdate = new List<QuestionResponse__c>();
