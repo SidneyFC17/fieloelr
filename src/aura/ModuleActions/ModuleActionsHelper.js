@@ -182,7 +182,13 @@
                     moduleResponse = moduleResponse[0];
                 }
             } else {
-                moduleResponse = moduleWrapper.moduleResponses[moduleWrapper.moduleResponses.length-1];
+                var lastAttempt = Math.max.apply(Math, moduleWrapper.moduleResponses.map(function(mr) { return mr.FieloELR__NumberOfAttempt__c; }));
+                moduleResponse = moduleWrapper.moduleResponses.filter(function(mr) {
+                    return mr.FieloELR__NumberOfAttempt__c == lastAttempt;
+                });
+                if (moduleResponse.length == 1) {
+                    moduleResponse = moduleResponse[0];
+                }
             }
             if (moduleResponse) {
                 if (moduleResponse.Id) {

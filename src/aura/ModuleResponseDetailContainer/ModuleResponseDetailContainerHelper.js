@@ -2,7 +2,6 @@
     getModuleData : function(component) {
         try{
             var action = component.get('c.getModule');
-            var moduleId = component.get('v.recordId');
             var member = component.get('v.member');
             var moduleResponseResult = component.get('v.moduleResponseResult');
             var moduleId;
@@ -33,6 +32,12 @@
                             component.set('v.moduleResponses', moduleResponses);
                             if (moduleResponses[0]) {
                                 component.set('v.courseStatus', moduleResponses[0].FieloELR__CourseStatus__r);
+                            }
+                            var moduleResponse = moduleResponses.filter(function(mr) {
+                                return mr.Id == moduleResponseResult.moduleResponse.Id;
+                            });
+                            if (moduleResponse.length == 1) {
+                                component.set('v.moduleResponse', moduleResponse[0]);
                             }
                             this.getFirstApproveModuleResponse(component);
                             this.getLastModuleResponse(component);
@@ -150,7 +155,6 @@
                 if (component.isValid() && state === 'SUCCESS') {
                     try {
                         var moduleResponseResult = JSON.parse(response.getReturnValue());
-                        // console.log(JSON.stringify(ModuleResponseResult, null, 2));
                         component.set('v.moduleResponseResult', moduleResponseResult);
                         this.getModuleData(component);
                     } catch(e) {
@@ -231,7 +235,6 @@
                         approvedModules.push(mr.FieloELR__Module__c);
                     }
                 });
-                console.log(JSON.stringify(approvedModules, null, 2));
                 var approvedModulesSet = new Set(approvedModules);
                 var hasNext = false;
                 if (approvedModules.length == 0 && modules.length > 0) {
@@ -269,7 +272,6 @@
             if (moduleResponses) {
                 if (moduleResponses.length == 1) {
                     component.set('v.firstApproveModuleResponse', moduleResponses[0]);
-                    component.set('v.moduleResponse', moduleResponses[0]);
                 }
             }
             component.set('v.moduleResponseReady', true);
@@ -293,9 +295,6 @@
             if (moduleResponses) {
                 if (moduleResponses.length == 1) {
                     component.set('v.lastModuleResponse', moduleResponses[0]);
-                    if (!component.get('v.moduleResponse').Id) {
-                        component.set('v.moduleResponse', moduleResponses[0])
-                    }
                 }
             }
             component.set('v.moduleResponseReady', true);

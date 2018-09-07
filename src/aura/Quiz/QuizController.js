@@ -46,17 +46,22 @@
         try{
             var questionComps = component.find('question-card');
             if (questionComps) {
-                questionComps.forEach( function(cmp) {
-                    cmp.toggle(component.get('v.showQuestionContent'));
-                });    
+                if (!(questionComps instanceof Array)) {
+                    questionComps.toggle(component.get('v.showQuestionContent'));
+                } else {
+                    questionComps.forEach( function(cmp) {
+                        cmp.toggle(component.get('v.showQuestionContent'));
+                    }); 
+                }
             } else {
                 var questionComp = component.find('unique-question-card')
                 if (questionComp instanceof Array) {
                     questionComp = questionComp[0];
                 }
-                questionComp.toggle(component.get('v.showQuestionContent'));
+                if (questionComp) {
+                	questionComp.toggle(component.get('v.showQuestionContent'));
+                }
             }
-            
             component.set('v.showQuestionContent', !component.get('v.showQuestionContent'));
         } catch(e) {
             console.log(e);

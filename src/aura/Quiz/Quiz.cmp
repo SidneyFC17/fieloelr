@@ -53,7 +53,6 @@
                 </aura:if>
                 <aura:set attribute="footer">
                     <div class="slds-p-top--small">
-                        
                         <aura:if isTrue="{!v.showActions}">
                             <aura:if isTrue="{!v.module.FieloELR__QuestionDisplayMode__c == 'One by one'}">
                                 <lightning:button variant="brand" onclick="{!c.callSubmitQuestion}" label="{!$Label.c.SubmitResponse}" />
@@ -62,9 +61,6 @@
                                 <lightning:button variant="brand" onclick="{!c.callSubmitFullModule}" label="{!$Label.c.SubmitResponse}" />
                             </aura:if>
                         </aura:if>
-                        <!--
-       						<lightning:button variant="brand" onclick="{!c.getQuestionAnswers}" label="Get Answers" />
-      					-->
                     </div>
                 </aura:set>
             </lightning:card>

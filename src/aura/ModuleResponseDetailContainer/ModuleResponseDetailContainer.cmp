@@ -70,7 +70,7 @@
                                                                coursePoints="{!v.coursePoints}"
                                                                pointFields="{!v.pointFields}"
                                                                module="{!v.module}"
-                                                               moduleResponse="{!v.moduleWrapper.isApproved ? v.firstApproveModuleResponse : v.lastModuleResponse}"
+                                                               moduleResponse="{!v.moduleResponse}"
                                                                firstApproveModuleResponse="{!v.firstApproveModuleResponse}"
                                                                lastModuleResponse="{!v.lastModuleResponse}"
                                                                fieldsMeta="{!v.fieldsMeta}"
