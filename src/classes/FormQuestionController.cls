@@ -268,21 +268,24 @@ public with sharing class FormQuestionController {
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
       String query = 'SELECT ' + fields;
+
       if (objectName == 'FieloELR__Question__c') {
+
+          if(!Schema.sObjectType.FieloELR__Question__c.isAccessible());
+            throw new FieloException(Label.CannotAccessRecords);
+
         query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__MatchingText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
       }
+
       query += ' FROM ' + objectName;
       query += ' WHERE ID = :recordId' ;
       query += ' LIMIT 1';
       List<sObject> result;
       
-     if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+       SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-       result = Database.query(query);
-
-    }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+        SecurityUtils.checkObjectIsReadable(convertType);
+        result = Database.query(query);
 
       if ( result.size() > 0 ) {
           return result.get(0);
