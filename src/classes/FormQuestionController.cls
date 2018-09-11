@@ -271,14 +271,14 @@ public with sharing class FormQuestionController {
 
       if (objectName == 'FieloELR__Question__c') {
 
-          if(!Schema.sObjectType.FieloELR__Question__c.isAccessible());
+          if(!Schema.sObjectType.FieloELR__Question__c.isAccessible())
             throw new FieloException(Label.CannotAccessRecords);
 
         query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__MatchingText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
       }
 
       query += ' FROM ' + objectName;
-      query += ' WHERE ID = :recordId' ;
+      query += ' WHERE ID = :recordId';
       query += ' LIMIT 1';
       List<sObject> result;
       
