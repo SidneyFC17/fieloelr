@@ -21,7 +21,7 @@ public with sharing class QuizController {
         } catch(Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
-    }s
+    }
 
     @AuraEnabled
     public static String submitModuleAndQuestionResponses(ModuleResponse__c moduleResponse, String questionWrappers) {
