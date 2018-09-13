@@ -50,19 +50,12 @@
 		<members>FieloPLT__Model__c.FieloPLT__Type__c</members>
 		<members>FieloPLT__EmailAlert__c.CourseStatus__c</members>
 		<members>FieloPLT__EmailAlert__c.ModuleResponse__c</members>
+		<members>FieloPLT__PublicSettings__c.EnableEditingWhileActive__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
 		<members>*</members>
 		<name>StaticResource</name>
-	</types>
-	<types>
-		<members>*</members>
-		<name>MatchingRules</name>
-	</types>
-	<types>
-		<members>*</members>
-		<name>DuplicateRule</name>
 	</types>
 	<types>
 		<members>*</members>

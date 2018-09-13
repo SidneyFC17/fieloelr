@@ -16,23 +16,57 @@ global class ModuleService {
 	//Take module
 	global static ModuleWrapper takeModule(Id moduleId, Id memberId, Set<String> fieldsModule, Set<String> fieldsQuestion, Set<String> fieldsAnswerOption) {
 		
-		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType});
+		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType,QuestionResponse__c.SObjectType});
 		ModuleResponse__c moduleResponse;
+
+
 		try{
-			moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+
+
+			if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
+        		moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c, (SELECT Id FROM QuestionResponses__r) FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+           }
+
+			moduleResponse.Date__c = System.today();
 			moduleResponse.NumberOfAttempt__c++;
+			moduleResponse.IsApproved__c = false;
+			moduleResponse.CorrectQuestions__c = 0;
+			moduleResponse.IncorrectQuestions__c = 0;
+			moduleResponse.TotalQuestions__c = 0;
+			List<QuestionResponse__c> questionResponsesToDelete = new List<QuestionResponse__c>();
+			for(QuestionResponse__c q : moduleResponse.QuestionResponses__r) {
+				questionResponsesToDelete.add(new QuestionResponse__c(Id=q.Id));
+			}
+			uow.registerDeleted(questionResponsesToDelete);
 			uow.registerDirty(moduleResponse);
 		}catch(Exception e){
 			moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
 			uow.registerNew(moduleResponse);
 		}
-		uow.commitWork();
+
+         if(Schema.sObjectType.QuestionResponse__c.isDeletable() && Schema.sObjectType.ModuleResponse__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable() ){
+            uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+		
 
 		Set<String> fieldsModuleClone = new Set<String>(fieldsModule);
 		fieldsModuleClone.add('FieloELR__QuestionPool__c');
 		String moduleQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleClone), ',');
 		moduleQuery += ' FROM Module__c WHERE Id =: moduleId ';
-		Module__c module = Database.query(moduleQuery);
+
+		Module__c module;
+
+		if(Schema.sObjectType.Module__c.isAccessible()){
+
+		module = Database.query(moduleQuery);
+
+		}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
 
 		Set<String> fieldsQuestionClone = new Set<String>();
 		String questionQuery = 'SELECT ';
@@ -71,7 +105,15 @@ global class ModuleService {
 			Integer currentIndex;
 	    	string currentMatchingText;
 	    	Integer randomIndex;
+
+			if(Schema.sObjectType.Question__c.isAccessible()){
+			
 			questions = Database.query(questionQuery);
+			
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+			
 			for(Question__c q : questions){
 				// Shuffle Answer Options Matching Text
 				if(q.Type__c == 'Matching Options'){
@@ -109,13 +151,27 @@ global class ModuleService {
 		moduleResponse.IsSubmitted__c = true;
 		uow.registerDirty(moduleResponse);
 		try{
-			uow.commitWork();
+
+			if(Schema.sObjectType.ModuleResponse__c.isCreateable()){
+				uow.commitWork();
+			}else{
+            throw new FieloException(Label.CannotInsertRecords);
+          }
+			
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;
 		}
 
-		return [SELECT Id, Name, Member__c, Module__c, IsSubmitted__c, IsApproved__c, GradePercent__c FROM ModuleResponse__c WHERE Id =: moduleResponse.Id];
+		ModuleResponse__c module;
+
+		if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
+
+			 module = [SELECT Id, Name, Member__c, Module__c, IsSubmitted__c, IsApproved__c, GradePercent__c FROM ModuleResponse__c WHERE Id =: moduleResponse.Id limit 1];
+		}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+		return module;
 	}
 
 	global class ModuleResponseResult{
@@ -128,7 +184,6 @@ global class ModuleService {
 		}
 
 		public void addQuestion(QuestionService.QuestionResponseResult qWrapper){
-			System.debug(this.questions.add(qWrapper));
 			this.questions.add(qWrapper);
 		}
 	}
@@ -143,7 +198,17 @@ global class ModuleService {
 		fieldsModuleResponseClone.add('FieloELR__IsApproved__c');
 		String moduleResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsModuleResponseClone), ',');
 		moduleResponseQuery += ' FROM ModuleResponse__c WHERE Id =: moduleResponseId ';
-		ModuleResponse__c moduleResponse = Database.query(moduleResponseQuery);
+
+		ModuleResponse__c moduleResponse;
+
+		if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
+
+		moduleResponse = Database.query(moduleResponseQuery);
+
+		}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
 		ModuleResponseResult moduleResponseWrapper = new ModuleResponseResult(moduleResponse);
 
 		if(fieldsQuestion != null){
@@ -152,7 +217,13 @@ global class ModuleService {
 			Set<String> fieldsAnswer = new Set<String>{'AnswerOption__c','TextValue__c'};
 			questionResponseQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswer), ',') + ' FROM Answers__r)';
 			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId ORDER BY NumberOfAttempt__c';
-			List<QuestionResponse__c> questionResponses = Database.query(questionResponseQuery);
+			List<QuestionResponse__c> questionResponses;
+
+			if(Schema.sObjectType.QuestionResponse__c.isAccessible()){
+				questionResponses = Database.query(questionResponseQuery);
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
 
 			Map<Id,List<QuestionResponse__c>> responsesByQuestion = new Map<Id,List<QuestionResponse__c>>();
 			for(QuestionResponse__c qr : questionResponses){
@@ -162,6 +233,7 @@ global class ModuleService {
 					responsesByQuestion.put(qr.Question__c, new List<QuestionResponse__c>{qr});
 				}
 			}
+
 			
 			Set<String> fieldsQuestionClone = new Set<String>(fieldsQuestion);
 			fieldsQuestionClone.add('FieloELR__Type__c');
@@ -176,11 +248,19 @@ global class ModuleService {
 			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
 
 			Boolean showDetailedAnswers; 
+
+			if(Schema.sObjectType.Question__c.isAccessible()){
+
 			for(Question__c question : Database.query(questionQuery)){
 				showDetailedAnswers =
 					responsesByQuestion.get(question.Id)[responsesByQuestion.get(question.Id).size()-1].IsCorrect__c;
 				moduleResponseWrapper.addQuestion(new QuestionService.QuestionResponseResult(question, responsesByQuestion.get(question.Id), showDetailedAnswers));
 			}
+
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
 		}
 
 		return moduleResponseWrapper;

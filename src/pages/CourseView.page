@@ -84,6 +84,7 @@
             tools="{!rel.FieloPLT__Tools__c}"
             actions="{!rel.FieloPLT__Actions__c}"
             dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+            async="true"
             />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
                 <apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__Module__c' && relForm.FieloPLT__Type__c = 'Edit'}">
@@ -125,6 +126,7 @@
                 tools="{!rel.FieloPLT__Tools__c}"
                 actions="{!rel.FieloPLT__Actions__c}"
                 dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+                async="true"
                 />
             <apex:repeat value="{!relatedFormsSettings}" var="relForm">
                 <apex:panelGroup rendered="{!relForm.FieloPLT__Object__c = 'FieloELR__CourseDependency__c' && relForm.FieloPLT__Type__c = 'Edit'}">
@@ -157,6 +159,7 @@
                 actions="{!rel.FieloPLT__Actions__c}"
                 dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
                 nameField="FieloELR__Member__r.Name"
+                async="true"
                 />
         </apex:panelGroup>
         <apex:panelGroup rendered="{!rel.FieloPLT__TargetObject__c != 'FieloELR__CourseDependency__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__Module__c' && rel.FieloPLT__TargetObject__c != 'FieloELR__CourseStatus__c'}">
@@ -170,11 +173,14 @@
                 tools="{!rel.FieloPLT__Tools__c}"
                 actions="{!rel.FieloPLT__Actions__c}"
                 dataOrderBy="{!rel.FieloPLT__OrderBy__c}"
+                async="true"
                 />
         </apex:panelGroup>
     </apex:repeat>
     </div>
-    <c:BackendFooter namespace="FieloELR" helpers="'FieloForm','FieloFileUpload','FieloPhotoUpload','FieloPaginator','FieloRecentRecords','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder'" externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
+    <c:BackendFooter namespace="FieloELR"
+        helpers="'FieloForm','FieloFileUpload','FieloPaginator','FieloRecentRecords','FieloFilter','FieloRelatedRecords','FieloELearning','FieloRecentReorder'"
+        externalJS="{!URLFOR($Resource.FieloPLT__FieloPlt_Salesforce, 'scripts/core.js')},{!URLFOR($Resource.FieloElr_Salesforce, 'scripts/core.js')}"/>
     <script type="text/javascript" src="{!URLFOR($Resource.FieloSalesforce_Backend_Custom, 'jquery/jquery-ui.min.js')}"></script>
     <link class="user" href="{!URLFOR($Resource.FieloSalesforce_Backend, 'cropper/cropper.css')}" rel="stylesheet" type="text/css"></link>
     <script src="{!URLFOR($Resource.FieloSalesforce_Backend, 'cropper/cropper.min.js')}" type="text/javascript"></script>

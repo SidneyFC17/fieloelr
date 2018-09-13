@@ -59,11 +59,20 @@ public  class Courses extends SObjectDomain{
                     course.Status__c = oldCourse.Status__c;
                 }
 
-                // When Active, no field can be edited
-                if((oldCourse.Status__c == 'Active' && course.Status__c == 'Active') ||
-                    (oldCourse.Status__c == 'Scheduled' && course.Status__c == 'Scheduled') ||
-                    (oldCourse.Status__c == 'Completed' && course.Status__c == 'Completed')) {
-                    addError(course, Label.ActiveCourseCannotBeEdited);
+               //get PublicSettings field that check if Edit Courses is authorized
+               FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+               Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+               //If the field is true, there is no check 
+               if(editCourseSettings == false  ){
+                    if((oldCourse.Status__c == 'Active' && course.Status__c == 'Active') ||
+                        (oldCourse.Status__c == 'Scheduled' && course.Status__c == 'Scheduled') ||
+                        (oldCourse.Status__c == 'Completed' && course.Status__c == 'Completed')) {
+                        addError(course, Label.ActiveCourseCannotBeEdited);
+                    }
+                }else if((course.FieloELR__ActiveModules__c != oldCourse.FieloELR__ActiveModules__c) ||
+                    (course.FieloELR__HasDependencies__c != oldCourse.FieloELR__HasDependencies__c) ||
+                    (course.FieloELR__KeyDependencies__c != oldCourse.FieloELR__KeyDependencies__c)){
+                    addError(course,'This field can\'t be edited');
                 }
 
                 // Date validation
@@ -95,7 +104,12 @@ public  class Courses extends SObjectDomain{
         // When the course is deleted, must delete related modules
         deleteCourseModules(coursesMap, uow);
 
-        uow.commitWork();
+        if(Schema.sObjectType.Course__c.isDeletable()){
+           uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+        
 
         Map<Id,SObject> deletedModules = uow.m_deletedMapByType.get('FieloELR__Module__c');
         for (Database.DeleteResult dr : uow.getResults(Module__c.SObjectType).deleteResults) {
@@ -153,7 +167,7 @@ public  class Courses extends SObjectDomain{
                 keySetDependencies = new Set<String>(course.KeyDependencies__c.split(','));
 
                 for (String key: keySetDependencies) {
-                    if (inactiveCoursesIds.contains(key.substring(0,15))) {
+                    if (inactiveCoursesIds.contains(key)) {
                         keySetDependencies.remove(key);
                     }
                 }
@@ -169,7 +183,12 @@ public  class Courses extends SObjectDomain{
         if(!coursesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
             uow.registerDirty(coursesMap.values());
-            uow.commitWork();
+
+            if(Schema.sObjectType.Course__c.isUpdateable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 
@@ -182,18 +201,18 @@ public  class Courses extends SObjectDomain{
         Map<Id,Course__c> coursesMap = new Map<Id,Course__c>();
         for(CourseDependency__c cd: cds) {
             if (cd.Course__r.KeyDependencies__c == null) {
-                cd.Course__r.KeyDependencies__c = String.valueOf(cd.Predecessor__c).substring(0, 15);
+                cd.Course__r.KeyDependencies__c = String.valueOf(cd.Predecessor__c);
                 cd.Course__r.HasDependencies__c = true;
                 coursesMap.put(cd.Course__c, cd.Course__r);
             } else {
                 keySetDependencies = new Set<String>(cd.Course__r.KeyDependencies__c.split(','));
 
-                if (!keySetDependencies.contains(String.valueOf(cd.Predecessor__c).substring(0, 15))) {
+                if (!keySetDependencies.contains(String.valueOf(cd.Predecessor__c))) {
                     if (!coursesMap.containsKey(cd.Course__c)) {
                         coursesMap.put(cd.Course__c, cd.Course__r);
                     }
 
-                    keySetDependencies.add(String.valueOf(cd.Predecessor__c).substring(0, 15));
+                    keySetDependencies.add(String.valueOf(cd.Predecessor__c));
                 
                     keyDependencies = new List<String>(keySetDependencies);
                     keyDependencies.sort();
@@ -206,7 +225,12 @@ public  class Courses extends SObjectDomain{
         if (!coursesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
             uow.registerDirty(coursesMap.values());
-            uow.commitWork();
+
+             if(Schema.sObjectType.Course__c.isUpdateable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 

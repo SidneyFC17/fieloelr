@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -51,6 +47,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>false</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
@@ -58,10 +55,10 @@
     <enableSharing>false</enableSharing>
     <enableStreamingApi>false</enableStreamingApi>
     <fields>
-        <fullName>Key__c</fullName>
-        <externalId>false</externalId>
-        <label>Key</label>
-        <length>30</length>
+        <fullName>ExternalKey__c</fullName>
+        <externalId>true</externalId>
+        <label>External Key</label>
+        <length>255</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -120,4 +117,5 @@
         <errorConditionFormula>Predecessor__r.Course__c   &lt;&gt;   Module__r.Course__c</errorConditionFormula>
         <errorMessage>Both modules must belong to the same course.</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

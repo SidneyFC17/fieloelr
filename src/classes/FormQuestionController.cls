@@ -32,7 +32,12 @@ public with sharing class FormQuestionController {
               query += ' FROM ' + csObjectName;
               query += ' WHERE Id = : recordId ';
               
-              recordObject = Database.query(query)[0];
+            SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
+
+        SecurityUtils.checkObjectIsReadable(convertType);
+
+            recordObject = Database.query(query)[0];
+
           } else {
               recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
           }
@@ -143,6 +148,11 @@ public with sharing class FormQuestionController {
                             query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
                         }
                         query += ' LIMIT 500';
+
+                     SObjectType convertType = describe.getReferenceTo().get(0);
+
+                    SecurityUtils.checkObjectIsReadable(convertType);
+
                         for ( SObject o : Database.query(query) ) {
                             // Substring para que matche con el multipicklist (para multisegment)
                             options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
@@ -164,7 +174,17 @@ public with sharing class FormQuestionController {
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName' ;
         query += ' LIMIT 1';
-        List<sObject> result = Database.query(query);
+        
+        List<sObject> result;
+
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+
+            result = Database.query(query);
+
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
         return (FieloPLT__PageSettings__c) result.get(0);
     }
 
@@ -210,8 +230,17 @@ public with sharing class FormQuestionController {
             }
 
             //done update in different uow to do the update before the insert of AOs to avoid validation rules.
-            uowUpdateAO.commitWork();
-            uow.commitWork();
+             if(Schema.sObjectType.FieloELR__AnswerOption__c.isUpdateable()){
+                        uowUpdateAO.commitWork();
+                    }else{
+                        throw new FieloException(Label.CannotInsertUpdateRecords);
+                    }
+
+                    if(Schema.sObjectType.FieloELR__Question__c.isCreateable()){
+                        uow.commitWork();
+                    }else{
+                        throw new FieloException(Label.CannotInsertRecords);
+                    }
 
           //TODO Crear Label DataSavedSuccessfully
           result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -239,13 +268,25 @@ public with sharing class FormQuestionController {
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
       String query = 'SELECT ' + fields;
+
       if (objectName == 'FieloELR__Question__c') {
+
+          if(!Schema.sObjectType.FieloELR__Question__c.isAccessible())
+            throw new FieloException(Label.CannotAccessRecords);
+
         query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__MatchingText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
       }
+
       query += ' FROM ' + objectName;
-      query += ' WHERE ID = :recordId' ;
+      query += ' WHERE ID = :recordId';
       query += ' LIMIT 1';
-      List<sObject> result = Database.query(query);
+      List<sObject> result;
+      
+       SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        SecurityUtils.checkObjectIsReadable(convertType);
+        result = Database.query(query);
+
       if ( result.size() > 0 ) {
           return result.get(0);
       }

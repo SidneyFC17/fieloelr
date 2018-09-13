@@ -21,7 +21,7 @@ public class ModuleDependencies extends SObjectDomain {
     private void setKeys(List<ModuleDependency__c> records) {
     	for(ModuleDependency__c moduleDependency : records) {
 			if(moduleDependency.Predecessor__c != null && moduleDependency.Module__c != null) {
-				moduleDependency.Key__c = String.valueOf(moduleDependency.Predecessor__c).substring(0, 15) + String.valueOf(moduleDependency.Module__c).substring(0, 15);   
+				moduleDependency.ExternalKey__c = String.valueOf(moduleDependency.Predecessor__c) + String.valueOf(moduleDependency.Module__c);
     		}
     	}
     }
@@ -30,7 +30,13 @@ public class ModuleDependencies extends SObjectDomain {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
         updateModules(records, uow);
         Modules.validateAdminFields = false;
-        uow.commitWork();
+
+        if(Schema.sObjectType.Module__c.isCreateable()){
+           uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
     }
 
     public override void onAfterDelete() {
@@ -38,7 +44,11 @@ public class ModuleDependencies extends SObjectDomain {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             updateModules(records, uow);
             Modules.validateAdminFields = false;
-            uow.commitWork();
+            if(Schema.sObjectType.Module__c.isCreateable()){
+                 uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }  
 
@@ -57,7 +67,7 @@ public class ModuleDependencies extends SObjectDomain {
 
         for(ModuleDependency__c moduledependency : moduleDependencies) {
             module = modulesMap.get(moduledependency.Module__c);
-            predecessor = String.valueOf(moduledependency.Predecessor__c).subString(0,15);
+            predecessor = String.valueOf(moduledependency.Predecessor__c);
             if(Trigger.IsInsert) {
                 // Add key
                 if (modulesMap.get(moduledependency.Predecessor__c).IsActive__c) {

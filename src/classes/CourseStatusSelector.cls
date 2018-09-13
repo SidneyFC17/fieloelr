@@ -23,26 +23,51 @@ public class CourseStatusSelector extends SObjectSelector {
     }
 
     public List<CourseStatus__c> selectByKey(Set<String> keys) {
-        return (List<CourseStatus__c>) Database.query(String.format(
+
+        
+      List<CourseStatus__c> listCourse;
+
+      if(Schema.sObjectType.CourseStatus__c.isAccessible()){	
+           
+           
+        listCourse = (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys ' +
+                  'WHERE ExternalKey__c IN : keys ' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                      }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
         public List<CourseStatus__c> selectByKeyCompleted(Set<String> keys) {
-        return (List<CourseStatus__c>) Database.query(String.format(
+        
+        List<CourseStatus__c> listCourse;
+
+        if(Schema.sObjectType.CourseStatus__c.isAccessible()){	
+           
+           
+        listCourse = (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
-                  'WHERE Key__c IN : keys and Progress__c = 100' +
+                  'WHERE ExternalKey__c IN : keys and Progress__c = 100' +
                   'ORDER BY {2}',
                 new List<String> {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 }

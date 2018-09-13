@@ -1,12 +1,11 @@
 public class CourseStatus extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
+    public static Set<Id> completedIds = new Set<Id>();
 
     public static Set<Id> completedCoursesIds = new Set<Id>();
     
     public static Boolean validateAdminFields = true;
     
-
-
     public CourseStatus(List<CourseStatus__c> records) {
         super(records);
     }
@@ -24,17 +23,20 @@ public class CourseStatus extends SObjectDomain {
     public override void onApplyDefaults() {
         for(CourseStatus__c cStatus : (List<CourseStatus__c>)records){
             cStatus.ApprovedModules__c = 0;
-            cStatus.Key__c = String.valueOf(cStatus.Course__c).subString(0,15) + String.valueOf(cStatus.Member__c).subString(0,15);
+            cStatus.NumberofTimesCompleted__c = 0;
+            cStatus.ExternalKey__c = String.valueOf(cStatus.Course__c) + String.valueOf(cStatus.Member__c);
         }
     }
 
     public override void onValidate() {
         // Validate that course predecessor has a course status progress at 100 per cent
-        validatePredecessorAndSegments(records);    
-        
-        // The course status cannot be created if the subscription mode of the course is "Automatic"
-        // Can be skipped if Admin       
+        validatePredecessorAndSegments(records);
+
         if(validateAdminFields) {
+            
+            validateActiveCourse(records);
+            // The course status cannot be created if the subscription mode of the course is "Automatic"
+            // Can be skipped if Admin       
             validateCourseStatusSubscriptionMode(records);
         }      
     }
@@ -90,7 +92,7 @@ public class CourseStatus extends SObjectDomain {
             Course__c course = coursesMap.get(courseStatus.Course__c);
             for(CourseDependency__c cd : course.PredecessorCourses__r){
                // Course ID of Predecessor +  Member ID of New Course Status
-               String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
+               String cskey = String.valueOf(cd.Predecessor__c) + String.valueOf(courseStatus.Member__c);
                keysPredecessors.add(cskey);
             }
 
@@ -109,10 +111,10 @@ public class CourseStatus extends SObjectDomain {
         }
 
         // Query to get all the course status of the predecessors 100 per cent
-        List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,Key__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
+        List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,ExternalKey__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
         Set<String> keysPredecessorsCompleted = new Set<String>();
         for(CourseStatus__c cs : predecessorCourses){
-            keysPredecessorsCompleted.add(cs.Key__c);
+            keysPredecessorsCompleted.add(cs.ExternalKey__c);
         }
             
         //Adding errors
@@ -128,7 +130,7 @@ public class CourseStatus extends SObjectDomain {
 
             //validate dependencies
             for(CourseDependency__c cd : course.PredecessorCourses__r){
-                String cskey = String.valueOf(cd.Predecessor__c).subString(0,15) + String.valueOf(courseStatus.Member__c).subString(0,15);
+                String cskey = String.valueOf(cd.Predecessor__c) + String.valueOf(courseStatus.Member__c);
                 if(!keysPredecessorsCompleted.contains(cskey)){
                     courseStatus.addError(Label.ValidateCourseStatusErrorPredecessorIncomplete);
                     break;
@@ -136,10 +138,28 @@ public class CourseStatus extends SObjectDomain {
             }
         }        
     }
+
+    public static void validateActiveCourse(List<CourseStatus__c> records) {
+        Set<Id> courseIds = new Set<Id>();
+        for (CourseStatus__c courseStatus : records){
+            courseIds.add(courseStatus.Course__c);
+        }
+
+        // Validate Active Courses
+        Map<Id, Course__c> courses = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__Status__c'}).selectById(courseIds));
+
+        for (CourseStatus__c courseStatus : records){
+            if( courses.get(courseStatus.Course__c).FieloELR__Status__c != 'Active') {
+                courseStatus.addError(Label.CourseStatusMustBeActive);
+            }
+        }
+    }
   
     public override void onValidate(Map<Id,SObject> existingRecords) {
         //before update
         if(validateAdminFields){
+            validateActiveCourse(records);
+
             for(CourseStatus__c courseStatus : (List<CourseStatus__c>)records){
                 if(!completedCoursesIds.contains(courseStatus.Id)){
                     if(courseStatus.CompletedDate__c != ((CourseStatus__c)(existingRecords.get(courseStatus.Id))).CompletedDate__c) {
@@ -153,8 +173,6 @@ public class CourseStatus extends SObjectDomain {
         }        
     }
 
-
-
     public override void onBeforeUpdate(Map<Id,SObject> existingRecords) {
         Set<Id> coursesIds = new Set<Id>();
         for(CourseStatus__c record : (List<CourseStatus__c>)records){
@@ -163,8 +181,15 @@ public class CourseStatus extends SObjectDomain {
         Map<Id, Course__c> coursesMap = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__ActiveModules__c'}).selectById(coursesIds));
         for(CourseStatus__c record : (List<CourseStatus__c>)records){
             if(record.ApprovedModules__c != ((CourseStatus__c)existingRecords.get(record.Id)).ApprovedModules__c && record.ApprovedModules__c == coursesMap.get(record.Course__c).FieloELR__ActiveModules__c){
-                record.CompletedDate__c = System.now();
-                completedCoursesIds.add(record.Id);
+                if (!completedCoursesIds.contains(record.Id)) {
+                    completedCoursesIds.add(record.Id);
+                    record.CompletedDate__c = System.now();
+                    if (record.NumberofTimesCompleted__c == null) {
+                        record.NumberofTimesCompleted__c = 0;
+                    } else {
+                        record.NumberofTimesCompleted__c++;
+                    }
+                }
             }
         }
     }
@@ -197,7 +222,11 @@ public class CourseStatus extends SObjectDomain {
         // When the course status is deleted, must delete related module responses
         deleteCourseStatusModuleResponses(courseStatusMap, uow);
 
-        uow.commitWork();
+         if(Schema.sObjectType.Course__c.isDeletable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
 
         Map<Id,SObject> deletedModuleResponses = uow.m_deletedMapByType.get('FieloELR__ModuleResponse__c');
         for (Database.DeleteResult dr : uow.getResults(ModuleResponse__c.SObjectType).deleteResults) {

@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -51,12 +47,23 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>ExternalKey__c</fullName>
+        <externalId>true</externalId>
+        <label>External Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>IsCorrect__c</fullName>
         <defaultValue>false</defaultValue>
@@ -72,16 +79,6 @@
         <label>Is Submitted</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Key__c</fullName>
-        <externalId>false</externalId>
-        <label>Key</label>
-        <length>30</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ModuleResponse__c</fullName>
@@ -169,4 +166,5 @@
         <errorConditionFormula>Question__r.Module__c !=  ModuleResponse__r.Module__c</errorConditionFormula>
         <errorMessage>The related question doesn&apos;t belong to this module.</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

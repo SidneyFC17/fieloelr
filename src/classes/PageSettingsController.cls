@@ -148,7 +148,11 @@ public with sharing abstract class PageSettingsController {
 
     public Set<String> getVisibilityFields(String objectName){
         Set<String> fields = new Set<String>();
-        for(FieloPLT__PageSettings__c ps : [SELECT Id, FieloPLT__Visibility__c FROM FieloPLT__PageSettings__c WHERE (FieloPLT__Type__c != 'Related - New' AND FieloPLT__Object__c =: objectName) OR (FieloPLT__Type__c = 'Related - New' AND FieloPLT__TargetObject__c =: objectName)]){
+
+
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+        	
+            for(FieloPLT__PageSettings__c ps : [SELECT Id, FieloPLT__Visibility__c FROM FieloPLT__PageSettings__c WHERE (FieloPLT__Type__c != 'Related - New' AND FieloPLT__Object__c =: objectName) OR (FieloPLT__Type__c = 'Related - New' AND FieloPLT__TargetObject__c =: objectName)]){
             try{
                 if( String.isNotBlank(ps.FieloPLT__Visibility__c) ){
                     for(FilterWrapper f : (List<FilterWrapper>)JSON.deserialize(ps.FieloPLT__Visibility__c, List<FilterWrapper>.class)){
@@ -159,6 +163,11 @@ public with sharing abstract class PageSettingsController {
                 system.debug(LoggingLevel.ERROR, 'INVALID JSON: ' + ps.FieloPLT__Visibility__c );
             }
         }
+
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+        
         return fields;
     }
 
@@ -729,7 +738,15 @@ public with sharing abstract class PageSettingsController {
         }
         // ORDER BY & LIMIT 
         query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 100 ';
-        return Database.query(query);
+        
+        List<FieloPLT__PageSettings__c> listPageSettings;
+
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+            listPageSettings =  Database.query(query);
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+        return listPageSettings;
     }
 
     private List<FieloPLT__PageSettings__c> getRelatedForms( Set<String> objects, Id programId ) {
@@ -742,8 +759,16 @@ public with sharing abstract class PageSettingsController {
             query += ' AND ( FieloPLT__Program__c = :programId OR FieloPLT__Program__c = null )';
         }
         // ORDER BY & LIMIT 
-        query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 100 ';            
-        return Database.query(query);        
+        query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 100 ';         
+
+        List<FieloPLT__PageSettings__c> listPageSettings;
+
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+            listPageSettings =  Database.query(query);
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+        return listPageSettings;       
     }   
 
     /***** METODOS STATICOS DE SOPORTE *****/
@@ -829,7 +854,13 @@ public with sharing abstract class PageSettingsController {
         // ORDER BY & LIMIT 
         query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 1 ';
 
-        List<FieloPLT__PageSettings__c> pageSetting = Database.query(query);
+        List<FieloPLT__PageSettings__c> pageSetting;
+        
+         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+            pageSetting =  Database.query(query);
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
 
         return pageSetting.isEmpty() ? null : pageSetting.get(0);       
     }
@@ -839,18 +870,41 @@ public with sharing abstract class PageSettingsController {
         List<FieloPLT__PageSettings__c> listPageSettings = new List<FieloPLT__PageSettings__c>();
 
         Set<String> profiles = new Set<String>();
+
+        if(Schema.sObjectType.PermissionSetAssignment.isAccessible()){
+
         for(PermissionSetAssignment psAssignment: [SELECT Id, PermissionSetId, PermissionSet.Name FROM PermissionSetAssignment WHERE AssigneeId =: UserInfo.getUserId()]){
             profiles.add(psAssignment.PermissionSet.Name);
         }
-        Profile profileRecord = [SELECT Name FROM Profile WHERE Id =: UserInfo.getProfileId()];
-        profiles.add(profileRecord.Name);
+
+         }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+        if(Schema.sObjectType.Profile.isAccessible()){
+
+            Profile profileRecord = [SELECT Name FROM Profile WHERE Id =: UserInfo.getProfileId()];
+            profiles.add(profileRecord.Name);
+
+         }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+           
+  
 
         Set<Id> pageSettingsIds = new Set<Id>();
         if(!recordTypes.isEmpty()){
+            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible())
+            throw new FieloException(Label.CannotAccessRecords);
+
             for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND (FieloPLT__RecordType__c = null OR FieloPLT__RecordType__c IN: recordTypes)]){
                 pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
             }
         }else{
+            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible())
+            throw new FieloException(Label.CannotAccessRecords);
+
             for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND FieloPLT__RecordType__c = null]){
                 pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
             }            
@@ -866,6 +920,8 @@ public with sharing abstract class PageSettingsController {
              query += ' ORDER BY FieloPLT__Type__c, FieloPLT__RecordType__c, FieloPLT__Order__c ASC LIMIT 100 ';
         }
 
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+
         for(FieloPLT__PageSettings__c pageSetting: Database.query(query)){
             if(pageSetting.FieloPLT__PageSettingsAssignments__r.isEmpty()){
                 listPageSettings.add(pageSetting);
@@ -873,6 +929,11 @@ public with sharing abstract class PageSettingsController {
                 listPageSettings.add(pageSetting);
             }            
         }
+
+        }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+        
         return listPageSettings;
     }
 }

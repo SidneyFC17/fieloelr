@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -53,6 +49,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>false</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
@@ -100,10 +97,10 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Key__c</fullName>
-        <externalId>false</externalId>
-        <label>Key</label>
-        <length>30</length>
+        <fullName>ExternalKey__c</fullName>
+        <externalId>true</externalId>
+        <label>External Key</label>
+        <length>255</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -122,6 +119,18 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>NumberofTimesCompleted__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Number of Times Completed</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Progress__c</fullName>
         <externalId>false</externalId>
         <formula>ApprovedModules__c / Course__r.ActiveModules__c</formula>
@@ -135,6 +144,11 @@
     </fields>
     <gender>Feminine</gender>
     <label>Course Status</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
     <nameField>
         <displayFormat>CS-{0000}</displayFormat>
         <label>Course Status Name</label>
@@ -152,7 +166,7 @@
     </validationRules>
     <validationRules>
         <fullName>CourseStatusMustBeActive</fullName>
-        <active>true</active>
+        <active>false</active>
         <errorConditionFormula>NOT(ISPICKVAL(Course__r.Status__c,&quot;Active&quot;))</errorConditionFormula>
         <errorDisplayField>Course__c</errorDisplayField>
         <errorMessage>Course Status must be related to a Course with the Status Active</errorMessage>
@@ -176,4 +190,5 @@
         <errorConditionFormula>Member__r.FieloPLT__Program__c !=  Course__r.Program__c</errorConditionFormula>
         <errorMessage>The member should belong to the Course&apos;s program.</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

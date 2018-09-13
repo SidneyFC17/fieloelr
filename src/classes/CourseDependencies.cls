@@ -13,7 +13,7 @@ public class CourseDependencies extends SObjectDomain{
     public override void onApplyDefaults(){
         for(CourseDependency__c courseDependency : (List<CourseDependency__c>)records){
             if (courseDependency.Course__c!=null && courseDependency.Predecessor__c!=null) {
-                courseDependency.Key__c = ((string)courseDependency.Course__c).substring(0, 15) + ((string)courseDependency.Predecessor__c).substring(0, 15);
+                courseDependency.ExternalKey__c = ((string)courseDependency.Course__c) + ((string)courseDependency.Predecessor__c);
             }
         }
     }
@@ -42,16 +42,29 @@ public class CourseDependencies extends SObjectDomain{
 
     public override void onAfterInsert() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
-        updateCourses(records, uow);
-        Courses.validateAdminFields = false;
-        uow.commitWork();
+        
+
+        if(Schema.sObjectType.Course__c.isCreateable()){
+            updateCourses(records, uow);
+            Courses.validateAdminFields = false;
+           uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+        
     }
 
     public override void onAfterDelete() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
-        updateCourses(records, uow);
-        Courses.validateAdminFields = false;
-        uow.commitWork();
+       
+
+        if(Schema.sObjectType.Course__c.isCreateable()){
+             updateCourses(records, uow);
+            Courses.validateAdminFields = false;
+           uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
     }  
 
     private void updateCourses(List<CourseDependency__c> courseDependencies, SObjectUnitOfWork uow) {
@@ -69,7 +82,7 @@ public class CourseDependencies extends SObjectDomain{
 
         for(CourseDependency__c coursedependency : courseDependencies) {
             course = coursesMap.get(coursedependency.Course__c);
-            predecessor = String.valueOf(coursedependency.Predecessor__c).subString(0,15);
+            predecessor = String.valueOf(coursedependency.Predecessor__c);
             if(Trigger.IsInsert) {
                 // Add key
                 if (coursesMap.get(coursedependency.Predecessor__c).Status__c == 'Active') {

@@ -38,7 +38,7 @@ public class AnswerOptions extends SObjectDomain {
                 questionIds.add(answerOption.Question__c);
             }
         }
-        
+         
         if(!questionIds.isEmpty()){
             List<AggregateResult> aggResult = new AnswerOptionsSelector().selectByQuestionGroupByQuestion(questionIds);
             Map<String,Decimal> maxNumbByQuestion = new Map<String,Decimal>();
@@ -59,6 +59,7 @@ public class AnswerOptions extends SObjectDomain {
                 }
             }
         }
+        
     }
 
     // General validations for a list of answers
@@ -78,12 +79,19 @@ public class AnswerOptions extends SObjectDomain {
 
             Map<Id, Module__c> modulesMap = new Map<Id, Module__c>(new ModulesSelector().selectByIdHavingModuleResponses(moduleResponses));
 
+            //get PublicSettings field that check if Edit Courses is authorized
+            FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+            Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+        
             for(AnswerOption__c answerOption : answerOptions) {
 
-                // If the module is active, answers cannot be deleted, updated or added.                                                                        
-                if(questionsMap.get(answerOption.Question__c).Module__r.IsActive__c) {
-                    answerOption.addError(Label.ValidateAnswerActiveModules);
-                    continue;
+                // If the module is active, answers cannot be deleted, updated or added. 
+                //If the field is true, there is no check 
+                if(editCourseSettings == false  ){                                                                           
+                    if(questionsMap.get(answerOption.Question__c).Module__r.IsActive__c) {
+                        answerOption.addError(Label.ValidateAnswerActiveModules);
+                        continue;
+                    }
                 }
 
                 // If the question type is "Matching Options", the format for Answer Text must be validated as {"xx":"yy"}
@@ -99,13 +107,13 @@ public class AnswerOptions extends SObjectDomain {
                 }
 
                 if( !questionsMap.get(answerOption.Question__c).QuestionsResponses__r.isEmpty()){
-                    if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
+                    if(Trigger.isDelete || ((Trigger.isInsert || Trigger.isUpdate) && editCourseSettings == false)) {
                         answerOption.addError(Label.CannotChangeAnsweredModules);
                     }
                 }
 
                 if (!modulesMap.get(questionsMap.get(answerOption.Question__c).Module__c).ModuleResponses__r.isEmpty()) {
-                    if(Trigger.isDelete || Trigger.isInsert || Trigger.isUpdate) {
+                    if(Trigger.isDelete || ((Trigger.isInsert || Trigger.isUpdate) && editCourseSettings == false)) {
                         answerOption.addError(Label.CannotChangeAnsweredModules);
                     }
                 }
