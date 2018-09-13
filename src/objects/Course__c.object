@@ -148,6 +148,7 @@
         <fullName>Segment__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
+        <inlineHelpText>To target your course by segment, add the segment(s) you want to make eligible. If blank, all program members will be eligible. You can view, edit and create segments in the Programs tab.</inlineHelpText>
         <label>Segment</label>
         <referenceTo>FieloPLT__Segment__c</referenceTo>
         <relationshipLabel>Courses</relationshipLabel>
@@ -195,6 +196,7 @@
     <fields>
         <fullName>SubscriptionMode__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Choose &quot;Manual&quot; to require members to join a course before participating, or &quot;Automatic&quot; to allow members to jump right into taking modules.</inlineHelpText>
         <label>Subscription Mode</label>
         <required>false</required>
         <trackTrending>false</trackTrending>

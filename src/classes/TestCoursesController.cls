@@ -12,12 +12,12 @@ public with sharing class TestCoursesController {
 	List<String> csFieldset = new List<String>{'FieloELR__Status__c'};
 	List<String> mdFieldset = new List<String>{'FieloELR__IsActive__c'};
 
-	String gCoursesReturn = CoursesController.getCourses(
+	/*String gCoursesReturn = CoursesController.getCourses(
 		member
 		,csFieldset
 		,mdFieldset
 		,2
 		,2);
-	
+	*/
 	}
 }

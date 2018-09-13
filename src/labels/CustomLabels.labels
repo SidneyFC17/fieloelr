@@ -41,6 +41,14 @@
         <value>Active, completed or scheduled courses cannot be edited.</value>
     </labels>
     <labels>
+        <fullName>ActiveCourseMustHaveActiveModules</fullName>
+        <categories>Courses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ActiveCourseMustHaveActiveModules</shortDescription>
+        <value>Active, Scheduled or Completed courses must have at least one active module.</value>
+    </labels>
+    <labels>
         <fullName>ActiveModuleCannotBeEdited</fullName>
         <categories>Modules.cls</categories>
         <language>en_US</language>
@@ -55,6 +63,14 @@
         <protected>true</protected>
         <shortDescription>ActiveModuleQuestionNotEditable</shortDescription>
         <value>Questions with active modules cannot be edited.</value>
+    </labels>
+    <labels>
+        <fullName>ActiveOption</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ActiveOption</shortDescription>
+        <value>Available</value>
     </labels>
     <labels>
         <fullName>Add</fullName>
@@ -169,6 +185,14 @@
         <value>Answer Option Text is a required field</value>
     </labels>
     <labels>
+        <fullName>AnswerTheQuestions</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AnswerTheQuestions</shortDescription>
+        <value>Answer the following questions to complete this module</value>
+    </labels>
+    <labels>
         <fullName>Any</fullName>
         <categories>RuleCreateExtension.cls.cls</categories>
         <language>en_US</language>
@@ -267,6 +291,14 @@
         <protected>false</protected>
         <shortDescription>Available</shortDescription>
         <value>Available</value>
+    </labels>
+    <labels>
+        <fullName>AvailableCourses</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AvailableCourses</shortDescription>
+        <value>Available Courses</value>
     </labels>
     <labels>
         <fullName>AvailableRewards</fullName>
@@ -439,22 +471,6 @@
         <protected>false</protected>
         <shortDescription>CannotDeleteRecords</shortDescription>
         <value>You cannot delete these records.</value>
-    </labels>
-    <labels>
-        <fullName>CannotAccessRecords</fullName>
-        <categories>ModulesSelector.cls</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>Records: No Accessed</shortDescription>
-        <value>	Records cannot be Accessed.</value>
-    </labels>
-    <labels>
-        <fullName>CannotInsertRecords</fullName>
-        <categories>SObjectUnitOfWork.cls</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>Records: No Insert</shortDescription>
-        <value>Records cannot be inserted.</value>
     </labels>
     <labels>
         <fullName>CannotInsertUpdateRecords</fullName>
@@ -648,6 +664,14 @@
         <value>Codes</value>
     </labels>
     <labels>
+        <fullName>CollapseAll</fullName>
+        <categories>CourseModules.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CollapseAll</shortDescription>
+        <value>Collapse All</value>
+    </labels>
+    <labels>
         <fullName>Comment</fullName>
         <categories>Feedback.page</categories>
         <language>en_US</language>
@@ -677,6 +701,22 @@
         <protected>false</protected>
         <shortDescription>Completed date</shortDescription>
         <value>Completed date</value>
+    </labels>
+    <labels>
+        <fullName>CompletedOn</fullName>
+        <categories>ModuleFieldsSection.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CompletedOn</shortDescription>
+        <value>Completed On</value>
+    </labels>
+    <labels>
+        <fullName>CompletedOption</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CompletedOption</shortDescription>
+        <value>Ended</value>
     </labels>
     <labels>
         <fullName>ConfirmBlockUnblock</fullName>
@@ -709,12 +749,36 @@
         <value>A Contributor must be related to a Fielo Organization Member account.</value>
     </labels>
     <labels>
+        <fullName>CorrectAnswer</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CorrectAnswer</shortDescription>
+        <value>Your answer is correct</value>
+    </labels>
+    <labels>
+        <fullName>CorrectQuestions</fullName>
+        <categories>ModuleFieldsSection.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CorrectQuestions</shortDescription>
+        <value>correct</value>
+    </labels>
+    <labels>
         <fullName>CourseActivated</fullName>
         <categories>CourseViewController.cls</categories>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>CourseActivated</shortDescription>
         <value>The Course has been activated</value>
+    </labels>
+    <labels>
+        <fullName>CourseCompleted</fullName>
+        <categories>CourseDates.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CourseCompleted</shortDescription>
+        <value>Course Closed</value>
     </labels>
     <labels>
         <fullName>CourseCreated</fullName>
@@ -741,6 +805,14 @@
         <value>The Course has been inactivated</value>
     </labels>
     <labels>
+        <fullName>CourseIsRequired</fullName>
+        <categories>Courses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CourseIsRequired</shortDescription>
+        <value>Course is a required field</value>
+    </labels>
+    <labels>
         <fullName>CourseRequiredField</fullName>
         <categories>CourseDependencies.cls</categories>
         <language>en_US</language>
@@ -755,6 +827,14 @@
         <protected>true</protected>
         <shortDescription>CourseStatusMustBeActive</shortDescription>
         <value>Course Status must be related to a Course with the Status Active</value>
+    </labels>
+    <labels>
+        <fullName>Courses</fullName>
+        <categories>ModuleDetailContainer.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Courses</shortDescription>
+        <value>Courses</value>
     </labels>
     <labels>
         <fullName>Create</fullName>
@@ -787,6 +867,14 @@
         <value>Criteria</value>
     </labels>
     <labels>
+        <fullName>CurrencyRangeSuffix</fullName>
+        <categories>CourseFilter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CurrencyRangeSuffix</shortDescription>
+        <value>Range ($)</value>
+    </labels>
+    <labels>
         <fullName>Custom</fullName>
         <categories>RuleCreateExtension.cls.cls</categories>
         <language>en_US</language>
@@ -817,6 +905,22 @@
         <value>Date</value>
     </labels>
     <labels>
+        <fullName>DateRangeSuffix</fullName>
+        <categories>CourseFilter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DateRangeSuffix</shortDescription>
+        <value>Range</value>
+    </labels>
+    <labels>
+        <fullName>DatetimeRangeSuffix</fullName>
+        <categories>CourseFilter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DatetimeRangeSuffix</shortDescription>
+        <value>Range</value>
+    </labels>
+    <labels>
         <fullName>DefaultPromotion</fullName>
         <categories>PromotionTimeLineController.cls, PromotionCreateBackEndExtension.cls</categories>
         <language>en_US</language>
@@ -840,11 +944,43 @@
         <value>Fielo Organization Member account cannot be deleted as it has related Contributors.</value>
     </labels>
     <labels>
+        <fullName>DependencyHelpText</fullName>
+        <categories>ModuleFieldsSection.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DependencyHelpText</shortDescription>
+        <value>First complete the previous modules</value>
+    </labels>
+    <labels>
+        <fullName>Description</fullName>
+        <categories>courseDetailsTabs.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>Detail</fullName>
+        <categories>courseDetailsTabs.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Detail</shortDescription>
+        <value>Detail</value>
+    </labels>
+    <labels>
         <fullName>Displaying</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Displaying</shortDescription>
         <value>Displaying</value>
+    </labels>
+    <labels>
+        <fullName>DoubleRangeSuffix</fullName>
+        <categories>CourseFilter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>DoubleRangeSuffix</shortDescription>
+        <value>Range</value>
     </labels>
     <labels>
         <fullName>DuplicateRecordOn</fullName>
@@ -1296,6 +1432,14 @@
         <value>Existing Document</value>
     </labels>
     <labels>
+        <fullName>ExpandAll</fullName>
+        <categories>CourseModules.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ExpandAll</shortDescription>
+        <value>Expand All</value>
+    </labels>
+    <labels>
         <fullName>ExportLevels</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -1354,6 +1498,14 @@
         <protected>false</protected>
         <shortDescription>Field</shortDescription>
         <value>Field</value>
+    </labels>
+    <labels>
+        <fullName>FieldCannotBeEdited</fullName>
+        <categories>Courses.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>FieldCannotBeEdited</shortDescription>
+        <value>This field cannot be edited</value>
     </labels>
     <labels>
         <fullName>FieloIcons</fullName>
@@ -1484,6 +1636,14 @@
         <protected>false</protected>
         <shortDescription>HelpChRewardContinue</shortDescription>
         <value>Define one reward for each achieved position. The first position will be the most important, also will be the most difficult to achieved, so you must configured correctly.</value>
+    </labels>
+    <labels>
+        <fullName>HideContent</fullName>
+        <categories>ModuleDetailContainer.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>HideContent</shortDescription>
+        <value>Hide Content</value>
     </labels>
     <labels>
         <fullName>ImageURL</fullName>
@@ -1843,6 +2003,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Thanks for joining</value>
     </labels>
     <labels>
+        <fullName>JoinCourse</fullName>
+        <categories>CourseAction.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JoinCourse</shortDescription>
+        <value>Join Course</value>
+    </labels>
+    <labels>
         <fullName>Last</fullName>
         <categories>RewardSearch.page</categories>
         <language>en_US</language>
@@ -1968,6 +2136,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>true</protected>
         <shortDescription>MatchingTextRequired</shortDescription>
         <value>Matching Text is required field</value>
+    </labels>
+    <labels>
+        <fullName>MaximumAttempts</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MaximumAttempts</shortDescription>
+        <value>Your question attempt limit has been reached</value>
     </labels>
     <labels>
         <fullName>Member</fullName>
@@ -2216,12 +2392,28 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Mode</value>
     </labels>
     <labels>
+        <fullName>Module</fullName>
+        <categories>ModuleCardHeader.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Module</shortDescription>
+        <value>Module</value>
+    </labels>
+    <labels>
         <fullName>ModuleActivated</fullName>
         <categories>ModuleViewController.cls</categories>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>ModuleActivated</shortDescription>
         <value>The Module has been activated</value>
+    </labels>
+    <labels>
+        <fullName>ModuleContentText</fullName>
+        <categories>ModuleDetailContainer.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ModuleContentText</shortDescription>
+        <value>First, view the module content before answering the questions</value>
     </labels>
     <labels>
         <fullName>ModuleInactivated</fullName>
@@ -2238,6 +2430,22 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>true</protected>
         <shortDescription>ModuleRequiredField</shortDescription>
         <value>Module is a required field.</value>
+    </labels>
+    <labels>
+        <fullName>ModuleSubmitted</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ModuleSubmitted</shortDescription>
+        <value>Module submitted</value>
+    </labels>
+    <labels>
+        <fullName>Modules</fullName>
+        <categories>FieldsSection.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Modules</shortDescription>
+        <value>Modules</value>
     </labels>
     <labels>
         <fullName>More</fullName>
@@ -2261,6 +2469,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>false</protected>
         <shortDescription>Rule: Action completed</shortDescription>
         <value>An Action must be completed (Points or Instant Rewards).</value>
+    </labels>
+    <labels>
+        <fullName>MyCourses</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MyCourses</shortDescription>
+        <value>My Courses</value>
     </labels>
     <labels>
         <fullName>Name</fullName>
@@ -2308,6 +2524,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Next</value>
     </labels>
     <labels>
+        <fullName>NoContent</fullName>
+        <categories>CourseContent</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>NoContent</shortDescription>
+        <value>No content defined for this record.</value>
+    </labels>
+    <labels>
         <fullName>NoMissions</fullName>
         <categories>ChallengeRewardEditBackEnd.page</categories>
         <language>en_US</language>
@@ -2352,6 +2576,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>false</protected>
         <shortDescription>Disable</shortDescription>
         <value>Disable</value>
+    </labels>
+    <labels>
+        <fullName>NotPassed</fullName>
+        <categories>ModuleActions.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>NotPassed</shortDescription>
+        <value>Not Passed</value>
     </labels>
     <labels>
         <fullName>NotProcessed</fullName>
@@ -2405,6 +2637,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>false</protected>
         <shortDescription>Of</shortDescription>
         <value>of</value>
+    </labels>
+    <labels>
+        <fullName>OnModuleCreationError</fullName>
+        <categories>Modules.cls</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>OnModuleCreationError</shortDescription>
+        <value>On module creation, course cannot be active, completed or scheduled</value>
     </labels>
     <labels>
         <fullName>OnlyNewRecordsRegisteredAsNew</fullName>
@@ -2523,6 +2763,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Page</value>
     </labels>
     <labels>
+        <fullName>Passed</fullName>
+        <categories>ModuleActions.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Passed</shortDescription>
+        <value>Passed</value>
+    </labels>
+    <labels>
         <fullName>Password</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -2552,6 +2800,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>true</protected>
         <shortDescription>PenaltyAndIncorrectWeightSet</shortDescription>
         <value>Cannot set both Penalty Per Attempt and Incorrect Weight field.</value>
+    </labels>
+    <labels>
+        <fullName>PercentRangeSuffix</fullName>
+        <categories>CourseFilter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PercentRangeSuffix</shortDescription>
+        <value>% Range</value>
     </labels>
     <labels>
         <fullName>Period</fullName>
@@ -2630,6 +2886,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Points</value>
     </labels>
     <labels>
+        <fullName>PointsEarned</fullName>
+        <categories>FieldsSection.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PointsEarned</shortDescription>
+        <value>Points earned</value>
+    </labels>
+    <labels>
         <fullName>Position</fullName>
         <categories>ChallengeRewardEditBackEnd.page</categories>
         <language>en_US</language>
@@ -2652,6 +2916,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>true</protected>
         <shortDescription>PredecessorRequired</shortDescription>
         <value>Predecessor is a required field</value>
+    </labels>
+    <labels>
+        <fullName>Prerequisites</fullName>
+        <categories>ModuleFieldsSection.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Prerequisites</shortDescription>
+        <value>Prerequisites</value>
     </labels>
     <labels>
         <fullName>Preview</fullName>
@@ -2871,6 +3143,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>{0}. {1} is not a lookup or master-detail field but it is used in a cross-object query field.</value>
     </labels>
     <labels>
+        <fullName>Question</fullName>
+        <categories>QuestionCardHeader.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Question</shortDescription>
+        <value>Question</value>
+    </labels>
+    <labels>
         <fullName>QuestionAlreadyAnsweredCorrectly</fullName>
         <categories>QuestionResponses.cls</categories>
         <language>en_US</language>
@@ -2925,6 +3205,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>false</protected>
         <shortDescription>Quick save</shortDescription>
         <value>Quick save</value>
+    </labels>
+    <labels>
+        <fullName>RangeSuffix</fullName>
+        <categories>CourseFilter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>RangeSuffix</shortDescription>
+        <value>Range</value>
     </labels>
     <labels>
         <fullName>Recent</fullName>
@@ -3105,12 +3393,28 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Required Argument</value>
     </labels>
     <labels>
+        <fullName>RetakeQuiz</fullName>
+        <categories>ModuleActions.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>RetakeQuiz</shortDescription>
+        <value>Retake</value>
+    </labels>
+    <labels>
         <fullName>ReviewFollowingErrors</fullName>
         <categories>button.js</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ReviewFollowingErrors</shortDescription>
         <value>Review the following error/s:</value>
+    </labels>
+    <labels>
+        <fullName>ReviewYourQuestions</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ReviewYourQuestions</shortDescription>
+        <value>Review your answers</value>
     </labels>
     <labels>
         <fullName>Revoke</fullName>
@@ -3447,6 +3751,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Save and new</value>
     </labels>
     <labels>
+        <fullName>ScheduledOption</fullName>
+        <categories>Courses.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ScheduledOption</shortDescription>
+        <value>Coming Soon</value>
+    </labels>
+    <labels>
         <fullName>Search</fullName>
         <categories>RedemptionPointsBackEnd.page</categories>
         <language>en_US</language>
@@ -3547,12 +3859,36 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Share an idea</value>
     </labels>
     <labels>
+        <fullName>ShowContent</fullName>
+        <categories>ModuleDetailContainer.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ShowContent</shortDescription>
+        <value>Show Content</value>
+    </labels>
+    <labels>
         <fullName>Sort</fullName>
         <categories>IncentivesLanding</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Sort</shortDescription>
         <value>Sort</value>
+    </labels>
+    <labels>
+        <fullName>SortBy</fullName>
+        <categories>Filter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SortBy</shortDescription>
+        <value>Sort By</value>
+    </labels>
+    <labels>
+        <fullName>SortByToolTip</fullName>
+        <categories>Filter.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SortByToolTip</shortDescription>
+        <value>Enter the name of the field by which you want to sort the records</value>
     </labels>
     <labels>
         <fullName>SpecifiedByField</fullName>
@@ -3568,6 +3904,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>false</protected>
         <shortDescription>Start Date: required</shortDescription>
         <value>Start date is required.</value>
+    </labels>
+    <labels>
+        <fullName>StartsIn</fullName>
+        <categories>CourseDates.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>StartsIn</shortDescription>
+        <value>Starts in {0} days</value>
     </labels>
     <labels>
         <fullName>Status</fullName>
@@ -3601,6 +3945,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Subject</value>
     </labels>
     <labels>
+        <fullName>SubmitResponse</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SubmitResponse</shortDescription>
+        <value>Submit Response</value>
+    </labels>
+    <labels>
         <fullName>SuccessfulMembersCreation</fullName>
         <categories>MemberCreateFromContactExtension.cls</categories>
         <language>en_US</language>
@@ -3630,6 +3982,14 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <protected>false</protected>
         <shortDescription>Tags</shortDescription>
         <value>Tags</value>
+    </labels>
+    <labels>
+        <fullName>TakeQuiz</fullName>
+        <categories>ModuleActions.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>TakeQuiz</shortDescription>
+        <value>Take Quiz</value>
     </labels>
     <labels>
         <fullName>TargetMemberInvalidValue</fullName>
@@ -3716,7 +4076,7 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>To</shortDescription>
-        <value>To</value>
+        <value>to</value>
     </labels>
     <labels>
         <fullName>Tools</fullName>
@@ -4160,6 +4520,38 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>View All</value>
     </labels>
     <labels>
+        <fullName>ViewCourse</fullName>
+        <categories>ViewCourse.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ViewCourse</shortDescription>
+        <value>View Course</value>
+    </labels>
+    <labels>
+        <fullName>ViewModule</fullName>
+        <categories>CourseAction.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ViewModule</shortDescription>
+        <value>View Module</value>
+    </labels>
+    <labels>
+        <fullName>ViewResults</fullName>
+        <categories>ModuleActions.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ViewResults</shortDescription>
+        <value>View Results</value>
+    </labels>
+    <labels>
+        <fullName>ViewResultsBelow</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ViewResultsBelow</shortDescription>
+        <value>View your results below</value>
+    </labels>
+    <labels>
         <fullName>VoucherNumber</fullName>
         <categories>RedemptionPointsBackEnd.page</categories>
         <language>en_US</language>
@@ -4200,12 +4592,28 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <value>Week</value>
     </labels>
     <labels>
+        <fullName>WrongAnswer</fullName>
+        <categories>Quiz.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>WrongAnswer</shortDescription>
+        <value>Your answer is incorrect</value>
+    </labels>
+    <labels>
         <fullName>WrongLogicalExpression</fullName>
         <categories>ChallengeRewardEditBackEndExtension.cls</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>WrongLogicalExpression</shortDescription>
         <value>Wrong Logical Expression</value>
+    </labels>
+    <labels>
+        <fullName>daysLeft</fullName>
+        <categories>CourseDates.cmp</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>daysLeft</shortDescription>
+        <value>days left</value>
     </labels>
     <labels>
         <fullName>security_error_field_not_insertable</fullName>

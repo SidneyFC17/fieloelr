@@ -80,7 +80,8 @@
         <fullName>Predecessor__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
-        <label>Predecessor</label>
+        <inlineHelpText>Enter a module that members must complete before starting this one.</inlineHelpText>
+        <label>Prerequisite</label>
         <referenceTo>Module__c</referenceTo>
         <relationshipLabel>Dependent Modules</relationshipLabel>
         <relationshipName>DependentModules</relationshipName>
@@ -100,7 +101,7 @@
         <label>Module Dependency Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Modules Dependencies</pluralLabel>
+    <pluralLabel>Module Dependencies</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
@@ -108,7 +109,7 @@
         <active>true</active>
         <description>When a module dependency is created/updated, the Module and its Predecessor must be different.</description>
         <errorConditionFormula>Module__c   =  Predecessor__c</errorConditionFormula>
-        <errorMessage>A module cannot be its own predecessor.</errorMessage>
+        <errorMessage>A module cannot be its own prerequisite.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>ModulesSameCourse</fullName>

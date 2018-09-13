@@ -21,7 +21,7 @@
     <aura:attribute type="sObject[]" name="fieldset" default="[]" />
     <aura:attribute type="sObject[]" name="myCourses" default="[]" />
     
-    <aura:attribute type="FieloELR__Module__c[]" name="modules" />
+    <aura:attribute type="Module__c[]" name="modules" />
     <aura:attribute type="sObject[]" name="courseFieldset" />
     <aura:attribute type="Boolean" name="showCourse" default="false" />
     

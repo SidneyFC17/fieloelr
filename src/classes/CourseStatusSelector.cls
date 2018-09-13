@@ -47,14 +47,11 @@ public class CourseStatusSelector extends SObjectSelector {
           return listCourse;
     }
 
-        public List<CourseStatus__c> selectByKeyCompleted(Set<String> keys) {
-        
+    public List<CourseStatus__c> selectByKeyCompleted(Set<String> keys) {
         List<CourseStatus__c> listCourse;
 
-        if(Schema.sObjectType.CourseStatus__c.isAccessible()){	
-           
-           
-        listCourse = (List<CourseStatus__c>) Database.query(String.format(
+        if(Schema.sObjectType.CourseStatus__c.isAccessible()) {
+            listCourse = (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE ExternalKey__c IN : keys and Progress__c = 100' +
@@ -63,11 +60,21 @@ public class CourseStatusSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
-
-                    }else{
+        }else{
             throw new FieloException(Label.CannotAccessRecords);
-          }
+        }
+        return listCourse;
+    }
 
-          return listCourse;
+    public List<CourseStatus__c> selectByMemberId(Set<Id> memberIds) {
+        return (List<CourseStatus__c>) Database.query(String.format(
+                'SELECT {0} ' +
+                  'FROM {1} ' +
+                  'WHERE FieloELR__Member__c IN : memberIds ' +
+                  'ORDER BY {2}',
+                new List<String> {
+                    getFieldListString(),
+                    getSObjectName(),
+                    getOrderBy() } ));
     }
 }

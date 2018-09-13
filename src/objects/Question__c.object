@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -53,6 +49,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
@@ -153,6 +150,7 @@ mod(
     <fields>
         <fullName>QuestionText__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>This is the text that members will respond to.</inlineHelpText>
         <label>Question Text</label>
         <length>1000</length>
         <trackTrending>false</trackTrending>
@@ -180,8 +178,12 @@ mod(
         <fullName>Type__c</fullName>
         <externalId>false</externalId>
         <label>Type</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
+                <sorted>false</sorted>
                 <value>
                     <fullName>Multiple Choice</fullName>
                     <default>false</default>
@@ -207,12 +209,8 @@ mod(
                     <default>false</default>
                     <label>Matching Options</label>
                 </value>
-                <sorted>false</sorted>
             </valueSetDefinition>
         </valueSet>
-        <required>true</required>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
     </fields>
     <gender>Feminine</gender>
     <label>Question</label>
@@ -282,4 +280,5 @@ mod(
         <errorDisplayField>QuestionText__c</errorDisplayField>
         <errorMessage>The question text is required.</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

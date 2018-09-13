@@ -59,6 +59,7 @@
     <fields>
         <fullName>ApprovalGrade__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Enter the minimum grade (from 0 to 100) that members must get to pass the module.</inlineHelpText>
         <label>Approval Grade</label>
         <precision>18</precision>
         <required>false</required>
@@ -80,6 +81,7 @@
     <fields>
         <fullName>AttemptsAllowed__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Enter the maximum number of times members will be allowed to attempt the module. If blank, members will have unlimited tries.</inlineHelpText>
         <label>Attempts Allowed</label>
         <precision>18</precision>
         <required>false</required>
@@ -90,9 +92,9 @@
     </fields>
     <fields>
         <fullName>ContentType__c</fullName>
-        <description>Content Type</description>
         <externalId>false</externalId>
-        <label>ContentType</label>
+        <inlineHelpText>Select the format of your module content.</inlineHelpText>
+        <label>Content Type</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
@@ -106,11 +108,6 @@
                     <label>Image</label>
                 </value>
                 <value>
-                    <fullName>Link</fullName>
-                    <default>false</default>
-                    <label>Link</label>
-                </value>
-                <value>
                     <fullName>PDF</fullName>
                     <default>false</default>
                     <label>PDF</label>
@@ -120,13 +117,33 @@
                     <default>false</default>
                     <label>Youtube Video</label>
                 </value>
+                <value>
+                    <fullName>MP4</fullName>
+                    <default>false</default>
+                    <label>MP4</label>
+                </value>
+                <value>
+                    <fullName>MP3</fullName>
+                    <default>false</default>
+                    <label>MP3</label>
+                </value>
+                <value>
+                    <fullName>Carousel</fullName>
+                    <default>false</default>
+                    <label>Carousel</label>
+                </value>
+                <value>
+                    <fullName>Vimeo</fullName>
+                    <default>false</default>
+                    <label>Vimeo</label>
+                </value>
             </valueSetDefinition>
         </valueSet>
     </fields>
     <fields>
         <fullName>Content__c</fullName>
-        <description>Module Content</description>
         <externalId>false</externalId>
+        <inlineHelpText>For Youtube and Vimeo videos, enter the embed URL. For internally-hosted files, enter the URL starting after your Salesforce instance (i.e. /servlet/...). For externally-hosted files, enter the full URL.</inlineHelpText>
         <label>Content</label>
         <length>255</length>
         <required>false</required>
@@ -137,9 +154,7 @@
     <fields>
         <fullName>Course__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <description>Course to which the module belongs.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Course to which the module belongs.</inlineHelpText>
         <label>Course</label>
         <referenceTo>Course__c</referenceTo>
         <relationshipLabel>Modules</relationshipLabel>
@@ -203,6 +218,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>NumberOfQuestions__c</fullName>
+        <externalId>false</externalId>
+        <label>Questions</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Order__c</fullName>
         <externalId>false</externalId>
         <label>Order</label>
@@ -242,8 +268,34 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>QuestionDisplayMode__c</fullName>
+        <defaultValue>&apos;All at once&apos;</defaultValue>
+        <externalId>false</externalId>
+        <label>Question Display Mode</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>One by one</fullName>
+                    <default>false</default>
+                    <label>One by one</label>
+                </value>
+                <value>
+                    <fullName>All at once</fullName>
+                    <default>false</default>
+                    <label>All at once</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>QuestionPool__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Enter the number of questions you want to be displayed during a given module attempt. Leave this blank if you want all questions to appear.</inlineHelpText>
         <label>Question Pool</label>
         <precision>18</precision>
         <required>false</required>
@@ -274,6 +326,7 @@
         <fullName>WeightedQuestions__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
+        <inlineHelpText>When enabled, you can specify different weighting and incorrect response penalties for each question.</inlineHelpText>
         <label>Weighted Questions</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>

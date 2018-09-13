@@ -320,7 +320,7 @@ global class CourseService {
 		global List<ModuleResponse__c> moduleResponses {get; private set;}
 		global List<ModuleDependency__c> dependencies {get; private set;}
 
-		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses){
+		public ModuleWrapper(Module__c module, List<ModuleResponse__c> moduleResponses, List<ModuleDependency__c> dependencies){
 			this(module);
 			this.moduleResponses = moduleResponses;
 			this.numberOfAttempts = this.moduleResponses.size();
@@ -332,6 +332,39 @@ global class CourseService {
 					}
 				}
 			}
+			if (dependencies!=null) {
+				this.dependencies = dependencies;
+			}
+			if (this.dependencies!=null) {
+				if (!this.dependencies.isEmpty()) {
+					Set<String> mdStringKeys;
+					if (!moduleResponses.isEmpty()) {
+						mdStringKeys = getMDStringKeys(module, moduleResponses[0].Member__c);
+						this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
+					} else {
+						this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+					}
+				}
+			}
+		}
+
+		public ModuleWrapper(Module__c module, List<ModuleDependency__c> dependencies, Id memberId){
+			this.module = module;
+			if (dependencies!=null) {
+				this.dependencies = dependencies;
+			}
+			if (this.dependencies!=null) {
+				if (!this.dependencies.isEmpty()) {
+					Set<String> mdStringKeys;
+					if (memberId != null) {
+						mdStringKeys = getMDStringKeys(module, memberId);
+						this.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
+					} else {
+						this.allowedForDependency = ! (module.KeyDependencies__c != null && module.KeyDependencies__c != '');
+					}
+				}
+			}
+			this.isApproved = false;
 		}
 
 		public ModuleWrapper(Module__c module){
@@ -394,7 +427,7 @@ global class CourseService {
 		List<Course__c> courses = getCourses(fieldsCourseClone, fieldsCourseDependency, fieldsModuleClone, courseIds, status, programId, memberId, filterByDependencies, filterBySegments, false, quantity, offset, orderBy, dynamicFilter);
 		Map<Id,CourseStatus__c> coursesStatusMap = new Map<Id,CourseStatus__c>();
 		Set<String> fieldsCourseStatus = new Set<String>{'FieloELR__Course__c','FieloELR__Progress__c'};
-		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__Module__c'};
+		Set<String> fieldsModuleResponse = new Set<String>{'FieloELR__Member__c','FieloELR__GradeValue__c','FieloELR__IsApproved__c','FieloELR__NumberOfAttempt__c','FieloELR__NumberofApprove__c','FieloELR__Module__c'};
 		for(CourseStatus__c cs : getCourseStatus(fieldsCourseStatus, fieldsModuleResponse, new Map<Id,Course__c>(courses).keySet(), memberId, null, null, null)){
 			coursesStatusMap.put(cs.Course__c, cs);		
 		}
@@ -462,21 +495,29 @@ global class CourseService {
 						if (moduleResponseMap.containsKey(mr.FieloELR__Module__c)) {
 							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
 						} else {
-							moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c>());
-							moduleResponseMap.get(mr.FieloELR__Module__c).add(mr);
+							moduleResponseMap.put(mr.FieloELR__Module__c, new List<FieloELR__ModuleResponse__c> {mr} );
 						}
 					}
 				}
 			}
-
 			if(!c.Modules__r.isEmpty()){
 				for(Module__c module : c.Modules__r){
-					ModuleWrapper mw = cs != null ? new ModuleWrapper(module, moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>()) : new ModuleWrapper(module);
+					ModuleWrapper mw;
+					if (cs != null) {
+						mw = new ModuleWrapper(
+							module,
+							moduleResponseMap.containsKey(module.Id) ? moduleResponseMap.get(module.Id) : new List<FieloELR__ModuleResponse__c>(),
+							dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>()
+						);
+					} else {
+						mw = new ModuleWrapper(
+							module,
+							dependenciesByModule != null ? (dependenciesByModule.containsKey(module.Id) ? dependenciesByModule.get(module.Id) : new List<ModuleDependency__c>()) : new List<ModuleDependency__c>(),
+							memberId
+						);
+					}
 					if(!filterByDependencies && module.HasDependencies__c){
 						mw.allowedForDependency = mdStringKeys.contains(module.KeyDependencies__c);
-					}
-					if(dependenciesByModule != null){
-						mw.dependencies = dependenciesByModule.get(module.Id);
 					}
 					cw.modules.add(mw);
 				}
@@ -517,6 +558,28 @@ global class CourseService {
 		return cdStringKeys;
 	}
 
+	private static Set<String> getMDStringKeys(Module__c module, Id memberId){
+		Id courseId = module.Course__c;
+		Id module_id = module.Id;
+		String mdQuery = 'SELECT Module__c, Predecessor__c FROM ModuleDependency__c WHERE Predecessor__c in (SELECT Module__c FROM ModuleResponse__c WHERE Member__c =: memberId AND NumberOfApprove__c = 1 AND Module__r.Course__c =: courseId) AND Module__c = :module_id';
+		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
+		for(ModuleDependency__c md : Database.query(mdQuery)){
+			if(mdKeysByCourse.containsKey(md.Module__c)){
+				mdKeysByCourse.get(md.Module__c).add(String.valueOf(md.Predecessor__c));
+			}else{
+				mdKeysByCourse.put(md.Module__c, new Set<String>{String.valueOf(md.Predecessor__c)});
+			}
+		}
+
+		Set<String> mdStringKeys = new Set<String>();
+		for(Id moduleId : mdKeysByCourse.keySet()){
+			List<String> listKeys = new List<String>(mdKeysByCourse.get(moduleId));
+			listKeys.sort();
+			mdStringKeys.add(String.join(listKeys,','));
+		}
+		return mdStringKeys;
+	}
+
 	private static Set<String> getMDStringKeys(List<Module__c> modules, Id memberId){
 		String mdQuery = 'SELECT Module__c, Predecessor__c FROM ModuleDependency__c WHERE Predecessor__c in (SELECT Module__c FROM ModuleResponse__c WHERE Member__c =: memberId AND IsApproved__c = true AND Module__c in : modules) AND Module__c in : modules';
 		Map<Id,Set<String>> mdKeysByCourse = new Map<Id,Set<String>>();
@@ -542,6 +605,142 @@ global class CourseService {
 			mdStringKeys.add(String.join(listKeys,','));
 		}
 		return mdStringKeys;
+	}
+
+	public static String getCoursePoints(Set<Id> courseIds, Id memberId) {
+		String courseStatusQuery = 'SELECT Id, FieloELR__Course__r.FieloELR__Program__c FROM FieloELR__CourseStatus__c WHERE Member__c = :memberId AND Course__c in :courseIds';
+
+		List<FieloELR__CourseStatus__c> courseStatus = Database.Query(courseStatusQuery);
+
+		if (!courseStatus.isEmpty()) {
+			Set<Id> programIds = new Set<Id>();
+			Set<Id> courseStatusIds = new Set<Id>();
+
+			for(FieloELR__CourseStatus__c cs: courseStatus) {
+				programIds.add(cs.FieloELR__Course__r.FieloELR__Program__c);
+				courseStatusIds.add(cs.Id);
+			}
+
+			String programPointTypesQuery = 'SELECT Id, FieloPLT__Program__c, FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c FROM FieloPLT__ProgramPointType__c WHERE FieloPLT__Program__c in :programIds';
+
+			List<FieloPLT__ProgramPointType__c> ppts = Database.query(programPointTypesQuery);
+
+			Set<String> transactionPointFields = new Set<String>();
+			Set<String> trackerPointFields = new Set<String>();
+			Map<String, Map<String,Set<String>>> programPointTypesMap = new Map<String, Map<String,Set<String>>>();
+
+			for(FieloPLT__ProgramPointType__c ppt: ppts) {
+				if (!programPointTypesMap.containsKey(ppt.FieloPLT__Program__c)) {
+					programPointTypesMap.put(ppt.FieloPLT__Program__c, new Map<String, Set<String>>{
+						'transactionPointFields' => new Set<String>{ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c},
+						'trackerPointFields' => new Set<String>{}
+					});
+				} else {
+					programPointTypesMap.get(ppt.FieloPLT__Program__c).get('transactionPointFields').add(ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
+					programPointTypesMap.get(ppt.FieloPLT__Program__c).get('trackerPointFields').add('FieloPLT__Transaction__r.' + ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
+				}
+				transactionPointFields.add(ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
+				trackerPointFields.add('FieloPLT__Transaction__r.' + ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
+			}
+
+			courseStatusQuery = 'SELECT Id, FieloELR__Course__c, FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FROM FieloELR__CourseStatus__c WHERE Id in :courseStatusIds';
+
+			courseStatus = Database.query(courseStatusQuery);
+
+			String moduleResponseQuery = 'SELECT Id, FieloELR__Module__c, FieloELR__CourseStatus__c, FieloELR__CourseStatus__r.FieloELR__Course__c, FieloELR__CourseStatus__r.FieloELR__Course__r.FieloELR__Program__c, (SELECT Id, ' + String.join(new List<String>(transactionPointFields), ',') + ' FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true), (SELECT Id,' + String.join(new List<String>(trackerPointFields), ',') + ' FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FROM FieloELR__ModuleResponse__c WHERE FieloELR__CourseStatus__c in :courseStatusIds';
+
+			List<ModuleResponse__c> moduleResponses = Database.query(moduleResponseQuery);
+
+			Map<Id, List<ModuleResponse__c>> moduleResponsesByCourseStatus = new Map<Id, List<ModuleResponse__c>>();
+
+			for(ModuleResponse__c singleMR: moduleResponses) {
+				if (moduleResponsesByCourseStatus.containsKey(singleMR.FieloELR__CourseStatus__c)) {
+					moduleResponsesByCourseStatus.get(singleMR.FieloELR__CourseStatus__c).add(singleMR);
+				} else {
+					moduleResponsesByCourseStatus.put(singleMR.FieloELR__CourseStatus__c, new List<ModuleResponse__c>{singleMR});
+				}
+			}
+
+			Map<String, Map<String, Object>> coursePointsMap = new Map<String, Map<String, Object>>();
+			Map<String, Map<String, Decimal>> modulesPointMap = new Map<String, Map<String, Decimal>>();
+
+			Map<String, Decimal> pointMap;
+			Map<String, Decimal> singleModulePointMap;
+
+			for (FieloELR__CourseStatus__c cs: courseStatus) {
+				pointMap = new Map<String, Decimal>();
+
+				// Direct Points
+				for(FieloPLT__Transaction__c t: cs.FieloELR__Transactions__r) {
+					for(String fieldName: transactionPointFields) {
+						if (!pointMap.containsKey(fieldName)) {
+							pointMap.put(fieldName, (Decimal)t.get(fieldName));
+						} else {
+							pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)t.get(fieldName));
+						}
+					}
+				}
+				for(FieloPLT__Tracker__c tracker: cs.FieloELR__Trackers__r) {
+					for(String fieldName: transactionPointFields) {
+						if (!pointMap.containsKey(fieldName)) {
+							pointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+						} else {
+							pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+						}
+					}
+				}
+
+				if (moduleResponsesByCourseStatus.containsKey(cs.Id)) {
+					for(FieloELR__ModuleResponse__c mr: moduleResponsesByCourseStatus.get(cs.Id)) {
+						if (modulesPointMap.containsKey(mr.FieloELR__Module__c)) {
+							singleModulePointMap = modulesPointMap.get(mr.FieloELR__Module__c);
+						} else {
+							singleModulePointMap = new Map<String, Decimal>();
+						}
+
+						for(FieloPLT__Transaction__c t: mr.FieloELR__Transactions__r) {
+							for(String fieldName: transactionPointFields) {
+								if (!singleModulePointMap.containsKey(fieldName)) {
+									singleModulePointMap.put(fieldName, (Decimal)t.get(fieldName));
+								} else {
+									singleModulePointMap.put(fieldName, (Decimal)singleModulePointMap.get(fieldName) + (Decimal)t.get(fieldName));
+								}
+								if (!pointMap.containsKey(fieldName)) {
+									pointMap.put(fieldName, (Decimal) t.get(fieldName));
+								} else {
+									pointMap.put(fieldName, (Decimal) pointMap.get(fieldName) + (Decimal) t.get(fieldName));
+								}
+							}
+						}
+						for(FieloPLT__Tracker__c tracker: mr.FieloELR__Trackers__r) {
+							for(String fieldName: transactionPointFields) {
+								if (!singleModulePointMap.containsKey(fieldName)) {
+									singleModulePointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+								} else {
+									singleModulePointMap.put(fieldName, (Decimal)singleModulePointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+								}
+								// accumulate at course
+								if (!pointMap.containsKey(fieldName)) {
+									pointMap.put(fieldName, (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+								} else {
+									pointMap.put(fieldName, (Decimal)pointMap.get(fieldName) + (Decimal)tracker.FieloPLT__Transaction__r.get(fieldName));
+								}
+							}
+						}
+						modulesPointMap.put(mr.FieloELR__Module__c, singleModulePointMap );
+					}
+				}
+
+				//UpdateMap
+				coursePointsMap.put(cs.FieloELR__Course__c, new Map<String, Object>{
+					'points' => (Object) pointMap,
+					'modulePoints' => (Object) modulesPointMap
+				});
+			}
+			return JSON.serialize(coursePointsMap);
+		} else {
+			return null;
+		}
 	}
 
 	public static void setCourseStatus(Set<Id> courseIds, String newStatus) {

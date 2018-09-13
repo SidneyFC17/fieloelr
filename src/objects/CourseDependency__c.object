@@ -80,7 +80,8 @@
         <fullName>Predecessor__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
-        <label>Predecessor</label>
+        <inlineHelpText>Enter a course that members must complete before starting this one.</inlineHelpText>
+        <label>Prerequisite</label>
         <referenceTo>Course__c</referenceTo>
         <relationshipLabel>Dependent Courses</relationshipLabel>
         <relationshipName>DependentCourses</relationshipName>
@@ -101,15 +102,15 @@
     <validationRules>
         <fullName>CoursePredecessorMustBeDifferent</fullName>
         <active>true</active>
-        <description>When a Course dependency is created/updated, Course and Predecessor must be different.</description>
+        <description>When a Course dependency is created/updated, Course and Prerequisite must be different.</description>
         <errorConditionFormula>Course__c = Predecessor__c</errorConditionFormula>
-        <errorMessage>Course and Predecessor must be different.</errorMessage>
+        <errorMessage>Course and Prerequisite must be different.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>CoursePredecessorSameProgram</fullName>
         <active>true</active>
         <errorConditionFormula>Course__r.Program__c != Predecessor__r.Program__c</errorConditionFormula>
-        <errorMessage>Course and Predecessor must belong to the same Program</errorMessage>
+        <errorMessage>Course and Prerequisite must belong to the same Program</errorMessage>
     </validationRules>
     <visibility>Public</visibility>
 </CustomObject>
