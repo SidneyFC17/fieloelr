@@ -1,70 +1,108 @@
-<aura:component >
-    <aura:attribute type="String" name="layout" default="table" description="table, grid" />
-    <aura:attribute type="String" name="type" default="landing" description="landing, view" />
-    <aura:attribute type="sObject[]" name="fieldset" default="[]" />
-    <aura:attribute type="sObject[]" name="imageFields" default="[]" />
-    <aura:attribute type="Boolean" name="showImages" default="false" />
-    <aura:attribute type="sObject" name="record" />    
-    <aura:attribute type="String" name="columns" />
+<aura:component>
+    <aura:attribute name="layout" type="String" default="table" description="table, grid" />
+    <aura:attribute name="type" type="String" default="landing" description="landing, view" />
+    <aura:attribute name="fieldset" type="sObject[]" default="[]" />
+    <aura:attribute name="subfieldset" type="sObject[]" default="[]" />
+    <aura:attribute name="imageFields" type="sObject[]" default="[]" />
+    <aura:attribute name="showImages" type="Boolean" default="false" />
+    <aura:attribute name="record" type="sObject" />
+    <aura:attribute name="columns" type="String" />
+    <aura:attribute name="buttons" type="sObject[]" />
+
+    <!-- CUSTOM -->
     <aura:attribute type="String" name="noDescrpNoDate" />
-    <aura:attribute type="sObject[]" name="buttons" />
-    
-    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
-    
-    <div class="{!  v.noDescrpNoDate + ' slds-large-size_1-of-' + (v.layout == 'grid' ? v.columns : '1') + ' grid-item slds-p-around--small slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-align_center'}">
+    <!-- CUSTOM -->
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <div class="{!'slds-large-size_1-of-' + (v.layout == 'grid' ? v.columns : '1') + ' card-grid-item slds-p-around--small slds-size_1-of-1 slds-medium-size_1-of-' + (v.layout == 'grid' ? v.columns : '1') + ' slds-text-align_center' + ' ' + v.noDescrpNoDate}">
         <aura:if isTrue="{!v.type == 'view'}">
-            <div class="title"> {!v.record.Name}</div>
+            <div class="title title-view"> {!v.record.Name}</div>
         </aura:if>
-        <lightning:card class="{!v.layout + ' ' + v.type}">                
-            <aura:set attribute="title"><aura:if isTrue="{!v.type == 'landing'}"><div class="record-name" title="{!v.record.Name}">{!v.record.Name}</div></aura:if></aura:set>            
+        <lightning:card class="{!v.layout + ' ' + v.type}">
+            <aura:set attribute="title">
+                <aura:if isTrue="{!v.type == 'landing'}">{!v.record.Name}</aura:if>
+            </aura:set>
             <aura:set attribute="footer">
                 <aura:iteration items="{!v.buttons}" var="btn">
-                    <c:OutputField config="{!btn.config}" subcomponent="{!btn.subcomponent}" record="{!v.record}" fieldName="{!btn.apiName}" type="{!btn.type}" class="{!btn.cssClass}"/>
+                    <c:OutputField config="{!btn.config}" subcomponent="{!btn.subcomponent}" record="{!v.record}" fieldName="{!btn.apiName}"
+                        type="{!btn.type}" class="{!btn.cssClass}" />
                 </aura:iteration>
             </aura:set>
-            
+
             <aura:if isTrue="{!or(v.layout == 'table', v.layout == 'Table')}">
-                <lightning:layout >
+                <lightning:layout multipleRows="true" class="{!v.subfieldset.length > 0 ? 'withSubfield no-border' : 'no-border'}">
                     <aura:if isTrue="{!v.showImages}">
-                        <lightning:layoutItem size="6">
-                            <aura:iteration items="{!v.imageFields}" var="field">                            
+                        <lightning:layoutItem size="12" smallDeviceSize="12" mediumDeviceSize="6" largeDeviceSize="6">
+                            <aura:iteration items="{!v.imageFields}" var="field">
                                 <aura:if isTrue="{!field.showLabel}">
                                     <label class="slds-form-element__label">{!field.label.labelValue}</label>
                                 </aura:if>
-                                <c:OutputField config="{!field.config}" subcomponent="{!field.subcomponent}" record="{!v.record}" fieldName="{!field.apiName}" type="{!field.type}" class="{!field.cssClass}"/>                            
+                                <c:OutputField config="{!field.config}" subcomponent="{!field.subcomponent}" record="{!v.record}" fieldName="{!field.apiName}"
+                                    type="{!field.type}" class="{!field.cssClass}" />
                             </aura:iteration>
                         </lightning:layoutItem>
-                    </aura:if>                    
-                    <lightning:layoutItem size="{!v.showImages ? '6' : '12'}" padding="around-small">
-                        <aura:iteration items="{!v.fieldset}" var="field">                            
+                    </aura:if>
+                    <lightning:layoutItem size="12" smallDeviceSize="12" mediumDeviceSize="{!v.showImages ? '6' : '12'}" largeDeviceSize="{!v.showImages ? '6' : '12'}" padding="around-small">
+                        <aura:iteration items="{!v.fieldset}" var="field">
                             <aura:if isTrue="{!field.type != 'image'}">
                                 <aura:if isTrue="{!field.showLabel}">
                                     <label class="slds-form-element__label">{!field.label.labelValue}</label>
                                 </aura:if>
-                                <c:OutputField config="{!field.config}" subcomponent="{!field.subcomponent}" record="{!v.record}" fieldName="{!field.apiName}" type="{!field.type}" class="{!field.cssClass}"/>
-                            </aura:if>    
+                                <c:OutputField config="{!field.config}" subcomponent="{!field.subcomponent}" record="{!v.record}" fieldName="{!field.apiName}"
+                                    type="{!field.type}" class="{!field.cssClass}" />
+                            </aura:if>
                         </aura:iteration>
                     </lightning:layoutItem>
                 </lightning:layout>
+                <aura:if isTrue="{!v.subfieldset.length > 0}">
+                    <lightning:layout multipleRows="true" class="no-border subfields-container">
+                        <lightning:layoutItem size="12">
+                            <aura:iteration items="{!v.subfieldset}" var="subfield">
+                                <aura:if isTrue="{!subfield.type != 'image'}">
+                                    <aura:if isTrue="{!subfield.showLabel}">
+                                        <label class="slds-form-element__label">{!subfield.label.labelValue}</label>
+                                    </aura:if>
+                                    <c:OutputField config="{!subfield.config}" subcomponent="{!subfield.subcomponent}" record="{!v.record}" fieldName="{!subfield.apiName}"
+                                        type="{!subfield.type}" class="{!subfield.cssClass}" />
+                                </aura:if>
+                            </aura:iteration>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:if>
                 <aura:set attribute="else">
                     <div class="{!v.layout}">
-                        <lightning:layout class="fielo-layout" horizontalAlign="center" >
-                            <lightning:layoutItem class="fielo-layout__item">
+                        <lightning:layout multipleRows="true" horizontalAlign="center">
+                            <lightning:layoutItem>
                                 <aura:iteration items="{!v.fieldset}" var="field">
                                     <div class="{!field.type + ' item'}">
                                         <aura:if isTrue="{!field.showLabel}">
                                             <label class="slds-form-element__label">{!field.label.labelValue}</label>
                                         </aura:if>
-                                        <c:OutputField config="{!field.config}" subcomponent="{!field.subcomponent}" record="{!v.record}" fieldName="{!field.apiName}" type="{!field.type}" class="{!field.cssClass}"/>
-                                    </div>                                
-                                </aura:iteration>
+                                        <c:OutputField config="{!field.config}" subcomponent="{!field.subcomponent}" record="{!v.record}" fieldName="{!field.apiName}"
+                                            type="{!field.type}" class="{!field.cssClass}" />
+                                    </div>
+                                </aura:iteration>                                
                             </lightning:layoutItem>
                         </lightning:layout>
+                        <lightning:layout multipleRows="true" class="no-border subfields-container">
+                        <lightning:layoutItem size="12">
+                            <aura:iteration items="{!v.subfieldset}" var="subfield">
+                                <aura:if isTrue="{!subfield.type != 'image'}">
+                                    <aura:if isTrue="{!subfield.showLabel}">
+                                        <label class="slds-form-element__label">{!subfield.label.labelValue}</label>
+                                    </aura:if>
+                                    <c:OutputField config="{!subfield.config}" subcomponent="{!subfield.subcomponent}" record="{!v.record}" fieldName="{!subfield.apiName}"
+                                        type="{!subfield.type}" class="{!subfield.cssClass}" />
+                                </aura:if>
+                            </aura:iteration>
+                        </lightning:layoutItem>
+                    </lightning:layout>
                     </div>
-                    
+
                 </aura:set>
             </aura:if>
-            
+
         </lightning:card>
     </div>
 </aura:component>
