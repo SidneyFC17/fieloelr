@@ -44,7 +44,13 @@ public class CoursesSelector extends SObjectSelector{
     }
 
     public List<Course__c> selectByIdHavingCourseStatus(Set<Id> courseIds) {
-      return (List<Course__c>) Database.query(String.format(
+
+      List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+           
+           
+        listCourse = (List<Course__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id ' +
                   '   FROM CoursesStatus__r LIMIT 1) ' +
@@ -55,10 +61,20 @@ public class CoursesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+          }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+      return listCourse;
     }
     
       public List<Course__c> selectAllByIdHavingCourseStatus(Set<Id> courseIds) {
-      return (List<Course__c>) Database.query(String.format(
+
+         List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse = (List<Course__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id ' +
                   '   FROM CoursesStatus__r) ' +
@@ -67,10 +83,22 @@ public class CoursesSelector extends SObjectSelector{
                 new List<String> {
                     getFieldListString(),
                     getSObjectName() } ));
+
+                    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
     public List<Course__c> selectByIdHavingDependentCourses(Set<Id> courseIds) {
-      return (List<Course__c>) Database.query(String.format(
+
+
+       List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse =  (List<Course__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id ' +
                   '   FROM DependentCourses__r LIMIT 1) ' +
@@ -81,9 +109,21 @@ public class CoursesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
     public List<Course__c> selectByIdHavingPredecessorCourses(Set<Id> courseIds) {
-      return (List<Course__c>) Database.query(String.format(
+
+
+       List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse = (List<Course__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id ' +
                   '   FROM PredecessorCourses__r LIMIT 1) ' +
@@ -94,10 +134,23 @@ public class CoursesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+
+                    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
     public List<Course__c> selectByIdHavingPredecessor(Set<Id> courseIds, Set<String> courseDependencyFields) {
-      return (List<Course__c>) Database.query(String.format('SELECT {0} ' +
+
+
+       List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse = (List<Course__c>) Database.query(String.format('SELECT {0} ' +
                    ', (SELECT {1} FROM PredecessorCourses__r) ' +
                   'FROM {2} ' +
                   'WHERE Id IN :courseIds ' +
@@ -107,10 +160,21 @@ public class CoursesSelector extends SObjectSelector{
                     String.join(new List<String>(courseDependencyFields),','),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                     }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
     public List<Course__c> selectByProgramHavingPredecessor(Id programId, Set<String> courseDependencyFields) {
-      return (List<Course__c>) Database.query(String.format('SELECT {0} ' +
+
+       List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse = (List<Course__c>) Database.query(String.format('SELECT {0} ' +
                    ', (SELECT {1} FROM PredecessorCourses__r) ' +
                   'FROM {2} ' +
                   'WHERE Program__c =: programId ' +
@@ -120,10 +184,21 @@ public class CoursesSelector extends SObjectSelector{
                     String.join(new List<String>(courseDependencyFields),','),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                     }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
     public List<Course__c> selectByIdHavingPredecessor(Set<Id> courseIds) {
-      return (List<Course__c>) Database.query(String.format(
+      
+       List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse =  (List<Course__c>) Database.query(String.format(
                'SELECT {0} ' +
                    ', (SELECT Course__c, Predecessor__c ' +
                   '   FROM PredecessorCourses__r) ' +
@@ -134,11 +209,22 @@ public class CoursesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                     }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
       public List<Course__c> selectByIdBeingAutomatic(Set<Id> courseIds) {
       String automatic = 'Automatic';
-      return (List<Course__c>) Database.query(String.format(       
+
+      List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse = (List<Course__c>) Database.query(String.format(       
                'SELECT {0} ' +                
                   'FROM {1} ' +
                   'WHERE Id IN : courseIds and SubscriptionMode__c = :automatic ' +
@@ -147,10 +233,20 @@ public class CoursesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                     }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
     public List<Course__c> selectByIdAndStatus(Set<Id> courseIds, Set<String> status) {
-      return (List<Course__c>) Database.query(String.format(
+      List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse = (List<Course__c>) Database.query(String.format(
                'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE Id IN : courseIds AND Status__c in : status ' +
@@ -159,10 +255,20 @@ public class CoursesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 
     public List<Course__c> selectByPredecessor(Set<Id> recordIds) {
-        return (List<Course__c>) Database.query(String.format(
+        List<Course__c> listCourse;
+
+      if(Schema.sObjectType.Course__c.isAccessible()){	
+
+       listCourse = (List<Course__c>) Database.query(String.format(
                 'SELECT {0} ' +               
                   'FROM {1} ' +
                   'WHERE Id IN (SELECT Course__c FROM CourseDependency__c WHERE Predecessor__c IN :recordIds)' +
@@ -171,5 +277,11 @@ public class CoursesSelector extends SObjectSelector{
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                    }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listCourse;
     }
 }

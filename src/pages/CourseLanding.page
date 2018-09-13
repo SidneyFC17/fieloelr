@@ -1,4 +1,4 @@
-<apex:page tabStyle="Course__c" docType="html-5.0" sidebar="false" controller="CourseLandingController">
+<apex:page tabStyle="Course__c" docType="html-5.0" sidebar="false" controller="CourseLandingController" action="{!verifyProgram}">
 	<!--  action="{!verifyProgram}" -->
 <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <head>
@@ -22,7 +22,7 @@
       buttons="{!MID(landingSettings.FieloPLT__Buttons__c,2,LEN(landingSettings.FieloPLT__Buttons__c)-1)}"
       tools="{!landingCourse.FieloPLT__Tools__c}"
       truncate="true">
-    	<c:BackEndProgramSelector/>
+    	<c:BackEndProgramSelector />
     </c:BackendHeaderRecord>
     <!-- CONTENT -->
     <div class="fielosf-body">

@@ -31,6 +31,9 @@ public class ProgramService {
     public static Map<Id,FieloPLT__Program__c> getPrograms(){
 
         if(programMap == null){
+            SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Program__c');
+            SecurityUtils.checkObjectIsReadable(convertType);
+
             programMap = new Map<Id, FieloPLT__Program__c>([SELECT Id, Name FROM FieloPLT__Program__c]);
         }
         return programMap;
@@ -85,8 +88,6 @@ public class ProgramService {
     public static void selectProgram(Id programId){
         FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
         settings.FieloPLT__CurrentProgramId__c = programId;
-        
-        sobjectType sobjectType = settings.getSobjectType();
 
          if(Schema.sObjectType.FieloPLT__Settings__c.isUpdateable() && Schema.sObjectType.FieloPLT__Settings__c.isCreateable()){
             upsert settings;

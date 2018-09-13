@@ -5,12 +5,23 @@ global class UpdateApprovedModulesBatchSchedule implements Database.Batchable<sO
     }
 
     global Database.QueryLocator start(Database.BatchableContext bc) {
-        return Database.getQueryLocator(
-            'SELECT Id, FieloELR__ApprovedModules__c, ' +
-            '(SELECT Id from FieloELR__ModuleResponses__r WHERE FieloELR__IsApproved__c = TRUE ' +
-            'AND FieloELR__NumberOfApprove__c = 1 AND FieloELR__Module__r.FieloELR__IsActive__c = true) ' +
-            'FROM FieloELR__CourseStatus__c ORDER BY FieloELR__Course__r.LastModifiedDate DESC LIMIT 50000000'
-        );
+
+         Database.QueryLocator queryLocator;
+
+        if(Schema.sObjectType.FieloELR__CourseStatus__c.isAccessible()){	
+
+            queryLocator = Database.getQueryLocator(
+                'SELECT Id, FieloELR__ApprovedModules__c, ' +
+                '(SELECT Id from FieloELR__ModuleResponses__r WHERE FieloELR__IsApproved__c = TRUE ' +
+                'AND FieloELR__NumberOfApprove__c = 1 AND FieloELR__Module__r.FieloELR__IsActive__c = true) ' +
+                'FROM FieloELR__CourseStatus__c ORDER BY FieloELR__Course__r.LastModifiedDate DESC LIMIT 50000000'
+            );
+         }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+        return queryLocator; 
+
     }
 
     global void execute(Database.BatchableContext bc, List<FieloELR__CourseStatus__c> scope) {
@@ -26,7 +37,11 @@ global class UpdateApprovedModulesBatchSchedule implements Database.Batchable<sO
         }
         
         CourseService.enableAdminPermission(true);
-        update csList;
+        if(Schema.sObjectType.FieloELR__CourseStatus__c.isUpdateable()){	
+            update csList;
+         }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         CourseService.enableAdminPermission(false);
     }
 

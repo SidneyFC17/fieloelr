@@ -1,5 +1,6 @@
 public class CourseStatus extends SObjectDomain {
     public static Set<Id> processedIds = new Set<Id>();
+    public static Set<Id> completedIds = new Set<Id>();
 
     public static Set<Id> completedCoursesIds = new Set<Id>();
     
@@ -180,13 +181,15 @@ public class CourseStatus extends SObjectDomain {
         Map<Id, Course__c> coursesMap = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__ActiveModules__c'}).selectById(coursesIds));
         for(CourseStatus__c record : (List<CourseStatus__c>)records){
             if(record.ApprovedModules__c != ((CourseStatus__c)existingRecords.get(record.Id)).ApprovedModules__c && record.ApprovedModules__c == coursesMap.get(record.Course__c).FieloELR__ActiveModules__c){
-                record.CompletedDate__c = System.now();
-                if (record.NumberofTimesCompleted__c == null) {
-                    record.NumberofTimesCompleted__c = 0;
-                } else {
-                    record.NumberofTimesCompleted__c++;
+                if (!completedCoursesIds.contains(record.Id)) {
+                    completedCoursesIds.add(record.Id);
+                    record.CompletedDate__c = System.now();
+                    if (record.NumberofTimesCompleted__c == null) {
+                        record.NumberofTimesCompleted__c = 0;
+                    } else {
+                        record.NumberofTimesCompleted__c++;
+                    }
                 }
-                completedCoursesIds.add(record.Id);
             }
         }
     }
@@ -219,7 +222,11 @@ public class CourseStatus extends SObjectDomain {
         // When the course status is deleted, must delete related module responses
         deleteCourseStatusModuleResponses(courseStatusMap, uow);
 
-        uow.commitWork();
+         if(Schema.sObjectType.Course__c.isDeletable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
 
         Map<Id,SObject> deletedModuleResponses = uow.m_deletedMapByType.get('FieloELR__ModuleResponse__c');
         for (Database.DeleteResult dr : uow.getResults(ModuleResponse__c.SObjectType).deleteResults) {

@@ -2,7 +2,6 @@ public class Modules extends SObjectDomain {
 
     public static Boolean validateAdminFields = true;
     public static Boolean isDelete = false;
-    public static Boolean editCourseSettings = false;
 
     public Modules(List<Module__c> records) {
         super(records);
@@ -13,11 +12,6 @@ public class Modules extends SObjectDomain {
             //If has Admin Permission allow "validateAdminFields"
             if(FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()) != null && FieloPLT__AdminPermission__c.getInstance(UserInfo.getUserId()).FieloPLT__To__c >= system.now()){
                 validateAdminFields = false;
-            }
-
-            FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
-            if (courseSettings != null) {
-                editCourseSettings = courseSettings.EnableEditingWhileActive__c;
             }
 
             return new Modules(sObjectList);
@@ -57,31 +51,6 @@ public class Modules extends SObjectDomain {
         }
     }    
 
-    public override void onValidate() {
-        if(validateAdminFields){
-            Set<Id> courseIds = new Set<Id>();
-
-            for(Module__c module : (List<Module__c>)records) {
-                if (module.Course__c == null) {
-                    module.addError(Label.CourseIsRequired);
-                    return;
-                } else {
-                    courseIds.add(module.Course__c);
-                }
-            }
-
-            Map<Id, Course__c> courses = new Map<Id, Course__c>(new CoursesSelector(new Set<String>{'FieloELR__Status__c'}).selectById(courseIds));
-            
-            String courseStatus;
-            for(Module__c module : (List<Module__c>)records) {
-                courseStatus = courses.get(module.Course__c).Status__c;
-                if ((courseStatus == 'Active' || courseStatus == 'Scheduled' || courseStatus == 'Completed') && !editCourseSettings) {
-                    module.addError(Label.OnModuleCreationError);
-                }
-            }
-        }
-    }
-
     public override void onValidate(Map<Id,SObject> existingRecords) {
         if(validateAdminFields){
             if (!isDelete) {
@@ -97,10 +66,11 @@ public class Modules extends SObjectDomain {
                     if(!(oldModule.IsActive__c) && module.IsActive__c) {
                         activatedModules.add(module);
                     }
-                   
-                    //If the field is true, there is no check 
-                    if(editCourseSettings == false){
-                        //check if the user is trying to change the active status of the course
+                   //get PublicSettings field that check if Edit Courses is authorized
+                FieloPLT__PublicSettings__c courseSettings = FieloPLT__PublicSettings__c.getInstance();
+                Boolean editCourseSettings = courseSettings.EnableEditingWhileActive__c;
+                   //If the field is true, there is no check 
+                    if(editCourseSettings ==false ){
                         if(oldModule.IsActive__c && module.IsActive__c) {
                             addError(module, Label.ActiveModuleCannotBeEdited);
                         }
@@ -118,7 +88,7 @@ public class Modules extends SObjectDomain {
                         updatedModules.add(module);
                     }else if((module.FieloELR__HasDependencies__c != oldModule.FieloELR__HasDependencies__c) ||
                     (module.FieloELR__KeyDependencies__c != oldModule.FieloELR__KeyDependencies__c)){
-                        addError(module, Label.ValidateModuleEditableFields);
+                        addError(module, 'This field can\'t be edited');
                     }
                 }
 
@@ -192,13 +162,18 @@ public class Modules extends SObjectDomain {
         }
         //If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
         updateQuestions(new List<Module__c>(modulesToChangeQuestions), modulesToChangeCorrectWeight, modulesToChangeIncorrectWeight, modulesToChangePenaltyPerAttempt, uow);
-        uow.commitWork();
+        
+        if(Schema.sObjectType.Course__c.isUpdateable()){
+             uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+       
     }
 
     // Check the responses for a list of modules
     private void updateCourses(List<Module__c> activatedModules, List<Module__c> inactivatedModules, SObjectUnitOfWork uow) {
         
-        Set<Id> moduleIds = new Set<Id>();
         Set<Id> courseIds = new Set<Id>();
         if(activatedModules != null){
             for(Module__c module : activatedModules) {
@@ -212,12 +187,11 @@ public class Modules extends SObjectDomain {
             for(Module__c module : inactivatedModules) {
                 if(!hasError(module.Id)) {
                     courseIds.add(module.Course__c);
-                    moduleIds.add(module.Id);                    
                 }
             }
         }
 
-        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String> {'Id','ActiveModules__c','Status__c'}).selectById(courseIds));
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String> {'Id','ActiveModules__c'}).selectById(courseIds));
         if(activatedModules != null){
             for(Module__c module : activatedModules) {
                 if(!hasError(module.Id)) {
@@ -232,13 +206,6 @@ public class Modules extends SObjectDomain {
                 if(!hasError(module.Id)) {
                     Course__c course = coursesMap.get(module.Course__c);
                     course.ActiveModules__c--;
-
-                    if (course.Status__c == 'Active' || course.Status__c == 'Scheduled' || course.Status__c == 'Completed') {
-                        if (course.ActiveModules__c == 0) {
-                            addError(module, Label.ActiveCourseMustHaveActiveModules);
-                            return;
-                        }
-                    }
                 }                   
             }
         }
@@ -278,7 +245,12 @@ public class Modules extends SObjectDomain {
         if(!modulesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             uow.registerDirty(modulesMap.values());
-            uow.commitWork();
+
+            if(Schema.sObjectType.Module__c.isUpdateable()){
+                  uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 
@@ -316,7 +288,12 @@ public class Modules extends SObjectDomain {
         if (!modulesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             uow.registerDirty(modulesMap.values());
-            uow.commitWork();
+
+               if(Schema.sObjectType.Module__c.isUpdateable()){
+                  uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
         }
     }
 
@@ -365,7 +342,13 @@ public class Modules extends SObjectDomain {
             updateCourses(null, activeModules, uow);
         Courses.validateAdminFields = false;
         Questions.validateAdminFields = false;
-        uow.commitWork();
+
+          if(Schema.sObjectType.Course__c.isDeletable() && Schema.sObjectType.Course__c.isUpdateable()){
+             uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
     }
 
 

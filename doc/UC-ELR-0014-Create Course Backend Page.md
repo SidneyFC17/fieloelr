@@ -37,8 +37,9 @@ A course was created
 ##### 1. The Course Name is not filled (step 8 of basic flow)
    1. The administrator does not fill the Course Name field
    2. The administrator presses the Save button
-   3. The system displays an error message
-   4. The system does not create the Course
+   3. The system does not create the Course
+   4. The system displays an error message
+   5. End of flow
 
 ##### 2. The Program is not filled (step 9 of basic flow)
    1. The administrator clears the Program field

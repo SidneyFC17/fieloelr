@@ -8,16 +8,20 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
     public FieloPLT__PageSettings__c landingCourse {get;set;}
     public static String secondaryParameters {get;set;}
     public static String saveController {get;set;}
+    private PageReference retURL {get;set;}
 
     public FieloPLT__Program__c currentProgram { get {
-        if ( currentProgram == null) {
+        if (currentProgram == null && ProgramService.hasPrograms()) {
             currentProgram = ProgramService.getActiveProgram();
         }
         return currentProgram;
     }set;}
 
     public CourseLandingController() {
-        if( currentProgram != null ){
+        
+        //Verify if a program was already created. If not, redirect to ProgramLanding page
+        if(currentProgram != null)
+        {      
             String standardTools  = '';
             String standardButtons = '';
 
@@ -46,6 +50,16 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
                 currentView = 'Draft';
             }
         }
+    }
+    
+    //Verify if a program was already created. If not, redirect to ProgramLanding page
+    public PageReference verifyProgram(){
+        PageReference retURL;
+        if(!ProgramService.hasPrograms()){
+            retURL = Page.FieloPLT__ProgramLanding;
+            retURL.setRedirect(true);
+        }
+      return retURL;
     }
 
     public class Section {
@@ -156,7 +170,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             //TODO Change to ELR Create API
 
             if ( String.isBlank( modelId )  ) {
-                if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
+                if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})  && SecurityUtils.canUpdate(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
                     insert record;
                 }else{
                     throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);

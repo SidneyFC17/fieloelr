@@ -259,7 +259,14 @@ public with sharing class RelatedListController {
       query += ' OFFSET '+ String.valueOf(offset);
     }
 
-    return Database.query(query);
+    List<SObject> listObjects;
+
+    SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+    SecurityUtils.checkObjectIsReadable(convertType);
+            listObjects = Database.query(query);
+    
+        return listObjects;
   }    
   /*
   @RemoteAction

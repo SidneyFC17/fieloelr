@@ -95,6 +95,11 @@ public with sharing class ModuleViewController extends PageSettingsController {
 					objectName
 				}
 			);
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        SecurityUtils.checkObjectIsReadable(convertType);
+
 			record = Database.query(query);
 			setRecord(record);
 		}
@@ -129,7 +134,16 @@ public with sharing class ModuleViewController extends PageSettingsController {
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName AND FieloPLT__IsActive__c = true' ;
         query += ' LIMIT 1';
-        List<sObject> result = Database.query(query);
+		List<sObject> result;
+
+		if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+        	result = Database.query(query);
+
+			}else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+
         if (result.isEmpty()) {
         	return new FieloPLT__PageSettings__c(
         		FieloPLT__Sections__c = defaultSection
@@ -160,7 +174,17 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-        	upsert record;
+
+		 if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
+			 if(SecurityUtils.canInsert(Module__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Module__c.sObjectType, nullFields)){
+                  upsert record;
+          }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+        	
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
@@ -181,7 +205,18 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-        	upsert (Question__c) record;
+
+			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
+				 if(SecurityUtils.canInsert(Question__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Question__c.sObjectType, nullFields)){
+                  	upsert (Question__c) record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+            	
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
+
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
@@ -202,7 +237,18 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-        	upsert (ModuleDependency__c) record;
+
+			if(Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
+				 if(SecurityUtils.canInsert(ModuleDependency__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleDependency__c.sObjectType, nullFields)){
+                  	upsert (ModuleDependency__c) record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+            	
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
+     
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + ((ModuleDependency__c)record).Module__c;
@@ -220,7 +266,14 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
-		List<sObject> result = Database.query(query);
+		List<sObject> result;
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        SecurityUtils.checkObjectIsReadable(convertType);
+
+			result = Database.query(query);
+
 		return result.get(0);
 	}
 
@@ -229,8 +282,18 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		RemoteActionResult result = new RemoteActionResult();
 		try{
 			Module__c record = new Module__c ( Id = recordId, IsActive__c = true);
-			update record;
-			
+
+			if(Schema.sObjectType.Module__c.isUpdateable()){
+				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
+                   update record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+            	
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
+
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.ModuleActivated) );
 
 			result.redirectURL = '/' + recordId;
@@ -248,8 +311,17 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		RemoteActionResult result = new RemoteActionResult();
 		try{
 			Module__c record = new Module__c ( Id = recordId, IsActive__c = false);
-			update record;
-			
+
+			if(Schema.sObjectType.Module__c.isUpdateable()){
+				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
+                   update record;
+         		 }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+          	}else{
+            	throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
+
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.ModuleInactivated) );
 
 			result.redirectURL = '/' + recordId;
@@ -280,8 +352,16 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		if ( offset != null ){
 		query += ' OFFSET '+ String.valueOf(offset);
 		}
-		system.debug('### query: ' + query);      
-		return Database.query(query);
+		system.debug('### query: ' + query);    
+		List<SObject> listObjects;
+
+		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+
+        SecurityUtils.checkObjectIsReadable(convertType);
+
+			 listObjects = Database.query(query);
+			 
+		  return listObjects;
 	}
 
 	private static String getWhereCondition( String filterJson ) {

@@ -14,6 +14,9 @@ public class SegmentService {
         }
         segmentsCode = segmentsCode.removeEnd(';');
 
+        SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
+            SecurityUtils.checkObjectIsReadable(convertType);
+
         List<FieloPLT__Segment__c> metasegment = [SELECT Id FROM FieloPLT__Segment__c WHERE (FieloPLT__Program__c = :programId OR FieloPLT__Program__c = null) AND FieloPLT__RelatedSegments__c =: segmentsCode AND Recordtype.DeveloperName = 'Metasegment' ];
         if(metasegment.isEmpty()){
             Id metasegmentRTId = getRecordTypeId('FieloPLT__Segment__c', 'Metasegment');
@@ -26,7 +29,12 @@ public class SegmentService {
             	FieloPLT__IsActive__c = true
             );
             uow.registerNew(newSegment);
-            uow.commitWork();
+
+            if(Schema.sObjectType.FieloPLT__Segment__c.isCreateable() ){
+                uow.commitWork();
+            }else{
+                throw new FieloException(Label.CannotInsertUpdateRecords);
+            }
             return newSegment.Id;
         }
 

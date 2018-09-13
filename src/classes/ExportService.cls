@@ -116,6 +116,8 @@ public class ExportService{
                 segmentMultiUsedIds.addAll(new Set<String>(c.Segment__r.FieloPLT__RelatedSegments__c.split(';')));
             }
         }
+        SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
+        	    SecurityUtils.checkObjectIsReadable(convertType);
 
         Map<Id,FieloPLT__Segment__c> segmentsMultiUsedMap = new Map<Id,FieloPLT__Segment__c>([SELECT Id, Name FROM FieloPLT__Segment__c WHERE Id in : segmentMultiUsedIds]);
 
@@ -289,7 +291,14 @@ public class ExportService{
     }
 
     public static void saveData(SObjectUnitOfWork uow, List<MultiSegmentRelation> multiSegmentRelations){
-        uow.commitWork();
+        
+
+        if(Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
+                uow.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
         if(multiSegmentRelations != null){
             Set<String> segmentCombinations = new Set<String>();
             for(MultiSegmentRelation msr : multiSegmentRelations){
@@ -303,11 +312,19 @@ public class ExportService{
             }
 
             Map<String,FieloPLT__Segment__c> metaSegmentsByComb = new Map<String,FieloPLT__Segment__c>();
+
+            SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
+        	    SecurityUtils.checkObjectIsReadable(convertType);
+
             for(FieloPLT__Segment__c metaSegment : [SELECT Id, FieloPLT__RelatedSegments__c FROM FieloPLT__Segment__c WHERE FieloPLT__RelatedSegments__c in : segmentCombinations]){
                 metaSegmentsByComb.put(metaSegment.FieloPLT__RelatedSegments__c, metaSegment);
             }
 
             FieloPLT__Program__c program = ProgramService.getActiveProgram();
+
+             convertType = Schema.getGlobalDescribe().get('RecordType');
+        	    SecurityUtils.checkObjectIsReadable(convertType);
+
             Id metasegmentRTId = [SELECT Id, Name, DeveloperName FROM RecordType WHERE SObjectType = 'FieloPLT__Segment__c' AND DeveloperName =: 'Metasegment'].Id;
             SObjectUnitOfWork uowMetaSegments = new SObjectUnitOfWork(new List<Schema.SObjectType>{FieloPLT__Segment__c.SObjectType, Course__c.SObjectType});
             for(MultiSegmentRelation msr : multiSegmentRelations){
@@ -320,7 +337,12 @@ public class ExportService{
                     metaSegmentsByComb.put(msr.segmentsCombination, newMetaSegment);
                 }
             }
-            uowMetaSegments.commitWork();
+
+            if(Schema.sObjectType.FieloPLT__Segment__c.isCreateable() && Schema.sObjectType.FieloPLT__Segment__c.isUpdateable()){
+                 uowMetaSegments.commitWork();
+          }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }          
         }
     }
 
@@ -366,10 +388,16 @@ public class ExportService{
             while(parser.nextToken() != null){
                 if(parser.getCurrentToken() == JSONToken.FIELD_NAME){
                     
+                     SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
+        	             SecurityUtils.checkObjectIsReadable(convertType);
+
                     FieloPLT__Program__c program = ProgramService.getActiveProgram();
                     for(FieloPLT__Segment__c segment : [SELECT Name, Id FROM FieloPLT__Segment__c WHERE FieloPLT__Program__c =: program.Id AND RecordType.DeveloperName != 'Metasegment']){
                         segmentsByName.put(segment.Name, segment);
                     }
+
+                     convertType = Schema.getGlobalDescribe().get('Course__c');
+        	             SecurityUtils.checkObjectIsReadable(convertType);
 
                     for(Course__c course : [SELECT Name, Id FROM Course__c WHERE Program__c =: program.Id]){
                         coursesByName.put(course.Name, course);
@@ -603,6 +631,7 @@ public class ExportService{
     }
 
     public static void saveIncentives(SObjectUnitOfWork uow){
+        
         uow.commitWork();
     }
 

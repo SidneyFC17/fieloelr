@@ -31,7 +31,12 @@ public class QuestionResponsesSelector extends SObjectSelector {
     }
 
     public List<QuestionResponse__c> selectByIdWithAnswers(Set<Id> questionResponseIds) {
-    	return (List<QuestionResponse__c>) Database.query(String.format(
+    
+    List<QuestionResponse__c> listQuestion;
+
+     if(Schema.sObjectType.QuestionResponse__c.isAccessible()){	
+
+        listQuestion = (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id, AnswerOption__c, TextValue__c, Name FROM Answers__r) ' +
                   'FROM {1} ' +
@@ -41,10 +46,20 @@ public class QuestionResponsesSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+                     }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listQuestion;
     }
 
     public List<QuestionResponse__c> selectByKeyAndCorrect(Set<String> keys) {
-        return (List<QuestionResponse__c>) Database.query(String.format(
+        List<QuestionResponse__c> listQuestion;
+
+     if(Schema.sObjectType.QuestionResponse__c.isAccessible()){	
+
+        listQuestion = (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE ExternalKey__c IN : keys AND IsCorrect__c = true ' +
@@ -53,10 +68,20 @@ public class QuestionResponsesSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+              }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listQuestion;
     }
 
     public List<QuestionResponse__c> selectByKeyAndSubmitted(Set<Id> questionResponseIds) {
-        return (List<QuestionResponse__c>) Database.query(String.format(
+        List<QuestionResponse__c> listQuestion;
+
+     if(Schema.sObjectType.QuestionResponse__c.isAccessible()){	
+
+        listQuestion = (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE Id IN :questionResponseIds AND IsSubmitted__c = true ' +
@@ -65,15 +90,32 @@ public class QuestionResponsesSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
+
+              }else{
+            throw new FieloException(Label.CannotAccessRecords);
+          }
+
+          return listQuestion;
     }
 
     public List<AggregateResult> selectByModuleResponseGroupByModuleResponse(Set<Id> moduleResponseIds) {
-        return [SELECT ModuleResponse__r.Id ModuleResponse, Question__r.Id Question, 
+    
+    List<AggregateResult> listQuestion;
+
+     if(Schema.sObjectType.QuestionResponse__c.isAccessible()){	
+
+        listQuestion = [SELECT ModuleResponse__r.Id ModuleResponse, Question__r.Id Question, 
                     MAX(ModuleResponse__r.Module__r.QuestionPool__c) QuestionPool
                 FROM QuestionResponse__c 
                 WHERE ModuleResponse__c in : moduleResponseIds 
                 GROUP BY ModuleResponse__r.Id, Question__r.Id
                 HAVING MAX(ModuleResponse__r.Module__r.QuestionPool__c) != null 
                 ORDER BY ModuleResponse__r.Id, Question__r.Id];
+
+                 }else{
+            throw new FieloException(Label.CannotInsertUpdateRecords);
+          }
+
+          return listQuestion;
     }    
 }
