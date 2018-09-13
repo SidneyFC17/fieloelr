@@ -170,7 +170,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             //TODO Change to ELR Create API
 
             if ( String.isBlank( modelId )  ) {
-                if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
+                if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})  && SecurityUtils.canUpdate(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
                     insert record;
                 }else{
                     throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);

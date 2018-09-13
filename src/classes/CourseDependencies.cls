@@ -42,10 +42,11 @@ public class CourseDependencies extends SObjectDomain{
 
     public override void onAfterInsert() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
-        updateCourses(records, uow);
-        Courses.validateAdminFields = false;
+        
 
         if(Schema.sObjectType.Course__c.isCreateable()){
+            updateCourses(records, uow);
+            Courses.validateAdminFields = false;
            uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -55,10 +56,11 @@ public class CourseDependencies extends SObjectDomain{
 
     public override void onAfterDelete() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
-        updateCourses(records, uow);
-        Courses.validateAdminFields = false;
+       
 
         if(Schema.sObjectType.Course__c.isCreateable()){
+             updateCourses(records, uow);
+            Courses.validateAdminFields = false;
            uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);

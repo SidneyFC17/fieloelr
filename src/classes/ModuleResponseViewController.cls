@@ -101,7 +101,17 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-        	upsert record;
+
+			if(SecurityUtils.canInsert(ModuleResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleResponse__c.sObjectType, nullFields)){
+                    upsert record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
+
+
+        	
+
+
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
@@ -129,7 +139,11 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
          		record.put(f, null );
 			}
 			// TODO: Change to Create API
-        	upsert (QuestionResponse__c) record;
+			if(SecurityUtils.canInsert(QuestionResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(QuestionResponse__c.sObjectType, nullFields)){
+                    upsert (QuestionResponse__c) record;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                }
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );

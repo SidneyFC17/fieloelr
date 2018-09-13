@@ -26,6 +26,13 @@ public class AnswerOptionsSelector extends SObjectSelector {
     }
 
     public List<AggregateResult> selectByQuestionGroupByQuestion(Set<Id> questionIds) {
-        return [SELECT MAX(Order__c) order, Question__c FROM AnswerOption__c WHERE Question__c in : questionIds GROUP BY Question__c];
+
+        if(SecurityUtils.canInsert(AnswerOption__c.sObjectType, new List<String>{'Question__c', 'Order__c'})){
+                   List<AggregateResult> listAggre = [SELECT MAX(Order__c) order, Question__c FROM AnswerOption__c WHERE Question__c in : questionIds GROUP BY Question__c];
+                    return listAggre;
+                }else{
+                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                    return null;
+                }
     }
 }
