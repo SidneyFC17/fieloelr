@@ -5,7 +5,7 @@
 	"dependencies":[
 		{
 			"type":"package",
-			"version":"2.47",
+			"version":"2.56.5",
 			"name":"FieloPLT"
 		}
 	]
