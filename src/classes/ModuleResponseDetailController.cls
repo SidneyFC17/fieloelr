@@ -152,6 +152,7 @@ public with sharing class ModuleResponseDetailController {
 				baseURL = Network.getLoginUrl(Network.getNetworkId());
 				String uselessString = baseURL.substring(baseURL.lastIndexOf('/')+1);
 				baseURL = baseURL.replace(uselessString, '');
+				baseURL = baseURL.replace('/s/','/');
 			}
 
 			lcConfig.put('orgId', UserInfo.getOrganizationId());
