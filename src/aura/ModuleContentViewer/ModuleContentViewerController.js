@@ -11,13 +11,23 @@
             var urls = url.split(',');
             if (urls) {
                 var newUrls = [];
+                var singleURL = '';
                 urls.forEach(function(urlToTest) {
                     if (urlToTest.indexOf('https://') == -1) {
-						newUrls.push( config.communityURL + urlToTest.replace(new RegExp('^\/'),'') );
+                        singleURL = config.communityURL + urlToTest.replace(new RegExp('^\/'),'');
+						newUrls.push( singleURL.replace('/s/','') );
                     }
                 });
                 if (newUrls.length > 0) {
                 	component.set('v.url', newUrls.join(','));    
+                }
+            }
+            
+            url = component.get('v.url');
+            
+            if (url.indexOf(',')==-1) {
+                if (url.indexOf('https://') == -1) {
+                    url = config.communityURL + url;
                 }
             }
             

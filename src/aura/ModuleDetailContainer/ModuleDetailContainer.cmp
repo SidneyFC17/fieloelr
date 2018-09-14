@@ -102,7 +102,7 @@
                         </lightning:layoutItem>
                     </lightning:layout>
                     <aura:if isTrue="{!v.isCollapsed == false}">
-                        <c:ModuleContentViewer url="{!v.config.communityURL + v.module.FieloELR__Content__c}" mediaType="{!v.module.FieloELR__ContentType__c}" config="{!v.config}"/>
+                        <c:ModuleContentViewer url="{!v.module.FieloELR__Content__c}" mediaType="{!v.module.FieloELR__ContentType__c}" config="{!v.config}"/>
                     </aura:if>
                 </aura:if>
             </div>
