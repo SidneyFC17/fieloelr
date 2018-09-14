@@ -1,19 +1,15 @@
-<aura:component controller="AuraService" >
+<aura:component >
     <aura:attribute name="record" type="sObject" />
     <aura:attribute name="fieldName" type="String"  />
     <aura:attribute name="content" type="String"  />
     <aura:attribute name="subcomponent" type="String" />
     <aura:attribute name="type" type="String"  default="output"/>
-    <aura:attribute name="class" type="String" default="" />
-    <aura:attribute name="blankValue" type="String" default="" />
+    <aura:attribute name="class" type="String" default="" />        
     <aura:attribute name="config" type="String"/>
     <aura:attribute name="showSubcomponent" type="Boolean" default="false" access="private"/>
-    <aura:attribute name="showImage" type="Boolean" default="false" access="private"/>
-    <aura:attribute name="suffix" type="String" access="private" default="" />
-
-    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     
-    <div data-field-name="{!v.fieldName}" class="{!v.class + ' fielo-output'}" data-type="{!v.type}">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <div data-field-name="{!v.fieldName}" class="{!v.class + ' fielo-output'}">
         <aura:if isTrue="{!v.type == 'output'}" >
             {!v.content}
         </aura:if>
@@ -22,8 +18,8 @@
                 {!v.content}
             </div>
         </aura:if>
-        <aura:if isTrue="{!or(v.type == 'colorNumber', v.type == 'colornumber')}" >
-            <div class="{!v.content > 0 ? 'colorNumber green' : 'colorNumber red'}">
+        <aura:if isTrue="{!v.type == 'colorNumber'}" >
+            <div class="{!v.content > 0 ? 'green' : 'red'}">
                 {!v.content}
             </div>
         </aura:if>
@@ -32,38 +28,33 @@
         </aura:if>
         <aura:if isTrue="{!v.type == 'input'}" >
             <lightning:input value="{!v.content}" label="" />
-        </aura:if>        
-        <aura:if isTrue="{!and(v.type == 'image', v.showImage)}" >             
-            <aura:if isTrue="{!v.suffix.length > 0}">                
-                <img src="{!'/' + v.suffix + v.content}" />
-                <aura:set attribute="else">                    
-                    <img src="{!v.content}" />
-                </aura:set>
-            </aura:if>
-        </aura:if>
-        <aura:if isTrue="{!v.type == 'youtube-video'}" >
+        </aura:if>                
+        <aura:if isTrue="{!v.type == 'image'}" >                   
+            <img src="{!v.content}" />
+        </aura:if>    
+        <aura:if isTrue="{!v.type == 'youtube-video'}" >                   
             <div class="videoContainer">
                 <iframe class="video" src="{!'https://www.youtube.com/embed/' + v.content}" frameborder="0" ></iframe>
-            </div>
+            </div>            
         </aura:if>
-        <aura:if isTrue="{!v.type == 'pdf'}" >
+        <aura:if isTrue="{!v.type == 'pdf'}" >                   
             <iframe src="{!v.content}" width="100%" height="500px" frameborder="0"></iframe>
-        </aura:if>
+        </aura:if>        
         <aura:if isTrue="{!v.type == 'subcomponent'}" >
             <aura:if isTrue="{!v.showSubcomponent}">
                 <c:Subcomponent fieldName="{!v.fieldName}" record="{!v.record}" name="{!v.content}" type="{!v.subcomponent}" config="{!v.config}" />
             </aura:if>
-        </aura:if>
-        <aura:if isTrue="{!v.type == 'checkbox'}" >
+        </aura:if>    
+        <aura:if isTrue="{!v.type == 'checkbox'}" >                        
             <ui:inputCheckbox value="{!v.content}" class="disabled checkbox" />
         </aura:if>
-        <aura:if isTrue="{!v.type == 'date'}" >
-            <ui:inputDate class="disabled date" value="{!v.content}" format="MM/dd/yyyy" />
+        <aura:if isTrue="{!v.type == 'date'}" >                        
+            <ui:inputDate class="disabled date" value="{!v.content}" />              
         </aura:if>
-        <aura:if isTrue="{!v.type == 'richtext'}" >
+        <aura:if isTrue="{!v.type == 'richtext'}" > 
             <aura:unescapedHtml value="{!v.content}"></aura:unescapedHtml>
         </aura:if>
-
+        
 
     </div>
 </aura:component>
