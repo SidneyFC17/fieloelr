@@ -211,8 +211,8 @@ global class QuestionService {
 		uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{QuestionResponse__c.SObjectType});
 		// Done this way becouse the commit the UOW doesnt refreshes the entire object, just the ID.
 
-		SObjectType convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
-            SecurityUtils.checkObjectIsReadable(convertType);
+		// SObjectType convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
+        // SecurityUtils.checkObjectIsReadable(convertType);
 
 		QuestionResponse__c qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.FieloELR__AttemptsAllowedPerQuestion__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
 		qResponseQuery.IsSubmitted__c = true;
@@ -229,8 +229,8 @@ global class QuestionService {
 			throw e;
 		}
 
-		 convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
-            SecurityUtils.checkObjectIsReadable(convertType);
+		// convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
+        // SecurityUtils.checkObjectIsReadable(convertType);
 
 
 		// Done this way becouse the commit the UOW doesnt refreshes the entire object, just the ID.
