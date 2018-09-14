@@ -312,11 +312,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			}
 			// TODO: Change to Create API
 			if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
-				if(SecurityUtils.canInsert(Module__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Module__c.sObjectType, nullFields)){
-                  upsert (Module__c) record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+				upsert (Module__c) record;
             }else{
                throw new FieloException(Label.CannotInsertUpdateRecords);
 			}
