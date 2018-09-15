@@ -172,10 +172,18 @@ global class QuestionService {
 				}
 			}else{
 				if(answerOption.IsCorrect__c){
-					if(this.answerOption.MatchingText__c == answer.TextValue__c){
-						this.answerStatus = 'Correct';
-					}else{
-						this.answerStatus = 'Incorrect';
+					if(answer != null){
+						if(this.answerOption.MatchingText__c == answer.TextValue__c){
+							this.answerStatus = 'Correct';
+						}else{
+							this.answerStatus = 'Incorrect';
+						}
+					} else {
+						if(showDetailedAnswers){
+							this.answerStatus = answerOption.IsCorrect__c ? 'Missing' : 'Neutral';
+						}else{
+							this.answerStatus = 'Neutral';
+						}
 					}
 				}else{
 					this.answerStatus = 'Neutral';
