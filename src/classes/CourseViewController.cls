@@ -203,7 +203,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 				record.segment__c = null;
         	}
 
-			if(SecurityUtils.canInsert(Course__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Course__c.sObjectType, nullFields)){
+			if (Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
 				upsert record;
 			}else{
 				throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
@@ -342,11 +342,11 @@ public with sharing class CourseViewController extends PageSettingsController {
          		record.put(f, null );
 			}
 			// TODO: Change to Create API
-			if(SecurityUtils.canInsert(CourseDependency__c.sObjectType, nullFields) && SecurityUtils.canUpdate(CourseDependency__c.sObjectType, nullFields)){
-                 upsert (CourseDependency__c) record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if (Schema.sObjectType.CourseDependency__c.isUpdateable() && Schema.sObjectType.CourseDependency__c.isCreateable()){
+				upsert (CourseDependency__c) record;
+			}else{
+				throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+			}
         	
 
 			//TODO Crear Label DataSavedSuccessfully
