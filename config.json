@@ -1,11 +1,11 @@
 {
 	"type":"package",
-	"version":"1.67",
+	"version":"1.68",
 	"name":"FieloELR",
 	"dependencies":[
 		{
 			"type":"package",
-			"version":"2.56.5",
+			"version":"2.56.6",
 			"name":"FieloPLT"
 		}
 	]
