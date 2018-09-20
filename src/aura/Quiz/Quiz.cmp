@@ -19,9 +19,9 @@
     
     <!-- Design Attributes -->
     <aura:attribute type="String" name="submitMode"/>
-    <aura:attribute type="String" name="presentationMode" default=""/>
+    <aura:attribute type="String" name="presentationMode" default="" access="global"/>
     <aura:attribute type="String" name="feedbackMode"/>
-    <aura:attribute type="Boolean" name="showQuestionName"/>
+    <aura:attribute type="Boolean" name="showQuestionName" access="global"/>
     <!-- Design Attributes -->
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>

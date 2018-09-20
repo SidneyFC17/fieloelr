@@ -109,7 +109,7 @@ private class TestCreateCourseDependency {
 		try{
     		insert listCourseDepen;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('Course and Predecessor must be different.'));
+			System.assert(d.getMessage().Contains('Course and Prerequisite must be different'));
 		}
 	}
 
@@ -127,7 +127,7 @@ private class TestCreateCourseDependency {
 		try{
     		insert listCourseDepen;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('Course and Predecessor must belong to the same Program'));
+			System.assert(d.getMessage().Contains('Course and Prerequisite must belong to the same Program'));
 		}
 	}
 
