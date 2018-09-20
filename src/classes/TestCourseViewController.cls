@@ -409,6 +409,8 @@ public class TestCourseViewController
 		CourseService.testTemporal16();
 		CourseService.testTemporal17();
 		CourseService.testTemporal18();
+		CourseService.testTemporal19();
+		CourseService.testTemporal20();
 	}
 
 	@isTest
