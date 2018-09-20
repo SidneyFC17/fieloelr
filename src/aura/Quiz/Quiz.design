@@ -1,4 +1,4 @@
-<design:component label="FieloELR - Quizzes">
+<design:component label="Fielo - Quizzes">
     
     <design:attribute label="Question Display Mode" name="presentationMode" datasource="All at once,One By One" default="One By One"/>
     

@@ -237,6 +237,7 @@ private class TestSubmitModuleResponse {
         - Module response is approved when there are unsubmitted related question responses and the Question Pool is not “null” (OK)
     */
     @isTest static void ELR_0010_FA3() {
+        Test.startTest();
         // Adding Question Pool
         List<Module__c> modules = [SELECT Id, Course__c FROM Module__c WHERE Name = 'Basic' LIMIT 1];
         List<Course__c> courses = [SELECT Id FROM Course__c WHERE Id = :modules.get(0).Course__c LIMIT 1];
@@ -337,6 +338,7 @@ private class TestSubmitModuleResponse {
         System.assert(courseStatus.get(0).ApprovedModules__c > 0);
 
         System.assert(courseStatus.get(0).Progress__c != 0);
+        Test.stopTest();
     }
 
     /*  TEST-1834

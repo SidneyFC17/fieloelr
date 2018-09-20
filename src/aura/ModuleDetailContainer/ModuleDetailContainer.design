@@ -1,4 +1,4 @@
-<design:component label="FieloELR - Module Detail">
+<design:component label="Fielo - Module Detail">
     
     <design:attribute label="Enable Full User Experience" name="useDefaultUX" description="Leave this box checked to enable Fielo's full user experience, or uncheck it to use only module fields in the component." default="true"/>
     

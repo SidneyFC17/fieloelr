@@ -89,14 +89,6 @@
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>DummyPassed__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Passed 2</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>ExternalKey__c</fullName>
         <externalId>true</externalId>
         <label>External Key</label>
@@ -190,7 +182,7 @@
     <fields>
         <fullName>NumberOfAttempt__c</fullName>
         <externalId>false</externalId>
-        <label>Number of Attempt</label>
+        <label>Attempt Number</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -202,7 +194,7 @@
         <fullName>NumberofApprove__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Number of Approve</label>
+        <label>Pass Number</label>
         <precision>3</precision>
         <required>false</required>
         <scale>0</scale>

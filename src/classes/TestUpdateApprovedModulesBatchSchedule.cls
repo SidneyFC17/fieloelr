@@ -36,6 +36,8 @@ public class TestUpdateApprovedModulesBatchSchedule {
         
         System.assertEquals(1, [SELECT count() FROM CourseStatus__c]);
         
+        Test.startTest();
+        
         ModuleResponse__c mr = [SELECT Id, IsSubmitted__c, IsApproved__c FROM ModuleResponse__c WHERE Id = :moduleWrapper1.moduleResponse.Id];
         
         System.assertEquals(true, mr.isSubmitted__c);
@@ -67,7 +69,7 @@ public class TestUpdateApprovedModulesBatchSchedule {
             IsActive__c = false
         );
         
-        Test.startTest();
+        
         DataBase.executeBatch(new UpdateApprovedModulesBatchSchedule());
         Test.stopTest();
         
