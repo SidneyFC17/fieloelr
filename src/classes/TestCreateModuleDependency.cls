@@ -127,7 +127,7 @@ private class TestCreateModuleDependency {
 		try{
     		insert listModDepen;
 		}catch(System.DmlException d){
-			System.assert(d.getMessage().Contains('A module cannot be its own predecessor.'));
+			System.assert(d.getMessage().Contains('A module cannot be its own prerequisite'));
 		}
 	}
 
