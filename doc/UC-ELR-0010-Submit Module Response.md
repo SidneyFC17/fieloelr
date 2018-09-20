@@ -28,17 +28,19 @@ The progress was calculated for the related course status
    10. The system calculates the quantity of approved module responses for the related module
    11. The system updates the “Number of Approve” field
    12. The system saves the module response
-   13. The system updates the “Approved Modules” field in the "Course Status" with the quantity of approved modules, by considering for each module only the first approval of its related "module responses".
+   13. The system updates the “Approved Modules” field in the related "Course Status" with the quantity of approved modules, by considering for each module only the first approval of its related "module responses".
    14. The system calculates the course progress by dividing the “Approved Modules” value by the course total number of modules
-   15. The system updates the “Progress” field in the Course Status with the previous step calculated value
-   16. End of flow
+   15. The system verifies that the number of “Approved Modules” is different from the number of “Active Modules” of the related course
+   16. The system updates the “Progress” field in the related Course Status with the previous step calculated value
+   17. The system verifies that the “Progress” is less than 100%
+   18. End of flow
  
 ### Alternative Flows
  
 ##### 1. The module response is approved when all the related question responses were submitted and the Question Pool is “null” (step 2 of basic flow)
    1. The system verifies that all the related questions were already submitted and that the “Question Pool” is “null”
    2. Back to step 5 of basic flow
- 
+
 ##### 2. The module response is not approved when there are unsubmitted related question responses and the Question Pool is “null” (step 8 of basic flow)
    1. The system verifies that the “Grade %” is less than the “Approval Grade”
    2. The system sets the “IsApproved” field to “false”
@@ -101,3 +103,13 @@ The progress was calculated for the related course status
    2. The system displays an error message
    3. The system does not save the module response
    4. End of flow   
+
+ ##### 10. The number of “Approved Modules” is equal to the number of “Active Modules” of the related course (step 15 of basic flow)
+   1. The system verifies that the number of “Approved Modules” is equal to the number of “Active Modules” of the related course
+   2. The system updates the “Completed Date” field in the related Course Status with the current date/time
+   3. Back to step 16 of basic flow
+
+ ##### 11. The system verifies that the “Progress” is equal to 100% (step 17 of basic flow)
+   1. The system verifies that the “Progress” is equal to 100%
+   2. The system updates the “Course Accomplished” field in the related Course Status, setting it as “true”
+   3. End of flow

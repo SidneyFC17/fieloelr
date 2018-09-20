@@ -11,8 +11,8 @@ public with sharing class PhotoUploadController {
             Folder folder;
             List<String> folderNames = folderUniqueName.split( '__' );
 
-            SObjectType convertType = Schema.getGlobalDescribe().get('Folder');
-            SecurityUtils.checkObjectIsReadable(convertType);
+            // SObjectType convertType = Schema.getGlobalDescribe().get('Folder');
+            // SecurityUtils.checkObjectIsReadable(convertType);
 
             if ( folderNames.size() == 1 ) {
                 folder = [SELECT Id FROM Folder WHERE DeveloperName =: folderUniqueName];
@@ -28,8 +28,8 @@ public with sharing class PhotoUploadController {
         if ( existingDocuments == null ) {
             existingDocuments = new List<PicklistController.Entry>();
 
-            SObjectType convertType = Schema.getGlobalDescribe().get('Document');
-            SecurityUtils.checkObjectIsReadable(convertType);
+            // SObjectType convertType = Schema.getGlobalDescribe().get('Document');
+            // SecurityUtils.checkObjectIsReadable(convertType);
 
             for ( Document d : [SELECT Id, Name FROM Document WHERE folderId = :folderId ORDER BY LastModifiedDate DESC LIMIT 255] ) {
                existingDocuments.add( new PicklistController.Entry(d.Id, d.Name));
@@ -85,10 +85,9 @@ public with sharing class PhotoUploadController {
 
         if ( status == 'external' || status == 'existing' ) {
 
-          SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-          SecurityUtils.checkObjectIsInsertable(convertType);
-          SecurityUtils.checkObjectIsUpdateable(convertType);
+          // SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+          // SecurityUtils.checkObjectIsInsertable(convertType);
+          // SecurityUtils.checkObjectIsUpdateable(convertType);
 
             upsert record;
 
@@ -98,9 +97,9 @@ public with sharing class PhotoUploadController {
             Document currentDocument = new Document();
             if ( status == 'internal' ) {
                 // Vuelve a hacer el query por si sube varias veces en la misma page
-                 SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+                // SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 
-                SecurityUtils.checkObjectIsReadable(convertType);
+                // SecurityUtils.checkObjectIsReadable(convertType);
                 sObject existingRecord = Database.query('SELECT ' + fieldName + ' FROM ' + objectName + ' WHERE Id =: recordId');
                 
                 documentId = (String) existingRecord.get(fieldName);
@@ -113,9 +112,9 @@ public with sharing class PhotoUploadController {
                         documentId = null;
                     }
                     
-                     convertType = Schema.getGlobalDescribe().get(objectName);
+                    //convertType = Schema.getGlobalDescribe().get(objectName);
+                    //SecurityUtils.checkObjectIsReadable(convertType);
 
-                    SecurityUtils.checkObjectIsReadable(convertType);
                     List<SObject> whereIsUsed = Database.query('SELECT Id FROM ' + objectName + ' WHERE ' + fieldName + ' = :documentId  AND Id != :recordId ');
                     Boolean isUsed = !whereIsUsed.isEmpty();
 
@@ -133,12 +132,9 @@ public with sharing class PhotoUploadController {
             }
 
             if(currentDocument.Id != null){
-
-                  SObjectType convertType = Schema.getGlobalDescribe().get('Document');
-
-                    SecurityUtils.checkObjectIsInsertable(convertType);
-                    SecurityUtils.checkObjectIsUpdateable(convertType);
-
+                // SObjectType convertType = Schema.getGlobalDescribe().get('Document');
+                // SecurityUtils.checkObjectIsInsertable(convertType);
+                // SecurityUtils.checkObjectIsUpdateable(convertType);
                 update currentDocument;
             } else {
                 currentDocument.put('Name', (String)record.get('Name') );
@@ -147,10 +143,9 @@ public with sharing class PhotoUploadController {
                 currentDocument.put('FolderId', folderId);
                 currentDocument.put('IsPublic', true);
 
-              SObjectType convertType = Schema.getGlobalDescribe().get('Document');
-
-                    SecurityUtils.checkObjectIsInsertable(convertType);
-                    SecurityUtils.checkObjectIsUpdateable(convertType);
+                // SObjectType convertType = Schema.getGlobalDescribe().get('Document');
+                // SecurityUtils.checkObjectIsInsertable(convertType);
+                // SecurityUtils.checkObjectIsUpdateable(convertType);
 
                 upsert currentDocument;
 
@@ -163,16 +158,12 @@ public with sharing class PhotoUploadController {
             record.put( externalURLField, result.redirectURL);
 
 
-           SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
-
-          SecurityUtils.checkObjectIsInsertable(convertType);
-          SecurityUtils.checkObjectIsUpdateable(convertType);
-
+            // SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
+            // SecurityUtils.checkObjectIsInsertable(convertType);
+            // SecurityUtils.checkObjectIsUpdateable(convertType);
             upsert record;
         }
-
         result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, label.DataSavedSuccessfully) );
-
         result.recordsId.add(documentId);
         
 
@@ -208,10 +199,10 @@ public with sharing class PhotoUploadController {
         record.put(fieldName ,null);
         record.put(externalURLField ,null);
 
-         SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
+        // SObjectType convertType = Schema.getGlobalDescribe().get('objectName');
 
-          SecurityUtils.checkObjectIsInsertable(convertType);
-          SecurityUtils.checkObjectIsUpdateable(convertType);
+        // SecurityUtils.checkObjectIsInsertable(convertType);
+        // SecurityUtils.checkObjectIsUpdateable(convertType);
 
             upsert record;
 

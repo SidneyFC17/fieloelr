@@ -2,7 +2,7 @@
     <aura:attribute name="record" type="String"/>    
     <aura:attribute name="takeModule" type="Boolean" default="false" /> 
     <aura:attribute name="label" type="String" default="Take Module" />
-    <aura:attribute name="moduleResponse" type="FieloELR__ModuleResponse__c"/>    
+    <aura:attribute name="moduleResponse" type="ModuleResponse__c"/>    
     <aura:attribute name="showModule" type="Boolean" default="false" /> 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>    
     

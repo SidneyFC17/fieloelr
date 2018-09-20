@@ -14,7 +14,7 @@
         var memberId = JSON.parse(window.localStorage.getItem('member')).Id;
         
         if(memberId && courseId){       
-            var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+            var spinner = $A.get("e.c:ToggleSpinnerEvent");
             if(spinner){
                 spinner.setParam('show', true);
                 spinner.fire();    
@@ -27,7 +27,7 @@
             // Add callback behavior for when response is received
             joinCourseAction.setCallback(this, function(response) {
                 var course = component.get('v.record');
-                var spinner = $A.get("e.FieloELR:ToggleSpinnerEvent");
+                var spinner = $A.get("e.c:ToggleSpinnerEvent");
                 var state = response.getState();                
                 if (component.isValid() && state === 'SUCCESS') {                    
                     var joinLabel = $A.get("$Label.c.Join");

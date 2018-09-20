@@ -78,15 +78,12 @@ public with sharing class CourseViewController extends PageSettingsController {
 		standardTools = JSON.serialize(buttonList);
         standardTools = standardTools.substring(1,standardTools.length()-1);
 		
-
 		initPageSettings(objectName, (SObject) record, buttonString, standardTools, '', record.Id);
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 		try{
-
 			SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__PageSettings__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);  
-
+        	SecurityUtils.checkObjectIsReadable(convertType);  
 
 			cloneSettings = [SELECT Id, Name, FieloPLT__Sections__c FROM FieloPLT__PageSettings__c WHERE FieloPLT__Type__c = 'Clone' AND FieloPLT__Object__c = 'FieloELR__Course__c' LIMIT 1];
 			cloneSettings.FieloPLT__Sections__c = '[' + cloneSettings.FieloPLT__Sections__c + ']';
@@ -169,18 +166,18 @@ public with sharing class CourseViewController extends PageSettingsController {
 
         SecurityUtils.checkObjectIsReadable(convertType);
 
-			result = Database.query(query);
+		result = Database.query(query);
 
-			if(result[0].Segment__r.FieloPLT__RelatedSegments__c != null){
-				system.debug(result[0].Segment__r.FieloPLT__RelatedSegments__c);
-				List<String> segIds15 = result[0].Segment__r.FieloPLT__RelatedSegments__c.split(';');
-				List<Id> segIds18 = segIds15;
-				result[0].Segment__r.FieloPLT__RelatedSegments__c = '';
-				for(Id id18: segIds18){
-					result[0].Segment__r.FieloPLT__RelatedSegments__c += id18 + ';';
-				}
-				result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
+		if(result[0].Segment__r.FieloPLT__RelatedSegments__c != null){
+			system.debug(result[0].Segment__r.FieloPLT__RelatedSegments__c);
+			List<String> segIds15 = result[0].Segment__r.FieloPLT__RelatedSegments__c.split(';');
+			List<Id> segIds18 = segIds15;
+			result[0].Segment__r.FieloPLT__RelatedSegments__c = '';
+			for(Id id18: segIds18){
+				result[0].Segment__r.FieloPLT__RelatedSegments__c += id18 + ';';
 			}
+			result[0].Segment__r.FieloPLT__RelatedSegments__c = result[0].Segment__r.FieloPLT__RelatedSegments__c.removeEnd(';');
+		}
 
 		return result.get(0);
 	}
@@ -206,22 +203,21 @@ public with sharing class CourseViewController extends PageSettingsController {
 				record.segment__c = null;
         	}
 
-			if(SecurityUtils.canInsert(Course__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Course__c.sObjectType, nullFields)){
-                 upsert record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
-        	
+			if (Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
+				upsert record;
+			}else{
+				throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+			}
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
-    	}catch(DmlException e){
+    	} catch(DmlException e){
     		if(sp != null){
 	            Database.rollback(sp);
         	}
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.ERROR,e.getDmlMessage(0)));
-    	}catch(Exception e){
+    	} catch(Exception e){
         	if(sp != null){
 	            Database.rollback(sp);
         	}
@@ -312,11 +308,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 			}
 			// TODO: Change to Create API
 			if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
-				if(SecurityUtils.canInsert(Module__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Module__c.sObjectType, nullFields)){
-                  upsert (Module__c) record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+				upsert (Module__c) record;
             }else{
                throw new FieloException(Label.CannotInsertUpdateRecords);
 			}
@@ -350,11 +342,11 @@ public with sharing class CourseViewController extends PageSettingsController {
          		record.put(f, null );
 			}
 			// TODO: Change to Create API
-			if(SecurityUtils.canInsert(CourseDependency__c.sObjectType, nullFields) && SecurityUtils.canUpdate(CourseDependency__c.sObjectType, nullFields)){
-                 upsert (CourseDependency__c) record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if (Schema.sObjectType.CourseDependency__c.isUpdateable() && Schema.sObjectType.CourseDependency__c.isCreateable()){
+				upsert (CourseDependency__c) record;
+			}else{
+				throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+			}
         	
 
 			//TODO Crear Label DataSavedSuccessfully

@@ -28,9 +28,11 @@ global class UpdateApprovedModulesBatchSchedule implements Database.Batchable<sO
         List<FieloELR__CourseStatus__c> csList = new List<FieloELR__CourseStatus__c>();
         
         for(FieloELR__CourseStatus__c c: scope) {
-            if (c.FieloELR__ApprovedModules__c != c.FieloELR__ModuleResponses__r.size()) {
-                c.FieloELR__ApprovedModules__c = c.FieloELR__ModuleResponses__r.size();
-           	    csList.add(c);
+            if (c.FieloELR__ModuleResponses__r != null) {
+                if (c.FieloELR__ApprovedModules__c != c.FieloELR__ModuleResponses__r.size()) {
+                    c.FieloELR__ApprovedModules__c = c.FieloELR__ModuleResponses__r.size();
+                    csList.add(c);
+                }
             }
         }
         

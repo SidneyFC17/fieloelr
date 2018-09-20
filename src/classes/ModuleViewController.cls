@@ -96,10 +96,9 @@ public with sharing class ModuleViewController extends PageSettingsController {
 				}
 			);
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-
+			// It's giving errors, removed temporary
+			// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+        	// SecurityUtils.checkObjectIsReadable(convertType);
 			record = Database.query(query);
 			setRecord(record);
 		}
@@ -175,15 +174,11 @@ public with sharing class ModuleViewController extends PageSettingsController {
          		record.put(f, null );
 			}
 
-		 if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
-			 if(SecurityUtils.canInsert(Module__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Module__c.sObjectType, nullFields)){
-                  upsert record;
-          }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+		 	if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
+				upsert record;
+          	} else {
+				throw new FieloException(Label.CannotInsertUpdateRecords);
+          	}
         	
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -207,12 +202,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			}
 
 			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
-				 if(SecurityUtils.canInsert(Question__c.sObjectType, nullFields) && SecurityUtils.canUpdate(Question__c.sObjectType, nullFields)){
-                  	upsert (Question__c) record;
-         		 }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
-            	
+				upsert (Question__c) record;
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -238,14 +228,9 @@ public with sharing class ModuleViewController extends PageSettingsController {
          		record.put(f, null );
 			}
 
-			if(Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
-				 if(SecurityUtils.canInsert(ModuleDependency__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleDependency__c.sObjectType, nullFields)){
-                  	upsert (ModuleDependency__c) record;
-         		 }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
-            	
-          	}else{
+			if (Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
+				upsert (ModuleDependency__c) record;            	
+          	} else {
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
      
@@ -268,12 +253,10 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		query += ' LIMIT 1';
 		List<sObject> result;
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-
-			result = Database.query(query);
-
+		// It's giving errors, removed temporary
+		// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+        // SecurityUtils.checkObjectIsReadable(convertType);
+		result = Database.query(query);
 		return result.get(0);
 	}
 
@@ -289,15 +272,11 @@ public with sharing class ModuleViewController extends PageSettingsController {
          		 }else{
                     throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
                 }
-            	
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
-
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.ModuleActivated) );
-
 			result.redirectURL = '/' + recordId;
-
 		} catch(DmlException e){
 			result.addMessage(new RemoteActionResult.RemoteActionMessage(ApexPages.Severity.ERROR, e.getDmlMessage(0)));
 		} catch(Exception e) {
@@ -314,9 +293,9 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 			if(Schema.sObjectType.Module__c.isUpdateable()){
 				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
-                   update record;
-         		 }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                	update record;
+         		} else {
+					throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
                 }
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -356,12 +335,11 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		List<SObject> listObjects;
 
 		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
         SecurityUtils.checkObjectIsReadable(convertType);
 
-			 listObjects = Database.query(query);
+		listObjects = Database.query(query);
 			 
-		  return listObjects;
+		return listObjects;
 	}
 
 	private static String getWhereCondition( String filterJson ) {

@@ -99,7 +99,7 @@ global class ModuleService {
 		}
 		
 		system.debug(questionQuery);	
-		List<Question__c> questions ;		
+		List<Question__c> questions ;
 
 		if(fieldsAnswerOption != null){
 			Integer currentIndex;
@@ -202,12 +202,10 @@ global class ModuleService {
 		ModuleResponse__c moduleResponse;
 
 		if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
-
-		moduleResponse = Database.query(moduleResponseQuery);
-
-		}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+			moduleResponse = Database.query(moduleResponseQuery);
+		} else {
+			throw new FieloException(Label.CannotAccessRecords);
+        }
 
 		ModuleResponseResult moduleResponseWrapper = new ModuleResponseResult(moduleResponse);
 
@@ -221,9 +219,9 @@ global class ModuleService {
 
 			if(Schema.sObjectType.QuestionResponse__c.isAccessible()){
 				questionResponses = Database.query(questionResponseQuery);
-			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+			} else {
+            	throw new FieloException(Label.CannotAccessRecords);
+          	}
 
 			Map<Id,List<QuestionResponse__c>> responsesByQuestion = new Map<Id,List<QuestionResponse__c>>();
 			for(QuestionResponse__c qr : questionResponses){
@@ -247,22 +245,18 @@ global class ModuleService {
 			Set<Id> questionIds = responsesByQuestion.keySet();
 			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
 
-			Boolean showDetailedAnswers; 
+			Boolean showDetailedAnswers;
 
 			if(Schema.sObjectType.Question__c.isAccessible()){
-
-			for(Question__c question : Database.query(questionQuery)){
-				showDetailedAnswers =
-					responsesByQuestion.get(question.Id)[responsesByQuestion.get(question.Id).size()-1].IsCorrect__c;
-				moduleResponseWrapper.addQuestion(new QuestionService.QuestionResponseResult(question, responsesByQuestion.get(question.Id), showDetailedAnswers));
-			}
-
-			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
+				for(Question__c question : Database.query(questionQuery)){
+					showDetailedAnswers =
+						responsesByQuestion.get(question.Id)[responsesByQuestion.get(question.Id).size()-1].IsCorrect__c;
+					moduleResponseWrapper.addQuestion(new QuestionService.QuestionResponseResult(question, responsesByQuestion.get(question.Id), showDetailedAnswers));
+				}
+			} else {
+            	throw new FieloException(Label.CannotAccessRecords);
+          	}
 		}
-
 		return moduleResponseWrapper;
 	}
 

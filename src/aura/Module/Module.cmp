@@ -1,6 +1,6 @@
 <aura:component controller="ModuleController">
-    <aura:attribute type="FieloELR__Module__c" name="module" />
-    <aura:attribute type="FieloELR__Question__c[]" name="questions" />
+    <aura:attribute type="Module__c" name="module" />
+    <aura:attribute type="Question__c[]" name="questions" />
     <aura:attribute type="Boolean" name="showQuestions" default="false" />        
     <aura:attribute type="sObject" name="content" />
     <aura:attribute type="sObject" name="moduleContent" />

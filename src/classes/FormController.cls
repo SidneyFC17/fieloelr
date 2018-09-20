@@ -328,34 +328,15 @@ public with sharing class FormController {
         }
 
 
-        if(!record.getSobjectType().getDescribe().isCreateable() || !record.getSobjectType().getDescribe().isUpdateable())
+        if(!record.getSobjectType().getDescribe().isCreateable() || !record.getSobjectType().getDescribe().isUpdateable()) {
           throw new FieloException('Insufficient permission to create record.');
-
-        	if(SecurityUtils.canInsert(record.getSObjectType(), nullFields) && SecurityUtils.canUpdate(record.getSObjectType(), nullFields)){
-                 upsert record;
-          }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
-        
-        //TODO Crear Label DataSavedSuccessfully
-        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
-        result.redirectURL = '/' + record.Id;
-/*
-        if( record.get('cloneId') != null )
-          record.put('Id', null);
-
-
-        sp = Database.setSavepoint();
-        for ( String f :nullFields ) {
-          if ( f != 'sObjectType' ) {
-             record.put(f, null );
-          }
         }
+
         upsert record;
+          
         //TODO Crear Label DataSavedSuccessfully
         result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, 'Data was saved successfully') );
         result.redirectURL = '/' + record.Id;
-*/
 
     }catch(DmlException e){
     // Agrega las Validation Rules asociadas al Campo

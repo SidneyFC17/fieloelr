@@ -182,7 +182,7 @@
     <fields>
         <fullName>NumberOfAttempt__c</fullName>
         <externalId>false</externalId>
-        <label>Number of Attempt</label>
+        <label>Attempt Number</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -194,7 +194,7 @@
         <fullName>NumberofApprove__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Number of Approve</label>
+        <label>Pass Number</label>
         <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
@@ -228,7 +228,7 @@
         <label>Module Response Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Modules Responses</pluralLabel>
+    <pluralLabel>Module Responses</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>

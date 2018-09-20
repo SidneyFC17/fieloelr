@@ -1,7 +1,7 @@
 <aura:component controller="ModuleResponseController">
-    <aura:attribute name="moduleResponse" type="FieloELR__ModuleResponse__c" />
+    <aura:attribute name="moduleResponse" type="ModuleResponse__c" />
     <aura:attribute name="questionsModule" type="sObject[]" />
-    <aura:attribute name="moduleResponseQuestions" type="FieloELR__ModuleResponse__c" />
+    <aura:attribute name="moduleResponseQuestions" type="ModuleResponse__c" />
     <aura:attribute name="moduleGrade" type="String" />
     <aura:attribute name="showAnswers" type="Boolean" default="false" />
     <aura:attribute name="showDetail" type="Boolean" default="false" />
