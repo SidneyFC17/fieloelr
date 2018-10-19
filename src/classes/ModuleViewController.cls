@@ -99,8 +99,10 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			// It's giving errors, removed temporary
 			// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
         	// SecurityUtils.checkObjectIsReadable(convertType);
-			record = Database.query(query);
-			setRecord(record);
+			if ( Schema.sObjectType.FieloELR__Module__c.isAccessible() ) {
+				record = Database.query(query);
+				setRecord(record);
+			}
 		}
 	}
 
@@ -170,8 +172,10 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		RemoteActionResult result = new RemoteActionResult();
 		try{
 			sp = Database.setSavepoint();
-			for ( String f :nullFields ) {
-         		record.put(f, null );
+			for ( String f : nullFields ) {
+				if( Schema.sObjectType.Module__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.Module__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 
 		 	if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
@@ -198,10 +202,12 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
-         		record.put(f, null );
+				if( Schema.sObjectType.Question__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.Question__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 
-			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
+			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.Question__c.isCreateable()){
 				upsert (Question__c) record;
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -225,10 +231,12 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
-         		record.put(f, null );
+				if( Schema.sObjectType.ModuleDependency__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.ModuleDependency__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 
-			if (Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
+			if (Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleDependency__c.isCreateable()){
 				upsert (ModuleDependency__c) record;            	
           	} else {
             	throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -256,7 +264,9 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		// It's giving errors, removed temporary
 		// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
         // SecurityUtils.checkObjectIsReadable(convertType);
-		result = Database.query(query);
+		if( Schema.describeSObjects(new List<String>{objectName})[0].isAccessible() ){
+			result = Database.query(query);
+		}
 		return result.get(0);
 	}
 
@@ -264,14 +274,13 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult activate( Id recordId ){
 		RemoteActionResult result = new RemoteActionResult();
 		try{
-			Module__c record = new Module__c ( Id = recordId, IsActive__c = true);
+			Module__c record = new Module__c ( Id = recordId);
+			if( Schema.sObjectType.Module__c.fields.IsActive__c.isCreateable() && Schema.sObjectType.Module__c.fields.IsActive__c.isUpdateable() ){
+				m.IsActive__c = true;
+			}
 
-			if(Schema.sObjectType.Module__c.isUpdateable()){
-				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
-                   update record;
-         		 }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if( Schema.sObjectType.Module__c.isUpdateable() ){
+				update record;
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -289,14 +298,13 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult inactivate( Id recordId ){
 		RemoteActionResult result = new RemoteActionResult();
 		try{
-			Module__c record = new Module__c ( Id = recordId, IsActive__c = false);
+			Module__c record = new Module__c ( Id = recordId);
+			if( Schema.sObjectType.Module__c.fields.IsActive__c.isCreateable() && Schema.sObjectType.Module__c.fields.IsActive__c.isUpdateable() ){
+				m.IsActive__c = false;
+			}
 
-			if(Schema.sObjectType.Module__c.isUpdateable()){
-				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
-                	update record;
-         		} else {
-					throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if( Schema.sObjectType.Module__c.isUpdateable() ){
+				update record;
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -334,10 +342,11 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		system.debug('### query: ' + query);    
 		List<SObject> listObjects;
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-        SecurityUtils.checkObjectIsReadable(convertType);
-
-		listObjects = Database.query(query);
+		// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+        // SecurityUtils.checkObjectIsReadable(convertType);
+		if( Schema.describeSObjects(new List<String>{objectName})[0].isAccessible() ){
+			listObjects = Database.query(query);
+		}
 			 
 		return listObjects;
 	}

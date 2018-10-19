@@ -1,4 +1,4 @@
-public class ModulesSelector extends SObjectSelector {
+public with sharing class ModulesSelector extends SObjectSelector {
 
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
@@ -61,7 +61,7 @@ public class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByIdWithQuestions(Set<Id> moduleIds) {
       List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Questions__c.isAccessible()){	
 
         listModule = (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -91,7 +91,7 @@ public class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByIdHavingModuleResponses(Set<Id> moduleIds) {
        List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.ModuleResponses__c.isAccessible()){	
 
         listModule = (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -115,7 +115,7 @@ public class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByIdActiveHavingModuleResponses(Set<Id> moduleIds) {
        List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.ModuleResponses__c.isAccessible()){	
 
         listModule =  (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -140,7 +140,7 @@ public class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByIdHavingQuestions(Set<Id> moduleIds) {
        List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Questions__c.isAccessible()){	
 
         listModule =  (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -164,7 +164,7 @@ public class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByIdHavingDependencies(Set<Id> moduleIds) {
       List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.PredecessorModules__c.isAccessible()){	
 
         listModule = (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -188,7 +188,7 @@ public class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByCoursesHavingPredecessor(Set<Id> courseIds, Set<String> moduleDependencyFields) {
       List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.PredecessorModules__c.isAccessible()){	
 
         listModule = (List<Module__c>) Database.query(String.format('SELECT {0} ' +
                    ', (SELECT {1} FROM PredecessorModules__r) ' +
@@ -245,8 +245,7 @@ public class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByPredecessor(Set<Id> recordIds) {
      List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible()){	
-
+    if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.ModuleDependency__c.isAccessible()){	
         listModule = (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +               
                   'FROM {1} ' +
