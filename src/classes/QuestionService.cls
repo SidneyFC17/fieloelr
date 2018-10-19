@@ -204,12 +204,11 @@ global class QuestionService {
 
 		SavePoint sp = Database.setSavePoint();
 		try{
-
-			if(Schema.sObjectType.ModuleResponse__c.isCreateable() ){
-            uow.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+			if( Schema.sObjectType.QuestionResponse__c.isCreateable() && Schema.sObjectType.Answer__c.isCreateable() && Schema.sObjectType.QuestionResponse__c.isUpdateable() && Schema.sObjectType.Answer__c.isUpdateable() ){
+	            uow.commitWork();
+			}else{
+				throw new FieloException(Label.CannotInsertUpdateRecords);
+			}
 
 		}catch(Exception e){
 			Database.rollback(sp);
@@ -221,17 +220,23 @@ global class QuestionService {
 
 		// SObjectType convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
         // SecurityUtils.checkObjectIsReadable(convertType);
-
-		QuestionResponse__c qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.FieloELR__AttemptsAllowedPerQuestion__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
-		qResponseQuery.IsSubmitted__c = true;
+		QuestionResponse__c qResponseQuery;
+		if( Schema.sObjectType.QuestionResponse__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.PartialGradeValue__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.NumberOfAttempt__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.IsSubmitted__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.IsCorrect__c.isAccessible() && Schema.sObjectType.Question__c.fields.Module__c.isAccessible() && Schema.sObjectType.Module__c.fields.AttemptsAllowedPerQuestion__c.isAccessible() ){
+			qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.FieloELR__AttemptsAllowedPerQuestion__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
+		} else {
+		   throw new FieloException(Label.CannotAccessRecords);
+		}
+		if( Schema.sObjectType.QuestionResponse__c.fields.IsSubmitted__c.isAccessible() ){
+			qResponseQuery.IsSubmitted__c = true;
+		}
 		uow.registerDirty(qResponseQuery);
 		try{
 			QuestionResponses.validateAdminFields = false;
-			if(Schema.sObjectType.QuestionResponse__c.isUpdateable() ){
-            uow.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+			if( Schema.sObjectType.QuestionResponse__c.isCreateable() && Schema.sObjectType.QuestionResponse__c.isUpdateable() ){
+				uow.commitWork();
+			}else{
+				throw new FieloException(Label.CannotInsertUpdateRecords);
+			}
 		}catch(Exception e){
 			Database.rollback(sp);
 			throw e;
@@ -240,9 +245,10 @@ global class QuestionService {
 		// convertType = Schema.getGlobalDescribe().get('QuestionResponse__c');
         // SecurityUtils.checkObjectIsReadable(convertType);
 
-
+		if( Schema.sObjectType.QuestionResponse__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.PartialGradeValue__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.NumberOfAttempt__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.IsSubmitted__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.fields.IsCorrect__c.isAccessible() && Schema.sObjectType.Question__c.fields.Module__c.isAccessible() && Schema.sObjectType.Module__c.fields.AttemptsAllowedPerQuestion__c.isAccessible() ){
+			qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.FieloELR__AttemptsAllowedPerQuestion__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
+		}
 		// Done this way becouse the commit the UOW doesnt refreshes the entire object, just the ID.
-		qResponseQuery = [SELECT Id, PartialGradeValue__c, NumberOfAttempt__c, IsCorrect__c, IsSubmitted__c, Question__r.Module__r.FieloELR__AttemptsAllowedPerQuestion__c FROM QuestionResponse__c WHERE Id =: questionResponseWrapper.questionResponse.Id];
 		QuestionResponseResult qrResult = new QuestionResponseResult(questionResponseWrapper.question, qResponseQuery, questionResponseWrapper.answers);
 		qrResult.setRepeatQuestion(!qResponseQuery.IsCorrect__c && (qResponseQuery.NumberOfAttempt__c < qResponseQuery.Question__r.Module__r.FieloELR__AttemptsAllowedPerQuestion__c || qResponseQuery.Question__r.Module__r.FieloELR__AttemptsAllowedPerQuestion__c == null));
 		return qrResult;

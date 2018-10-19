@@ -45,13 +45,14 @@ public with sharing class QuestionViewController extends PageSettingsController 
 				}
 			);
 
-			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        	SecurityUtils.checkObjectIsReadable(convertType);
-
+			//SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+        	//SecurityUtils.checkObjectIsReadable(convertType);
+			if ( Schema.sObjectType.FieloELR__Question__c.isAccessible() ) {
 				record = Database.query(query);
 				setRecord(record);
-
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloELR__Question__c'}));
+			}
 		}
 	}
 

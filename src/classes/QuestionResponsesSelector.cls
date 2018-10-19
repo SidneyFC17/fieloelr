@@ -34,8 +34,7 @@ public class QuestionResponsesSelector extends SObjectSelector {
     
     List<QuestionResponse__c> listQuestion;
 
-     if(Schema.sObjectType.QuestionResponse__c.isAccessible()){	
-
+     if(Schema.sObjectType.QuestionResponse__c.isAccessible() && Schema.sObjectType.Answers__c.isAccessible()){	
         listQuestion = (List<QuestionResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id, AnswerOption__c, TextValue__c, Name FROM Answers__r) ' +
