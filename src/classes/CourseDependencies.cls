@@ -43,28 +43,25 @@ public class CourseDependencies extends SObjectDomain{
     public override void onAfterInsert() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
         
-
-        if(Schema.sObjectType.Course__c.isCreateable()){
+        if(Schema.sObjectType.Course__c.isCreateable() && Schema.sObjectType.Course__c.isUpdateable()){
             updateCourses(records, uow);
             Courses.validateAdminFields = false;
-           uow.commitWork();
-          }else{
+            uow.commitWork();
+        }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
-        
+        }
     }
 
     public override void onAfterDelete() {
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
-       
 
-        if(Schema.sObjectType.Course__c.isCreateable()){
-             updateCourses(records, uow);
+        if(Schema.sObjectType.Course__c.isCreateable() && Schema.sObjectType.Course__c.isUpdateable()){
+            updateCourses(records, uow);
             Courses.validateAdminFields = false;
-           uow.commitWork();
-          }else{
+            uow.commitWork();
+        } else {
             throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+        }
     }  
 
     private void updateCourses(List<CourseDependency__c> courseDependencies, SObjectUnitOfWork uow) {

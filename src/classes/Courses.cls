@@ -104,13 +104,13 @@ public  class Courses extends SObjectDomain{
         // When the course is deleted, must delete related modules
         deleteCourseModules(coursesMap, uow);
 
-        if(Schema.sObjectType.Course__c.isDeletable()){
-           uow.commitWork();
-          }else{
+        // SR: It was checking a wrong object (Course__c)
+        if(Schema.sObjectType.CourseDependency__c.isDeletable() && Schema.sObjectType.Module__c.isDeletable()){
+            uow.commitWork();
+        }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+        }
         
-
         Map<Id,SObject> deletedModules = uow.m_deletedMapByType.get('FieloELR__Module__c');
         for (Database.DeleteResult dr : uow.getResults(Module__c.SObjectType).deleteResults) {
             if (!dr.isSuccess()) {
@@ -154,7 +154,17 @@ public  class Courses extends SObjectDomain{
 
     private void removeCourseDependency(List<Course__c> inactivatedCourses) {
         Set<Id> inactiveCoursesIds = new Map<Id,Course__c>(inactivatedCourses).keySet();
-        List<Course__c> courses = new CoursesSelector(new Set<String>{'Id','KeyDependencies__c'}).selectByPredecessor(inactiveCoursesIds);
+        List<Course__c> courses;
+        if (Schema.sObjectType.Course__c.isAccessible()) {
+            if (Schema.sObjectType.Course__c.fields.KeyDependencies__c.isAccessible()) {
+                courses = new CoursesSelector(new Set<String>{'Id','KeyDependencies__c'}).selectByPredecessor(inactiveCoursesIds);
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c','KeyDependencies__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c'}));
+        }
+        
 
         Set<String> keySetDependencies;
         List<String> keyDependencies;
@@ -183,18 +193,32 @@ public  class Courses extends SObjectDomain{
         if(!coursesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
             uow.registerDirty(coursesMap.values());
-
-            if(Schema.sObjectType.Course__c.isUpdateable()){
-                uow.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+            
+            // SR: Added isCreateable
+            if(Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()) {
+                if (Schema.sObjectType.Course__c.fields.KeyDependencies__c.isUpdateable() && Schema.sObjectType.Course__c.fields.KeyDependencies__c.isCreateable() && Schema.sObjectType.Course__c.fields.HasDependencies__c.isUpdateable() && Schema.sObjectType.Course__c.fields.HasDependencies__c.isCreateable()) {
+                    uow.commitWork();
+                } else {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c','KeyDependencies__c,HasDependencies__c'}));
+                }
+            } else {
+                throw new FieloException(Label.CannotInsertUpdateRecords);
+            }
         }
     }
 
     private void addCourseDependency(List<Course__c> activatedCourses) {
         Set<Id> activatedCoursesIds = new Map<Id,Course__c>(activatedCourses).keySet();
-        List<CourseDependency__c> cds = new CourseDependenciesSelector(new Set<String>{'Predecessor__c','Course__c','Course__r.KeyDependencies__c'}).selectByPredecessor(activatedCoursesIds);
+        List<CourseDependency__c> cds;
+        if (Schema.sObjectType.CourseDependency__c.isAccessible() && Schema.sObjectType.Course__c.isAccessible()) {
+            if (Schema.sObjectType.CourseDependency__c.fields.Predecessor__c.isAccessible() && Schema.sObjectType.CourseDependency__c.fields.Course__c.isAccessible() && Schema.sObjectType.Course__c.fields.KeyDependencies__c.isAccessible()) {
+                cds = new CourseDependenciesSelector(new Set<String>{'Predecessor__c','Course__c','Course__r.KeyDependencies__c'}).selectByPredecessor(activatedCoursesIds);
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c','Predecessor__c,Course__c,Course__r.KeyDependencies__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,CourseDependency__c'}));
+        }
 
         Set<String> keySetDependencies;
         List<String> keyDependencies;
@@ -225,33 +249,67 @@ public  class Courses extends SObjectDomain{
         if (!coursesMap.values().isEmpty()) {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Course__c.SObjectType});
             uow.registerDirty(coursesMap.values());
-
-             if(Schema.sObjectType.Course__c.isUpdateable()){
-                uow.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+            
+            // SR: Added isCreateable
+            if(Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()) {
+                if (Schema.sObjectType.Course__c.fields.KeyDependencies__c.isUpdateable() && Schema.sObjectType.Course__c.fields.KeyDependencies__c.isCreateable() && Schema.sObjectType.Course__c.fields.HasDependencies__c.isUpdateable() && Schema.sObjectType.Course__c.fields.HasDependencies__c.isCreateable()) {
+                    uow.commitWork();
+                } else {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c','KeyDependencies__c,HasDependencies__c'}));
+                }
+            } else {
+                throw new FieloException(Label.CannotInsertUpdateRecords);
+            }
         }
     }
 
     private void deleteCourseModules(Map<Id,Course__c> coursesMap, SObjectUnitOfWork uow){
         Set<Id> courseIds = coursesMap.KeySet();
         courseIds.removeAll(new List<Id>(RecordErrors));
+        
         // Looks up for courses IDs contained in modules
-        List<Module__c> modulesToDelete = new ModulesSelector(new Set<String>{'Id','Course__c'}).selectByIdHavingCourses(courseIds);  
+        List<Module__c> modulesToDelete;
+        if(Schema.sObjectType.Module__c.isAccessible()) {
+            if (Schema.sObjectType.Module__c.fields.Course__c.isAccessible()) {
+                modulesToDelete = new ModulesSelector(new Set<String>{'Id','Course__c'}).selectByIdHavingCourses(courseIds);  
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c','Course__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Module__c'}));
+        }
   
         // Delete related modules
-        uow.registerDeleted(modulesToDelete);
+        if (Schema.sObjectType.Module__c.isDeletable()) {
+            uow.registerDeleted(modulesToDelete);
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_deletable, new List<String>{'Course__c'}));
+        }
     }
     
     private void deleteCourseDependencies(Map<Id,Course__c> coursesMap, SObjectUnitOfWork uow){        
         Set<Id> courseIds = coursesMap.KeySet();
         courseIds.removeAll(new List<Id>(RecordErrors));
+        
         // Looks up for courses IDs contained in course dependencies and predecessors
-        List<CourseDependency__c> dependenciesToDelete = new CourseDependenciesSelector(new Set<String>{'Course__c,Predecessor__c'}).selectDependenciesAndPredecessors(coursesMap.KeySet());
+        List<CourseDependency__c> dependenciesToDelete;
+        if(Schema.sObjectType.CourseDependency__c.isAccessible()) {
+            if( Schema.sObjectType.CourseDependency__c.fields.Course__c.isAccessible() && Schema.sObjectType.CourseDependency__c.fields.Predecessor__c.isAccessible() ) {
+                dependenciesToDelete = new CourseDependenciesSelector(new Set<String>{'FieloELR__Course__c','FieloELR__Predecessor__c'}).selectDependenciesAndPredecessors(coursesMap.KeySet());
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c','Course__c,Predecessor__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseDependency__c'}));
+        }
+        
   
         // Delete related dependencies
-        uow.registerDeleted(dependenciesToDelete);      
+        if (Schema.sObjectType.Module__c.isDeletable()) {
+            uow.registerDeleted(dependenciesToDelete);
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_deletable, new List<String>{'CourseDependency__c'}));
+        }
     }
         
     // If the course is active, has at least 1 related course status, 
@@ -260,7 +318,16 @@ public  class Courses extends SObjectDomain{
         // Map with NEW records       
         Map<Id,Course__c> coursesMap = new Map<Id, Course__c>(courses);
         // Course has at least 1 related Course Status
-        List<Course__c> coursesWithStatus = new CoursesSelector(new Set<String>{'Id,Status__c,SubscriptionMode__c,Segment__c,StartDate__c,EndDate__c'}).selectByIdHavingCourseStatus(coursesMap.KeySet());
+        List<Course__c> coursesWithStatus;
+        if(Schema.sObjectType.Course__c.isAccessible()) {
+            if (Schema.sObjectType.Course__c.fields.Status__c.isAccessible() && Schema.sObjectType.Course__c.fields.SubscriptionMode__c.isAccessible() && Schema.sObjectType.Course__c.fields.Segment__c.isAccessible() && Schema.sObjectType.Course__c.fields.StartDate__c.isAccessible() && Schema.sObjectType.Course__c.fields.EndDate__c.isAccessible()) {
+                coursesWithStatus = new CoursesSelector(new Set<String>{'Id','FieloELR__Status__c','FieloELR__SubscriptionMode__c','FieloELR__Segment__c','FieloELR__StartDate__c','FieloELR__EndDate__c'}).selectByIdHavingCourseStatus(coursesMap.KeySet());
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c','Status__c,SubscriptionMode__c,Segment__c,StartDate__c,EndDate__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c'}));
+        }
 
         for (Course__c course : coursesWithStatus){
             if(!course.CoursesStatus__r.isEmpty()){

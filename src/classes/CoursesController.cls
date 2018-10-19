@@ -56,6 +56,8 @@ public with sharing class CoursesController {
     @AuraEnabled
     public static String getCourses(FieloPLT__Member__c member, List<String> coursesFieldset, List<String> modulesFieldset, Integer quantity, Integer offset, String status, String sortByClause, String dynamicFilter){
         try{
+			Map<String,Schema.SObjectField> moduleFieldsMap = Schema.SObjectType.Module__c.fields.getMap();
+			Map<String,Schema.SObjectField> courseFieldsMap = Schema.SObjectType.Course__c.fields.getMap();
             Set<String> fieldsCourse = new Set<String>(coursesFieldset); 
             Set<String> fieldsModule = new Set<String>(modulesFieldset);
             Set<String> fieldsCourseStatus = new Set<String>{'Name'};
@@ -71,48 +73,91 @@ public with sharing class CoursesController {
 			fieldsModule.add('FieloELR__Order__c');
 
 			Set<String> courseFieldsToQuery = new Set<String>();
+
+
 			for(String fieldName:fieldsCourse) {
 				if (fieldName == 'FieloELR__Transactions__r') {
-                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+					if (Schema.sObjectType.FieloPLT__Transaction__c.isAccessible()) {
+						if (Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__Points__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsProcessed__c.isAccessible()) {
+                    		courseFieldsToQuery.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+						} else {
+							throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Transaction__c','FieloPLT__Points__c,FieloPLT__IsReverted__c,FieloPLT__IsProcessed__c'}));
+						}
+					} else {
+						throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Transaction__c'}));
+					}
                 } else if (fieldName == 'FieloELR__Trackers__r') {
-                    courseFieldsToQuery.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+					// SR: CRUD Check
+					if (Schema.sObjectType.FieloPLT__Tracker__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.isAccessible()) {
+						// SR: FLS Check
+						if (Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__Transaction__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__Points__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsProcessed__c.isAccessible()) {
+                    		courseFieldsToQuery.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true)');
+						} else {
+							throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Tracker__c','FieloPLT__Transaction__r.FieloPLT__Points__c,FieloPLT__IsReverted__c,FieloPLT__IsProcessed__c'}));
+						}
+					} else {
+						throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Tracker__c,FieloPLT__Transaction__c'}));
+					}
                 } else {
-					courseFieldsToQuery.add(fieldName);
+					// SR: Dynamic FLS Check
+					if (courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+						courseFieldsToQuery.add(fieldName);
+					} else {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
+					}
 				}
 			}
-            
-            List<FieloELR__Course__c> courses = CourseService.getCourses(
-                                            courseFieldsToQuery, 
-											new Set<String>{'Id','Name'},
-											fieldsModule,
-											null,
-											statusList,
-											member.FieloPLT__Program__c,
-                                            memberId,
-											false,
-											true,
-											true,
-											quantity,
-											offset,
-											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
-											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+			
+			List<FieloELR__Course__c> courses;
+			List<CourseService.CourseWrapper> courseWrappers;
+			// SR: CRUD Check
+			if ( Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.CourseDependency__c.isAccessible() && Schema.sObjectType.ModuleDependency__c.isAccessible()) {
+				// SR: Dynamic FLS Check
+				for ( String fieldName : fieldsModule ) {
+					if ( !moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
+					}
+				}
+				// SR: FLS Check
+				if ( Schema.sObjectType.Course__c.fields.SubscriptionMode__c.isAccessible() && Schema.sObjectType.Course__c.fields.Status__c.isAccessible() && Schema.sObjectType.Module__c.fields.Name.isAccessible() && Schema.sObjectType.CourseDependency__c.fields.Name.isAccessible() && Schema.sObjectType.ModuleDependency__c.fields.Name.isAccessible() && Schema.sObjectType.Course__c.fields.LastModifiedDate.isAccessible()) {
+					courses = CourseService.getCourses(
+													courseFieldsToQuery, 
+													new Set<String>{'Id','Name'},
+													fieldsModule,
+													null,
+													statusList,
+													member.FieloPLT__Program__c,
+													memberId,
+													false,
+													true,
+													true,
+													quantity,
+													offset,
+													sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
+													dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
 
-			Set<Id> courseIds = new Map<Id, FieloELR__Course__c>(courses).keyset();
-
-			List<CourseService.CourseWrapper> courseWrappers = CourseService.getCoursesMap(
-											new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
-											new Set<String>{'Id','Name'},
-											new Set<String>{'Id','Name'},
-											null,
-											courseIds,
-											member.FieloPLT__Program__c,
-                                            memberId,
-											false,
-											false,
-											quantity, 
-											offset, 
-											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
-											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+					Set<Id> courseIds = new Map<Id, FieloELR__Course__c>(courses).keyset();
+					
+					courseWrappers = CourseService.getCoursesMap(
+													new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
+													new Set<String>{'Id','Name'},
+													new Set<String>{'Id','Name'},
+													null,
+													courseIds,
+													member.FieloPLT__Program__c,
+													memberId,
+													false,
+													false,
+													quantity, 
+													offset, 
+													sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
+													dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c,Module__c,CourseDependency__c,ModuleDependency__c,','Course.SubscriptionMode__c, Course__c.Status__c, Module__c.Name, CourseDependency__c.Name, ModuleDependency__c.Name'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,Module__c,CourseDependency__c,ModuleDependency__c'}));
+			}
 
             return JSON.serialize( new Map<String, Object>{
 				'list' => courses,
@@ -176,22 +221,78 @@ public with sharing class CoursesController {
 	@AuraEnabled
 	public static String getCourseByCourseStatus(FieloPLT__Member__c member, List<String> coursesFieldset, List<String> modulesFieldset, Integer quantity, Integer offset, String status, String sortByClause, String dynamicFilter, Boolean showPointsEarned) {
 		try{
+			Map<String,Schema.SObjectField> moduleFieldsMap = Schema.SObjectType.Module__c.fields.getMap();
+			Map<String,Schema.SObjectField> courseFieldsMap = Schema.SObjectType.Course__c.fields.getMap();
+			Map<String,Schema.SObjectField> courseStatusFieldsMap = Schema.SObjectType.CourseStatus__c.fields.getMap();
+
 			Set<String> courseStatusFields = new Set<String>();
 			if (showPointsEarned != null && showPointsEarned) {
-				courseStatusFields.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Transactions__r');
-				courseStatusFields.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Trackers__r');
+				// SR: CRUD Check
+				if (Schema.sObjectType.FieloPLT__Transaction__c.isAccessible()) {
+					// SR: FLS Check
+					if (Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__Points__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsProcessed__c.isAccessible()) {
+						courseStatusFields.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Transactions__r');
+					} else {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Transaction__c','FieloPLT__Points__c,FieloPLT__IsReverted__c,FieloPLT__IsProcessed__c'}));
+					}
+				} else {
+					throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Transaction__c'}));
+				}
+				// SR: CRUD Check
+				if (Schema.sObjectType.FieloPLT__Tracker__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.isAccessible()) {
+					// SR: FLS Check
+					if (Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__Transaction__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__Points__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsProcessed__c.isAccessible()) {
+						courseStatusFields.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Trackers__r');
+					} else {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Tracker__c','FieloPLT__Transaction__r.FieloPLT__Points__c,FieloPLT__IsReverted__c,FieloPLT__IsProcessed__c'}));
+					}
+				} else {
+					throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Tracker__c,FieloPLT__Transaction__c'}));
+				}
 			}
 			courseStatusFields.add('Id');
 			courseStatusFields.add('FieloELR__Course__c');
 			courseStatusFields.add('FieloELR__Member__c');
 			courseStatusFields.add('FieloELR__Progress__c');
 			courseStatusFields.add('FieloELR__ApprovedModules__c');
-			courseStatusFields.add('(SELECT Id, FieloELR__NumberofApprove__c, FieloELR__Module__c, FieloELR__Module__r.FieloELR__Order__c FROM FieloELR__ModuleResponses__r)');
+
+			// SR: CRUD Check
+			if (Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible()) {
+				// SR: FLS Check
+				if (Schema.sObjectType.ModuleResponse__c.fields.NumberofApprove__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.Module__c.fields.Order__c.isAccessible()) {
+					courseStatusFields.add('(SELECT Id, FieloELR__NumberofApprove__c, FieloELR__Module__c, FieloELR__Module__r.FieloELR__Order__c FROM FieloELR__ModuleResponses__r)');
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleResponse__c,Module__c','ModuleResponse__c.NumberofApprove__c, ModuleResponse__c.Module__c, Module__c.Order__c'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'ModuleResponse__c,Module__c'}));
+			}
+
+			// SR: Dynamic FLS Check
+			for(String fieldName : courseStatusFields) {
+				if ( courseStatusFieldsMap.containsKey(fieldName) ) {
+					if ( !courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
+					}
+				}
+			}
 
             CourseStatusSelector selector = new CourseStatusSelector(courseStatusFields);
 			selector.setLimit(quantity);
 			selector.setOffset(offset);
-			List<CourseStatus__c> courseStatusList = selector.selectByMemberId(new Set<Id>{member.Id});
+			List<CourseStatus__c> courseStatusList;
+			// SR: CRUD Check
+			if (Schema.sObjectType.CourseStatus__c.isAccessible()) {
+				// SR: FLS Check
+				if (Schema.sObjectType.CourseStatus__c.fields.Member__c.isAccessible()) {
+					courseStatusList = selector.selectByMemberId(new Set<Id>{member.Id});
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c','Member__c'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c'}));
+			}
+
 			Set<Id> courseIds = new Set<Id>();
 
 			for(CourseStatus__c cs: courseStatusList) {
@@ -204,45 +305,89 @@ public with sharing class CoursesController {
 
 			for(String fieldName: fieldsCourse) {
 				if (fieldName == 'FieloELR__Modules__r') {
-                    courseFieldsToQuery.add('(SELECT Id, Name, FieloELR__Order__c FROM FieloELR__Modules__r WHERE FieloELR__IsActive__c = true) FieloELR__Modules__r');
+					// SR: CRUD Check
+					if ( Schema.sObjectType.Module__c.isAccessible()) {
+						// SR: FLS Check
+						if ( Schema.sObjectType.Module__c.fields.Name.isAccessible() && Schema.sObjectType.Module__c.fields.Order__c.isAccessible() && Schema.sObjectType.Module__c.fields.IsActive__c.isAccessible()) {
+							courseFieldsToQuery.add('(SELECT Id, Name, FieloELR__Order__c FROM FieloELR__Modules__r WHERE FieloELR__IsActive__c = true) FieloELR__Modules__r');
+						} else {
+							throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c','Name,Order__c,IsActive__c'}));
+						}
+					} else {
+						throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Module__c'}));
+					}
 				} else {
-					courseFieldsToQuery.add(fieldName);
+					// SR: Dynamic FLS Check
+					if (courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+						courseFieldsToQuery.add(fieldName);
+					} else {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
+					}
 				}
 			}
 			
 			fieldsModule.add('FieloELR__Order__c');
+
+			// SR: Dynamic FLS Check
+			for(String fieldName : fieldsModule) {
+				if ( !moduleFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
+				}
+			}
             
-            List<FieloELR__Course__c> courses = CourseService.getCourses(
-                                            courseFieldsToQuery, 
-											new Set<String>{'Id','Name'},
-											fieldsModule,
-											courseIds,
-											null,
-											member.FieloPLT__Program__c,
-                                            member.Id,
-											false,
-											false,
-											false,
-											quantity,
-											offset,
-											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC' ,
-											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+			List<FieloELR__Course__c> courses;
 
+			// SR: CRUD Check
+			if (Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.CourseDependency__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible()) {
+				if (Schema.sObjectType.CourseDependency__c.fields.Name.isAccessible() && Schema.sObjectType.Course__c.fields.LastModifiedDate.isAccessible()) {
+					courses = CourseService.getCourses(
+													courseFieldsToQuery, 
+													new Set<String>{'Id','Name'},
+													fieldsModule,
+													courseIds,
+													null,
+													member.FieloPLT__Program__c,
+													member.Id,
+													false,
+													false,
+													false,
+													quantity,
+													offset,
+													sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC' ,
+													dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c','Name'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,CourseDependency__c,Module__c'}));
+			}
 
-			List<CourseService.CourseWrapper> courseWrappers = CourseService.getCoursesMap(
-											new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
-											new Set<String>{'Id','Name'},
-											new Set<String>{'Id','Name'},
-											null,
-											courseIds,
-											member.FieloPLT__Program__c,
-                                            member.Id,
-											false,
-											false,
-											quantity, 
-											offset, 
-											sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
-											dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+			List<CourseService.CourseWrapper> courseWrappers;
+
+			// SR: CRUD Check
+			if (Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.CourseDependency__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.ModuleDependency__c.isAccessible()) {
+				// SR: FLS Check
+				if ( Schema.sObjectType.Course__c.fields.SubscriptionMode__c.isAccessible() && Schema.sObjectType.Course__c.fields.Status__c.isAccessible() && Schema.sObjectType.CourseDependency__c.fields.Name.isAccessible() && Schema.sObjectType.Module__c.fields.Name.isAccessible() && Schema.sObjectType.Course__c.fields.LastModifiedDate.isAccessible()) {
+					courseWrappers = CourseService.getCoursesMap(
+													new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},
+													new Set<String>{'Id','Name'},
+													new Set<String>{'Id','Name'},
+													null,
+													courseIds,
+													member.FieloPLT__Program__c,
+													member.Id,
+													false,
+													false,
+													quantity, 
+													offset, 
+													sortByClause != null && sortByClause != '' ? sortByClause : 'LastModifiedDate DESC',
+													dynamicFilter != null && dynamicFilter != '' ? dynamicFilter : '');
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c,CourseDependency__c,Module__c,ModuleDependency__c','Course__c.SubscriptionMode__c, Course__c.Status__c, Course__c.LastModifiedDate, CourseDependency__c.Name, Module__c.Name'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,CourseDependency__c,Module__c,ModuleDependency__c'}));
+			}
 
 			String coursesPoints = CourseService.getCoursePoints(courseIds, member.Id);
 			

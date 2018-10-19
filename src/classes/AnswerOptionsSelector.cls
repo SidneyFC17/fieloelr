@@ -26,13 +26,18 @@ public class AnswerOptionsSelector extends SObjectSelector {
     }
 
     public List<AggregateResult> selectByQuestionGroupByQuestion(Set<Id> questionIds) {
-
-        if(SecurityUtils.canInsert(AnswerOption__c.sObjectType, new List<String>{'Question__c', 'Order__c'})){
-                   List<AggregateResult> listAggre = [SELECT MAX(Order__c) order, Question__c FROM AnswerOption__c WHERE Question__c in : questionIds GROUP BY Question__c];
-                    return listAggre;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                    return null;
-                }
+        List<AggregateResult> listAggre;
+        
+        if ( Schema.sObjectType.AnswerOption__c.isAccessible() ) {
+            if (Schema.sObjectType.AnswerOption__c.fields.Question__c.isAccessible() && Schema.sObjectType.AnswerOption__c.fields.Order__c.isAccessible()) {
+                listAggre = [SELECT MAX(Order__c) order, Question__c FROM AnswerOption__c WHERE Question__c in : questionIds GROUP BY Question__c];
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'AnswerOption__c', 'Question__c,Order__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'AnswerOption__c'}));
+        }
+        return listAggre;
+                
     }
 }

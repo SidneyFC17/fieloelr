@@ -73,8 +73,20 @@ public with sharing class CourseModulesController {
 
 			String coursesPoints = CourseService.getCoursePoints(new Set<Id>{courseId}, member.Id);
 
+			Object moduleResponses;
+
+			if (Schema.sObjectType.FieloPLT__Tracker__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.isAccessible() && Schema.sObjectType.CourseStatus__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.isAccessible()) {
+				if ( Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__Points__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsProcessed__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsProcessed__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__Transaction__c.isAccessible() && Schema.sObjectType.CourseStatus__c.fields.Progress__c.isAccessible() && Schema.sObjectType.CourseStatus__c.fields.FieloELR__Course_Accomplished__c.isAccessible() && Schema.sObjectType.CourseStatus__c.fields.ExternalKey__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.IsApproved__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.NumberOfAttempt__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.NumberOfApprove__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.GradePercent__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.SubmitDate__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.CorrectQuestions__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.IncorrectQuestions__c.isAccessible()) {
+					moduleResponses = (Object) Database.query(queryModuleResponse);
+				} else {
+					throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c,FieloPLT__Transaction__c,FieloPLT__Tracker__c'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c,FieloPLT__Transaction__c,FieloPLT__Tracker__c'}));
+			}
+
 			return JSON.serialize(new Map<String, Object>{
-				'moduleResponses' => (Object) Database.query(queryModuleResponse),
+				'moduleResponses' => moduleResponses,
 				'coursePoints' => coursesPoints != null ? JSON.deserializeUntyped(coursesPoints) : null
 			});
 		} catch(DMLException e) {

@@ -170,7 +170,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             //TODO Change to ELR Create API
 
             if ( String.isBlank( modelId )  ) {
-                if(SecurityUtils.canInsert(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})  && SecurityUtils.canUpdate(Course__c.sObjectType, new List<String>{'FieloELR__Segment__c'})){
+                if (Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable() && Schema.sObjectType.Course__c.fields.Segment__c.isCreateable() && Schema.sObjectType.Course__c.fields.Segment__c.isUpdateable()) {
                     insert record;
                 }else{
                     throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
@@ -206,6 +206,10 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
 
     @RemoteAction
     public static List<SObject> getSegments( String programId ) {
-        return new SegmentsSelector(new Set<String>{'Id','Name'}).selectByProgramAndWithoutProgramWithCriteria(programId, new Set<String>{'Id','Name'});
+        List<SObject> records;
+        if (Schema.sObjectType.FieloPLT__Segment__c.isAccessible()) {
+            records = new SegmentsSelector(new Set<String>{'Id','Name'}).selectByProgramAndWithoutProgramWithCriteria(programId, new Set<String>{'Id','Name'});
+        }
+        return records;
     }
 }

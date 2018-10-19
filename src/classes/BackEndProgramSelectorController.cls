@@ -30,19 +30,21 @@ public with sharing class BackEndProgramSelectorController {
     } set; }
 
     public String programsViewId {
-        get{
-
-            SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Program__c');
-            SecurityUtils.checkObjectIsReadable(convertType);
-
-            
-
-            ApexPages.StandardSetController menuSSC = new ApexPages.StandardSetController([SELECT Name FROM FieloPLT__Program__c LIMIT 1]);
-            List<SelectOption> ListViews = menuSSC.getListViewOptions();
-            for(SelectOption w : ListViews ){
-               if(w.getLabel().contains('All')){
-                   return w.getValue().left(15);
-               }
+        get{            
+            if ( Schema.sObjectType.FieloPLT__Program__c.isAccessible() ) {
+                if ( Schema.sObjectType.FieloPLT__Program__c.fields.Name.isAccessible() ) {
+                    ApexPages.StandardSetController menuSSC = new ApexPages.StandardSetController([SELECT Name FROM FieloPLT__Program__c LIMIT 1]);
+                    List<SelectOption> ListViews = menuSSC.getListViewOptions();
+                    for(SelectOption w : ListViews ){
+                        if(w.getLabel().contains('All')){
+                            return w.getValue().left(15);
+                        }
+                    }
+                } else {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Program__c', 'Name'}));
+                }
+            } else {
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Program__c'}));
             }
            return '000000000000000';
         }
