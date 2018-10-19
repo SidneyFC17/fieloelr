@@ -49,7 +49,19 @@ public class CourseStatus extends SObjectDomain {
         }
         
         // List of courses with subscription field
-        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id, SubscriptionMode__c'}).selectByIdBeingAutomatic(courseIds));        
+        Map<Id,Course__c> coursesMap;
+
+        // SR: CRUD Check
+        if ( Schema.sObjectType.Course__c.isAccessible() ) {
+            // SR: FLS Check
+            if ( Schema.sObjectType.Course__c.fields.SubscriptionMode__c.isAccessible() ) {
+                coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id, SubscriptionMode__c'}).selectByIdBeingAutomatic(courseIds));
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c','SubscriptionMode__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c'}));
+        }
                
         // Adding errors if those courses are in a course status
         for (CourseStatus__c courseStatus : records){
@@ -69,13 +81,11 @@ public class CourseStatus extends SObjectDomain {
         }
 
         // Receive members
-        Map<Id,FieloPLT__Member__c> membersMap = 
-                    new Map<Id,FieloPLT__Member__c>(new MembersSelector(new Set<String>{'Id','Name','FieloPLT__Program__c'}).selectById(memberIds));
+        Map<Id,FieloPLT__Member__c> membersMap = new Map<Id,FieloPLT__Member__c>(new MembersSelector(new Set<String>{'Id','Name','FieloPLT__Program__c'}).selectById(memberIds));
 
         // Receive courses with predecessor
-        Map<Id,Course__c> coursesMap = 
-                    new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id','Name','Program__c','Segment__c'}).selectByIdHavingPredecessor(courseIds));
-        Set<String> keysPredecessors = new Set<String>();   
+        Map<Id,Course__c> coursesMap = new Map<Id,Course__c>(new CoursesSelector(new Set<String>{'Id','Name','Program__c','Segment__c'}).selectByIdHavingPredecessor(courseIds));
+        Set<String> keysPredecessors = new Set<String>();
 
         List<CourseStatus__c> selectedRecords = new List<CourseStatus__c>();
         for (CourseStatus__c courseStatus : records){
@@ -109,9 +119,10 @@ public class CourseStatus extends SObjectDomain {
         if(!segmentsByMember.isEmpty()){
             FieloPLT.SegmentService.verifySegments(segmentsByMember);
         }
-
+        
         // Query to get all the course status of the predecessors 100 per cent
         List<CourseStatus__c> predecessorCourses = new CourseStatusSelector(new Set<String>{'Id,Progress__c,ExternalKey__c,Course__c'}).selectByKeyCompleted(keysPredecessors);
+
         Set<String> keysPredecessorsCompleted = new Set<String>();
         for(CourseStatus__c cs : predecessorCourses){
             keysPredecessorsCompleted.add(cs.ExternalKey__c);
@@ -222,11 +233,11 @@ public class CourseStatus extends SObjectDomain {
         // When the course status is deleted, must delete related module responses
         deleteCourseStatusModuleResponses(courseStatusMap, uow);
 
-         if(Schema.sObjectType.Course__c.isDeletable()){
-                uow.commitWork();
-          }else{
+        if(Schema.sObjectType.ModuleResponse__c.isDeletable()){
+            uow.commitWork();
+        }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+        }
 
         Map<Id,SObject> deletedModuleResponses = uow.m_deletedMapByType.get('FieloELR__ModuleResponse__c');
         for (Database.DeleteResult dr : uow.getResults(ModuleResponse__c.SObjectType).deleteResults) {
