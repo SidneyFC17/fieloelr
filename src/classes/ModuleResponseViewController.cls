@@ -65,12 +65,13 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 				}
 			);
 
-			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+			//SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+			//SecurityUtils.checkObjectIsReadable(convertType);
 
-			SecurityUtils.checkObjectIsReadable(convertType);
-
+			if ( Schema.sObjectType.ModuleResponse__c.isAccessible() ) {
 				record = Database.query(query);
 				setRecord(record);
+			}
 
 		}
 	}
@@ -82,11 +83,11 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 		query += ' LIMIT 1';
 		List<sObject> result;
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-		SecurityUtils.checkObjectIsReadable(convertType);
-
-		 result = Database.query(query);
+		//SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
+		//SecurityUtils.checkObjectIsReadable(convertType);
+		if ( Schema.sObjectType.ModuleResponse__c.isAccessible() ) {
+		 	result = Database.query(query);
+		}
 		 
 		return result.get(0);
 	}
@@ -98,19 +99,17 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 		RemoteActionResult result = new RemoteActionResult();
 		try{
 			sp = Database.setSavepoint();
-			for ( String f :nullFields ) {
-         		record.put(f, null );
+			for ( String f : nullFields ) {
+				if( Schema.sObjectType.ModuleResponse__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 
-			if(SecurityUtils.canInsert(ModuleResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleResponse__c.sObjectType, nullFields)){
-                    upsert record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
-
-
-        	
-
+			if( Schema.sObjectType.ModuleResponse__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable() ){
+				upsert record;
+			}else{
+				throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+			}
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -136,10 +135,12 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
-         		record.put(f, null );
+				if( Schema.sObjectType.QuestionResponse__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.QuestionResponse__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 			// TODO: Change to Create API
-			if(SecurityUtils.canInsert(QuestionResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(QuestionResponse__c.sObjectType, nullFields)){
+			if( Schema.sObjectType.QuestionResponse__c.isUpdateable() && Schema.sObjectType.QuestionResponse__c.isCreateable() ){
                     upsert (QuestionResponse__c) record;
                 }else{
                     throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
