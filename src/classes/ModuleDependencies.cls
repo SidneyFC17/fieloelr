@@ -31,7 +31,7 @@ public class ModuleDependencies extends SObjectDomain {
         updateModules(records, uow);
         Modules.validateAdminFields = false;
 
-        if(Schema.sObjectType.Module__c.isCreateable()){
+        if( Schema.sObjectType.Module__c.isCreateable() && Schema.sObjectType.Module__c.isUpdateable()){
            uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -44,7 +44,7 @@ public class ModuleDependencies extends SObjectDomain {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             updateModules(records, uow);
             Modules.validateAdminFields = false;
-            if(Schema.sObjectType.Module__c.isCreateable()){
+            if( Schema.sObjectType.Module__c.isCreateable() && Schema.sObjectType.Module__c.isUpdateable()){
                  uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
