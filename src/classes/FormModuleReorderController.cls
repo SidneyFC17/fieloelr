@@ -27,17 +27,17 @@ public with sharing class FormModuleReorderController {
     if (queryRecordNotDone ) {
       queryRecordNotDone = false;
           if ( cRecord !=null && cRecord.Id != null ) {
+                fields = String.escapeSingleQuotes(fields);
+				csObjectName = String.escapeSingleQuotes(csObjectName);
+
               Id recordId = cRecord.Id;
               String query = 'SELECT  ' + fields;
               query += ' FROM ' + csObjectName;
               query += ' WHERE Id = : recordId ';
               
-        SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-  
-              recordObject = Database.query(query)[0];
-
+                if( Schema.getGlobalDescribe().get(csObjectName).isAccessible() ){
+					recordObject = Database.query(query)[0];
+				}
           } else {
               recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
           }
@@ -160,14 +160,10 @@ public with sharing class FormModuleReorderController {
       RemoteActionResult result = new RemoteActionResult();
 
       try{
-
           sp = Database.setSavepoint();
-          
-
-        sobjectType sobjectType = records.get(0).getSobjectType();
-         
-          SecurityUtils.checkObjectIsInsertable(sobjectType);
-            update records;
+            if( records.get(0).getSobjectType().getDescribe().isUpdeteable() ){
+                update records;
+            }
         
           //TODO Crear Label DataSavedSuccessfully
           result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );

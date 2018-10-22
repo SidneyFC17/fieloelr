@@ -2,23 +2,36 @@ public  class LookupSearchController {
 	@AuraEnabled
 	public static List<sObject> getRecords(String fields, String sObjectName, String whereClause, Decimal quantity, Decimal offset, String orderBy) {
 		try{
+
             List<SObject> result = new List<SObject>();
-			Set<String> fieldSet = new Set<String>(fields != null && fields != '' ? fields.split(',') : new List<String>());
+			Set<String> fieldSet = new Set<String>();
+			Map<String, Schema.SObjectField> fieldsMap = Schema.getGlobalDescribe().get( sObjectName ).getDescribe().fields.getMap();
+			for(String s : fields.split(',')){
+				if( fieldsMap.get(s).getDescribe().isAccessible() ){
+					fieldSet.add( String.escapeSingleQuotes(s) );
+				}
+			}
 			String query = 'SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4} OFFSET {5}';
+
+			if( whereClause != null && whereClause != '' ){
+				whereClause = String.escapeSingleQuotes(whereClause);
+			}
 
 			query = String.format(query, new List<String>{
 				String.join(new List<String>(fieldSet),','),
 				sObjectName,
-                    whereClause != null && whereClause != ''? 'WHERE ' + (whereClause.contains('\'\'') ? whereClause.replace('\'\'','\'') : whereClause) : '',
-				String.valueOf(orderBy),
-				String.valueOf(quantity),
-				String.valueOf(offset)
+					whereClause != null && whereClause != ''? 'WHERE ' + (whereClause.contains('\'\'') ? whereClause.replace('\'\'','\'') : whereClause) : '',
+					String.valueOf(String.escapeSingleQuotes(orderBy)),
+					String.valueOf(String.escapeSingleQuotes(quantity)),
+					String.valueOf(String.escapeSingleQuotes(offset))
 				}
 			);
 
 			System.debug(query);
 
-			result = Database.query(query);
+			if( Schema.getGlobalDescribe().get( sObjectName ).getDescribe().isAccessible() ){
+				result = Database.query(query);
+			}
 
 			return result;
         } catch (DmlException e) {

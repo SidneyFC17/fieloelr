@@ -13,13 +13,16 @@ public with sharing class ModuleResponseDetailController {
 			Set<String> fieldSetQuestion = new Set<String>();
 			Set<String> fieldSetAnswerOption = new Set<String>();
 
-			if( !Module__c.sObjectType.getDescribe().isAccessible() )
+			if ( Schema.sObjectType.Module__c.isAccessible() )
 				throw new FieloPLT.FieloException('Insufficient permission to access modules.');
-			if( !ModuleResponse__c.sObjectType.getDescribe().isAccessible() )
+
+			if ( Schema.sObjectType.ModuleResponse__c.isAccessible() )
 				throw new FieloPLT.FieloException('Insufficient permission to access module responses.');
-			if( !Course__c.sObjectType.getDescribe().isAccessible() )
+
+			if ( Schema.sObjectType.Course__c.isAccessible() )
 				throw new FieloPLT.FieloException('Insufficient permission to access courses.');
-			if( !CourseStatus__c.sObjectType.getDescribe().isAccessible() )
+
+			if ( Schema.sObjectType.CourseStatus__c.isAccessible() )
 				throw new FieloPLT.FieloException('Insufficient permission to access course status.');
 
 			fieldSetModuleResponse.addAll(fieldsModuleResponse.split(','));
@@ -79,15 +82,21 @@ public with sharing class ModuleResponseDetailController {
 			String modulesResponseQuery = 'SELECT ' +
 				String.join(new List<String>(moduleResponseFieldSet), ',') +
 				' FROM FieloELR__ModuleResponse__c WHERE FieloELR__Module__c = :moduleId AND FieloELR__Member__c = :memberId AND FieloELR__IsSubmitted__c = true ORDER BY CreatedDate DESC';
-
-			List<ModuleResponse__c> moduleResponses = (List<ModuleResponse__c>) Database.query(modulesResponseQuery);
+			List<ModuleResponse__c> moduleResponses;
+			if ( Schema.sObjectType.ModuleResponse__c.isAccessible() ){
+				moduleResponses = (List<ModuleResponse__c>) Database.query(modulesResponseQuery);
+			}
 
 			String moduleDependencyQuery = 'SELECT Id, ' +
 				'FieloELR__Predecessor__r.Name ' +
 				' FROM FieloELR__ModuleDependency__c ' +
 				' WHERE FieloELR__Module__c = :moduleId AND FieloELR__Predecessor__r.FieloELR__IsActive__c = true';
 
-			List<ModuleDependency__c> dependencies = (List<ModuleDependency__c>) Database.query(moduleDependencyQuery);
+
+			List<ModuleDependency__c> dependencies;
+			if ( Schema.sObjectType.ModuleDependency__c.isAccessible() ){
+				dependencies = (List<ModuleDependency__c>) Database.query(moduleDependencyQuery);
+			}
 
 			CourseService.ModuleWrapper mw = new CourseService.ModuleWrapper(modules[0], moduleResponses, dependencies);
 
@@ -104,13 +113,19 @@ public with sharing class ModuleResponseDetailController {
 		try{
 			String courseQuery = 'SELECT Id, Name, (SELECT Id, Name, FieloELR__Order__c FROM FieloELR__Modules__r ORDER BY FieloELR__Order__c) FROM FieloELR__Course__c WHERE Id = :courseId';
 
-			List<FieloELR__Course__c> courses = (List<FieloELR__Course__c>) Database.query(courseQuery);
+			List<FieloELR__Course__c> courses;
+			if ( Schema.sObjectType.Course__c.isAccessible() ){
+				courses = (List<FieloELR__Course__c>) Database.query(courseQuery);
+			}
 
 			String key = courseId + member.Id;
 
 			String courseStatusQuery = 'SELECT Id, Name, (SELECT Id, Name, FieloELR__Module__c, FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponses__r ORDER BY FieloELR__Module__r.FieloELR__Order__c, FieloELR__NumberOfAttempt__c ) FROM FieloELR__CourseStatus__c WHERE FieloELR__ExternalKey__c = :key';
 
 			List<FieloELR__CourseStatus__c> courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
+			if ( Schema.sObjectType.CourseStatus__c.isAccessible() ){
+				courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
+			}
 
 			List<CourseService.CourseWrapper> courseWrappers = CourseService.getCoursesMap(
 											new Set<String>{'Id','FieloELR__SubscriptionMode__c','FieloELR__Status__c'},

@@ -19,22 +19,31 @@ global class ModuleService {
 		SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{ModuleResponse__c.SObjectType,QuestionResponse__c.SObjectType});
 		ModuleResponse__c moduleResponse;
 
-
 		try{
-
-
-			if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
+			if( Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Member__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.NumberOfAttempt__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.IsSubmitted__c.isAccessible()){
         		moduleResponse = [SELECT Module__c, Member__c, NumberOfAttempt__c, (SELECT Id FROM QuestionResponses__r) FROM ModuleResponse__c WHERE Module__c =: moduleId AND Member__c =: memberId AND IsSubmitted__c = false];
-			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-           }
-
-			moduleResponse.Date__c = System.today();
-			moduleResponse.NumberOfAttempt__c++;
-			moduleResponse.IsApproved__c = false;
-			moduleResponse.CorrectQuestions__c = 0;
-			moduleResponse.IncorrectQuestions__c = 0;
-			moduleResponse.TotalQuestions__c = 0;
+			} else {
+            	throw new FieloException(Label.CannotAccessRecords);
+           	}
+			if( Schema.sObjectType.ModuleResponse__c.fields.Date__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.Date__c.isUpdateable()){
+				moduleResponse.Date__c = System.today();
+			}
+			if( Schema.sObjectType.ModuleResponse__c.fields.NumberOfAttempt__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.NumberOfAttempt__c.isUpdateable()){
+				moduleResponse.NumberOfAttempt__c++;
+			}
+			if( Schema.sObjectType.ModuleResponse__c.fields.IsApproved__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.IsApproved__c.isUpdateable()){
+				moduleResponse.IsApproved__c = false;
+			}
+			if( Schema.sObjectType.ModuleResponse__c.fields.CorrectQuestions__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.CorrectQuestions__c.isUpdateable()){
+				moduleResponse.CorrectQuestions__c = 0;
+			}
+			if( Schema.sObjectType.ModuleResponse__c.fields.IncorrectQuestions__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.IncorrectQuestions__c.isUpdateable()){
+				moduleResponse.IncorrectQuestions__c = 0;
+			}
+			if( Schema.sObjectType.ModuleResponse__c.fields.TotalQuestions__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.TotalQuestions__c.isUpdateable()){
+				moduleResponse.TotalQuestions__c = 0;
+			}
+			
 			List<QuestionResponse__c> questionResponsesToDelete = new List<QuestionResponse__c>();
 			for(QuestionResponse__c q : moduleResponse.QuestionResponses__r) {
 				questionResponsesToDelete.add(new QuestionResponse__c(Id=q.Id));
@@ -42,7 +51,10 @@ global class ModuleService {
 			uow.registerDeleted(questionResponsesToDelete);
 			uow.registerDirty(moduleResponse);
 		}catch(Exception e){
-			moduleResponse = new ModuleResponse__c(Module__c = moduleId, Member__c = memberId);
+			moduleResponse = new ModuleResponse__c(Module__c = moduleId);
+			if( Schema.sObjectType.ModuleResponse__c.fields.TotalQuestions__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.TotalQuestions__c.isUpdateable()){
+				moduleResponse.Member__c = memberId;
+			}
 			uow.registerNew(moduleResponse);
 		}
 
@@ -61,9 +73,7 @@ global class ModuleService {
 		Module__c module;
 
 		if(Schema.sObjectType.Module__c.isAccessible()){
-
-		module = Database.query(moduleQuery);
-
+			module = Database.query(moduleQuery);
 		}else{
             throw new FieloException(Label.CannotAccessRecords);
           }
@@ -107,12 +117,10 @@ global class ModuleService {
 	    	Integer randomIndex;
 
 			if(Schema.sObjectType.Question__c.isAccessible()){
-			
-			questions = Database.query(questionQuery);
-			
+				questions = Database.query(questionQuery);
 			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+				throw new FieloException(Label.CannotAccessRecords);
+			}
 			
 			for(Question__c q : questions){
 				// Shuffle Answer Options Matching Text
@@ -148,15 +156,17 @@ global class ModuleService {
 		}
 
 		SavePoint sp = Database.setSavePoint();
-		moduleResponse.IsSubmitted__c = true;
+		if( Schema.sObjectType.ModuleResponse__c.fields.IsSubmitted__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.fields.IsSubmitted__c.isUpdateable()){
+			moduleResponse.IsSubmitted__c = true;
+		}
 		uow.registerDirty(moduleResponse);
 		try{
 
-			if(Schema.sObjectType.ModuleResponse__c.isCreateable()){
+			if( Schema.sObjectType.ModuleResponse__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.isUpdateable()){
 				uow.commitWork();
 			}else{
-            throw new FieloException(Label.CannotInsertRecords);
-          }
+            	throw new FieloException(Label.CannotInsertRecords);
+          	}
 			
 		}catch(Exception e){
 			Database.rollback(sp);
@@ -165,8 +175,7 @@ global class ModuleService {
 
 		ModuleResponse__c module;
 
-		if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
-
+		if(Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Member__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.IsSubmitted__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.IsApproved__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.GradePercent__c.isAccessible() ){
 			 module = [SELECT Id, Name, Member__c, Module__c, IsSubmitted__c, IsApproved__c, GradePercent__c FROM ModuleResponse__c WHERE Id =: moduleResponse.Id limit 1];
 		}else{
             throw new FieloException(Label.CannotAccessRecords);

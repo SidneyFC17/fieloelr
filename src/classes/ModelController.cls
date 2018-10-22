@@ -2,9 +2,9 @@ public with sharing class ModelController {
     public String cModelType {get;set;}
 
     public Map<Id, FieloPLT__Model__c> modelsMap{get{ if(modelsMap == null){
-        SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Model__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
-            modelsMap = new Map<Id, FieloPLT__Model__c>([SELECT Id, FieloPLT__Icon__c, Name, FieloPLT__Description__c, FieloPLT__JSON__c, FieloPLT__Type__c, FieloPLT__Category__c FROM FieloPLT__Model__c WHERE FieloPLT__Type__c = :cModelType ]);
+            if( Schema.sObjectType.FieloPLT__Model__c.isAccessible() && Schema.sObjectType.FieloPLT__Model__c.fields.FieloPLT__Icon__c.isAccessible() && Schema.sObjectType.FieloPLT__Model__c.fields.FieloPLT__Description__c.isAccessible() && Schema.sObjectType.FieloPLT__Model__c.fields.FieloPLT__JSON__c.isAccessible() && Schema.sObjectType.FieloPLT__Model__c.fields.FieloPLT__Type__c.isAccessible() && Schema.sObjectType.FieloPLT__Model__c.fields.FieloPLT__Category__c.isAccessible() ){
+                modelsMap = new Map<Id, FieloPLT__Model__c>([SELECT Id, FieloPLT__Icon__c, Name, FieloPLT__Description__c, FieloPLT__JSON__c, FieloPLT__Type__c, FieloPLT__Category__c FROM FieloPLT__Model__c WHERE FieloPLT__Type__c = :cModelType ]);
+            }
         }
         return modelsMap;
     } set;}

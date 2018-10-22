@@ -895,16 +895,17 @@ public with sharing abstract class PageSettingsController {
 
         Set<Id> pageSettingsIds = new Set<Id>();
         if(!recordTypes.isEmpty()){
-            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible())
-            throw new FieloException(Label.CannotAccessRecords);
+            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible()){
+                throw new FieloException(Label.CannotAccessRecords);
+            }
 
             for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND (FieloPLT__RecordType__c = null OR FieloPLT__RecordType__c IN: recordTypes)]){
                 pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
             }
         }else{
-            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible())
-            throw new FieloException(Label.CannotAccessRecords);
-
+            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible()){
+                throw new FieloException(Label.CannotAccessRecords);
+            }
             for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND FieloPLT__RecordType__c = null]){
                 pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
             }            
