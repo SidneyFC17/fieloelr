@@ -27,17 +27,17 @@ public with sharing class FormQuestionController {
     if (queryRecordNotDone ) {
       queryRecordNotDone = false;
           if ( cRecord !=null && cRecord.Id != null ) {
+                fields = String.escapeSingleQuotes(fields);
+                csObjectName = String.escapeSingleQuotes(csObjectName);
+
               Id recordId = cRecord.Id;
               String query = 'SELECT  ' + fields;
               query += ' FROM ' + csObjectName;
               query += ' WHERE Id = : recordId ';
               
-            SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-
-            recordObject = Database.query(query)[0];
-
+                if( Schema.getGlobalDescribe().get(csObjectName).isAccessible() ){
+					recordObject = Database.query(query)[0];
+				}
           } else {
               recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
           }
@@ -168,9 +168,15 @@ public with sharing class FormQuestionController {
     } set;}
 
     public FieloPLT__PageSettings__c getPageSettings(String pageSetingsName) {
+        Set<String> fields = new Set<String>();
+        for(String s : new List<String>(Schema.describeSObjects(new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet())){
+            if( Schema.sObjectType.FieloPLT__PageSettings__c.fields.getMap().get(s).getDescribe().isAccessible() ){
+                fields.add(s);
+            }
+        }
+
         String query = 'SELECT ';
-        query += String.join(new List<String>(Schema.describeSObjects(
-            new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet()), ',');
+        query += String.join(fields, ',');
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName' ;
         query += ' LIMIT 1';
@@ -178,9 +184,7 @@ public with sharing class FormQuestionController {
         List<sObject> result;
 
         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
-
             result = Database.query(query);
-
         }else{
             throw new FieloException(Label.CannotAccessRecords);
           }
@@ -203,7 +207,9 @@ public with sharing class FormQuestionController {
       try{
             sp = Database.setSavepoint();
             for( String f :questionNullFields ) {
-                question.put(f, null );
+                if( Schema.sObjectType.Question__c.fields.get(f).getDescribe().isUpdateable() ){
+                    question.put(f, null );
+                }
             }
 
             if (question.Id == null) {
@@ -215,7 +221,9 @@ public with sharing class FormQuestionController {
             for( FieloELR__AnswerOption__c answerOption: answerOptions) {
                 if(answerOptionsNullFields.containsKey(answerOption.Id)){
                     for(String f: answerOptionsNullFields.get(answerOption.Id)){
-                        answerOption.put(f, null);
+                        if( Schema.sObjectType.FieloELR__AnswerOption__c.fields.get(f).getDescribe().isUpdateable() ){
+                            answerOption.put(f, null);
+                        }
                     }
                 }
                 if(answerOption.Id == null){
@@ -236,7 +244,7 @@ public with sharing class FormQuestionController {
                         throw new FieloException(Label.CannotInsertUpdateRecords);
                     }
 
-                    if(Schema.sObjectType.FieloELR__Question__c.isCreateable()){
+                    if( Schema.sObjectType.FieloELR__Question__c.isCreateable() && Schema.sObjectType.FieloELR__Question__c.isUpdateable() && Schema.sObjectType.FieloELR__AnswerOption__c.isDeletable() ){
                         uow.commitWork();
                     }else{
                         throw new FieloException(Label.CannotInsertRecords);
@@ -267,13 +275,17 @@ public with sharing class FormQuestionController {
 
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
-      String query = 'SELECT ' + fields;
+        Map<String, Schema.SObjectField> fieldsMap = Schema.getGlobalDescribe().get( objectName ).getDescribe().fields.getMap();
+		Set<String> newFields = new Set<String>();
+		for(String s : String.split(',')){
+			if( fieldsMap.get(s).getDescribe().isAccessible() ){
+				newFields.add( String.escapeSingleQuotes(s) );
+			}
+		}
 
+      String query = 'SELECT ' + String.join(newFields, ',');
+        objectName = String.escapeSingleQuotes(objectName);
       if (objectName == 'FieloELR__Question__c') {
-
-          if(!Schema.sObjectType.FieloELR__Question__c.isAccessible())
-            throw new FieloException(Label.CannotAccessRecords);
-
         query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__MatchingText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
       }
 
@@ -282,10 +294,13 @@ public with sharing class FormQuestionController {
       query += ' LIMIT 1';
       List<sObject> result;
       
-       SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-        result = Database.query(query);
+       if( Schema.getGlobalDescribe().get(objectName).getDescribe().isAccessible()){
+          if( String.escapeSingleQuotes(objectName) == 'FieloELR__Question__c' && !Schema.sObjectType.AnswerOptions__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.IsCorrect__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.AnswerOptionText__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.MatchingText__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.Order__c.isAccessible()){
+              throw new FieloException(Label.CannotInsertRecords);
+          } 
+            result = Database.query(query);
+       
+       }
 
       if ( result.size() > 0 ) {
           return result.get(0);
