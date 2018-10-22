@@ -133,18 +133,23 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
         if ( orderBy == null ) {
             orderBy = 'LastModifiedDate DESC';
         }
+        
+        List<FieloELR__Course__c> records;
 
-        return CourseService.getCourses( fieldset, getViewStatus(currentView), programId, recordsPerPage,  offset, orderBy);
+        // SR: CRUD Check
+        if ( Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.FieloPLT__Program__c.isAccessible()) {
+            // SR: FLS Check
+            if ( Schema.sObjectType.Course__c.fields.Name.isAccessible() && Schema.sObjectType.Course__c.fields.SubscriptionMode__c.isAccessible() && Schema.sObjectType.Course__c.fields.Status__c.isAccessible() && Schema.sObjectType.Course__c.fields.Program__c.isAccessible() && Schema.sObjectType.FieloPLT__Program__c.fields.Name.isAccessible() && Schema.sObjectType.Course__c.fields.LastModifiedDate.isAccessible()) {
+                records = CourseService.getCourses( fieldset, getViewStatus(currentView), programId, recordsPerPage,  offset, orderBy);
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c,FieloPLT__Program__c', 'Course__c.Name, Course__c.SubscriptionMode__c, Course__c.Status__c, Course__c.Program__c, Course__c.LastModifiedDate, FieloPLT__Program__c.Name'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,FieloPLT__Program__c'}));
+        }
+
+        return records;
     }
-
-    /*
-        Create Courses Method with 3 parameters
-        in the case that segments are not used.
-    */
-    /*@RemoteAction
-    public static RemoteActionResult createCourseWithoutSegments(sObject objectRecord, List<String> nullFields) {
-        return createCourse(objectRecord,nullFields,new List<String>());
-    }*/
 
     /*
         Create Courses Method
@@ -153,6 +158,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
     public static RemoteActionResult createCourse(sObject objectRecord, List<String> nullFields, String modelId, List<String> segments) {
         Savepoint sp;
         RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> objectFieldsMap = Schema.sObjectType.Course__c.fields.getMap();
 
         try{
             Course__c record = (Course__c) objectRecord;
@@ -160,23 +166,40 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             // nullFields is not used becouse its an insert
             // Si tiene mas de un Segmento pasa por Metasegments
 
-            if ( segments.size() == 1 ) {
-                record.segment__c = segments.get(0);
-            } else if ( segments.size() > 1 ) {
-                record.segment__c = SegmentService.getMetaSegmentId( segments, record.Program__c ) ;
+            if (Schema.sObjectType.Course__c.fields.Segment__c.isCreateable() && Schema.sObjectType.Course__c.fields.Segment__c.isUpdateable()) {
+                if ( segments.size() == 1 ) {
+                    record.segment__c = segments.get(0);
+                } else if ( segments.size() > 1 ) {
+                    record.segment__c = SegmentService.getMetaSegmentId( segments, record.Program__c ) ;
+                } else {
+                record.segment__c = null;
+                }
             } else {
-              record.segment__c = null;
+                throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'Course__c', 'Segment__c'}));
             }
             //TODO Change to ELR Create API
 
+            Set<String> courseFieldset = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
+            if (nullFields != null && !nullFields.isEmpty()) {
+			    courseFieldset.addAll(nullFields);
+            }
+
+            // SR: Dynamic FLS Check
+            for ( String fieldName : courseFieldset ) {
+                if ( !objectFieldsMap.get(fieldName).getDescribe().isUpdateable() || !objectFieldsMap.get(fieldName).getDescribe().isCreateable()) {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', fieldName}));
+                }
+            }
+
             if ( String.isBlank( modelId )  ) {
-                if (Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable() && Schema.sObjectType.Course__c.fields.Segment__c.isCreateable() && Schema.sObjectType.Course__c.fields.Segment__c.isUpdateable()) {
+                // SR: CRUD Check
+                if (Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()) {
                     insert record;
                 }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+                    throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'Course__c'}));
                 }
             } else {
-                /*CourseService.*/createFromModel( record, modelId );
+                CourseService.createFromModel( record, modelId );
             }
 
 
@@ -200,15 +223,17 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
         return result;
     }
 
-    private static void createFromModel(Course__c record, Id modelId){
-        CourseService.createFromModel( record, modelId );
-    }
-
     @RemoteAction
     public static List<SObject> getSegments( String programId ) {
         List<SObject> records;
-        if (Schema.sObjectType.FieloPLT__Segment__c.isAccessible()) {
-            records = new SegmentsSelector(new Set<String>{'Id','Name'}).selectByProgramAndWithoutProgramWithCriteria(programId, new Set<String>{'Id','Name'});
+        if ( Schema.sObjectType.FieloPLT__Segment__c.isAccessible() ) {
+            if ( Schema.sObjectType.FieloPLT__Segment__c.fields.Name.isAccessible() ) {
+                records = new SegmentsSelector(new Set<String>{'Id','Name'}).selectByProgramAndWithoutProgramWithCriteria(programId, new Set<String>{'Id','Name'});
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Segment__c', 'Name'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Segment__c'}));
         }
         return records;
     }

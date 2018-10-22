@@ -57,6 +57,15 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			for(String fieldName:fieldList) {
 				fields.add(fieldName);
 			}
+
+			// SR: Dynamic FLS Check
+			Map<String,Schema.SObjectField> courseStatusFieldsMap = Schema.SObjectType.CourseStatus__c.fields.getMap();
+			for (String fieldName : fields) {
+				if (!courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
+				}
+			}
+
 			String query = String.format(
 				'SELECT {0} FROM {1} WHERE Id = :recordId',
 				new String[]{
@@ -81,10 +90,8 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 
 		// SR: Dynamic FLS Check
 		for ( String fieldName : fields.split(',') ) {
-			if (objectFieldsMap.containsKey(fieldName.trim())) {
-				if (!objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
-					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName.trim()}));
-				}
+			if (!objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName.trim()}));
 			}
 		}
 
@@ -116,12 +123,15 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			}
 
 			Set<String> courseStatusFields = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
-			courseStatusFields.addAll(nullFields);
+			if ( nullFields != null && !nullFields.isEmpty() ) {
+				courseStatusFields.addAll(nullFields);
+			}
 
 			// SR: Dynamic FLS Check
 			for ( String fieldName : courseStatusFields ) {
-				if (!courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
-					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c', fieldName.trim()}));
+				// SR: Update / Insert Check
+				if ( !courseStatusFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseStatusFieldsMap.get(fieldName).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'CourseStatus__c', fieldName}));
 				}
 			}
 
@@ -160,12 +170,15 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			}
 
 			Set<String> fieldSet = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
-			fieldSet.addAll(nullFields);
+			if ( nullFields != null && !nullFields.isEmpty() ) {
+				fieldSet.addAll(nullFields);
+			}
 
 			// SR: Dynamic FLS Check
 			for ( String fieldName : fieldSet ) {
-				if (!objectFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
-					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c', fieldName.trim()}));
+				// SR: Update / Insert Check
+				if ( !objectFieldsMap.get(fieldName).getDescribe().isCreateable() || !objectFieldsMap.get(fieldName).getDescribe().isUpdateable()) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c', fieldName}));
 				}
 			}
 
