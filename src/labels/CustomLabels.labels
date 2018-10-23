@@ -4718,12 +4718,4 @@ If it is a CRM Person Account, a Fielo Individual Member account is created.</va
         <shortDescription>Records: No Insert</shortDescription>
         <value>Records cannot be inserted</value>
     </labels>
-    <labels>
-        <fullName>CannotAccessRecords</fullName>
-        <categories>ModulesSelector.cls</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>Records: No Access</shortDescription>
-        <value>Records cannot be accessed</value>
-    </labels>
 </CustomLabels>
