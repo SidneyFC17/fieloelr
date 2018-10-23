@@ -95,13 +95,20 @@ public with sharing class ModuleViewController extends PageSettingsController {
 					objectName
 				}
 			);
-
-			// It's giving errors, removed temporary
-			// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-        	// SecurityUtils.checkObjectIsReadable(convertType);
+			
+			// SR: Dynamic FLS Check
+			Map<String, Schema.SObjectField> moduleFieldsMap = Schema.SObjectType.Module__c.fields.getMap();
+			for (String fieldName : fields) {
+				if (!moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
+				}
+			}
+			
 			if ( Schema.sObjectType.FieloELR__Module__c.isAccessible() ) {
 				record = Database.query(query);
 				setRecord(record);
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Module__c'}));
 			}
 		}
 	}
@@ -129,9 +136,16 @@ public with sharing class ModuleViewController extends PageSettingsController {
     }
 
     public FieloPLT__PageSettings__c getPageSettings(String pageSetingsName, String defaultSection) {
+		Map<String,Schema.SObjectField> pageSettingsFieldsMap = Schema.SObjectType.FieloPLT__PageSettings__c.fields.getMap();
+
+		for (String fieldName : pageSettingsFieldsMap.keySet() ) {
+			if ( !pageSettingsFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__PageSettings__c', fieldName}));
+			}
+		}
+
         String query = 'SELECT ';
-        query += String.join(new List<String>(Schema.describeSObjects(
-            new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet()), ',');
+        query += String.join(new List<String>(pageSettingsFieldsMap.keySet()), ',');
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName AND FieloPLT__IsActive__c = true' ;
         query += ' LIMIT 1';
@@ -139,19 +153,17 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
         	result = Database.query(query);
-
-			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
-
-        if (result.isEmpty()) {
-        	return new FieloPLT__PageSettings__c(
-        		FieloPLT__Sections__c = defaultSection
-        	);
-        } else {
-        	return (FieloPLT__PageSettings__c) result.get(0);
-        }
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+		}
+		
+		if (result.isEmpty()) {
+			return new FieloPLT__PageSettings__c(
+				FieloPLT__Sections__c = defaultSection
+			);
+		} else {
+			return (FieloPLT__PageSettings__c) result.get(0);
+		}
     }
 
     public FieloPLT__PageSettings__c manageQuestionPS {get{
@@ -255,17 +267,24 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
   	@RemoteAction
 	public static sObject retrieve( String objectName, String recordId, String fields ){
+		Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
+
+		for (String fieldName : fields.split(',') ) {
+			if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName}));
+			}
+		}
+
 		String query = 'SELECT ' + fields;
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
 		List<sObject> result;
 
-		// It's giving errors, removed temporary
-		// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-        // SecurityUtils.checkObjectIsReadable(convertType);
 		if( Schema.describeSObjects(new List<String>{objectName})[0].isAccessible() ){
 			result = Database.query(query);
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{objectName}));
 		}
 		return result.get(0);
 	}
@@ -276,7 +295,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		try{
 			Module__c record = new Module__c ( Id = recordId);
 			if( Schema.sObjectType.Module__c.fields.IsActive__c.isCreateable() && Schema.sObjectType.Module__c.fields.IsActive__c.isUpdateable() ){
-				m.IsActive__c = true;
+				record.IsActive__c = true;
 			}
 
 			if( Schema.sObjectType.Module__c.isUpdateable() ){
@@ -300,7 +319,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		try{
 			Module__c record = new Module__c ( Id = recordId);
 			if( Schema.sObjectType.Module__c.fields.IsActive__c.isCreateable() && Schema.sObjectType.Module__c.fields.IsActive__c.isUpdateable() ){
-				m.IsActive__c = false;
+				record.IsActive__c = false;
 			}
 
 			if( Schema.sObjectType.Module__c.isUpdateable() ){
@@ -323,31 +342,38 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 	@RemoteAction
   	public static List<SObject> getRecords( String objectName, String fields, Integer offset, String orderBy, String dataFilters, Integer recordsPerPage, String whereClause ) {
+		Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
+
+		for (String fieldName : fields.split(',') ) {
+			if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName}));
+			}
+		}
+
 		String query = 'SELECT Id, ' + fields;
 		query += ' FROM ' + objectName;
 		query += getWhereCondition( dataFilters ); 
 		// ORDER BY       
 		if ( orderBy == null ) {
-		  orderBy = 'LastModifiedDate DESC';
+			orderBy = 'LastModifiedDate DESC';
 		}
 		query += ' ORDER BY '+ orderBy; //DESC
 		// LIMIT & OFFSET
 		if ( recordsPerPage == null ) {
-		  recordsPerPage = 10;
+			recordsPerPage = 10;
 		}
 		query += ' LIMIT '+ String.valueOf(recordsPerPage);
 		if ( offset != null ){
 		query += ' OFFSET '+ String.valueOf(offset);
 		}
-		system.debug('### query: ' + query);    
 		List<SObject> listObjects;
 
-		// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-        // SecurityUtils.checkObjectIsReadable(convertType);
 		if( Schema.describeSObjects(new List<String>{objectName})[0].isAccessible() ){
 			listObjects = Database.query(query);
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{objectName}));
 		}
-			 
+				
 		return listObjects;
 	}
 
@@ -359,9 +385,9 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		  		for ( String k :filter.keySet() ) {
 			    	String value = (String) filter.get(k);
 		    		if ( value.startsWith('!') ) {
-			      		whereCondition += ' AND ' + k + ' <> \'' +  value.substring(1) + '\'';            
+			      		whereCondition += ' AND ' + k + ' <> \'' +  String.escapeSingleQuotes(value.substring(1)) + '\'';            
 		    		} else {
-			      		whereCondition += ' AND ' + k + ' = \'' +  value + '\'';
+			      		whereCondition += ' AND ' + k + ' = \'' +  String.escapeSingleQuotes(value) + '\'';
 		    		}
 		  		}
 				if ( whereCondition != '') {          
