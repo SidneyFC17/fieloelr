@@ -7,7 +7,7 @@ public with sharing class ModuleDetailController {
 			Set<String> moduleFieldSet = new Set<String>();
 			if (moduleFields != '' && moduleFields != null) {
 				for(String s :  moduleFields.split(',')){
-					if( Schema.sObjectType.Module__c.fields.getMap.get(s).getDescribe.isAccessible() ){
+					if( Schema.sObjectType.Module__c.fields.getMap().get(s).getDescribe.isAccessible() ){
 						moduleFieldSet.add(s);
 					}
 				}
@@ -32,7 +32,7 @@ public with sharing class ModuleDetailController {
 			Set<String> moduleResponseFieldSet = new Set<String>();
 			if (moduleResponseFields != '' && moduleResponseFields != null) {
 				for(String s : moduleResponseFields.split(',')){
-					if( Schema.sObjectType.ModuleResponse__c.fields.getMap.get(s).getDescribe.isAccessible() ){
+					if( Schema.sObjectType.ModuleResponse__c.fields.getMap().get(s).getDescribe.isAccessible() ){
 						moduleResponseFieldSet.add(s);
 					}
 				}
@@ -57,7 +57,7 @@ public with sharing class ModuleDetailController {
 				' WHERE FieloELR__Module__c = :moduleId AND FieloELR__Predecessor__r.FieloELR__IsActive__c = true';
 
 			List<ModuleDependency__c> dependencies;
-			if( Schema.sObjectType.ModuleDependency__c.isAccessible() && Schema.sObjectType.Predecessor__c.isAccessible() ){
+			if( Schema.sObjectType.ModuleDependency__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() ){
 				dependencies = (List<ModuleDependency__c>) Database.query(moduleDependencyQuery);
 			}
 
@@ -95,7 +95,7 @@ public with sharing class ModuleDetailController {
 			String courseStatusQuery = 'SELECT Id, Name, FieloELR__Course__c, (SELECT Id, Name, FieloELR__Module__c, FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponses__r ORDER BY FieloELR__Module__r.FieloELR__Order__c, FieloELR__NumberOfAttempt__c ) FROM FieloELR__CourseStatus__c WHERE FieloELR__ExternalKey__c = :key';
 
 			List<FieloELR__CourseStatus__c> courseStatus;
-			if( Schema.sObjectType.CourseStatus__c.isAccessible() && Schema.sObjectType.ModuleResponses__c.fields.Course__c.isAccessible() && Schema.sObjectType.ModuleResponses__c.isAccessible() && Schema.sObjectType.ModuleResponses__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponses__c.fields.NumberofApprove__c.isAccessible() ){
+			if( Schema.sObjectType.CourseStatus__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Course__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.NumberofApprove__c.isAccessible() ){
 				courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
 			}
 
