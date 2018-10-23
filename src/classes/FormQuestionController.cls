@@ -23,26 +23,26 @@ public with sharing class FormQuestionController {
     return fields;
     }set;}
   
-  public SObject recordObject{get{
-    if (queryRecordNotDone ) {
-      queryRecordNotDone = false;
-          if ( cRecord !=null && cRecord.Id != null ) {
+    public SObject recordObject{get{
+        if (queryRecordNotDone ) {
+            queryRecordNotDone = false;
+            if ( cRecord !=null && cRecord.Id != null ) {
                 fields = String.escapeSingleQuotes(fields);
                 csObjectName = String.escapeSingleQuotes(csObjectName);
 
-              Id recordId = cRecord.Id;
-              String query = 'SELECT  ' + fields;
-              query += ' FROM ' + csObjectName;
-              query += ' WHERE Id = : recordId ';
+                Id recordId = cRecord.Id;
+                String query = 'SELECT  ' + fields;
+                query += ' FROM ' + csObjectName;
+                query += ' WHERE Id = : recordId ';
               
                 if( Schema.describeSObjects(new List<String>{csObjectName})[0].isAccessible() ) {
 					recordObject = Database.query(query)[0];
 				} else {
                     throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{csObjectName}));
                 }
-          } else {
-              recordObject = Schema.describeSObjects(new List<String>{csObjectName})[0].getSobjectType().newSObject();
-          }
+            } else {
+                recordObject = Schema.describeSObjects(new List<String>{csObjectName})[0].getSobjectType().newSObject();
+            }
         }
         return recordObject;
     }set;}
@@ -180,6 +180,8 @@ public with sharing class FormQuestionController {
         for(String s : new List<String>(Schema.describeSObjects(new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet())){
             if( Schema.sObjectType.FieloPLT__PageSettings__c.fields.getMap().get(s).getDescribe().isAccessible() ){
                 fields.add(s);
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'FieloPLT__PageSettings__c', s}));
             }
         }
 
@@ -193,7 +195,7 @@ public with sharing class FormQuestionController {
 
         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
             result = Database.query(query);
-        }else{
+        } else {
             throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ 'FieloPLT__PageSettings__c' }));
         }
 
@@ -207,8 +209,8 @@ public with sharing class FormQuestionController {
   /*****  Metodos Remote para Save y Retrieve *****/
     @RemoteAction
     public static RemoteActionResult save( FieloELR__Question__c question, List<String> questionNullFields, List<FieloELR__AnswerOption__c> answerOptions, Map<Id,List<String>> answerOptionsNullFields, List<Id> deletedIds){
-      Savepoint sp;
-      RemoteActionResult result = new RemoteActionResult();
+        Savepoint sp;
+        RemoteActionResult result = new RemoteActionResult();
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{FieloELR__Question__c.SObjectType, FieloELR__AnswerOption__c.SObjectType});
         SObjectUnitOfWork uowUpdateAO = new SObjectUnitOfWork(new List<Schema.SobjectType>{FieloELR__AnswerOption__c.SObjectType});
         System.debug(question);
@@ -283,7 +285,7 @@ public with sharing class FormQuestionController {
 
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
-        Map<String, Schema.SObjectField> fieldsMap = Schema.getGlobalDescribe().get( objectName ).getDescribe().fields.getMap();
+        Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
 		Set<String> newFields = new Set<String>();
 		for(String s : fields.split(',')){
 			if( fieldsMap.get(s).getDescribe().isAccessible() ){
@@ -302,7 +304,7 @@ public with sharing class FormQuestionController {
       query += ' LIMIT 1';
       List<sObject> result;
       
-       if( Schema.getGlobalDescribe().get(objectName).getDescribe().isAccessible()){
+       if( Schema.describeSObjects(new String[]{objectName})[0].isAccessible()){
             if( String.escapeSingleQuotes(objectName) == 'FieloELR__Question__c' && !Schema.sObjectType.AnswerOption__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.IsCorrect__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.AnswerOptionText__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.MatchingText__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.Order__c.isAccessible()){
                 throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'AnswerOption__c', 'IsCorrect__c, AnswerOptioNText__c, MatchingText__c, Order__c'}));
             }
