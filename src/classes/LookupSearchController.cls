@@ -9,6 +9,8 @@ public  class LookupSearchController {
 			for(String s : fields.split(',')){
 				if( fieldsMap.get(s).getDescribe().isAccessible() ){
 					fieldSet.add( String.escapeSingleQuotes(s) );
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{sObjectName, s}));
 				}
 			}
 			String query = 'SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4} OFFSET {5}';
@@ -22,8 +24,8 @@ public  class LookupSearchController {
 				sObjectName,
 					whereClause != null && whereClause != ''? 'WHERE ' + (whereClause.contains('\'\'') ? whereClause.replace('\'\'','\'') : whereClause) : '',
 					String.valueOf(String.escapeSingleQuotes(orderBy)),
-					String.valueOf(String.escapeSingleQuotes(quantity)),
-					String.valueOf(String.escapeSingleQuotes(offset))
+					String.valueOf(String.escapeSingleQuotes(String.valueOf(quantity))),
+					String.valueOf(String.escapeSingleQuotes(String.valueOf(offset)))
 				}
 			);
 
