@@ -35,11 +35,13 @@ public with sharing class FormQuestionController {
               query += ' FROM ' + csObjectName;
               query += ' WHERE Id = : recordId ';
               
-                if( Schema.getGlobalDescribe().get(csObjectName).isAccessible() ){
+                if( Schema.describeSObjects(new List<String>{csObjectName})[0].isAccessible() ) {
 					recordObject = Database.query(query)[0];
-				}
+				} else {
+                    throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{csObjectName}));
+                }
           } else {
-              recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
+              recordObject = Schema.describeSObjects(new List<String>{csObjectName})[0].getSobjectType().newSObject();
           }
         }
         return recordObject;
@@ -129,42 +131,48 @@ public with sharing class FormQuestionController {
     } set;}
 
     public Map<String, List<PicklistController.Entry>> mapPicklistOptions { get {
-      if ( mapPicklistOptions == null && !String.isBlank(csObjectName) ) {
-          mapPicklistOptions = new Map<String, List<PicklistController.Entry>>();
-          for ( Section s :sections ) {
-            for ( List<FormField> ff :s.Rows ) {
-                for ( FormField f :ff ) {
-                  if ( (f.Type == 'picklist' ||  f.Type == 'radio'|| f.Type == 'multiselect'|| f.Type == 'checkboxes') && fieldMap.containsKey(f.Name) ) {
-                      List<PicklistController.Entry> options = new List<PicklistController.Entry>();
-                      Schema.DescribeFieldResult describe = fieldMap.get(f.Name).getDescribe();
-                      if ( describe.getType().name() == 'PICKLIST' || describe.getType().name() == 'MULTIPICKLIST' ) {
-                        List<Schema.PicklistEntry> pickListValues = describe.getPickListValues();
-                        for (Schema.PicklistEntry a : pickListValues) {
-                            options.add( new PicklistController.Entry(a.getValue(), a.getLabel() ));
+        if ( mapPicklistOptions == null && !String.isBlank(csObjectName) ) {
+            mapPicklistOptions = new Map<String, List<PicklistController.Entry>>();
+            for ( Section s :sections ) {
+                for ( List<FormField> ff :s.Rows ) {
+                    for ( FormField f :ff ) {
+                        if ( (f.Type == 'picklist' ||  f.Type == 'radio'|| f.Type == 'multiselect'|| f.Type == 'checkboxes') && fieldMap.containsKey(f.Name) ) {
+                            List<PicklistController.Entry> options = new List<PicklistController.Entry>();
+                            Schema.DescribeFieldResult describe = fieldMap.get(f.Name).getDescribe();
+                            if ( describe.getType().name() == 'PICKLIST' || describe.getType().name() == 'MULTIPICKLIST' ) {
+                                List<Schema.PicklistEntry> pickListValues = describe.getPickListValues();
+                                for (Schema.PicklistEntry a : pickListValues) {
+                                    options.add( new PicklistController.Entry(a.getValue(), a.getLabel() ));
+                                }
+                            } else if ( describe.getType().name() == 'REFERENCE' ) {
+                                String query = 'SELECT ID, Name FROM ' + describe.getReferenceTo().get(0);
+                                if ( ! String.isBlank( f.WhereCondition )  ){
+                                    query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
+                                }
+                                query += ' LIMIT 500';
+                                
+                                // SR: CRUD Check
+                                if (describe.getReferenceTo().get(0).getDescribe().isAccessible()) {
+                                    // SR: FLS Check
+                                    if ( describe.getReferenceTo().get(0).getDescribe().fields.getMap().get('Name').getDescribe().isAccessible() ) {
+                                        for ( SObject o : Database.query(query) ) {
+                                            // Substring para que matche con el multipicklist (para multisegment)
+                                            options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
+                                        }
+                                    } else {
+                                        throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ describe.getReferenceTo().get(0).getDescribe().getName(), 'Name' }));
+                                    }
+                                } else {
+                                    throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ describe.getReferenceTo().get(0).getDescribe().getName() }));
+                                }
+                            }
+                            mapPicklistOptions.put( f.Name , options);
                         }
-                      } else if ( describe.getType().name() == 'REFERENCE' ) {
-                        String query = 'SELECT ID, Name FROM ' + describe.getReferenceTo().get(0);
-                        if ( ! String.isBlank( f.WhereCondition )  ){
-                            query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
-                        }
-                        query += ' LIMIT 500';
-
-                     SObjectType convertType = describe.getReferenceTo().get(0);
-
-                    SecurityUtils.checkObjectIsReadable(convertType);
-
-                        for ( SObject o : Database.query(query) ) {
-                            // Substring para que matche con el multipicklist (para multisegment)
-                            options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
-                        }
-                      }
-                      mapPicklistOptions.put( f.Name , options);
-                  }
+                    }
                 }
             }
-          }
-      }
-      return mapPicklistOptions;
+        }
+        return mapPicklistOptions;
     } set;}
 
     public FieloPLT__PageSettings__c getPageSettings(String pageSetingsName) {
@@ -176,7 +184,7 @@ public with sharing class FormQuestionController {
         }
 
         String query = 'SELECT ';
-        query += String.join(fields, ',');
+        query += String.join(new List<String>(fields), ',');
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName' ;
         query += ' LIMIT 1';
