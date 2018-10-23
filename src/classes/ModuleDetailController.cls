@@ -95,7 +95,7 @@ public with sharing class ModuleDetailController {
 			String courseStatusQuery = 'SELECT Id, Name, FieloELR__Course__c, (SELECT Id, Name, FieloELR__Module__c, FieloELR__NumberofApprove__c FROM FieloELR__ModuleResponses__r ORDER BY FieloELR__Module__r.FieloELR__Order__c, FieloELR__NumberOfAttempt__c ) FROM FieloELR__CourseStatus__c WHERE FieloELR__ExternalKey__c = :key';
 
 			List<FieloELR__CourseStatus__c> courseStatus;
-			if( Schema.sObjectType.CourseStatus__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Course__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.NumberofApprove__c.isAccessible() ){
+			if( Schema.sObjectType.CourseStatus__c.isAccessible() && Schema.sObjectType.CourseStatus__c.fields.Course__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.NumberofApprove__c.isAccessible() ){
 				courseStatus = (List<FieloELR__CourseStatus__c>) Database.query(courseStatusQuery);
 			}
 
