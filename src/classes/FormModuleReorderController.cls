@@ -34,12 +34,14 @@ public with sharing class FormModuleReorderController {
               String query = 'SELECT  ' + fields;
               query += ' FROM ' + csObjectName;
               query += ' WHERE Id = : recordId ';
-              
-                if( Schema.getGlobalDescribe().get(csObjectName).isAccessible() ){
+                
+                if( Schema.describeSObjects(new List<String>{csObjectName})[0].isAccessible() ){
 					recordObject = Database.query(query)[0];
-				}
+				} else {
+                    throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{csObjectName}));
+                }
           } else {
-              recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
+              recordObject = Schema.describeSObjects(new List<String>{csObjectName})[0].getSobjectType().newSObject() ;
           }
         }
         return recordObject;
@@ -161,7 +163,7 @@ public with sharing class FormModuleReorderController {
 
       try{
           sp = Database.setSavepoint();
-            if( records.get(0).getSobjectType().getDescribe().isUpdeteable() ){
+            if( records.get(0).getSobjectType().getDescribe().isUpdateable() ){
                 update records;
             }
         
