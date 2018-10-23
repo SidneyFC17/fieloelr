@@ -61,7 +61,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByIdWithQuestions(Set<Id> moduleIds) {
       List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Questions__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Question__c.isAccessible()){	
 
         listModule = (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -140,7 +140,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
     public List<Module__c> selectByIdHavingQuestions(Set<Id> moduleIds) {
        List<Module__c> listModule;
 
-     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Questions__c.isAccessible()){	
+     if(Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.Question__c.isAccessible()){	
 
         listModule =  (List<Module__c>) Database.query(String.format(
                 'SELECT {0} ' +
