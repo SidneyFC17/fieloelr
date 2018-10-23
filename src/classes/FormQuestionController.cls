@@ -194,8 +194,8 @@ public with sharing class FormQuestionController {
         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
             result = Database.query(query);
         }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ 'FieloPLT__PageSettings__c' }));
+        }
 
         return (FieloPLT__PageSettings__c) result.get(0);
     }
@@ -215,7 +215,7 @@ public with sharing class FormQuestionController {
       try{
             sp = Database.setSavepoint();
             for( String f :questionNullFields ) {
-                if( Schema.sObjectType.Question__c.fields.get(f).getDescribe().isUpdateable() ){
+                if( Schema.sObjectType.Question__c.fields.getMap().get(f).getDescribe().isUpdateable() ){
                     question.put(f, null );
                 }
             }
@@ -229,7 +229,7 @@ public with sharing class FormQuestionController {
             for( FieloELR__AnswerOption__c answerOption: answerOptions) {
                 if(answerOptionsNullFields.containsKey(answerOption.Id)){
                     for(String f: answerOptionsNullFields.get(answerOption.Id)){
-                        if( Schema.sObjectType.FieloELR__AnswerOption__c.fields.get(f).getDescribe().isUpdateable() ){
+                        if( Schema.sObjectType.FieloELR__AnswerOption__c.fields.getMap().get(f).getDescribe().isUpdateable() ){
                             answerOption.put(f, null);
                         }
                     }
@@ -242,21 +242,21 @@ public with sharing class FormQuestionController {
             }
 
             if (!deletedIds.isEmpty()) {
-              uow.registerDeleted(new AnswerOptionsSelector().selectById(new Set<Id>(deletedIds)));
+                uow.registerDeleted(new AnswerOptionsSelector().selectById(new Set<Id>(deletedIds)));
             }
 
             //done update in different uow to do the update before the insert of AOs to avoid validation rules.
              if(Schema.sObjectType.FieloELR__AnswerOption__c.isUpdateable()){
-                        uowUpdateAO.commitWork();
-                    }else{
-                        throw new FieloException(Label.CannotInsertUpdateRecords);
-                    }
+                uowUpdateAO.commitWork();
+            }else{
+                throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{ 'FieloELR__AnswerOption__c' }));
+            }
 
-                    if( Schema.sObjectType.FieloELR__Question__c.isCreateable() && Schema.sObjectType.FieloELR__Question__c.isUpdateable() && Schema.sObjectType.FieloELR__AnswerOption__c.isDeletable() ){
-                        uow.commitWork();
-                    }else{
-                        throw new FieloException(Label.CannotInsertRecords);
-                    }
+            if( Schema.sObjectType.FieloELR__Question__c.isCreateable() && Schema.sObjectType.FieloELR__Question__c.isUpdateable() && Schema.sObjectType.FieloELR__AnswerOption__c.isDeletable() ){
+                uow.commitWork();
+            }else{
+                throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{ 'FieloELR__Question__c, FieloELR__AnswerOption__c' }));
+            }
 
           //TODO Crear Label DataSavedSuccessfully
           result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -285,13 +285,13 @@ public with sharing class FormQuestionController {
     public static sObject retrieve( String objectName, String recordId, String fields ){
         Map<String, Schema.SObjectField> fieldsMap = Schema.getGlobalDescribe().get( objectName ).getDescribe().fields.getMap();
 		Set<String> newFields = new Set<String>();
-		for(String s : String.split(',')){
+		for(String s : fields.split(',')){
 			if( fieldsMap.get(s).getDescribe().isAccessible() ){
 				newFields.add( String.escapeSingleQuotes(s) );
 			}
 		}
 
-      String query = 'SELECT ' + String.join(newFields, ',');
+      String query = 'SELECT ' + String.join(new List<String>(newFields), ',');
         objectName = String.escapeSingleQuotes(objectName);
       if (objectName == 'FieloELR__Question__c') {
         query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__MatchingText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
@@ -303,11 +303,12 @@ public with sharing class FormQuestionController {
       List<sObject> result;
       
        if( Schema.getGlobalDescribe().get(objectName).getDescribe().isAccessible()){
-          if( String.escapeSingleQuotes(objectName) == 'FieloELR__Question__c' && !Schema.sObjectType.AnswerOptions__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.IsCorrect__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.AnswerOptionText__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.MatchingText__c.isAccessible() || !Schema.sObjectType.AnswerOptions__c.fields.Order__c.isAccessible()){
-              throw new FieloException(Label.CannotInsertRecords);
-          } 
+            if( String.escapeSingleQuotes(objectName) == 'FieloELR__Question__c' && !Schema.sObjectType.AnswerOption__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.IsCorrect__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.AnswerOptionText__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.MatchingText__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.Order__c.isAccessible()){
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'AnswerOption__c', 'IsCorrect__c, AnswerOptioNText__c, MatchingText__c, Order__c'}));
+            }
             result = Database.query(query);
-       
+       } else {
+           throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{objectName}));
        }
 
       if ( result.size() > 0 ) {
