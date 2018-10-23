@@ -7,7 +7,7 @@ public with sharing class ModuleDetailController {
 			Set<String> moduleFieldSet = new Set<String>();
 			if (moduleFields != '' && moduleFields != null) {
 				for(String s :  moduleFields.split(',')){
-					if( Schema.sObjectType.Module__c.fields.getMap().get(s).getDescribe.isAccessible() ){
+					if( Schema.sObjectType.Module__c.fields.getMap().get(s).getDescribe().isAccessible() ){
 						moduleFieldSet.add(s);
 					}
 				}
@@ -32,7 +32,7 @@ public with sharing class ModuleDetailController {
 			Set<String> moduleResponseFieldSet = new Set<String>();
 			if (moduleResponseFields != '' && moduleResponseFields != null) {
 				for(String s : moduleResponseFields.split(',')){
-					if( Schema.sObjectType.ModuleResponse__c.fields.getMap().get(s).getDescribe.isAccessible() ){
+					if( Schema.sObjectType.ModuleResponse__c.fields.getMap().get(s).getDescribe().isAccessible() ){
 						moduleResponseFieldSet.add(s);
 					}
 				}
