@@ -51,7 +51,7 @@ public class QuestionsSelector extends SObjectSelector {
     public List<Question__c> selectByIdWithQuestionResponses(Set<Id> questionIds) {
         List<Question__c> listQuestion;
 
-        if( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.QuestionsResponses__c.isAccessible() ){
+        if( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.isAccessible() ){
             listQuestion = (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id FROM QuestionsResponses__r LIMIT 1) ' +
