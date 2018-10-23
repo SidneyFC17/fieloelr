@@ -240,7 +240,7 @@ public with sharing class ModulesSelector extends SObjectSelector {
                 )
             );
         } else {
-            throw new FieloException(Label.CannotAccessRecords);
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Module__c, ModuleDependency__c'}));
         }
         return listModule;
     }
