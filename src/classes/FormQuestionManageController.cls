@@ -27,6 +27,7 @@ public with sharing class FormQuestionManageController {
         if (queryRecordNotDone ) {
             queryRecordNotDone = false;
             if ( cRecord !=null && cRecord.Id != null ) {
+                Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{csObjectName})[0].fields.getMap();
                 fields = String.escapeSingleQuotes(fields);
                 csObjectName = String.escapeSingleQuotes(csObjectName);
 
@@ -34,6 +35,13 @@ public with sharing class FormQuestionManageController {
                 String query = 'SELECT  ' + fields;
                 query += ' FROM ' + csObjectName;
                 query += ' WHERE Id = : recordId ';
+
+                // SR: FLS Check
+                for (String fieldName : fields.split(',') ) {
+                    if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+                        throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{csObjectName, fieldName}));
+                    }
+                }
               
                 if( Schema.describeSObjects(new List<String>{csObjectName})[0].isAccessible() ) {
 					recordObject = Database.query(query)[0];
@@ -246,7 +254,9 @@ public with sharing class FormQuestionManageController {
 		for(String s : fields.split(',')){
 			if( fieldsMap.get(s).getDescribe().isAccessible() ){
 				newFields.add( String.escapeSingleQuotes(s) );
-			}
+			} else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, s}));
+            }
 		}
 	    String query = 'SELECT ' + String.join(new List<String>(newFields), ',');
       	query += ' ,(SELECT Id, CorrectWeight__c, PenaltyPerAttempt__c, IncorrectWeight__c From Questions__r)';

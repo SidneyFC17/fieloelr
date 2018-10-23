@@ -27,6 +27,7 @@ public with sharing class FormQuestionController {
         if (queryRecordNotDone ) {
             queryRecordNotDone = false;
             if ( cRecord !=null && cRecord.Id != null ) {
+                Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{csObjectName})[0].fields.getMap();
                 fields = String.escapeSingleQuotes(fields);
                 csObjectName = String.escapeSingleQuotes(csObjectName);
 
@@ -34,6 +35,13 @@ public with sharing class FormQuestionController {
                 String query = 'SELECT  ' + fields;
                 query += ' FROM ' + csObjectName;
                 query += ' WHERE Id = : recordId ';
+
+                // SR: FLS Check
+                for (String fieldName : fields.split(',') ) {
+                    if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+                        throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{csObjectName, fieldName}));
+                    }
+                }
               
                 if( Schema.describeSObjects(new List<String>{csObjectName})[0].isAccessible() ) {
 					recordObject = Database.query(query)[0];
