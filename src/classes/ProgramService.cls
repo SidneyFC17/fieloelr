@@ -86,7 +86,7 @@ public class ProgramService {
 
     public static void selectProgram(Id programId){
         FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
-        if( Schema.sObjectType.FieloPLT__Settings__c.fields.FieloPLT__CurrentProgramId__c.isAccessible() && Schema.sObjectType.FieloPLT__Settings__c.fields.FieloPLT__CurrentProgramId__c.isUpdateable()  ){
+        if( Schema.sObjectType.FieloPLT__Settings__c.fields.FieloPLT__CurrentProgramId__c.isCreateable() && Schema.sObjectType.FieloPLT__Settings__c.fields.FieloPLT__CurrentProgramId__c.isUpdateable()  ){
             settings.FieloPLT__CurrentProgramId__c = programId;
         }
 
