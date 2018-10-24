@@ -32,7 +32,7 @@ public class ProgramService {
 
         if(programMap == null){
             if( Schema.sObjectType.FieloPLT__Program__c.isAccessible()) {
-                programMap = new Map<Id, FieloPLT__Program__c>([SELECT Id, Name FROM FieloPLT__Program__c]);
+                programMap = new Map<Id, FieloPLT__Program__c>([SELECT Id, Name FROM FieloPLT__Program__c limit 5000]);
             }
         }
         return programMap;
