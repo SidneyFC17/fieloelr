@@ -20,21 +20,31 @@ public with sharing class CourseModulesController {
 
 			List<CourseService.CourseWrapper> coursesMap;
 			
-			coursesMap = CourseService.getCoursesMap(
-				fieldsCourse,
-				new Set<String>{'Id','Name','FieloELR__Predecessor__r.Name'},
-				fieldsModule,
-				new Set<String>{'Id','FieloELR__Predecessor__r.Name'},
-				new Set<Id>{courseId},
-				programId,
-				memberId,
-				false,
-				true,
-				100,
-				0,
-				'FieloELR__Order__c',
-				''
-			);
+			// SR: CRUD Check
+			if ( Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.CourseDependency__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.ModuleDependency__c.isAccessible() ) {
+				// SR: FLS Check
+				if ( Schema.sObjectType.Course__c.fields.Name.isAccessible() && Schema.sObjectType.Module__c.fields.Name.isAccessible() ) {
+					coursesMap = CourseService.getCoursesMap(
+						fieldsCourse,
+						new Set<String>{'Id','Name','FieloELR__Predecessor__r.Name'},
+						fieldsModule,
+						new Set<String>{'Id','FieloELR__Predecessor__r.Name'},
+						new Set<Id>{courseId},
+						programId,
+						memberId,
+						false,
+						true,
+						100,
+						0,
+						'FieloELR__Order__c',
+						''
+					);
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c, Module__c', 'Course__c.Name, Module__c.Name'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c, CourseDependency__c, Module__c, ModuleDependency__c'}));
+			}
 
 			return JSON.serialize(coursesMap);
 		} catch(DMLException e) {

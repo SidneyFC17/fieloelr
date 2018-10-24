@@ -100,10 +100,10 @@ public with sharing class CoursesController {
 					}
                 } else {
 					// SR: Dynamic FLS Check
-					if (courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
-						courseFieldsToQuery.add(fieldName);
-					} else {
+					if ( courseFieldsMap.containsKey(fieldName) && !courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
 						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
+					} else {
+						courseFieldsToQuery.add(fieldName);
 					}
 				}
 			}
@@ -114,7 +114,7 @@ public with sharing class CoursesController {
 			if ( Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.CourseDependency__c.isAccessible() && Schema.sObjectType.ModuleDependency__c.isAccessible()) {
 				// SR: Dynamic FLS Check
 				for ( String fieldName : fieldsModule ) {
-					if ( !moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					if ( moduleFieldsMap.containsKey(fieldName) && !moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
 					}
 				}
@@ -270,10 +270,8 @@ public with sharing class CoursesController {
 
 			// SR: Dynamic FLS Check
 			for(String fieldName : courseStatusFields) {
-				if ( courseStatusFieldsMap.containsKey(fieldName) ) {
-					if ( !courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible()) {
-						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
-					}
+				if ( courseStatusFieldsMap.containsKey(fieldName) && !courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
 				}
 			}
 
@@ -303,6 +301,10 @@ public with sharing class CoursesController {
 			Set<String> fieldsCourse = new Set<String>(coursesFieldset);
             Set<String> fieldsModule = new Set<String>(modulesFieldset);
 
+			System.debug(
+				JSON.serializePretty(fieldsCourse)
+			);
+
 			for(String fieldName: fieldsCourse) {
 				if (fieldName == 'FieloELR__Modules__r') {
 					// SR: CRUD Check
@@ -318,10 +320,10 @@ public with sharing class CoursesController {
 					}
 				} else {
 					// SR: Dynamic FLS Check
-					if (courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
-						courseFieldsToQuery.add(fieldName);
-					} else {
+					if ( courseFieldsMap.containsKey(fieldName) && !courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
 						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
+					} else {
+						courseFieldsToQuery.add(fieldName);
 					}
 				}
 			}
@@ -330,7 +332,7 @@ public with sharing class CoursesController {
 
 			// SR: Dynamic FLS Check
 			for(String fieldName : fieldsModule) {
-				if ( !moduleFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+				if ( moduleFieldsMap.containsKey(fieldName) && !moduleFieldsMap.get(fieldName).getDescribe().isAccessible()) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
 				}
 			}

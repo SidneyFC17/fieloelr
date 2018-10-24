@@ -168,8 +168,8 @@
                 
                 var params = {
                     'member': member,
-                    'coursesFieldset': fieldset,
-                    'modulesFieldset': modulesFieldset,
+                    'coursesFieldset': fieldset.split(','),
+                    'modulesFieldset': modulesFieldset.split(','),
                     'quantity': quantity + 1,
                     'offset': offset,
                     'sortByClause': sortByClause,
@@ -235,7 +235,7 @@
                     } catch(e) {
                         console.log(e);
                     }
-                });      
+                s});      
                 // Send action off to be executed
                 $A.enqueueAction(action);   
             }            

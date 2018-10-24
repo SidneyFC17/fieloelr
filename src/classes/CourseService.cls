@@ -228,10 +228,8 @@ global class CourseService {
 	public static List<Course__c> getCourses(Set<String> fields, Set<String> status, Id programId, Integer quantity, Integer offset, String orderBy) {
 		// SR: Dynamic FLS Check
 		for (String fieldName : fields) {
-			if (courseFieldsMap.containsKey(fieldName)) {
-				if (!courseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
-					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
-				}
+			if ( courseFieldsMap.containsKey(fieldName) && !courseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
 			}
 		}
 
@@ -281,10 +279,8 @@ global class CourseService {
 
 		// SR: Dynamic FLS Check
 		for (String fieldName : fieldsCourse) {
-			if (courseFieldsMap.containsKey(fieldName)) {
-				if (!courseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
-					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
-				}
+			if ( courseFieldsMap.containsKey(fieldName) && !courseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
 			}
 		}
 
@@ -292,7 +288,7 @@ global class CourseService {
 		if(fieldsCourseDependency != null){
 			// SR: Dynamic FLS Check
 			for (String fieldName : fieldsCourseDependency) {
-				if (!courseDependencyFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				if ( courseDependencyFieldsMap.containsKey(fieldName) && !courseDependencyFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c',fieldName}));
 				}
 			}
@@ -301,7 +297,7 @@ global class CourseService {
 		if(fieldsModule != null){
 			// SR: Dynamic FLS Check
 			for (String fieldName : fieldsModule) {
-				if (!moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				if ( moduleFieldsMap.containsKey(fieldName) && !moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
 				}
 			}
@@ -363,17 +359,18 @@ global class CourseService {
 		// SR: CRUD Check
 		if(Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.CourseStatus__c.isAccessible()) {
 			// SR: FLS Check
-			if (Schema.sObjectType.Course__c.fields.Status__c.isAccessible() &&
-			Schema.sObjectType.Course__c.fields.Program__c.isAccessible() &&
-			Schema.sObjectType.Course__c.fields.Segment__c.isAccessible() &&
-			Schema.sObjectType.Course__c.fields.HasDependencies__c.isAccessible() &&
-			Schema.sObjectType.Course__c.fields.KeyDependencies__c.isAccessible() &&
-			Schema.sObjectType.CourseStatus__c.fields.Course__c.isAccessible() &&
-			Schema.sObjectType.CourseStatus__c.fields.Member__c.isAccessible()) {
-				returnQueryCourses = Database.query(queryCourses);
-			} else {
-				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c,CourseStatus__c','Course__c.Status__c,Course__c.Program__c,Course__c.Segment__c,Course__c.HasDependencies__c,Course__c.KeyDependencies__c,CourseStatus__c.Course__c,CourseStatus__c.Member__c'}));
+			for (String fieldName : new Set<String>{'FieloELR__Status__c','FieloELR__Program__c','FieloELR__Segment__c','FieloELR__HasDependencies__c','FieloELR__KeyDependencies__c'}) {
+				if (!courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
+				}
 			}
+			// SR: FLS Check
+			for (String fieldName : new Set<String>{'FieloELR__Course__c','FieloELR__Member__c'}) {
+				if (!courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible()) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
+				}
+			}
+			returnQueryCourses = Database.query(queryCourses);
 		} else {
 			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,CourseStatus__c'}));
 		}
@@ -385,10 +382,8 @@ global class CourseService {
 	global static List<CourseStatus__c> getCourseStatus(Set<String> fieldsCourseStatus, Set<String> fieldsModuleResponse, Set<Id> courseIds, Id memberId, Integer quantity, Integer offset, String orderBy) {
 		// SR: Dynamic FLS Check
 		for ( String fieldName : fieldsCourseStatus) {
-			if (courseStatusFieldsMap.containsKey(fieldName)) {
-				if (!courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
-					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
-				}
+			if ( courseStatusFieldsMap.containsKey(fieldName) && !courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
 			}
 		}
 
@@ -396,10 +391,8 @@ global class CourseService {
 		if(fieldsModuleResponse != null) {
 			// SR: Dynamic FLS Check
 			for ( String fieldName : fieldsModuleResponse) {
-				if (moduleResponseFieldsMap.containsKey(fieldName)) {
-					if (!moduleResponseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
-						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleResponse__c',fieldName}));
-					}
+				if ( moduleResponseFieldsMap.containsKey(fieldName) && !moduleResponseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleResponse__c',fieldName}));
 				}
 			}
 			queryCourseStatus += ' ,(SELECT ' + String.join(new List<String>(fieldsModuleResponse), ',') + ' FROM ModuleResponses__r WHERE Member__c =: memberId) ';
@@ -566,19 +559,19 @@ global class CourseService {
 
 		// SR: Dynamic FLS Check for Course
 		for ( String fieldName : fieldsCourseClone) {
-			if (!courseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+			if ( courseFieldsMap.containsKey(fieldName) && !courseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
 			}
 		}
 		// SR: Dynamic FLS Check for CourseDependency
 		for ( String fieldName : fieldsCourseDependency) {
-			if (!courseDependencyFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+			if ( courseDependencyFieldsMap.containsKey(fieldName) && !courseDependencyFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
 			}
 		}
 		// SR: Dynamic FLS Check for Module
 		for ( String fieldName : fieldsModuleClone) {
-			if (!moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+			if ( moduleFieldsMap.containsKey(fieldName) && !moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
 			}
 		}
@@ -597,14 +590,14 @@ global class CourseService {
 
 		// SR: Dynamic FLS Check for CourseStatus
 		for ( String fieldName : fieldsCourseStatus) {
-			if (!courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+			if ( courseStatusFieldsMap.containsKey(fieldName) && !courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
 			}
 		}
 
 		// SR: Dynamic FLS Check for ModuleResponse
 		for ( String fieldName : fieldsModuleResponse) {
-			if (!moduleResponseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+			if ( moduleResponseFieldsMap.containsKey(fieldName) && !moduleResponseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleResponse__c',fieldName}));
 			}
 		}
@@ -636,7 +629,7 @@ global class CourseService {
 
 				// SR: Dynamic FLS Check for ModuleDependency
 				for ( String fieldName : fieldsModuleDependencyClone) {
-					if (!moduleDependencyFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					if ( moduleDependencyFieldsMap.containsKey(fieldName) && !moduleDependencyFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleDependency__c',fieldName}));
 					}
 				}
@@ -889,7 +882,7 @@ global class CourseService {
 					programPointTypesMap.get(ppt.FieloPLT__Program__c).get('trackerPointFields').add('FieloPLT__Transaction__r.' + ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
 				}
 				// SR: Dynamic FLS Check
-				if (transactionFieldsMap.get(ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c).getDescribe().isAccessible()) {
+				if ( !transactionFieldsMap.get(ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c).getDescribe().isAccessible() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Transaction__c',ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c}));
 				}
 				transactionPointFields.add(ppt.FieloPLT__PointType__r.FieloPLT__TransactionBalanceField__c);
