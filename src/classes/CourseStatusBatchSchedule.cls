@@ -1,4 +1,4 @@
-public class CourseStatusBatchSchedule implements Database.Batchable<sobject>, Schedulable {
+public with sharing class CourseStatusBatchSchedule implements Database.Batchable<sobject>, Schedulable {
 
     public void execute(SchedulableContext SC) {
         Database.executeBatch(new CourseStatusBatchSchedule());

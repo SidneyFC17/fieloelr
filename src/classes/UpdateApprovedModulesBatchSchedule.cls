@@ -1,4 +1,4 @@
-global class UpdateApprovedModulesBatchSchedule implements Database.Batchable<sObject>, Schedulable  {
+global with sharing class UpdateApprovedModulesBatchSchedule implements Database.Batchable<sObject>, Schedulable  {
 
     public void execute(SchedulableContext SC) {
         Database.executeBatch(new UpdateApprovedModulesBatchSchedule());
