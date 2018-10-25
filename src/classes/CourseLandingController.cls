@@ -147,8 +147,8 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
         } else {
             throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,FieloPLT__Program__c'}));
         }
-
-        return records;
+        
+        return records != null ? records : new List<FieloELR__Course__c>();
     }
 
     /*
