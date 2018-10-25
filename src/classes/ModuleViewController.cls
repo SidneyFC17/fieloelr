@@ -99,7 +99,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			// SR: Dynamic FLS Check
 			Map<String, Schema.SObjectField> moduleFieldsMap = Schema.SObjectType.Module__c.fields.getMap();
 			for (String fieldName : fields) {
-				if (!moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				if ( moduleFieldsMap.containsKey(fieldName) && !moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
 				}
 			}
@@ -270,7 +270,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
 
 		for (String fieldName : fields.split(',') ) {
-			if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+			if ( fieldsMap.containsKey(fieldName) && !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName}));
 			}
 		}

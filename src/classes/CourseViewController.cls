@@ -178,7 +178,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		// SR: Dynamic FLS Check
 		for (String fieldName : fields.split(',')) {
-			if (!objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
+			if ( objectFieldsMap.containsKey(fieldName.trim()) && !objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName.trim()}));
 			}
 		}
@@ -373,7 +373,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 			// SR: Dynamic FLS Check
 			for ( String fieldName : moduleFieldSet ) {
-				if ( !moduleFieldsMap.get(fieldName).getDescribe().isUpdateable() || !moduleFieldsMap.get(fieldName).getDescribe().isCreateable()) {
+				if ( fieldName != 'Id' && (!moduleFieldsMap.get(fieldName).getDescribe().isUpdateable() || !moduleFieldsMap.get(fieldName).getDescribe().isCreateable()) ) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', fieldName}));
 				}
 			}
@@ -404,6 +404,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 	  	
 	  	return result;
   	}
+	
   	@RemoteAction
   	public static RemoteActionResult saveCourseDependency( SObject record, List<String> nullFields) {
 		Savepoint sp;
@@ -422,7 +423,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 			// SR: Dynamic FLS Check
 			for ( String fieldName : courseDependencyFieldSet ) {
-				if ( !courseDependencyFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseDependencyFieldsMap.get(fieldName).getDescribe().isCreateable()) {
+				if ( fieldName != 'Id' && (!courseDependencyFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseDependencyFieldsMap.get(fieldName).getDescribe().isCreateable()) ){
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c', fieldName}));
 				}
 			}
