@@ -186,7 +186,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
 
             // SR: Dynamic FLS Check
             for ( String fieldName : courseFieldset ) {
-                if ( !objectFieldsMap.get(fieldName).getDescribe().isUpdateable() || !objectFieldsMap.get(fieldName).getDescribe().isCreateable()) {
+                if ( fieldName != 'Id' && ( !objectFieldsMap.get(fieldName).getDescribe().isUpdateable() || !objectFieldsMap.get(fieldName).getDescribe().isCreateable()) ) {
                     throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', fieldName}));
                 }
             }
