@@ -134,7 +134,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             orderBy = 'LastModifiedDate DESC';
         }
         
-        List<FieloELR__Course__c> records;
+        List<FieloELR__Course__c> records = new List<FieloELR__Course__c>();
 
         // SR: CRUD Check
         if ( Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.FieloPLT__Program__c.isAccessible()) {
