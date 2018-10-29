@@ -65,14 +65,14 @@ public class ExportService{
 
         // SR: FLS Check for Course
         for( String fieldName: coursefieldsSet ) {
-            if ( ! courseFields.get(fieldName).getDescribe().isAccessible() ) {
+            if ( courseFields.containsKey(fieldName) && !courseFields.get(fieldName).getDescribe().isAccessible() ) {
                 throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', fieldName}));
             }
         }
 
         // SR: FLS Check for CourseDependency
         for( String fieldName: courseDependencyFieldsSet ) {
-            if ( ! courseDependencyFields.get(fieldName).getDescribe().isAccessible() ) {
+            if ( courseDependencyFields.containsKey(fieldName) && !courseDependencyFields.get(fieldName).getDescribe().isAccessible() ) {
                 throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c', fieldName}));
             }
         }
@@ -106,14 +106,14 @@ public class ExportService{
 
             // SR: FLS Check for Module
             for( String fieldName: modulefieldsSet ) {
-                if ( ! moduleFields.get(fieldName).getDescribe().isAccessible() ) {
+                if ( moduleFields.containsKey(fieldName) && !moduleFields.get(fieldName).getDescribe().isAccessible() ) {
                     throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', fieldName}));
                 }
             }
 
             // SR: FLS Check for ModuleDependency
             for( String fieldName: moduleDependencyFieldsSet ) {
-                if ( ! moduleDependencyFields.get(fieldName).getDescribe().isAccessible() ) {
+                if ( moduleDependencyFields.containsKey(fieldName) && !moduleDependencyFields.get(fieldName).getDescribe().isAccessible() ) {
                     throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleDependency__c', fieldName}));
                 }
             }
@@ -142,13 +142,13 @@ public class ExportService{
             if ( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.AnswerOption__c.isAccessible() ) {
                 // SR: FLS Check for Question
                 for( String fieldName: questionfieldsSet ) {
-                    if ( ! questionFields.get(fieldName).getDescribe().isAccessible() ) {
+                    if ( questionFields.containsKey(fieldName) && !questionFields.get(fieldName).getDescribe().isAccessible() ) {
                         throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Question__c', fieldName}));
                     }
                 }
                 // SR: FLS Check for AnswerOption
                 for( String fieldName: answerOptionFieldsList ) {
-                    if ( ! answerOptionFields.get(fieldName).getDescribe().isAccessible() ) {
+                    if ( answerOptionFields.containsKey(fieldName) && !answerOptionFields.get(fieldName).getDescribe().isAccessible() ) {
                         throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'AnswerOption__c', fieldName}));
                     }
                 }

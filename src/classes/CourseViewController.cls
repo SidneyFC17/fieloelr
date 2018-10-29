@@ -306,7 +306,7 @@ public with sharing class CourseViewController extends PageSettingsController {
                 if ( courses.size() > 0 ) {
                     for(String fieldName: record.getPopulatedFieldsAsMap().keySet()) {
 						// SR: FLS Check
-						if ( !courseFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseFieldsMap.get(fieldName).getDescribe().isCreateable()) {
+						if ( fieldName != 'Id' && courseFieldsMap.containsKey(fieldName) && (!courseFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseFieldsMap.get(fieldName).getDescribe().isCreateable()) ){
 							throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', fieldName.trim()}));
 						}
                     	if (fieldName != 'Id') {

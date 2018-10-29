@@ -61,7 +61,7 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			// SR: Dynamic FLS Check
 			Map<String,Schema.SObjectField> courseStatusFieldsMap = Schema.SObjectType.CourseStatus__c.fields.getMap();
 			for (String fieldName : fields) {
-				if (!courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				if ( courseStatusFieldsMap.containsKey(fieldName) && !courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
 				}
 			}

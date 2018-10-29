@@ -144,7 +144,13 @@ public with sharing class FormQuestionManageController {
             for ( Section s :sections ) {
                 for ( List<FormField> ff :s.Rows ) {
                     for ( FormField f :ff ) {
-                        if ( (f.Type == 'picklist' ||  f.Type == 'radio'|| f.Type == 'multiselect'|| f.Type == 'checkboxes') && fieldMap.containsKey(f.Name) ) {
+                        if (f.Name == 'FieloELR__AttemptsAllowedPerQuestion__c') {
+                            List<PicklistController.Entry> options = new List<PicklistController.Entry>();
+                            for (Integer entryNo=1; entryNo<=10; entryNo++) {
+                                options.add(new PicklistController.Entry(String.valueOf(entryNo), String.valueOf(entryNo)));
+                            }
+                            mapPicklistOptions.put( f.Name , options);
+                        } else if ( (f.Type == 'picklist' ||  f.Type == 'radio'|| f.Type == 'multiselect'|| f.Type == 'checkboxes') && fieldMap.containsKey(f.Name) ) {
                             List<PicklistController.Entry> options = new List<PicklistController.Entry>();
                             Schema.DescribeFieldResult describe = fieldMap.get(f.Name).getDescribe();
                             if ( describe.getType().name() == 'PICKLIST' || describe.getType().name() == 'MULTIPICKLIST' ) {
