@@ -32,8 +32,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             importPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
             importPage.getParameters().put( 'type', 'courses' );
 
-            standardTools = '{"Label": "Export", "Type": "Link", "Action": "' + exportPage.getUrl() + '" }';
-            standardTools += ',{"Label": "Import", "Type": "Link", "Action": "' + importPage.getUrl() + '" }';
+            standardTools = '{"Label": "Import", "Type": "Link", "Action": "' + importPage.getUrl() + '" }';
 
             // initPageSettings( 'FieloELR__Course__c', standardButtons, standardTools, 'utility-sprite/svg/symbols.svg#people' );
 
