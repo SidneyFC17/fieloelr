@@ -32,7 +32,8 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
             importPage.getParameters().put( 'retURL', System.currentPageReference().getUrl() );
             importPage.getParameters().put( 'type', 'courses' );
 
-            standardTools = '{"Label": "Import", "Type": "Link", "Action": "' + importPage.getUrl() + '" }';
+            standardTools = '{"Label": "Export", "Type": "Link", "Action": "' + exportPage.getUrl() + '" }';
+            standardTools += ',{"Label": "Import", "Type": "Link", "Action": "' + importPage.getUrl() + '" }';
 
             // initPageSettings( 'FieloELR__Course__c', standardButtons, standardTools, 'utility-sprite/svg/symbols.svg#people' );
 
@@ -199,6 +200,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
                 }
             } else {
                 CourseService.createFromModel( record, modelId );
+                result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.CourseCreated) );
             }
 
 

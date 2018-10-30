@@ -222,8 +222,8 @@ global class ModuleService {
 			Set<String> fieldsQuestionResponse = new Set<String>{'Question__c','TextValue__c','IsCorrect__c','PartialGradeValue__c'};
 			String questionResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionResponse), ',');
 			Set<String> fieldsAnswer = new Set<String>{'AnswerOption__c','TextValue__c'};
-			questionResponseQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswer), ',') + ' FROM Answers__r)';
-			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId ORDER BY NumberOfAttempt__c';
+			questionResponseQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswer), ',') + ' FROM Answers__r ORDER BY AnswerOption__r.Order__c)';
+			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId ORDER BY NumberOfAttempt__c, Question__r.Order__c';
 			List<QuestionResponse__c> questionResponses;
 
 			if(Schema.sObjectType.QuestionResponse__c.isAccessible()){

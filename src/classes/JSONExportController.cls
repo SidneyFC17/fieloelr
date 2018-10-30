@@ -13,8 +13,8 @@ public with sharing class JSONExportController {
 
         // Exporta una Page
         if ( type == 'courses'  ) {
-        	Id courseId = String.escapeSingleQuotes(ApexPages.currentPage().getParameters().get('courseId'));
-        	List<Id> courseIds = courseId != null ? new List<Id>{courseId} : null;
+        	Id courseId = ApexPages.currentPage().getParameters().get('courseId');
+        	List<Id> courseIds = courseId != null ? new List<Id>{ String.escapeSingleQuotes(courseId) } : null;
             body = ExportService.exportCourses(courseIds);
         } else {
             ApexPages.addMessage(new ApexPages.Message(ApexPages.SEVERITY.ERROR, String.format(Label.RequiredArgument, new String[]{'type'} ) ));
