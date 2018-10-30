@@ -250,7 +250,7 @@ global class ModuleService {
 			Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
 			fieldsAnswerOption.add('FieloELR__IsCorrect__c');
 			fieldsAnswerOption.add('FieloELR__AnswerOptionText__c');
-			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r)';
+			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r ORDER BY Order__c)';
 			Set<Id> questionIds = responsesByQuestion.keySet();
 			questionQuery += ' FROM Question__c WHERE Id in : questionIds ORDER BY Order__c';
 
