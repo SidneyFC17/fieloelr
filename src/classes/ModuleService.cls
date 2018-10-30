@@ -223,7 +223,7 @@ global class ModuleService {
 			String questionResponseQuery = 'SELECT ' + String.join(new List<String>(fieldsQuestionResponse), ',');
 			Set<String> fieldsAnswer = new Set<String>{'AnswerOption__c','TextValue__c'};
 			questionResponseQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswer), ',') + ' FROM Answers__r ORDER BY AnswerOption__r.Order__c)';
-			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId ORDER BY NumberOfAttempt__c, Question__r.Order__c';
+			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId ORDER BY NumberOfAttempt__c';
 			List<QuestionResponse__c> questionResponses;
 
 			if(Schema.sObjectType.QuestionResponse__c.isAccessible()){
@@ -252,7 +252,7 @@ global class ModuleService {
 			fieldsAnswerOption.add('FieloELR__AnswerOptionText__c');
 			questionQuery += ' ,(SELECT ' + String.join(new List<String>(fieldsAnswerOption), ',') + ' FROM AnswerOptions__r)';
 			Set<Id> questionIds = responsesByQuestion.keySet();
-			questionQuery += ' FROM Question__c WHERE Id in : questionIds';
+			questionQuery += ' FROM Question__c WHERE Id in : questionIds ORDER BY Order__c';
 
 			Boolean showDetailedAnswers;
 
