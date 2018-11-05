@@ -1,3 +1,7 @@
+/**
+ * @brief      API ment for extension packages and/or customization by our patrners
+ * @details    SECURITY REVIEW: Due some of our customers business rules we had to remove the with sharing keyword
+ */
 global class QuestionService {
 
 	global class QuestionResponseWrapper{
