@@ -3,7 +3,13 @@ public class ProgramService {
 	
 	public static FieloPLT__Program__c getActiveProgram(){
         // Busca el id del Program Activo
-        FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
+        FieloPLT__Settings__c settings;
+        if (Schema.sObjectType.FieloPLT__Settings__c.isAccessible()) {
+            settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Settings__c'}));
+        }
+
         if(!String.isEmpty(settings.FieloPLT__CurrentProgramId__c)){
             try{
                 FieloPLT__Program__c program = getProgram(settings.FieloPLT__CurrentProgramId__c);
