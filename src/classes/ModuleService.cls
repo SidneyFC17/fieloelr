@@ -1,3 +1,7 @@
+/**
+ * @brief      Apex API ment for extension packages and/or customization by our patrners
+ * @details    SECURITY REVIEW: Due to some of our customers business processes we had to remove the with sharing keyword
+ */
 global class ModuleService {
 	
 	global class ModuleWrapper{
@@ -6,7 +10,6 @@ global class ModuleService {
 		global List<Question__c> questions {get; private set;}
 
 		public ModuleWrapper(Module__c module, ModuleResponse__c moduleResponse, List<Question__c> questions){
-			//this(module);
 			this.module = module;
 			this.moduleResponse = moduleResponse;
 			this.questions = questions;
@@ -72,11 +75,15 @@ global class ModuleService {
 
 		Module__c module;
 
+		// SR: CRUD Check
 		if(Schema.sObjectType.Module__c.isAccessible()){
+			// SR: FLS Check
+        	SecurityUtils.checkRead(Schema.sObjectType.Module__c.getSobjectType(),new List<String>(fieldsModuleClone));
+
 			module = Database.query(moduleQuery);
 		}else{
             throw new FieloException(Label.CannotAccessRecords);
-          }
+        }
 
 		Set<String> fieldsQuestionClone = new Set<String>();
 		String questionQuery = 'SELECT ';
@@ -93,8 +100,9 @@ global class ModuleService {
 			questionQuery += String.join(new List<String>(fieldsQuestionClone), ',');
 	
 		}
+		Set<String> fieldsAnswerOptionClone;
 		if(fieldsAnswerOption != null){
-			Set<String> fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
+			fieldsAnswerOptionClone = new Set<String>(fieldsAnswerOption);
 			fieldsAnswerOptionClone.add('FieloELR__IsCorrect__c');
 			if(!fieldsQuestionClone.isEmpty()){
 				questionQuery += ',';
@@ -115,11 +123,16 @@ global class ModuleService {
 			Integer currentIndex;
 	    	string currentMatchingText;
 	    	Integer randomIndex;
-
+			
+			// SR: CRUD Check
 			if(Schema.sObjectType.Question__c.isAccessible()){
+				// SR: FLS Check
+        		SecurityUtils.checkRead(Schema.sObjectType.Question__c.getSobjectType(),new List<String>(fieldsQuestionClone));
+				SecurityUtils.checkRead(Schema.sObjectType.AnswerOption__c.getSobjectType(),new List<String>(fieldsAnswerOptionClone));
+
 				questions = Database.query(questionQuery);
 			}else{
-				throw new FieloException(Label.CannotAccessRecords);
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Question__c'}));
 			}
 			
 			for(Question__c q : questions){
@@ -161,14 +174,27 @@ global class ModuleService {
 		}
 		uow.registerDirty(moduleResponse);
 		try{
-
-			if( Schema.sObjectType.ModuleResponse__c.isCreateable() && Schema.sObjectType.ModuleResponse__c.isUpdateable()){
-				uow.commitWork();
-			}else{
-            	throw new FieloException(Label.CannotInsertRecords);
-          	}
+			if( !Schema.sObjectType.ModuleResponse__c.isCreateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'ModuleResponse__c'}));
+			}
+			if( !Schema.sObjectType.ModuleResponse__c.isUpdateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'ModuleResponse__c'}));
+			}
+			if( !Schema.sObjectType.QuestionResponse__c.isCreateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'QuestionResponse__c'}));
+			} 
+			if( !Schema.sObjectType.QuestionResponse__c.isUpdateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'QuestionResponse__c'}));
+			}
+			if( !Schema.sObjectType.Answer__c.isCreateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'Answer__c'}));
+			}
+			if( !Schema.sObjectType.Answer__c.isUpdateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Answer__c'}));
+			}
 			
-		}catch(Exception e){
+			uow.commitWork();
+		} catch(Exception e) {
 			Database.rollback(sp);
 			throw e;
 		}
@@ -177,9 +203,9 @@ global class ModuleService {
 
 		if(Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Member__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.Module__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.IsSubmitted__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.IsApproved__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.GradePercent__c.isAccessible() ){
 			 module = [SELECT Id, Name, Member__c, Module__c, IsSubmitted__c, IsApproved__c, GradePercent__c FROM ModuleResponse__c WHERE Id =: moduleResponse.Id limit 1];
-		}else{
+		} else {
             throw new FieloException(Label.CannotAccessRecords);
-          }
+        }
 		return module;
 	}
 
@@ -210,10 +236,17 @@ global class ModuleService {
 
 		ModuleResponse__c moduleResponse;
 
-		if(Schema.sObjectType.ModuleResponse__c.isAccessible()){
+		// SR: CRUD Check
+		if(Schema.sObjectType.ModuleResponse__c.isAccessible()) {
+			// SR: FLS Check
+        	SecurityUtils.checkRead(Schema.sObjectType.ModuleResponse__c.getSobjectType(),new List<String>(fieldsModuleResponseClone));
+			if ( !Schema.sObjectType.Module__c.fields.AttemptsAllowed__c.isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', 'AttemptsAllowed__c'}));
+			}
+
 			moduleResponse = Database.query(moduleResponseQuery);
 		} else {
-			throw new FieloException(Label.CannotAccessRecords);
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'ModuleResponse__c'}));
         }
 
 		ModuleResponseResult moduleResponseWrapper = new ModuleResponseResult(moduleResponse);
@@ -226,10 +259,17 @@ global class ModuleService {
 			questionResponseQuery += ' FROM QuestionResponse__c WHERE ModuleResponse__c =: moduleResponseId ORDER BY NumberOfAttempt__c';
 			List<QuestionResponse__c> questionResponses;
 
+			// SR: CRUD Check
 			if(Schema.sObjectType.QuestionResponse__c.isAccessible()){
+				// SR: FLS Check
+				fieldsQuestionResponse.add('FieloELR__ModuleResponse__c');
+				fieldsQuestionResponse.add('FieloELR__NumberOfAttempt__c');
+				SecurityUtils.checkRead(Schema.sObjectType.QuestionResponse__c.getSobjectType(),new List<String>(fieldsQuestionResponse));
+				SecurityUtils.checkRead(Schema.sObjectType.Answer__c.getSobjectType(),new List<String>(fieldsAnswer));
+
 				questionResponses = Database.query(questionResponseQuery);
 			} else {
-            	throw new FieloException(Label.CannotAccessRecords);
+            	throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'QuestionResponse__c'}));
           	}
 
 			Map<Id,List<QuestionResponse__c>> responsesByQuestion = new Map<Id,List<QuestionResponse__c>>();
@@ -256,7 +296,17 @@ global class ModuleService {
 
 			Boolean showDetailedAnswers;
 
+			// SR: CRUD Check
 			if(Schema.sObjectType.Question__c.isAccessible()){
+				// SR: FLS Check
+				fieldsQuestionClone.add('FieloELR__Order__c');
+				fieldsAnswerOption.add('FieloELR__Order__c');
+				SecurityUtils.checkRead(Schema.sObjectType.Question__c.getSobjectType(),new List<String>(fieldsQuestionClone));
+				SecurityUtils.checkRead(Schema.sObjectType.AnswerOption__c.getSobjectType(),new List<String>(fieldsAnswerOption));
+				if ( !Schema.sObjectType.Module__c.fields.PenaltyMode__c.isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', 'PenaltyMode__c'}));
+				}
+
 				for(Question__c question : Database.query(questionQuery)){
 					showDetailedAnswers =
 						responsesByQuestion.get(question.Id)[responsesByQuestion.get(question.Id).size()-1].IsCorrect__c;
