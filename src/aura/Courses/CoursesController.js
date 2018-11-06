@@ -61,6 +61,7 @@
             event.stopPropagation();
             var viewName = event.getParam('viewName');
             component.set('v.showFilter', false);
+            component.set('v.showCoursesList', false);
             component.set('v.activeViewName', viewName);
             component.set('v.dynamicFilterString', null);
             component.set('v.sortByClause', null);
