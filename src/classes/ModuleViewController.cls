@@ -182,18 +182,30 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult save( Module__c record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.Module__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
 			for ( String f : nullFields ) {
-				if( Schema.sObjectType.Module__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.Module__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+				if( fieldsMap.get(f).getDescribe().isCreateable() && fieldsMap.get(f).getDescribe().isUpdateable()){
          			record.put(f, null );
 				}
 			}
 
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Module__c',f}));
+				}
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'Module__c',f}));
+				}
+			}
+
+			// SR: CRUD Check
 		 	if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
 				upsert record;
           	} else {
-				throw new FieloException(Label.CannotInsertUpdateRecords);
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Module__c'}));
           	}
         	
 			//TODO Crear Label DataSavedSuccessfully
@@ -211,6 +223,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult saveQuestion(SObject record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.Question__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
@@ -219,10 +232,20 @@ public with sharing class ModuleViewController extends PageSettingsController {
 				}
 			}
 
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Question__c',f}));
+				}
+				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'Question__c',f}));
+				}
+			}
+
 			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.Question__c.isCreateable()){
 				upsert (Question__c) record;
           	}else{
-            	throw new FieloException(Label.CannotInsertUpdateRecords);
+            	throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Question__c'}));
           	}
 
 			//TODO Crear Label DataSavedSuccessfully
@@ -240,6 +263,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult saveModuleDependency(SObject record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.ModuleDependency__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
@@ -251,8 +275,18 @@ public with sharing class ModuleViewController extends PageSettingsController {
 			if (Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleDependency__c.isCreateable()){
 				upsert (ModuleDependency__c) record;            	
           	} else {
-            	throw new FieloException(Label.CannotInsertUpdateRecords);
+            	throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'ModuleDependency__c'}));
           	}
+
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'ModuleDependency__c',f}));
+				}
+				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'ModuleDependency__c',f}));
+				}
+			}
      
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -345,7 +379,7 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
 
 		for (String fieldName : fields.split(',') ) {
-			if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+			if ( fieldsMap.containsKey(fieldName) && !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName}));
 			}
 		}
