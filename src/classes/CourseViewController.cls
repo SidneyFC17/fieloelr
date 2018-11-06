@@ -178,7 +178,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		// SR: Dynamic FLS Check
 		for (String fieldName : fields.split(',')) {
-			if ( objectFieldsMap.containsKey(fieldName.trim()) && !objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
+			if ( fieldName.trim() != 'Id' && objectFieldsMap.containsKey(fieldName.trim()) && !objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName.trim()}));
 			}
 		}
