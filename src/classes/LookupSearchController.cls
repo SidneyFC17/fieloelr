@@ -34,6 +34,8 @@ public  class LookupSearchController {
 
 			if( objectDescribe.isAccessible() ){
 				result = Database.query(query);
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ objectDescribe.getName() }));
 			}
 
 			return result;
