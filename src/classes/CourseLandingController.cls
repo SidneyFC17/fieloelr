@@ -193,7 +193,7 @@ public with sharing class CourseLandingController extends PageSettingsSetControl
 
             if ( String.isBlank( modelId )  ) {
                 // SR: CRUD Check
-                if (Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()) {
+                if( Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable() && Schema.sObjectType.Course__c.fields.Segment__c.isCreateable() && Schema.sObjectType.Course__c.fields.Segment__c.isUpdateable()) {
                     insert record;
                 }else{
                     throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'Course__c'}));
