@@ -357,7 +357,7 @@ global class CourseService {
 		List<Course__c> returnQueryCourses = new List<Course__c>();
 
 		// SR: CRUD Check
-		if(Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.CourseStatus__c.isAccessible()) {
+		if(Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.CourseStatus__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible() && Schema.sObjectType.CourseDependency__c.isAccessible() ) {
 			// SR: FLS Check
 			for (String fieldName : new Set<String>{'FieloELR__Status__c','FieloELR__Program__c','FieloELR__Segment__c','FieloELR__HasDependencies__c','FieloELR__KeyDependencies__c'}) {
 				if (!courseFieldsMap.get(fieldName).getDescribe().isAccessible()) {
@@ -566,7 +566,7 @@ global class CourseService {
 		// SR: Dynamic FLS Check for CourseDependency
 		for ( String fieldName : fieldsCourseDependency) {
 			if ( courseDependencyFieldsMap.containsKey(fieldName) && !courseDependencyFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
-				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c',fieldName}));
 			}
 		}
 		// SR: Dynamic FLS Check for Module
