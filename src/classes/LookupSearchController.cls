@@ -5,7 +5,8 @@ public  class LookupSearchController {
 
             List<SObject> result = new List<SObject>();
 			Set<String> fieldSet = new Set<String>();
-			Map<String, Schema.SObjectField> fieldsMap = Schema.getGlobalDescribe().get( sObjectName ).getDescribe().fields.getMap();
+			DescribeSObjectResult objectDescribe = Schema.describeSObjects(new String[]{sObjectName})[0];
+			Map<String, Schema.SObjectField> fieldsMap = objectDescribe.fields.getMap();
 			for(String s : fields.split(',')){
 				if( fieldsMap.get(s).getDescribe().isAccessible() ){
 					fieldSet.add( String.escapeSingleQuotes(s) );
@@ -31,7 +32,7 @@ public  class LookupSearchController {
 
 			System.debug(query);
 
-			if( Schema.getGlobalDescribe().get( sObjectName ).getDescribe().isAccessible() ){
+			if( objectDescribe.isAccessible() ){
 				result = Database.query(query);
 			}
 
