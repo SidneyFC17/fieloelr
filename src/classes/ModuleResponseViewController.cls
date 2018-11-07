@@ -10,14 +10,13 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
     * @brief constructor
     */
 	public ModuleResponseViewController(ApexPages.StandardController controller) {
+		Map<String, sObjectField> fieldsMap = Schema.sObjectType.ModuleResponse__c.fields.getMap();
 		String objectName = 'FieloELR__ModuleResponse__c';
 		this.controller = controller;
 		Id recordId = controller.getId();
 		Set<String> fields = new Set<String>();
 
-		
-		fields.addAll(Schema.describeSObjects(
-			new String[]{objectName})[0].fields.getMap().keySet());
+		fields.addAll(fieldsMap.keySet());
 
         if(!Test.isRunningTest()){
             this.controller.addFields(new List<String>(fields));
@@ -65,10 +64,17 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 				}
 			);
 			
+			Set<String> fieldsToCheck = new Set<String>();
+			for (String f : fields) {
+				if (fieldsMap.containsKey(f.trim())) {
+					fieldsToCheck.add(f);
+				}
+			}
+			
 			// SR: CRUD Check
 			if ( Schema.sObjectType.ModuleResponse__c.isAccessible() ) {
 				// SR: FLS Check
-				SecurityUtils.checkRead(Schema.sObjectType.ModuleResponse__c.getSobjectType(), new List<String>(fields));
+				SecurityUtils.checkRead(Schema.sObjectType.ModuleResponse__c.getSobjectType(), new List<String>(fieldsToCheck));
 
 				record = Database.query(query);
 				setRecord(record);
