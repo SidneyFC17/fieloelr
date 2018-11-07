@@ -280,10 +280,10 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 			// SR: FLS Check
 			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
-				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'ModuleDependency__c',f}));
 				}
-				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'ModuleDependency__c',f}));
 				}
 			}
