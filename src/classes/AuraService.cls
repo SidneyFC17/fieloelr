@@ -85,6 +85,18 @@ public class AuraService {
 	public static List<Object> getImages(String parentId){
     	List<Map<String,String>> images = new List<Map<String,String>>();
 
+		// SR: CRUD Check:
+		if ( !Schema.sObjectType.Attachment.isAccessible() ) {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Attachment'}));
+		} else if ( !Schema.sObjectType.ContentDocumentLink.isAccessible() ) {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'ContentDocumentLink'}));
+		} else if ( !Schema.sObjectType.ContentVersion.isAccessible() ) {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'ContentVersion'}));
+		}
+
+		// SR: FLS Check:
+		SecurityUtils.checkRead(Schema.sObjectType.Attachment.getSObjectType(), new List<String>{'Name', 'ContentType', 'ParentId'});
+
     	// For legacy attachments
         List<Attachment> atts = [SELECT Id, Name, ContentType FROM Attachment WHERE ParentId =: parentId AND ContentType like '%image%'];
         List<String> formatList;
@@ -103,6 +115,9 @@ public class AuraService {
 			);
         }
 
+		// SR: FLS Check
+		SecurityUtils.checkRead(Schema.sObjectType.ContentDocumentLink.getSObjectType(), new List<String>{'ContentDocumentId', 'LinkedEntityId'});
+
         // For the new Salesforce Approach of file storage
         List<ContentDocumentLink> cdls = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId =: parentId];
         Set<Id> documentIds = new Set<Id>();
@@ -110,6 +125,9 @@ public class AuraService {
         	documentIds.add(cdl.ContentDocumentId);
         }
         Set<String> supportedTypes = new Set<String>{'JPG','JPEG','PNG','GIF'};
+
+		// SR: FLS Check
+		SecurityUtils.checkRead(Schema.sObjectType.ContentVersion.getSObjectType(), new List<String>{'FileType', 'Title', 'ContentDocumentId'});
 
         List<ContentVersion> cvs = [SELECT Id, FileType, Title FROM ContentVersion WHERE ContentDocumentId in :documentIds];
         System.debug(JSON.serializePretty(cvs));

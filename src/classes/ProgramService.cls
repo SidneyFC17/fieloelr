@@ -3,7 +3,19 @@ public class ProgramService {
 	
 	public static FieloPLT__Program__c getActiveProgram(){
         // Busca el id del Program Activo
-        FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
+        FieloPLT__Settings__c settings;
+        // SR: CRUD Check
+        if (Schema.sObjectType.FieloPLT__Settings__c.isAccessible()) {
+            settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Settings__c'}));
+        }
+
+        // SR: FLS Check
+        if ( !Schema.sObjectType.FieloPLT__Settings__c.fields.FieloPLT__CurrentProgramId__c.isAccessible() ) {
+            throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Settings__c', 'FieloPLT__CurrentProgramId__c'}));
+        }
+
         if(!String.isEmpty(settings.FieloPLT__CurrentProgramId__c)){
             try{
                 FieloPLT__Program__c program = getProgram(settings.FieloPLT__CurrentProgramId__c);
@@ -31,10 +43,9 @@ public class ProgramService {
     public static Map<Id,FieloPLT__Program__c> getPrograms(){
 
         if(programMap == null){
-            SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Program__c');
-            SecurityUtils.checkObjectIsReadable(convertType);
-
-            programMap = new Map<Id, FieloPLT__Program__c>([SELECT Id, Name FROM FieloPLT__Program__c]);
+            if( Schema.sObjectType.FieloPLT__Program__c.isAccessible()) {
+                programMap = new Map<Id, FieloPLT__Program__c>([SELECT Id, Name FROM FieloPLT__Program__c limit 5000]);
+            }
         }
         return programMap;
     }
@@ -48,17 +59,12 @@ public class ProgramService {
 
     public static List<SelectOption> getProgramsLandingSelectOptions(){
         Map<Id, FieloPLT__Program__c> programsMap = getPrograms();
-        //Program__c programActive = getActiveProgram();
 
         List<SelectOption> options = new List<SelectOption>();
         for(FieloPLT__Program__c program: programsMap.values()){
-            //if (program.Id != programActive.Id ){
-                options.add(new SelectOption(program.Id, program.Name));
-            //}
+            options.add(new SelectOption(program.Id, program.Name));
         }
-        system.debug('before: '+options);
         sortSelectOptions(options);
-        system.debug('after: '+options);
         return options;
     }
 
@@ -87,12 +93,14 @@ public class ProgramService {
 
     public static void selectProgram(Id programId){
         FieloPLT__Settings__c settings = FieloPLT__Settings__c.getInstance(UserInfo.getUserId());
-        settings.FieloPLT__CurrentProgramId__c = programId;
+        if( Schema.sObjectType.FieloPLT__Settings__c.fields.FieloPLT__CurrentProgramId__c.isCreateable() && Schema.sObjectType.FieloPLT__Settings__c.fields.FieloPLT__CurrentProgramId__c.isUpdateable()  ){
+            settings.FieloPLT__CurrentProgramId__c = programId;
+        }
 
-         if(Schema.sObjectType.FieloPLT__Settings__c.isUpdateable() && Schema.sObjectType.FieloPLT__Settings__c.isCreateable()){
+        if(Schema.sObjectType.FieloPLT__Settings__c.isUpdateable() && Schema.sObjectType.FieloPLT__Settings__c.isCreateable()){
             upsert settings;
-          }else{
+        }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+        }
     }
 }

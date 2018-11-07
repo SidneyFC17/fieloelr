@@ -95,12 +95,21 @@ public with sharing class ModuleViewController extends PageSettingsController {
 					objectName
 				}
 			);
-
-			// It's giving errors, removed temporary
-			// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-        	// SecurityUtils.checkObjectIsReadable(convertType);
-			record = Database.query(query);
-			setRecord(record);
+			
+			// SR: Dynamic FLS Check
+			Map<String, Schema.SObjectField> moduleFieldsMap = Schema.SObjectType.Module__c.fields.getMap();
+			for (String fieldName : fields) {
+				if ( moduleFieldsMap.containsKey(fieldName) && !moduleFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c',fieldName}));
+				}
+			}
+			
+			if ( Schema.sObjectType.FieloELR__Module__c.isAccessible() ) {
+				record = Database.query(query);
+				setRecord(record);
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Module__c'}));
+			}
 		}
 	}
 
@@ -127,9 +136,16 @@ public with sharing class ModuleViewController extends PageSettingsController {
     }
 
     public FieloPLT__PageSettings__c getPageSettings(String pageSetingsName, String defaultSection) {
+		Map<String,Schema.SObjectField> pageSettingsFieldsMap = Schema.SObjectType.FieloPLT__PageSettings__c.fields.getMap();
+
+		for (String fieldName : pageSettingsFieldsMap.keySet() ) {
+			if ( !pageSettingsFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__PageSettings__c', fieldName}));
+			}
+		}
+
         String query = 'SELECT ';
-        query += String.join(new List<String>(Schema.describeSObjects(
-            new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet()), ',');
+        query += String.join(new List<String>(pageSettingsFieldsMap.keySet()), ',');
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName AND FieloPLT__IsActive__c = true' ;
         query += ' LIMIT 1';
@@ -137,19 +153,17 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 		if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
         	result = Database.query(query);
-
-			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
-
-        if (result.isEmpty()) {
-        	return new FieloPLT__PageSettings__c(
-        		FieloPLT__Sections__c = defaultSection
-        	);
-        } else {
-        	return (FieloPLT__PageSettings__c) result.get(0);
-        }
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+		}
+		
+		if (result.isEmpty()) {
+			return new FieloPLT__PageSettings__c(
+				FieloPLT__Sections__c = defaultSection
+			);
+		} else {
+			return (FieloPLT__PageSettings__c) result.get(0);
+		}
     }
 
     public FieloPLT__PageSettings__c manageQuestionPS {get{
@@ -168,16 +182,30 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult save( Module__c record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.Module__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
-			for ( String f :nullFields ) {
-         		record.put(f, null );
+			for ( String f : nullFields ) {
+				if( fieldsMap.get(f).getDescribe().isCreateable() && fieldsMap.get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Module__c',f}));
+				}
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'Module__c',f}));
+				}
+			}
+
+			// SR: CRUD Check
 		 	if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
 				upsert record;
           	} else {
-				throw new FieloException(Label.CannotInsertUpdateRecords);
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Module__c'}));
           	}
         	
 			//TODO Crear Label DataSavedSuccessfully
@@ -195,16 +223,29 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult saveQuestion(SObject record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.Question__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
-         		record.put(f, null );
+				if( Schema.sObjectType.Question__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.Question__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 
-			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Question__c',f}));
+				}
+				if ( fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'Question__c',f}));
+				}
+			}
+
+			if(Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.Question__c.isCreateable()){
 				upsert (Question__c) record;
           	}else{
-            	throw new FieloException(Label.CannotInsertUpdateRecords);
+            	throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Question__c'}));
           	}
 
 			//TODO Crear Label DataSavedSuccessfully
@@ -222,17 +263,30 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult saveModuleDependency(SObject record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.ModuleDependency__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
-         		record.put(f, null );
+				if( Schema.sObjectType.ModuleDependency__c.fields.getMap().get(f).getDescribe().isCreateable() && Schema.sObjectType.ModuleDependency__c.fields.getMap().get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
 
-			if (Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable()){
+			if (Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleDependency__c.isCreateable()){
 				upsert (ModuleDependency__c) record;            	
           	} else {
-            	throw new FieloException(Label.CannotInsertUpdateRecords);
+            	throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'ModuleDependency__c'}));
           	}
+
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'ModuleDependency__c',f}));
+				}
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'ModuleDependency__c',f}));
+				}
+			}
      
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -247,16 +301,25 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
   	@RemoteAction
 	public static sObject retrieve( String objectName, String recordId, String fields ){
+		Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
+
+		for (String fieldName : fields.split(',') ) {
+			if ( fieldsMap.containsKey(fieldName) && !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName}));
+			}
+		}
+
 		String query = 'SELECT ' + fields;
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
 		List<sObject> result;
 
-		// It's giving errors, removed temporary
-		// SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-        // SecurityUtils.checkObjectIsReadable(convertType);
-		result = Database.query(query);
+		if( Schema.describeSObjects(new List<String>{objectName})[0].isAccessible() ){
+			result = Database.query(query);
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{objectName}));
+		}
 		return result.get(0);
 	}
 
@@ -264,14 +327,13 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult activate( Id recordId ){
 		RemoteActionResult result = new RemoteActionResult();
 		try{
-			Module__c record = new Module__c ( Id = recordId, IsActive__c = true);
+			Module__c record = new Module__c ( Id = recordId);
+			if( Schema.sObjectType.Module__c.fields.IsActive__c.isCreateable() && Schema.sObjectType.Module__c.fields.IsActive__c.isUpdateable() ){
+				record.IsActive__c = true;
+			}
 
-			if(Schema.sObjectType.Module__c.isUpdateable()){
-				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
-                   update record;
-         		 }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if( Schema.sObjectType.Module__c.isUpdateable() ){
+				update record;
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -289,14 +351,13 @@ public with sharing class ModuleViewController extends PageSettingsController {
   	public static RemoteActionResult inactivate( Id recordId ){
 		RemoteActionResult result = new RemoteActionResult();
 		try{
-			Module__c record = new Module__c ( Id = recordId, IsActive__c = false);
+			Module__c record = new Module__c ( Id = recordId);
+			if( Schema.sObjectType.Module__c.fields.IsActive__c.isCreateable() && Schema.sObjectType.Module__c.fields.IsActive__c.isUpdateable() ){
+				record.IsActive__c = false;
+			}
 
-			if(Schema.sObjectType.Module__c.isUpdateable()){
-				if(SecurityUtils.canUpdate(Module__c.sObjectType, new List<String>{'IsActive__c'})){
-                	update record;
-         		} else {
-					throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if( Schema.sObjectType.Module__c.isUpdateable() ){
+				update record;
           	}else{
             	throw new FieloException(Label.CannotInsertUpdateRecords);
           	}
@@ -315,30 +376,38 @@ public with sharing class ModuleViewController extends PageSettingsController {
 
 	@RemoteAction
   	public static List<SObject> getRecords( String objectName, String fields, Integer offset, String orderBy, String dataFilters, Integer recordsPerPage, String whereClause ) {
+		Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
+
+		for (String fieldName : fields.split(',') ) {
+			if ( fieldsMap.containsKey(fieldName) && !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName}));
+			}
+		}
+
 		String query = 'SELECT Id, ' + fields;
 		query += ' FROM ' + objectName;
 		query += getWhereCondition( dataFilters ); 
 		// ORDER BY       
 		if ( orderBy == null ) {
-		  orderBy = 'LastModifiedDate DESC';
+			orderBy = 'LastModifiedDate DESC';
 		}
 		query += ' ORDER BY '+ orderBy; //DESC
 		// LIMIT & OFFSET
 		if ( recordsPerPage == null ) {
-		  recordsPerPage = 10;
+			recordsPerPage = 10;
 		}
 		query += ' LIMIT '+ String.valueOf(recordsPerPage);
 		if ( offset != null ){
 		query += ' OFFSET '+ String.valueOf(offset);
 		}
-		system.debug('### query: ' + query);    
 		List<SObject> listObjects;
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-        SecurityUtils.checkObjectIsReadable(convertType);
-
-		listObjects = Database.query(query);
-			 
+		if( Schema.describeSObjects(new List<String>{objectName})[0].isAccessible() ){
+			listObjects = Database.query(query);
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{objectName}));
+		}
+				
 		return listObjects;
 	}
 
@@ -350,9 +419,9 @@ public with sharing class ModuleViewController extends PageSettingsController {
 		  		for ( String k :filter.keySet() ) {
 			    	String value = (String) filter.get(k);
 		    		if ( value.startsWith('!') ) {
-			      		whereCondition += ' AND ' + k + ' <> \'' +  value.substring(1) + '\'';            
+			      		whereCondition += ' AND ' + k + ' <> \'' +  String.escapeSingleQuotes(value.substring(1)) + '\'';            
 		    		} else {
-			      		whereCondition += ' AND ' + k + ' = \'' +  value + '\'';
+			      		whereCondition += ' AND ' + k + ' = \'' +  String.escapeSingleQuotes(value) + '\'';
 		    		}
 		  		}
 				if ( whereCondition != '') {          

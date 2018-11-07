@@ -6,8 +6,8 @@ public with sharing class JSONImportController {
     private Id programId;
 
     public JSONImportController(){
-        inputFile = new Attachment();        
-        type = ApexPages.currentPage().getParameters().get('type');
+        inputFile = new Attachment();
+        type = String.escapeSingleQuotes(ApexPages.currentPage().getParameters().get('type'));
     }
 
     public pageReference importFile() {

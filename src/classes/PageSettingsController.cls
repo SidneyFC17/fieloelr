@@ -148,26 +148,30 @@ public with sharing abstract class PageSettingsController {
 
     public Set<String> getVisibilityFields(String objectName){
         Set<String> fields = new Set<String>();
-
-
+        // SR: CRUD Check
         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
-        	
-            for(FieloPLT__PageSettings__c ps : [SELECT Id, FieloPLT__Visibility__c FROM FieloPLT__PageSettings__c WHERE (FieloPLT__Type__c != 'Related - New' AND FieloPLT__Object__c =: objectName) OR (FieloPLT__Type__c = 'Related - New' AND FieloPLT__TargetObject__c =: objectName)]){
-            try{
-                if( String.isNotBlank(ps.FieloPLT__Visibility__c) ){
-                    for(FilterWrapper f : (List<FilterWrapper>)JSON.deserialize(ps.FieloPLT__Visibility__c, List<FilterWrapper>.class)){
-                        fields.add(f.field.toLowerCase());
-                    }
-                }
-            } catch( JSONException e ) {
-                system.debug(LoggingLevel.ERROR, 'INVALID JSON: ' + ps.FieloPLT__Visibility__c );
+            // SR: FLS Check
+            if( !Schema.sObjectType.FieloPLT__PageSettings__c.fields.FieloPLT__Visibility__c.isAccessible() ||
+            !Schema.sObjectType.FieloPLT__PageSettings__c.fields.FieloPLT__Type__c.isAccessible() ||
+            !Schema.sObjectType.FieloPLT__PageSettings__c.fields.FieloPLT__Object__c.isAccessible() ||
+            !Schema.sObjectType.FieloPLT__PageSettings__c.fields.FieloPLT__TargetObject__c.isAccessible() ) {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__PageSettings__c', 'FieloPLT__Visibility__c, FieloPLT__Type__c, FieloPLT__Object__c, FieloPLT__TargetObject__c'}));
             }
-        }
 
-			}else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-        
+            for(FieloPLT__PageSettings__c ps : [SELECT Id, FieloPLT__Visibility__c FROM FieloPLT__PageSettings__c WHERE (FieloPLT__Type__c != 'Related - New' AND FieloPLT__Object__c =: objectName) OR (FieloPLT__Type__c = 'Related - New' AND FieloPLT__TargetObject__c =: objectName)]){
+                try{
+                    if( String.isNotBlank(ps.FieloPLT__Visibility__c) ){
+                        for(FilterWrapper f : (List<FilterWrapper>)JSON.deserialize(ps.FieloPLT__Visibility__c, List<FilterWrapper>.class)){
+                            fields.add(f.field.toLowerCase());
+                        }
+                    }
+                } catch( JSONException e ) {
+                    system.debug(LoggingLevel.ERROR, 'INVALID JSON: ' + ps.FieloPLT__Visibility__c );
+                }
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+        }
         return fields;
     }
 
@@ -741,11 +745,15 @@ public with sharing abstract class PageSettingsController {
         
         List<FieloPLT__PageSettings__c> listPageSettings;
 
+        // SR: FLS Check
+        SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__PageSettings__c.getSobjectType(),
+            new List<String>{'FieloPLT__StandardActions__c', 'FieloPLT__Type__c', 'FieloPLT__TargetObject__c', 'FieloPLT__Object__c', 'FieloPLT__Sections__c', 'FieloPLT__RecordType__c', 'FieloPLT__Visibility__c', 'FieloPLT__IsActive__c', 'FieloPLT__Order__c', 'FieloPLT__Program__c'});
+
         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
             listPageSettings =  Database.query(query);
         }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+        }
         return listPageSettings;
     }
 
@@ -762,12 +770,17 @@ public with sharing abstract class PageSettingsController {
         query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 100 ';         
 
         List<FieloPLT__PageSettings__c> listPageSettings;
+        
+        // SR: FLS Check
+        SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__PageSettings__c.getSobjectType(),
+            new List<String>{'FieloPLT__StandardActions__c', 'FieloPLT__Type__c', 'FieloPLT__TargetObject__c', 'FieloPLT__Object__c', 'FieloPLT__Sections__c', 'FieloPLT__RecordType__c', 'FieloPLT__Visibility__c', 'FieloPLT__IsActive__c', 'FieloPLT__Order__c', 'FieloPLT__Program__c'});
 
+        // SR: CRUD Check
         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
             listPageSettings =  Database.query(query);
-        }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+        }
         return listPageSettings;       
     }   
 
@@ -855,55 +868,76 @@ public with sharing abstract class PageSettingsController {
         query += ' ORDER BY FieloPLT__Object__c, FieloPLT__Order__c LIMIT 1 ';
 
         List<FieloPLT__PageSettings__c> pageSetting;
+
+        // SR: FLS Check
+        SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__PageSettings__c.getSobjectType(),
+            new List<String>{'FieloPLT__Filters__c', 'FieloPLT__Fieldset__c', 'FieloPLT__StandardActions__c', 'FieloPLT__Type__c', 'FieloPLT__TargetObject__c', 'FieloPLT__Object__c', 'FieloPLT__Sections__c', 'FieloPLT__RecordType__c', 'FieloPLT__Visibility__c', 'FieloPLT__IsActive__c', 'FieloPLT__Order__c', 'FieloPLT__Program__c', 'FieloPLT__TargetField__c'});
+
         
-         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+        // SR: CRUD Check
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
             pageSetting =  Database.query(query);
-        }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+        }
 
         return pageSetting.isEmpty() ? null : pageSetting.get(0);       
     }
 
     public static List<FieloPLT__PageSettings__c> getPageSettings( List<String> settingType, List<String> recordTypes, String objectName, Id programId ) {
-
         List<FieloPLT__PageSettings__c> listPageSettings = new List<FieloPLT__PageSettings__c>();
 
         Set<String> profiles = new Set<String>();
 
-        if(Schema.sObjectType.PermissionSetAssignment.isAccessible()){
+        // SR: FLS Check
+        SecurityUtils.checkRead(Schema.sObjectType.PermissionSetAssignment.getSobjectType(),
+            new List<String>{'PermissionSetId', 'PermissionSet', 'AssigneeId'});
+        SecurityUtils.checkRead(Schema.sObjectType.PermissionSet.getSobjectType(),
+            new List<String>{'Name'});
 
-        for(PermissionSetAssignment psAssignment: [SELECT Id, PermissionSetId, PermissionSet.Name FROM PermissionSetAssignment WHERE AssigneeId =: UserInfo.getUserId()]){
-            profiles.add(psAssignment.PermissionSet.Name);
+        // SR: CRUD Check
+        if(Schema.sObjectType.PermissionSetAssignment.isAccessible()){
+            for(PermissionSetAssignment psAssignment: [SELECT Id, PermissionSetId, PermissionSet.Name FROM PermissionSetAssignment WHERE AssigneeId =: UserInfo.getUserId()]){
+                profiles.add(psAssignment.PermissionSet.Name);
+            }
+        }else{
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'PermissionSetAssignment'}));
         }
 
-         }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
         if(Schema.sObjectType.Profile.isAccessible()){
-
             Profile profileRecord = [SELECT Name FROM Profile WHERE Id =: UserInfo.getProfileId()];
             profiles.add(profileRecord.Name);
-
-         }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
-           
-  
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Profile'}));
+        }
 
         Set<Id> pageSettingsIds = new Set<Id>();
         if(!recordTypes.isEmpty()){
-            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible())
-            throw new FieloException(Label.CannotAccessRecords);
+            // SR: CRUD Check
+            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible()){
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__ProgramAssignment__c'}));
+            }
+
+            // SR: FLS Check
+            SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__ProgramAssignment__c.getSobjectType(),
+                new List<String>{'FieloPLT__PageSettings__c', 'FieloPLT__Profile__c', 'FieloPLT__Program__c', 'FieloPLT__RecordType__c'});
+            SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__PageSettings__c.getSobjectType(),
+                new List<String>{'FieloPLT__Type__c', 'FieloPLT__Object__c', 'FieloPLT__IsActive__c'});
 
             for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND (FieloPLT__RecordType__c = null OR FieloPLT__RecordType__c IN: recordTypes)]){
                 pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
             }
         }else{
-            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible())
-            throw new FieloException(Label.CannotAccessRecords);
+            // SR: CRUD Check
+            if(!Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible()){
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__ProgramAssignment__c'}));
+            }
+
+            // SR: FLS Check
+            SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__ProgramAssignment__c.getSobjectType(),
+                new List<String>{'FieloPLT__PageSettings__c', 'FieloPLT__Profile__c', 'FieloPLT__Program__c', 'FieloPLT__RecordType__c'});
+            SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__PageSettings__c.getSobjectType(),
+                new List<String>{'FieloPLT__Type__c', 'FieloPLT__Object__c', 'FieloPLT__IsActive__c'});
 
             for(FieloPLT__ProgramAssignment__c programAssignment: [SELECT FieloPLT__PageSettings__c FROM FieloPLT__ProgramAssignment__c WHERE FieloPLT__PageSettings__c != null AND FieloPLT__PageSettings__r.FieloPLT__Type__c IN: settingType AND FieloPLT__PageSettings__r.FieloPLT__Object__c =: objectName AND FieloPLT__PageSettings__r.FieloPLT__isActive__c = true AND (FieloPLT__Profile__c = null OR FieloPLT__Profile__c IN: profiles) AND (FieloPLT__Program__c = null OR FieloPLT__Program__c =: programId) AND FieloPLT__RecordType__c = null]){
                 pageSettingsIds.add(programAssignment.FieloPLT__PageSettings__c);
@@ -920,19 +954,26 @@ public with sharing abstract class PageSettingsController {
              query += ' ORDER BY FieloPLT__Type__c, FieloPLT__RecordType__c, FieloPLT__Order__c ASC LIMIT 100 ';
         }
 
-        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
+        // SR: CRUD Check
+        if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()) {
+            // SR: FLS Check
+            SecurityUtils.checkRead(Schema.sObjectType.FieloPLT__PageSettings__c.getSobjectType(),
+                new List<String>{'FieloPLT__Type__c', 'FieloPLT__Object__c', 'FieloPLT__IsActive__c', 'FieloPLT__Label__c', 'FieloPLT__DataFilters__c', 'FieloPLT__Visibility__c', 'Name', 'FieloPLT__Library__c', 'FieloPLT__Icon__c', 'FieloPLT__OrderBy__c', 'FieloPLT__StandardRelated__c', 'FieloPLT__StandardActions__c', 'FieloPLT__RecordType__c', 'FieloPLT__Sections__c', 'FieloPLT__Fieldset__c', 'FieloPLT__TargetObject__c', 'FieloPLT__TargetField__c', 'FieloPLT__Tools__c', 'FieloPLT__Buttons__c', 'FieloPLT__Actions__c', 'FieloPLT__Order__c'});
+            
+            if( !Schema.sObjectType.FieloPLT__ProgramAssignment__c.isAccessible()) {
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__ProgramAssignment__c'}));
+            }
 
-        for(FieloPLT__PageSettings__c pageSetting: Database.query(query)){
-            if(pageSetting.FieloPLT__PageSettingsAssignments__r.isEmpty()){
-                listPageSettings.add(pageSetting);
-            }else if(pageSettingsIds.contains(pageSetting.Id)){
-                listPageSettings.add(pageSetting);
-            }            
-        }
-
+            for(FieloPLT__PageSettings__c pageSetting: Database.query(query)) {
+                if(pageSetting.FieloPLT__PageSettingsAssignments__r.isEmpty()) {
+                    listPageSettings.add(pageSetting);
+                } else if(pageSettingsIds.contains(pageSetting.Id)) {
+                    listPageSettings.add(pageSetting);
+                }            
+            }
         }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+        }
         
         return listPageSettings;
     }

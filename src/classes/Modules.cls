@@ -163,11 +163,11 @@ public class Modules extends SObjectDomain {
         //If the question pool is changed from null to != null or weighted questions is set to false, then will update all the related questions will have weight = 1. (Trigger) 
         updateQuestions(new List<Module__c>(modulesToChangeQuestions), modulesToChangeCorrectWeight, modulesToChangeIncorrectWeight, modulesToChangePenaltyPerAttempt, uow);
         
-        if(Schema.sObjectType.Course__c.isUpdateable()){
+        if( Schema.sObjectType.Course__c.isCreateable() && Schema.sObjectType.Question__c.isCreateable() && Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Question__c.isUpdateable() ){
              uow.commitWork();
-          }else{
+        }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+        }
        
     }
 
@@ -246,7 +246,7 @@ public class Modules extends SObjectDomain {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             uow.registerDirty(modulesMap.values());
 
-            if(Schema.sObjectType.Module__c.isUpdateable()){
+            if( Schema.sObjectType.Module__c.isCreateable() && Schema.sObjectType.Module__c.isUpdateable()){
                   uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -289,7 +289,7 @@ public class Modules extends SObjectDomain {
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{Module__c.SObjectType});
             uow.registerDirty(modulesMap.values());
 
-               if(Schema.sObjectType.Module__c.isUpdateable()){
+            if( Schema.sObjectType.Module__c.isCreateable() && Schema.sObjectType.Module__c.isUpdateable()){
                   uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -343,7 +343,8 @@ public class Modules extends SObjectDomain {
         Courses.validateAdminFields = false;
         Questions.validateAdminFields = false;
 
-          if(Schema.sObjectType.Course__c.isDeletable() && Schema.sObjectType.Course__c.isUpdateable()){
+        if( Schema.sObjectType.Course__c.isDeletable() && Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable() &&
+        Schema.sObjectType.ModuleDependency__c.isDeletable() && Schema.sObjectType.ModuleDependency__c.isUpdateable() &&Schema.sObjectType.ModuleDependency__c.isCreateable() && Schema.sObjectType.Question__c.isCreateable() &&        Schema.sObjectType.Question__c.isDeletable() && Schema.sObjectType.Question__c.isUpdateable() ){
              uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);

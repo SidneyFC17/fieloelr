@@ -24,24 +24,35 @@ public with sharing class FormQuestionManageController {
     }set;}
 	
 	public SObject recordObject{get{
-		if (queryRecordNotDone ) {
-			queryRecordNotDone = false;
-        	if ( cRecord !=null && cRecord.Id != null ) {
-          		Id recordId = cRecord.Id;
-          		String query = 'SELECT  ' + fields;
-          		query += ' FROM ' + csObjectName;
-          		query += ' WHERE Id = : recordId ';
-          	
-			SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
+        if (queryRecordNotDone ) {
+            queryRecordNotDone = false;
+            if ( cRecord !=null && cRecord.Id != null ) {
+                Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{csObjectName})[0].fields.getMap();
+                fields = String.escapeSingleQuotes(fields);
+                csObjectName = String.escapeSingleQuotes(csObjectName);
 
-        SecurityUtils.checkObjectIsReadable(convertType);
+                Id recordId = cRecord.Id;
+                String query = 'SELECT  ' + fields;
+                query += ' FROM ' + csObjectName;
+                query += ' WHERE Id = : recordId ';
 
-          		recordObject = Database.query(query)[0];
-        	} else {
-          		recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
-        	}
-      	}
-      	return recordObject;
+                // SR: FLS Check
+                for (String fieldName : fields.split(',') ) {
+                    if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+                        throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{csObjectName, fieldName}));
+                    }
+                }
+              
+                if( Schema.describeSObjects(new List<String>{csObjectName})[0].isAccessible() ) {
+					recordObject = Database.query(query)[0];
+				} else {
+                    throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{csObjectName}));
+                }
+            } else {
+                recordObject = Schema.describeSObjects(new List<String>{csObjectName})[0].getSobjectType().newSObject();
+            }
+        }
+        return recordObject;
     }set;}
 
 	/*****  Secciones Y Fields  *****/
@@ -128,12 +139,11 @@ public with sharing class FormQuestionManageController {
   	} set;}
 
   	public Map<String, List<PicklistController.Entry>> mapPicklistOptions { get {
-	    if ( mapPicklistOptions == null && !String.isBlank(csObjectName) ) {
-      		mapPicklistOptions = new Map<String, List<PicklistController.Entry>>();
-      		for ( Section s :sections ) {
-        		for ( List<FormField> ff :s.Rows ) {
-          			for ( FormField f :ff ) {
-                        system.debug('field: ' + f.Name);
+        if ( mapPicklistOptions == null && !String.isBlank(csObjectName) ) {
+            mapPicklistOptions = new Map<String, List<PicklistController.Entry>>();
+            for ( Section s :sections ) {
+                for ( List<FormField> ff :s.Rows ) {
+                    for ( FormField f :ff ) {
                         if (f.Name == 'FieloELR__AttemptsAllowedPerQuestion__c') {
                             List<PicklistController.Entry> options = new List<PicklistController.Entry>();
                             for (Integer entryNo=1; entryNo<=10; entryNo++) {
@@ -141,37 +151,43 @@ public with sharing class FormQuestionManageController {
                             }
                             mapPicklistOptions.put( f.Name , options);
                         } else if ( (f.Type == 'picklist' ||  f.Type == 'radio'|| f.Type == 'multiselect'|| f.Type == 'checkboxes') && fieldMap.containsKey(f.Name) ) {
-              				List<PicklistController.Entry> options = new List<PicklistController.Entry>();
-              				Schema.DescribeFieldResult describe = fieldMap.get(f.Name).getDescribe();
-              				if ( describe.getType().name() == 'PICKLIST' || describe.getType().name() == 'MULTIPICKLIST' ) {
-                				List<Schema.PicklistEntry> pickListValues = describe.getPickListValues();
-                				for (Schema.PicklistEntry a : pickListValues) {
-                   					options.add( new PicklistController.Entry(a.getValue(), a.getLabel() ));
-                				}
-              				} else if ( describe.getType().name() == 'REFERENCE' ) {
-                				String query = 'SELECT ID, Name FROM ' + describe.getReferenceTo().get(0);
-                				if ( ! String.isBlank( f.WhereCondition )  ){
-                  					query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
-                				}
-                				query += ' LIMIT 500';
-
-							SObjectType convertType = describe.getReferenceTo().get(0);
-
-        					SecurityUtils.checkObjectIsReadable(convertType);
-
-                				for ( SObject o : Database.query(query) ) {
-                  					// Substring para que matche con el multipicklist (para multisegment)
-                   					options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
-                				}
-              				}
-              				mapPicklistOptions.put( f.Name , options);
-            			}
-          			}
-        		}
-      		}
-    	}
-    	return mapPicklistOptions;
-  	} set;}
+                            List<PicklistController.Entry> options = new List<PicklistController.Entry>();
+                            Schema.DescribeFieldResult describe = fieldMap.get(f.Name).getDescribe();
+                            if ( describe.getType().name() == 'PICKLIST' || describe.getType().name() == 'MULTIPICKLIST' ) {
+                                List<Schema.PicklistEntry> pickListValues = describe.getPickListValues();
+                                for (Schema.PicklistEntry a : pickListValues) {
+                                    options.add( new PicklistController.Entry(a.getValue(), a.getLabel() ));
+                                }
+                            } else if ( describe.getType().name() == 'REFERENCE' ) {
+                                String query = 'SELECT ID, Name FROM ' + describe.getReferenceTo().get(0);
+                                if ( ! String.isBlank( f.WhereCondition )  ){
+                                    query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
+                                }
+                                query += ' LIMIT 500';
+                                
+                                // SR: CRUD Check
+                                if (describe.getReferenceTo().get(0).getDescribe().isAccessible()) {
+                                    // SR: FLS Check
+                                    if ( describe.getReferenceTo().get(0).getDescribe().fields.getMap().get('Name').getDescribe().isAccessible() ) {
+                                        for ( SObject o : Database.query(query) ) {
+                                            // Substring para que matche con el multipicklist (para multisegment)
+                                            options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
+                                        }
+                                    } else {
+                                        throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ describe.getReferenceTo().get(0).getDescribe().getName(), 'Name' }));
+                                    }
+                                } else {
+                                    throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ describe.getReferenceTo().get(0).getDescribe().getName() }));
+                                }
+                            }
+                            mapPicklistOptions.put( f.Name , options);
+                        }
+                    }
+                }
+            }
+        }
+        return mapPicklistOptions;
+    } set;}
 
 	/*****  Metodos Remote para Save y Retrieve *****/
     @RemoteAction
@@ -181,13 +197,21 @@ public with sharing class FormQuestionManageController {
 
 	    try{
             for( String f :moduleNullFields ) {
-                module.put(f, null );
+				if( Schema.sObjectType.FieloELR__Module__c.fields.getMap().get(f).getDescribe().isUpdateable() ){
+                	module.put(f, null );
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Module__c', f}));
+				}
             }
 
             for( sObject question: questions) {
                 if(questionsNullFields.containsKey(question.Id)){
                     for(String f: questionsNullFields.get(question.Id)){
-                        question.put(f, null);
+						if( Schema.sObjectType.FieloELR__Question__c.fields.getMap().get(f).getDescribe().isUpdateable() ){
+                        	question.put(f, null);
+						} else {
+							throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Question__c', f}));
+						}
                     }
                 }
             }
@@ -195,24 +219,22 @@ public with sharing class FormQuestionManageController {
 	        sp = Database.setSavepoint();
 	        
 
-			if(Schema.sObjectType.FieloELR__Module__c.isUpdateable()){
+			if( Schema.sObjectType.FieloELR__Module__c.isUpdateable() ){
            		update (FieloELR__Module__c) module;
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+          	} else {
+            	throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Module__c'}));
+          	}
 
-		  if(Schema.sObjectType.FieloELR__Question__c.isUpdateable()){
+		  	if( Schema.sObjectType.FieloELR__Question__c.isUpdateable() ){
             	update (List<FieloELR__Question__c>) questions;
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+          	} else {
+            	throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Question__c'}));
+          	}
 
-            
 	        //TODO Crear Label DataSavedSuccessfully
 	        result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
-
-	    } catch(DmlException e) {
-	    // Agrega las Validation Rules asociadas al Campo
+		} catch(DmlException e) {
+	    	// Agrega las Validation Rules asociadas al Campo
 	        Database.rollback(sp);
 	        if(ApexPages.hasMessages()){
 	            result.redirectURL = '';
@@ -233,18 +255,25 @@ public with sharing class FormQuestionManageController {
 
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
-	    String query = 'SELECT ' + fields;
-      query += ' ,(SELECT Id, CorrectWeight__c, PenaltyPerAttempt__c, IncorrectWeight__c From Questions__r)';
-      query += ' FROM ' + objectName;
+		Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
+		Set<String> newFields = new Set<String>();
+		for(String s : fields.split(',')){
+			if( fieldsMap.get(s).getDescribe().isAccessible() ){
+				newFields.add( String.escapeSingleQuotes(s) );
+			} else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, s}));
+            }
+		}
+	    String query = 'SELECT ' + String.join(new List<String>(newFields), ',');
+      	query += ' ,(SELECT Id, CorrectWeight__c, PenaltyPerAttempt__c, IncorrectWeight__c From Questions__r)';
+     	query += ' FROM ' + objectName;
 	    query += ' WHERE ID = :recordId' ;
 	    query += ' LIMIT 1';
 		List<sObject> result;
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-
-		result = Database.query(query);
+		if( Schema.describeSObjects(new String[]{objectName})[0].isAccessible() &&  Schema.sObjectType.FieloELR__Question__c.isAccessible() &&  Schema.sObjectType.FieloELR__Question__c.fields.CorrectWeight__c.isAccessible() &&  Schema.sObjectType.FieloELR__Question__c.fields.PenaltyPerAttempt__c.isAccessible() &&  Schema.sObjectType.FieloELR__Question__c.fields.IncorrectWeight__c.isAccessible() ){
+			result = Database.query(query);
+		}
 
 	    if ( result.size() > 0 ) {
       		return result.get(0);

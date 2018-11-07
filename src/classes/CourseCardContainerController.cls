@@ -3,7 +3,16 @@ public class CourseCardContainerController {
     public static String getCourseRecord(String recordId, String fields) {
         try{
             Set<String> fieldNames = new Set<String>();
-            fieldNames.addAll(fields.split(','));
+            Map<String,Schema.SObjectField> singleCourseDetailAccessable = Schema.SObjectType.Course__c.fields.getMap();
+            for (String singleCourseDetailfieldToCheck : fields.split(',')) { 
+                if (singleCourseDetailAccessable.get(singleCourseDetailfieldToCheck).getDescribe().isAccessible() ) {
+                    fieldNames.add(singleCourseDetailfieldToCheck);
+                } else {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', singleCourseDetailfieldToCheck}));
+                }
+            }
+
+            
             Set<String> queryableFields = new Set<String>();
             
             for(String fieldName:fieldNames) {
@@ -14,7 +23,19 @@ public class CourseCardContainerController {
                 }
             }
             CoursesSelector selector = new CoursesSelector(queryableFields);
-            return JSON.serialize(selector.selectByIdCustom(new Set<Id>{recordId})[0]);
+            String results;
+
+            if ( Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.Module__c.isAccessible()) {
+                if(Schema.sObjectType.Module__c.fields.Name.isAccessible() && Schema.sObjectType.Module__c.fields.FieloELR__Order__c.isAccessible() && Schema.sObjectType.Module__c.fields.FieloELR__IsActive__c.isAccessible()) {
+                    results = JSON.serialize(selector.selectByIdCustom(new Set<Id>{recordId})[0]);
+                } else {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', 'Name,Order__c,IsActive__c'}));
+                }
+            } else {
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c,Module__c'}));
+            }
+
+            return results;
         } catch(DMLException e) {
             throw new AuraHandledException(e.getDMLMessage(0));
         } catch(Exception e){
@@ -33,12 +54,36 @@ public class CourseCardContainerController {
             Set<String> queryableFields = new Set<String>();
             Set<String> fieldNames = new Set<String>();
             if (csFields != null) {
-                fieldNames.addAll(csFields.split(','));
+                Map<String,Schema.SObjectField> singleCourseStatusDetailAccessable = Schema.SObjectType.CourseStatus__c.fields.getMap();
+                for (String singleCourseStatusDetailfieldToCheck : csFields.split(',')) { 
+                    if (singleCourseStatusDetailAccessable.get(singleCourseStatusDetailfieldToCheck).getDescribe().isAccessible() ) {
+                        fieldNames.add(singleCourseStatusDetailfieldToCheck);
+                    } else {
+                        throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c', singleCourseStatusDetailfieldToCheck}));
+                    }
+                }
+
                 for(String fieldName:fieldNames) {
                     if (fieldName == 'FieloELR__Transactions__r') {
-                        queryableFields.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Transactions__r');
+                        if (Schema.sObjectType.FieloPLT__Transaction__c.isAccessible()) {
+                            if ( Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__Points__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__IsProcessed__c.isAccessible()) {
+                                queryableFields.add('(SELECT Id, FieloPLT__Points__c FROM FieloELR__Transactions__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Transactions__r');
+                            } else {
+                                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Transaction__c', 'FieloPLT__Points__c,FieloPLT__IsReverted__c,FieloPLT__IsProcessed__c'}));
+                            }
+                        } else {
+                            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Transaction__c'}));
+                        }
                     } else if (fieldName == 'FieloELR__Trackers__r') {
-                        queryableFields.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Trackers__r');
+                        if (Schema.sObjectType.FieloPLT__Tracker__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.isAccessible()) {
+                            if (Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsReverted__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__IsProcessed__c.isAccessible() && Schema.sObjectType.FieloPLT__Tracker__c.fields.FieloPLT__Transaction__c.isAccessible() && Schema.sObjectType.FieloPLT__Transaction__c.fields.FieloPLT__Points__c.isAccessible()) {
+                                queryableFields.add('(SELECT Id, FieloPLT__Transaction__r.FieloPLT__Points__c FROM FieloELR__Trackers__r WHERE FieloPLT__IsReverted__c = false AND FieloPLT__IsProcessed__c = true) FieloELR__Trackers__r');
+                            } else {
+                                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Tracker__c', 'FieloPLT__Transaction__r.FieloPLT__Points__c,FieloPLT__IsReverted__c,FieloPLT__IsProcessed__c'}));
+                            }
+                        } else {
+                            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Tracker__c,FieloPLT__Transaction__c'}));
+                        }
                     }
                 }
             }

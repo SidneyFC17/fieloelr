@@ -57,7 +57,7 @@ public class ModuleResponsesSelector extends SObjectSelector {
     public List<ModuleResponse__c> selectByIdWithQuestionResponses(Set<Id> moduleResponseIds) {
         List<ModuleResponse__c> listModuleResponse;
 
-     if(Schema.sObjectType.ModuleResponse__c.isAccessible()){	
+     if(Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.isAccessible()){	
 
         listModuleResponse = (List<ModuleResponse__c>) Database.query(String.format(
                 'SELECT {0} ' +

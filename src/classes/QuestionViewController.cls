@@ -29,13 +29,17 @@ public with sharing class QuestionViewController extends PageSettingsController 
 
         record = (FieloELR__Question__c)controller.getRecord();
 
-		// initPageSettings(objectName, (SObject) record, '', '', '', record.Id);
-
 		initPageSettings( objectName, (SObject) record, '', '', 'utility-sprite/svg/symbols.svg#world',record.Id );
 
 		if ( fieldList.size() > 0  ) {
+			Map<String, Schema.SObjectField> questionFieldsMap = Schema.SObjectType.Question__c.fields.getMap();
 			for(String fieldName:fieldList) {
-				fields.add(fieldName);
+				// SR: Dynamic FLS Check
+				if ( questionFieldsMap.containsKey(fieldName) && !questionFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Question__c',fieldName}));
+				} else {
+					fields.add(fieldName);
+				}
 			}
 			String query = String.format(
 				'SELECT {0} FROM {1} WHERE Id = :recordId',
@@ -45,13 +49,12 @@ public with sharing class QuestionViewController extends PageSettingsController 
 				}
 			);
 
-			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        	SecurityUtils.checkObjectIsReadable(convertType);
-
+			if ( Schema.sObjectType.Question__c.isAccessible() ) {
 				record = Database.query(query);
 				setRecord(record);
-
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Question__c'}));
+			}
 		}
 	}
 
