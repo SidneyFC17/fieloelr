@@ -64,18 +64,14 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 				}
 			);
 			
-			Set<String> fieldsToCheck = new Set<String>();
-			for (String f : fields) {
-				if (fieldsMap.containsKey(f.trim())) {
-					fieldsToCheck.add(f);
-				}
-			}
-			
 			// SR: CRUD Check
-			if ( Schema.sObjectType.ModuleResponse__c.isAccessible() ) {
+			if ( Schema.sObjectType.ModuleResponse__c.isAccessible() ) {	
 				// SR: FLS Check
-				SecurityUtils.checkRead(Schema.sObjectType.ModuleResponse__c.getSobjectType(), new List<String>(fieldsToCheck));
-
+				for (String f : fields) {
+					if (fieldsMap.containsKey(f.trim()) && !fieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleResponse__c', f.trim()}));
+					}
+				}
 				record = Database.query(query);
 				setRecord(record);
 			} else {
@@ -88,15 +84,17 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
   	@RemoteAction
 	public static sObject retrieve( String objectName, String recordId, String fields ){
 		DescribeSObjectResult objectDescribe = Schema.describeSObjects(new String[]{objectName})[0];
+		Map<String, sObjectField> fieldsMap = objectDescribe.fields.getMap();
 		Set<String> fieldSet = new Set<String>(fields.split(','));
 		List<String> fieldList = new List<String>();
-		
-		for (String f : fieldSet ) {
-			fieldList.add(f.trim());
-		}
 
-		// SR: FLS Check
-		SecurityUtils.checkRead(objectDescribe.getSobjectType(), fieldList);
+		for (String f : fieldSet ) {
+			if (fieldsMap.containsKey(f.trim()) && !fieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{ objectName, f.trim()})); 
+			} else {
+				fieldList.add(f.trim());
+			}
+		}
 
 		String query = 'SELECT ' + fields;
 		query += ' FROM ' + objectName;
@@ -104,7 +102,7 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 		query += ' LIMIT 1';
 		List<sObject> result;
 
-		// SR: FLS Check
+		// SR: CRUD Check
 		if ( objectDescribe.isAccessible() ) {
 		 	result = Database.query(query);
 		} else {
