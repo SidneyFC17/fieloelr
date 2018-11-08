@@ -4,6 +4,48 @@
  */
 global class ModuleService {
 	
+	private static Map<String,Schema.SObjectField> moduleFieldsMap {get{
+		if (moduleFieldsMap == null) {
+			moduleFieldsMap = Schema.SObjectType.Module__c.fields.getMap();
+		}
+		return moduleFieldsMap;
+	} set;}
+
+	private static Map<String,Schema.SObjectField> moduleResponseFieldsMap {get{
+		if (moduleResponseFieldsMap == null) {
+			moduleResponseFieldsMap = Schema.SObjectType.ModuleResponse__c.fields.getMap();
+		}
+		return moduleResponseFieldsMap;
+	} set;}
+
+	private static Map<String,Schema.SObjectField> questionFieldsMap {get{
+		if (questionFieldsMap == null) {
+			questionFieldsMap = Schema.SObjectType.Question__c.fields.getMap();
+		}
+		return questionFieldsMap;
+	} set;}
+
+	private static Map<String,Schema.SObjectField> questionResponseFieldsMap {get{
+		if (questionResponseFieldsMap == null) {
+			questionResponseFieldsMap = Schema.SObjectType.QuestionResponse__c.fields.getMap();
+		}
+		return questionResponseFieldsMap;
+	} set;}
+
+	private static Map<String,Schema.SObjectField> answerOptionFieldsMap {get{
+		if (answerOptionFieldsMap == null) {
+			answerOptionFieldsMap = Schema.SObjectType.AnswerOption__c.fields.getMap();
+		}
+		return answerOptionFieldsMap;
+	} set;}
+
+	private static Map<String,Schema.SObjectField> answerFieldsMap {get{
+		if (answerFieldsMap == null) {
+			answerFieldsMap = Schema.SObjectType.AnswerOption__c.fields.getMap();
+		}
+		return answerFieldsMap;
+	} set;}
+
 	global class ModuleWrapper{
 		global Module__c module {get; private set;}
 		global ModuleResponse__c moduleResponse {get; private set;}
@@ -78,7 +120,11 @@ global class ModuleService {
 		// SR: CRUD Check
 		if(Schema.sObjectType.Module__c.isAccessible()){
 			// SR: FLS Check
-        	SecurityUtils.checkRead(Schema.sObjectType.Module__c.getSobjectType(),new List<String>(fieldsModuleClone));
+        	for (String f : fieldsModuleClone) {
+				if ( moduleFieldsMap.containsKey(f.trim()) && !moduleFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', f.trim()}));
+				}
+			}
 
 			module = Database.query(moduleQuery);
 		}else{
@@ -127,9 +173,17 @@ global class ModuleService {
 			// SR: CRUD Check
 			if(Schema.sObjectType.Question__c.isAccessible()){
 				// SR: FLS Check
-        		SecurityUtils.checkRead(Schema.sObjectType.Question__c.getSobjectType(),new List<String>(fieldsQuestionClone));
-				SecurityUtils.checkRead(Schema.sObjectType.AnswerOption__c.getSobjectType(),new List<String>(fieldsAnswerOptionClone));
-
+				for (String f : fieldsQuestionClone) {
+					if ( questionFieldsMap.containsKey(f.trim()) && !questionFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Question__c', f.trim()}));
+					}
+				}
+				// SR: FLS Check
+				for (String f : fieldsAnswerOptionClone) {
+					if ( answerOptionFieldsMap.containsKey(f.trim()) && !answerOptionFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'AnswerOption__c', f.trim()}));
+					}
+				}
 				questions = Database.query(questionQuery);
 			}else{
 				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Question__c'}));
@@ -239,7 +293,11 @@ global class ModuleService {
 		// SR: CRUD Check
 		if(Schema.sObjectType.ModuleResponse__c.isAccessible()) {
 			// SR: FLS Check
-        	SecurityUtils.checkRead(Schema.sObjectType.ModuleResponse__c.getSobjectType(),new List<String>(fieldsModuleResponseClone));
+			for (String f : fieldsModuleResponseClone) {
+				if ( moduleResponseFieldsMap.containsKey(f.trim()) && !moduleResponseFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<string>{'ModuleResponse__c', f.trim()}));
+				}
+			}
 			if ( !Schema.sObjectType.Module__c.fields.AttemptsAllowed__c.isAccessible() ) {
 				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', 'AttemptsAllowed__c'}));
 			}
@@ -264,8 +322,16 @@ global class ModuleService {
 				// SR: FLS Check
 				fieldsQuestionResponse.add('FieloELR__ModuleResponse__c');
 				fieldsQuestionResponse.add('FieloELR__NumberOfAttempt__c');
-				SecurityUtils.checkRead(Schema.sObjectType.QuestionResponse__c.getSobjectType(),new List<String>(fieldsQuestionResponse));
-				SecurityUtils.checkRead(Schema.sObjectType.Answer__c.getSobjectType(),new List<String>(fieldsAnswer));
+				for (String f : fieldsQuestionResponse) {
+					if ( questionResponseFieldsMap.containsKey(f.trim()) && !questionResponseFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<string>{'QuestionResponse__c', f.trim()}));
+					}
+				}
+				for (String f : fieldsAnswer) {
+					if ( answerFieldsMap.containsKey(f.trim()) && !answerFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<string>{'Answer__c', f.trim()}));
+					}
+				}
 
 				questionResponses = Database.query(questionResponseQuery);
 			} else {
@@ -301,8 +367,16 @@ global class ModuleService {
 				// SR: FLS Check
 				fieldsQuestionClone.add('FieloELR__Order__c');
 				fieldsAnswerOption.add('FieloELR__Order__c');
-				SecurityUtils.checkRead(Schema.sObjectType.Question__c.getSobjectType(),new List<String>(fieldsQuestionClone));
-				SecurityUtils.checkRead(Schema.sObjectType.AnswerOption__c.getSobjectType(),new List<String>(fieldsAnswerOption));
+				for (String f : fieldsQuestionClone) {
+					if ( questionFieldsMap.containsKey(f.trim()) && !questionFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<string>{'Question__c', f.trim()}));
+					}
+				}
+				for (String f : fieldsAnswerOption) {
+					if ( answerOptionFieldsMap.containsKey(f.trim()) && !answerOptionFieldsMap.get(f.trim()).getDescribe().isAccessible() ) {
+						throw new FieloException(String.format(Label.security_error_field_not_readable, new List<string>{'AnswerOption__c', f.trim()}));
+					}
+				}
 				if ( !Schema.sObjectType.Module__c.fields.PenaltyMode__c.isAccessible() ) {
 					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', 'PenaltyMode__c'}));
 				}
