@@ -9,7 +9,16 @@ public with sharing class CourseAction {
 					Member__c = memberId
 				);
 				uow.registerNew(cs);
-            	uow.commitWork();
+				
+				if ( Schema.sObjectType.CourseStatus__c.isCreateable() && Schema.sObjectType.CourseStatus__c.isUpdateable()) {
+					if (Schema.sObjectType.CourseStatus__c.fields.Course__c.isCreateable() && Schema.sObjectType.CourseStatus__c.fields.Course__c.isUpdateable() && Schema.sObjectType.CourseStatus__c.fields.Member__c.isCreateable() && Schema.sObjectType.CourseStatus__c.fields.Member__c.isUpdateable()) {
+						uow.commitWork();
+					} else {
+						throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'CourseStatus__c', 'Course__c,Member__c'}));
+					}
+				} else {
+					throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c'}));
+				}
 
 				return courseId;
 			}

@@ -10,14 +10,13 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
     * @brief constructor
     */
 	public ModuleResponseViewController(ApexPages.StandardController controller) {
+		Map<String, sObjectField> fieldsMap = Schema.sObjectType.ModuleResponse__c.fields.getMap();
 		String objectName = 'FieloELR__ModuleResponse__c';
 		this.controller = controller;
 		Id recordId = controller.getId();
 		Set<String> fields = new Set<String>();
 
-		
-		fields.addAll(Schema.describeSObjects(
-			new String[]{objectName})[0].fields.getMap().keySet());
+		fields.addAll(fieldsMap.keySet());
 
         if(!Test.isRunningTest()){
             this.controller.addFields(new List<String>(fields));
@@ -64,29 +63,53 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
 					objectName
 				}
 			);
-
-			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-			SecurityUtils.checkObjectIsReadable(convertType);
+			
+			Set<String> fieldsToCheck = new Set<String>();
+			for (String f : fields) {
+				if (fieldsMap.containsKey(f.trim())) {
+					fieldsToCheck.add(f);
+				}
+			}
+			
+			// SR: CRUD Check
+			if ( Schema.sObjectType.ModuleResponse__c.isAccessible() ) {
+				// SR: FLS Check
+				SecurityUtils.checkRead(Schema.sObjectType.ModuleResponse__c.getSobjectType(), new List<String>(fieldsToCheck));
 
 				record = Database.query(query);
 				setRecord(record);
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'ModuleResponse__c'}));
+			}
 
 		}
 	}
+
   	@RemoteAction
 	public static sObject retrieve( String objectName, String recordId, String fields ){
+		DescribeSObjectResult objectDescribe = Schema.describeSObjects(new String[]{objectName})[0];
+		Set<String> fieldSet = new Set<String>(fields.split(','));
+		List<String> fieldList = new List<String>();
+		
+		for (String f : fieldSet ) {
+			fieldList.add(f.trim());
+		}
+
+		// SR: FLS Check
+		SecurityUtils.checkRead(objectDescribe.getSobjectType(), fieldList);
+
 		String query = 'SELECT ' + fields;
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
 		List<sObject> result;
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-		SecurityUtils.checkObjectIsReadable(convertType);
-
-		 result = Database.query(query);
+		// SR: FLS Check
+		if ( objectDescribe.isAccessible() ) {
+		 	result = Database.query(query);
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ objectDescribe.getName() })); 
+		}
 		 
 		return result.get(0);
 	}
@@ -96,21 +119,34 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
   	public static RemoteActionResult save(ModuleResponse__c record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.ModuleResponse__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
-			for ( String f :nullFields ) {
-         		record.put(f, null );
+			for ( String f : nullFields ) {
+				if( fieldsMap.get(f).getDescribe().isCreateable() && fieldsMap.get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'ModuleResponse__c', f}));
+				}
 			}
 
-			if(SecurityUtils.canInsert(ModuleResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleResponse__c.sObjectType, nullFields)){
-                    upsert record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'ModuleResponse__c',f}));
+				}
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'ModuleResponse__c',f}));
+				}
+			}
 
-
-        	
-
+			if ( !Schema.sObjectType.ModuleResponse__c.isUpdateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'ModuleResponse__c'}));
+			} else if ( !Schema.sObjectType.ModuleResponse__c.isCreateable() ) {
+				throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'ModuleResponse__c'}));
+			} else {
+				upsert record;
+			}
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -133,17 +169,33 @@ public with sharing class ModuleResponseViewController extends PageSettingsContr
   	public static RemoteActionResult saveQuestionResponse(SObject record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> fieldsMap = Schema.sObjectType.QuestionResponse__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
-         		record.put(f, null );
+				if( fieldsMap.get(f).getDescribe().isCreateable() && fieldsMap.get(f).getDescribe().isUpdateable()){
+         			record.put(f, null );
+				}
 			}
+
+			// SR: FLS Check
+			for ( String f : record.getPopulatedFieldsAsMap().keySet() ) {
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isUpdateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'QuestionResponse__c',f}));
+				}
+				if ( f != 'Id' && fieldsMap.containsKey(f) && !fieldsMap.get(f).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_insertable, new List<String>{'QuestionResponse__c',f}));
+				}
+			}
+
 			// TODO: Change to Create API
-			if(SecurityUtils.canInsert(QuestionResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(QuestionResponse__c.sObjectType, nullFields)){
-                    upsert (QuestionResponse__c) record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if( !Schema.sObjectType.QuestionResponse__c.isUpdateable() ){
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'QuestionResponse__c'}));
+			} else if ( !Schema.sObjectType.QuestionResponse__c.isCreateable() ){
+				throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'QuestionResponse__c'}));
+			}else{
+				upsert (QuestionResponse__c) record;
+			}
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );

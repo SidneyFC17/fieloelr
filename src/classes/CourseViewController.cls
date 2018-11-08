@@ -82,12 +82,19 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 		editSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(editSettings.FieloPLT__Sections__c, record.Program__c);
 		try{
-			SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__PageSettings__c');
-        	SecurityUtils.checkObjectIsReadable(convertType);  
-
-			cloneSettings = [SELECT Id, Name, FieloPLT__Sections__c FROM FieloPLT__PageSettings__c WHERE FieloPLT__Type__c = 'Clone' AND FieloPLT__Object__c = 'FieloELR__Course__c' LIMIT 1];
-			cloneSettings.FieloPLT__Sections__c = '[' + cloneSettings.FieloPLT__Sections__c + ']';
-			cloneSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(cloneSettings.FieloPLT__Sections__c, record.Program__c);
+			// SR: CRUD Check
+			if ( Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible() ) {
+				// SR: FLS Check
+				if ( Schema.sObjectType.FieloPLT__PageSettings__c.fields.Name.isAccessible() && Schema.sObjectType.FieloPLT__PageSettings__c.fields.FieloPLT__Sections__c.isAccessible() && Schema.sObjectType.FieloPLT__PageSettings__c.fields.FieloPLT__Type__c.isAccessible() && Schema.sObjectType.FieloPLT__PageSettings__c.fields.FieloPLT__Object__c.isAccessible()) {
+					cloneSettings = [SELECT Id, Name, FieloPLT__Sections__c FROM FieloPLT__PageSettings__c WHERE FieloPLT__Type__c = 'Clone' AND FieloPLT__Object__c = 'FieloELR__Course__c' LIMIT 1];
+					cloneSettings.FieloPLT__Sections__c = '[' + cloneSettings.FieloPLT__Sections__c + ']';
+					cloneSettings.FieloPLT__Sections__c = getSectionsWithSegmentWhereCondition(cloneSettings.FieloPLT__Sections__c, record.Program__c);
+				} else {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__PageSettings__c', 'Name, FieloPLT__Sections__c, FieloPLT__Type__c, FieloPLT__Object__c'}));
+				}
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__PageSettings__c'}));
+			}
 		}catch(Exception e){
 			cloneSettings = editSettings;
 		}
@@ -95,12 +102,10 @@ public with sharing class CourseViewController extends PageSettingsController {
 		if (relatedSettings != null) {
 			for(FieloPLT__PageSettings__c settings:relatedSettings) {
 				if(settings.FieloPLT__TargetObject__c == 'FieloELR__Module__c') {
-					// if( (new ModulesSelector().selectByIdHavingCourses(new Set<Id>{record.Id})).size() > 1 ) {
-						settings.FieloPLT__Buttons__c = '{"Label":"Reorder","Type":"Modal","Action":"FieloELR__Module__cFormReorder"}' +
-						(settings.FieloPLT__Buttons__c != '' && settings.FieloPLT__Buttons__c != null ?
-							',' + settings.FieloPLT__Buttons__c :
-							'');	
-					// }
+					settings.FieloPLT__Buttons__c = '{"Label":"Reorder","Type":"Modal","Action":"FieloELR__Module__cFormReorder"}' +
+					(settings.FieloPLT__Buttons__c != '' && settings.FieloPLT__Buttons__c != null ?
+						',' + settings.FieloPLT__Buttons__c :
+						'');
 				}
 			}
 		}
@@ -124,6 +129,16 @@ public with sharing class CourseViewController extends PageSettingsController {
 			if (fields.contains('fieloelr__segment__c') || fields.contains('fieloelr__segment__r.name')) {
 				secondaryParameters = 'FieloELR__Segment__c';
 			}
+
+
+			// SR: Dynamic FLS Check
+			Map<String,Schema.SObjectField> courseFieldsMap = Schema.SObjectType.Course__c.fields.getMap();
+			for (String fieldName : fields) {
+				if ( courseFieldsMap.containsKey(fieldName) && !courseFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName}));
+				}
+			}
+
 			String query = String.format(
 				'SELECT {0} FROM {1} WHERE Id = :recordId',
 				new String[]{
@@ -131,14 +146,13 @@ public with sharing class CourseViewController extends PageSettingsController {
 					objectName
 				}
 			);
-			System.debug('init query: '+query);
 
-			SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        	SecurityUtils.checkObjectIsReadable(convertType);
-            	record = Database.query(query);
-				setRecord(record);
-         	
+			if ( Schema.sObjectType.Course__c.isAccessible() ) {
+				record = Database.query(query);
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c'}));
+			}
+			setRecord(record);
 		}
 	}
 
@@ -155,18 +169,32 @@ public with sharing class CourseViewController extends PageSettingsController {
 
 	@RemoteAction
 	public static Course__c retrieve( String objectName, String recordId, String fields ){
-		String query = 'SELECT FieloELR__Segment__r.FieloPLT__RelatedSegments__c,' + fields;
+		Map<String,Schema.SObjectField> objectFieldsMap = Schema.sObjectType.Course__c.fields.getMap();
+
+		String query = 'SELECT FieloELR__Segment__r.FieloPLT__RelatedSegments__c,' + String.escapeSingleQuotes(fields);
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
-		System.debug('retrieve query: '+query);
+
+		// SR: Dynamic FLS Check
+		for (String fieldName : fields.split(',')) {
+			if ( fieldName.trim() != 'Id' && objectFieldsMap.containsKey(fieldName.trim()) && !objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c',fieldName.trim()}));
+			}
+		}
+
 		List<Course__c> result;
 		
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-
-		result = Database.query(query);
+		// SR: CRUD Check
+		if ( Schema.sObjectType.Course__c.isAccessible() && Schema.sObjectType.FieloPLT__Segment__c.isAccessible()) {
+			if (Schema.sObjectType.FieloPLT__Segment__c.fields.FieloPLT__RelatedSegments__c.isAccessible()) {
+				result = Database.query(query);
+			} else {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Segment__c', 'FieloPLT__RelatedSegments__c'}));
+			}
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c, FieloPLT__Segment__c'}));
+		}
 
 		if(result[0].Segment__r.FieloPLT__RelatedSegments__c != null){
 			system.debug(result[0].Segment__r.FieloPLT__RelatedSegments__c);
@@ -195,18 +223,37 @@ public with sharing class CourseViewController extends PageSettingsController {
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-			if ( segments.size() == 1 ) {
-				record.segment__c = segments.get(0);
-        	} else if ( segments.size() > 1 ) {
-				record.segment__c = SegmentService.getMetaSegmentId( segments, record.Program__c ) ;
+			
+			// SR: FLS Check
+			if ( Schema.sObjectType.Course__c.fields.Segment__c.isUpdateable() && Schema.sObjectType.Course__c.fields.Segment__c.isCreateable() ) {
+				if ( segments.size() == 1 ) {
+					record.segment__c = segments.get(0);
+				} else if ( segments.size() > 1 ) {
+					record.segment__c = SegmentService.getMetaSegmentId( segments, record.Program__c ) ;
+				} else {
+					record.segment__c = null;
+				}
 			} else {
-				record.segment__c = null;
-        	}
+				throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Course__c', 'Segment__c'}));
+			}
+
+			Map<String,Schema.SObjectField> courseFieldsMap = Schema.SObjectType.Course__c.fields.getMap();
+			Set<String> courseFieldset = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
+			if (nullFields != null && !nullFields.isEmpty()) {
+			    courseFieldset.addAll(nullFields);
+            }
+
+			// SR: Dynamic FLS Check
+			for ( String fieldName : courseFieldset ) {
+				if ( fieldName != 'Id' && (!courseFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseFieldsMap.get(fieldName).getDescribe().isCreateable()) ){
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', fieldName}));
+				}
+			}
 
 			if (Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
 				upsert record;
 			}else{
-				throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Course__c'}));
 			}
 
 			//TODO Crear Label DataSavedSuccessfully
@@ -230,18 +277,23 @@ public with sharing class CourseViewController extends PageSettingsController {
   	public static RemoteActionResult clone( Course__c record, List<String> nullFields, List<String> segments) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> courseFieldsMap = Schema.SObjectType.Course__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-			if ( segments.size() == 1 ) {
-				record.segment__c = segments.get(0);
-        	} else if ( segments.size() > 1 ) {
-				record.segment__c = SegmentService.getMetaSegmentId( segments, record.Program__c ) ;
+			if ( Schema.sObjectType.Course__c.fields.Segment__c.isUpdateable() && Schema.sObjectType.Course__c.fields.Segment__c.isCreateable() ) {
+				if ( segments.size() == 1 ) {
+					record.segment__c = segments.get(0);
+				} else if ( segments.size() > 1 ) {
+					record.segment__c = SegmentService.getMetaSegmentId( segments, record.Program__c ) ;
+				} else {
+					record.segment__c = null;
+				}
 			} else {
-				record.segment__c = null;
-        	}
+				throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'Course__c', 'Segment__c'}));
+			}
 
         	String courseJSON = ExportService.exportCourses(new List<Id>{record.Id});
         	SObjectUnitOfWork uow = ExportService.importData(courseJSON, new List<ExportService.MultiSegmentRelation>());
@@ -253,6 +305,10 @@ public with sharing class CourseViewController extends PageSettingsController {
                 List<Course__c> courses = (List<Course__c>) uow.m_newListByType.get('FieloELR__Course__c');
                 if ( courses.size() > 0 ) {
                     for(String fieldName: record.getPopulatedFieldsAsMap().keySet()) {
+						// SR: FLS Check
+						if ( fieldName != 'Id' && courseFieldsMap.containsKey(fieldName) && (!courseFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseFieldsMap.get(fieldName).getDescribe().isCreateable()) ){
+							throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', fieldName.trim()}));
+						}
                     	if (fieldName != 'Id') {
                     		if (String.valueOf(fieldMap.get(fieldName).getDescribe().getType()) == 'DOUBLE') {
                     			if (record.get(fieldName) != null) {
@@ -270,7 +326,11 @@ public with sharing class CourseViewController extends PageSettingsController {
 					}
 					courses.get(0).Status__c = 'Draft';
 
-                    ExportService.saveData(uow, null);
+					if (Schema.sObjectType.Course__c.isUpdateable()) {
+                    	ExportService.saveData(uow, null);
+					} else {
+						throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{'Course__c'}));
+					}
                 } else {
                     throw new FieloPLT.FieloException (label.FieloPLT.ModelEmpty);
                 }
@@ -297,20 +357,32 @@ public with sharing class CourseViewController extends PageSettingsController {
 
   	@RemoteAction
   	public static RemoteActionResult saveModule( SObject record, List<String> nullFields) {
-
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
-		
 		try{
 			sp = Database.setSavepoint();
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
+
+			Map<String,Schema.SObjectField> moduleFieldsMap = Schema.SObjectType.Module__c.fields.getMap();
+			Set<String> moduleFieldSet = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
+			if (nullFields != null && !nullFields.isEmpty()) {
+			    moduleFieldSet.addAll(nullFields);
+            }
+
+			// SR: Dynamic FLS Check
+			for ( String fieldName : moduleFieldSet ) {
+				if ( fieldName != 'Id' && (!moduleFieldsMap.get(fieldName).getDescribe().isUpdateable() || !moduleFieldsMap.get(fieldName).getDescribe().isCreateable()) ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', fieldName}));
+				}
+			}
+
 			// TODO: Change to Create API
 			if(Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable()){
 				upsert (Module__c) record;
             }else{
-               throw new FieloException(Label.CannotInsertUpdateRecords);
+               	throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Module__c'}));
 			}
 
 			//TODO Crear Label DataSavedSuccessfully
@@ -332,6 +404,7 @@ public with sharing class CourseViewController extends PageSettingsController {
 	  	
 	  	return result;
   	}
+	
   	@RemoteAction
   	public static RemoteActionResult saveCourseDependency( SObject record, List<String> nullFields) {
 		Savepoint sp;
@@ -341,15 +414,26 @@ public with sharing class CourseViewController extends PageSettingsController {
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
-			// TODO: Change to Create API
+
+			Map<String,Schema.SObjectField> courseDependencyFieldsMap = Schema.SObjectType.CourseDependency__c.fields.getMap();
+			Set<String> courseDependencyFieldSet = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
+			if (nullFields != null && !nullFields.isEmpty()) {
+			    courseDependencyFieldSet.addAll(nullFields);
+            }
+
+			// SR: Dynamic FLS Check
+			for ( String fieldName : courseDependencyFieldSet ) {
+				if ( fieldName != 'Id' && (!courseDependencyFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseDependencyFieldsMap.get(fieldName).getDescribe().isCreateable()) ){
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c', fieldName}));
+				}
+			}
+
 			if (Schema.sObjectType.CourseDependency__c.isUpdateable() && Schema.sObjectType.CourseDependency__c.isCreateable()){
 				upsert (CourseDependency__c) record;
 			}else{
-				throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'CourseDependency__c'}));
 			}
         	
-
-			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + ((CourseDependency__c)record).Course__c;
     	}catch(DMLException e){
@@ -369,7 +453,17 @@ public with sharing class CourseViewController extends PageSettingsController {
 
   	@RemoteAction
     public static List<SObject> getSegments( String programId ) {
-        return new SegmentsSelector(new Set<String>{'Id','Name'}).selectByProgramAndWithoutProgramWithCriteria(programId, new Set<String>{'Id','Name'});
+        List<SObject> records;
+        if ( Schema.sObjectType.FieloPLT__Segment__c.isAccessible() ) {
+            if ( Schema.sObjectType.FieloPLT__Segment__c.fields.Name.isAccessible() ) {
+                records = new SegmentsSelector(new Set<String>{'Id','Name'}).selectByProgramAndWithoutProgramWithCriteria(programId, new Set<String>{'Id','Name'});
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Segment__c', 'Name'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Segment__c'}));
+        }
+        return records;
     }
 
     public class Section {

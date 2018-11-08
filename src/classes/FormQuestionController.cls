@@ -23,24 +23,34 @@ public with sharing class FormQuestionController {
     return fields;
     }set;}
   
-  public SObject recordObject{get{
-    if (queryRecordNotDone ) {
-      queryRecordNotDone = false;
-          if ( cRecord !=null && cRecord.Id != null ) {
-              Id recordId = cRecord.Id;
-              String query = 'SELECT  ' + fields;
-              query += ' FROM ' + csObjectName;
-              query += ' WHERE Id = : recordId ';
+    public SObject recordObject{get{
+        if (queryRecordNotDone ) {
+            queryRecordNotDone = false;
+            if ( cRecord !=null && cRecord.Id != null ) {
+                Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{csObjectName})[0].fields.getMap();
+                fields = String.escapeSingleQuotes(fields);
+                csObjectName = String.escapeSingleQuotes(csObjectName);
+
+                Id recordId = cRecord.Id;
+                String query = 'SELECT  ' + fields;
+                query += ' FROM ' + csObjectName;
+                query += ' WHERE Id = : recordId ';
+
+                // SR: FLS Check
+                for (String fieldName : fields.split(',') ) {
+                    if ( !fieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+                        throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{csObjectName, fieldName}));
+                    }
+                }
               
-            SObjectType convertType = Schema.getGlobalDescribe().get(csObjectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-
-            recordObject = Database.query(query)[0];
-
-          } else {
-              recordObject = Schema.getGlobalDescribe().get(csObjectName).newSObject() ;
-          }
+                if( Schema.describeSObjects(new List<String>{csObjectName})[0].isAccessible() ) {
+					recordObject = Database.query(query)[0];
+				} else {
+                    throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{csObjectName}));
+                }
+            } else {
+                recordObject = Schema.describeSObjects(new List<String>{csObjectName})[0].getSobjectType().newSObject();
+            }
         }
         return recordObject;
     }set;}
@@ -129,48 +139,62 @@ public with sharing class FormQuestionController {
     } set;}
 
     public Map<String, List<PicklistController.Entry>> mapPicklistOptions { get {
-      if ( mapPicklistOptions == null && !String.isBlank(csObjectName) ) {
-          mapPicklistOptions = new Map<String, List<PicklistController.Entry>>();
-          for ( Section s :sections ) {
-            for ( List<FormField> ff :s.Rows ) {
-                for ( FormField f :ff ) {
-                  if ( (f.Type == 'picklist' ||  f.Type == 'radio'|| f.Type == 'multiselect'|| f.Type == 'checkboxes') && fieldMap.containsKey(f.Name) ) {
-                      List<PicklistController.Entry> options = new List<PicklistController.Entry>();
-                      Schema.DescribeFieldResult describe = fieldMap.get(f.Name).getDescribe();
-                      if ( describe.getType().name() == 'PICKLIST' || describe.getType().name() == 'MULTIPICKLIST' ) {
-                        List<Schema.PicklistEntry> pickListValues = describe.getPickListValues();
-                        for (Schema.PicklistEntry a : pickListValues) {
-                            options.add( new PicklistController.Entry(a.getValue(), a.getLabel() ));
+        if ( mapPicklistOptions == null && !String.isBlank(csObjectName) ) {
+            mapPicklistOptions = new Map<String, List<PicklistController.Entry>>();
+            for ( Section s :sections ) {
+                for ( List<FormField> ff :s.Rows ) {
+                    for ( FormField f :ff ) {
+                        if ( (f.Type == 'picklist' ||  f.Type == 'radio'|| f.Type == 'multiselect'|| f.Type == 'checkboxes') && fieldMap.containsKey(f.Name) ) {
+                            List<PicklistController.Entry> options = new List<PicklistController.Entry>();
+                            Schema.DescribeFieldResult describe = fieldMap.get(f.Name).getDescribe();
+                            if ( describe.getType().name() == 'PICKLIST' || describe.getType().name() == 'MULTIPICKLIST' ) {
+                                List<Schema.PicklistEntry> pickListValues = describe.getPickListValues();
+                                for (Schema.PicklistEntry a : pickListValues) {
+                                    options.add( new PicklistController.Entry(a.getValue(), a.getLabel() ));
+                                }
+                            } else if ( describe.getType().name() == 'REFERENCE' ) {
+                                String query = 'SELECT ID, Name FROM ' + describe.getReferenceTo().get(0);
+                                if ( ! String.isBlank( f.WhereCondition )  ){
+                                    query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
+                                }
+                                query += ' LIMIT 500';
+                                
+                                // SR: CRUD Check
+                                if (describe.getReferenceTo().get(0).getDescribe().isAccessible()) {
+                                    // SR: FLS Check
+                                    if ( describe.getReferenceTo().get(0).getDescribe().fields.getMap().get('Name').getDescribe().isAccessible() ) {
+                                        for ( SObject o : Database.query(query) ) {
+                                            // Substring para que matche con el multipicklist (para multisegment)
+                                            options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
+                                        }
+                                    } else {
+                                        throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ describe.getReferenceTo().get(0).getDescribe().getName(), 'Name' }));
+                                    }
+                                } else {
+                                    throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ describe.getReferenceTo().get(0).getDescribe().getName() }));
+                                }
+                            }
+                            mapPicklistOptions.put( f.Name , options);
                         }
-                      } else if ( describe.getType().name() == 'REFERENCE' ) {
-                        String query = 'SELECT ID, Name FROM ' + describe.getReferenceTo().get(0);
-                        if ( ! String.isBlank( f.WhereCondition )  ){
-                            query += ' WHERE ' + f.WhereCondition.replace('/', '\'') ;
-                        }
-                        query += ' LIMIT 500';
-
-                     SObjectType convertType = describe.getReferenceTo().get(0);
-
-                    SecurityUtils.checkObjectIsReadable(convertType);
-
-                        for ( SObject o : Database.query(query) ) {
-                            // Substring para que matche con el multipicklist (para multisegment)
-                            options.add( new PicklistController.Entry( ((String)o.id).substring(0, 15),  (String)o.get('Name') ));
-                        }
-                      }
-                      mapPicklistOptions.put( f.Name , options);
-                  }
+                    }
                 }
             }
-          }
-      }
-      return mapPicklistOptions;
+        }
+        return mapPicklistOptions;
     } set;}
 
     public FieloPLT__PageSettings__c getPageSettings(String pageSetingsName) {
+        Set<String> fields = new Set<String>();
+        for(String s : new List<String>(Schema.describeSObjects(new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet())){
+            if( Schema.sObjectType.FieloPLT__PageSettings__c.fields.getMap().get(s).getDescribe().isAccessible() ){
+                fields.add(s);
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'FieloPLT__PageSettings__c', s}));
+            }
+        }
+
         String query = 'SELECT ';
-        query += String.join(new List<String>(Schema.describeSObjects(
-            new String[]{'FieloPLT__PageSettings__c'})[0].fields.getMap().keySet()), ',');
+        query += String.join(new List<String>(fields), ',');
         query += ' FROM FieloPLT__PageSettings__c';
         query += ' WHERE Name = :pageSetingsName' ;
         query += ' LIMIT 1';
@@ -178,12 +202,10 @@ public with sharing class FormQuestionController {
         List<sObject> result;
 
         if(Schema.sObjectType.FieloPLT__PageSettings__c.isAccessible()){
-
             result = Database.query(query);
-
-        }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{ 'FieloPLT__PageSettings__c' }));
+        }
 
         return (FieloPLT__PageSettings__c) result.get(0);
     }
@@ -195,15 +217,17 @@ public with sharing class FormQuestionController {
   /*****  Metodos Remote para Save y Retrieve *****/
     @RemoteAction
     public static RemoteActionResult save( FieloELR__Question__c question, List<String> questionNullFields, List<FieloELR__AnswerOption__c> answerOptions, Map<Id,List<String>> answerOptionsNullFields, List<Id> deletedIds){
-      Savepoint sp;
-      RemoteActionResult result = new RemoteActionResult();
+        Savepoint sp;
+        RemoteActionResult result = new RemoteActionResult();
         SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{FieloELR__Question__c.SObjectType, FieloELR__AnswerOption__c.SObjectType});
         SObjectUnitOfWork uowUpdateAO = new SObjectUnitOfWork(new List<Schema.SobjectType>{FieloELR__AnswerOption__c.SObjectType});
         System.debug(question);
       try{
             sp = Database.setSavepoint();
             for( String f :questionNullFields ) {
-                question.put(f, null );
+                if( Schema.sObjectType.Question__c.fields.getMap().get(f).getDescribe().isUpdateable() ){
+                    question.put(f, null );
+                }
             }
 
             if (question.Id == null) {
@@ -215,7 +239,9 @@ public with sharing class FormQuestionController {
             for( FieloELR__AnswerOption__c answerOption: answerOptions) {
                 if(answerOptionsNullFields.containsKey(answerOption.Id)){
                     for(String f: answerOptionsNullFields.get(answerOption.Id)){
-                        answerOption.put(f, null);
+                        if( Schema.sObjectType.FieloELR__AnswerOption__c.fields.getMap().get(f).getDescribe().isUpdateable() ){
+                            answerOption.put(f, null);
+                        }
                     }
                 }
                 if(answerOption.Id == null){
@@ -226,21 +252,21 @@ public with sharing class FormQuestionController {
             }
 
             if (!deletedIds.isEmpty()) {
-              uow.registerDeleted(new AnswerOptionsSelector().selectById(new Set<Id>(deletedIds)));
+                uow.registerDeleted(new AnswerOptionsSelector().selectById(new Set<Id>(deletedIds)));
             }
 
             //done update in different uow to do the update before the insert of AOs to avoid validation rules.
              if(Schema.sObjectType.FieloELR__AnswerOption__c.isUpdateable()){
-                        uowUpdateAO.commitWork();
-                    }else{
-                        throw new FieloException(Label.CannotInsertUpdateRecords);
-                    }
+                uowUpdateAO.commitWork();
+            }else{
+                throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{ 'FieloELR__AnswerOption__c' }));
+            }
 
-                    if(Schema.sObjectType.FieloELR__Question__c.isCreateable()){
-                        uow.commitWork();
-                    }else{
-                        throw new FieloException(Label.CannotInsertRecords);
-                    }
+            if( Schema.sObjectType.FieloELR__Question__c.isCreateable() && Schema.sObjectType.FieloELR__Question__c.isUpdateable() && Schema.sObjectType.FieloELR__AnswerOption__c.isDeletable() ){
+                uow.commitWork();
+            }else{
+                throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{ 'FieloELR__Question__c, FieloELR__AnswerOption__c' }));
+            }
 
           //TODO Crear Label DataSavedSuccessfully
           result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
@@ -267,13 +293,17 @@ public with sharing class FormQuestionController {
 
     @RemoteAction
     public static sObject retrieve( String objectName, String recordId, String fields ){
-      String query = 'SELECT ' + fields;
+        Map<String, Schema.SObjectField> fieldsMap = Schema.describeSObjects(new String[]{objectName})[0].fields.getMap();
+		Set<String> newFields = new Set<String>();
+		for(String s : fields.split(',')){
+			if( fieldsMap.get(s).getDescribe().isAccessible() ){
+				newFields.add( String.escapeSingleQuotes(s) );
+			}
+		}
 
+      String query = 'SELECT ' + String.join(new List<String>(newFields), ',');
+        objectName = String.escapeSingleQuotes(objectName);
       if (objectName == 'FieloELR__Question__c') {
-
-          if(!Schema.sObjectType.FieloELR__Question__c.isAccessible())
-            throw new FieloException(Label.CannotAccessRecords);
-
         query += ' ,(Select Id, FieloELR__IsCorrect__c, FieloELR__AnswerOptionText__c, FieloELR__MatchingText__c, FieloELR__Order__c From AnswerOptions__r ORDER BY FieloELR__Order__c, LastModifiedDate)';
       }
 
@@ -282,10 +312,14 @@ public with sharing class FormQuestionController {
       query += ' LIMIT 1';
       List<sObject> result;
       
-       SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-        result = Database.query(query);
+       if( Schema.describeSObjects(new String[]{objectName})[0].isAccessible()){
+            if( String.escapeSingleQuotes(objectName) == 'FieloELR__Question__c' && !Schema.sObjectType.AnswerOption__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.IsCorrect__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.AnswerOptionText__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.MatchingText__c.isAccessible() || !Schema.sObjectType.AnswerOption__c.fields.Order__c.isAccessible()){
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'AnswerOption__c', 'IsCorrect__c, AnswerOptioNText__c, MatchingText__c, Order__c'}));
+            }
+            result = Database.query(query);
+       } else {
+           throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{objectName}));
+       }
 
       if ( result.size() > 0 ) {
           return result.get(0);

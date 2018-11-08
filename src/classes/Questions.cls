@@ -160,12 +160,12 @@ public class Questions extends SObjectDomain {
     // Set fields to zero if null
     private void checkNullValues(List<Question__c> questions) {
     	for (Question__c question: questions) {
-    		question.IncorrectWeight__c = question.IncorrectWeight__c == null ?
-    			0.0 :
-    			question.IncorrectWeight__c;
-    		question.PenaltyPerAttempt__c = question.PenaltyPerAttempt__c == null ?
-    			0.0 :
-    			question.PenaltyPerAttempt__c;
+			if( Schema.sObjectType.Question__c.fields.IncorrectWeight__c.isUpdateable() && Schema.sObjectType.Question__c.fields.IncorrectWeight__c.isCreateable() ){
+    			question.IncorrectWeight__c = question.IncorrectWeight__c == null ? 0.0 : question.IncorrectWeight__c;
+			}
+			if( Schema.sObjectType.Question__c.fields.PenaltyPerAttempt__c.isUpdateable() && Schema.sObjectType.Question__c.fields.PenaltyPerAttempt__c.isCreateable() ){
+    			question.PenaltyPerAttempt__c = question.PenaltyPerAttempt__c == null ? 0.0 : question.PenaltyPerAttempt__c;
+			}
     	}
     }
 
@@ -181,10 +181,13 @@ public class Questions extends SObjectDomain {
 			new ModulesSelector(new Set<String> {'Id','WeightedQuestions__c'}).selectById(moduleIds));
 
     	for (Question__c question: questions) {
-    		// If Module.WeightedQuestions is false, CorrectWeight = 1
-    		question.CorrectWeight__c = modulesMap.get(question.Module__c).WeightedQuestions__c ?
-    			question.CorrectWeight__c :
-    			1;
+			if( Schema.sObjectType.Question__c.fields.CorrectWeight__c.isUpdateable() && Schema.sObjectType.Question__c.fields.CorrectWeight__c.isCreateable() ){
+				// If Module.WeightedQuestions is false, CorrectWeight = 1
+				question.CorrectWeight__c = modulesMap.get(question.Module__c).WeightedQuestions__c ?
+					question.CorrectWeight__c :
+					1;
+			}
+
     	}
     }
 
@@ -201,10 +204,7 @@ public class Questions extends SObjectDomain {
     	}
 
 		if (!existingAnswerOptions.isEmpty()) {
-
-			sobjectType sobjectType = existingAnswerOptions.get(0).getSobjectType();
-
-			if (SecurityUtils.checkSObjectIsDeletable(sobjectType)){
+			if( Schema.sObjectType.AnswerOption__c.isDeletable() ){	
 				delete existingAnswerOptions;
 			}else{
 				throw new FieloException(Label.CannotDeleteRecords);
@@ -224,23 +224,26 @@ public class Questions extends SObjectDomain {
 
 		for(Question__c question : questions) {
 			if (!updModulesMap.containsKey(question.Module__c)) {
-				updModulesMap.put(question.Module__c,
-					new Module__c(
-						Id = question.Module__c,
-						NumberOfQuestions__c = modulesMap.get(question.Module__c).NumberOfQuestions__c != null ? modulesMap.get(question.Module__c).NumberOfQuestions__c : 0
-					)
-				);
+				Module__c m = new Module__c(Id = question.Module__c);
+				if( Schema.sObjectType.Module__c.fields.NumberOfQuestions__c.isUpdateable() && Schema.sObjectType.Module__c.fields.NumberOfQuestions__c.isCreateable() ){
+					m.NumberOfQuestions__c = modulesMap.get(question.Module__c).NumberOfQuestions__c != null ? modulesMap.get(question.Module__c).NumberOfQuestions__c : 0;
+				}
+
+				updModulesMap.put(question.Module__c, m);
 			}
 			if (isDelete) {
-				updModulesMap.get(question.Module__c).NumberOfQuestions__c--;
+				if( Schema.sObjectType.Module__c.fields.NumberOfQuestions__c.isUpdateable() && Schema.sObjectType.Module__c.fields.NumberOfQuestions__c.isCreateable() ){
+					updModulesMap.get(question.Module__c).NumberOfQuestions__c--;
+				}
 			} else {
-				updModulesMap.get(question.Module__c).NumberOfQuestions__c++;
+				if( Schema.sObjectType.Module__c.fields.NumberOfQuestions__c.isUpdateable() && Schema.sObjectType.Module__c.fields.NumberOfQuestions__c.isCreateable() ){
+					updModulesMap.get(question.Module__c).NumberOfQuestions__c++;
+				}
 			}
 	    }
 		
-		if (!updModulesMap.isEmpty()) {
+		if ( !updModulesMap.isEmpty() && Schema.sObjectType.Module__c.isUpdateable() ) {
 			update updModulesMap.values();
 		}
-		
 	}
 }

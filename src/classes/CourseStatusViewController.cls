@@ -57,6 +57,15 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			for(String fieldName:fieldList) {
 				fields.add(fieldName);
 			}
+
+			// SR: Dynamic FLS Check
+			Map<String,Schema.SObjectField> courseStatusFieldsMap = Schema.SObjectType.CourseStatus__c.fields.getMap();
+			for (String fieldName : fields) {
+				if ( courseStatusFieldsMap.containsKey(fieldName) && !courseStatusFieldsMap.get(fieldName).getDescribe().isAccessible() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c',fieldName}));
+				}
+			}
+
 			String query = String.format(
 				'SELECT {0} FROM {1} WHERE Id = :recordId',
 				new String[]{
@@ -65,31 +74,39 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 				}
 			);
 
-
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-            record = Database.query(query);
-
+			if ( Schema.sObjectType.CourseStatus__c.isAccessible() ) {
+            	record = Database.query(query);
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c'}));
+			}
 			setRecord(record);
-         
-
 		}
 	}
+
   	@RemoteAction
 	public static sObject retrieve( String objectName, String recordId, String fields ){
-		String query = 'SELECT ' + fields;
+		Schema.DescribeSobjectResult[] objectsDescribe = Schema.describeSObjects(new List<String>{objectName});
+		Map<String,Schema.SObjectField> objectFieldsMap = objectsDescribe[0].fields.getMap();
+
+		// SR: Dynamic FLS Check
+		for ( String fieldName : fields.split(',') ) {
+			if (!objectFieldsMap.get(fieldName.trim()).getDescribe().isAccessible() ) {
+				throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{objectName, fieldName.trim()}));
+			}
+		}
+
+		String query = 'SELECT ' + String.escapeSingleQuotes(fields);
 		query += ' FROM ' + objectName;
 		query += ' WHERE ID = :recordId' ;
 		query += ' LIMIT 1';
 
-		SObjectType convertType = Schema.getGlobalDescribe().get(objectName);
 		List<sObject> result;
-
-        SecurityUtils.checkObjectIsReadable(convertType);
-        	 result = Database.query(query);
-          
-
+		// SR: Dynamic CRUD Check
+		if ( objectsDescribe[0].isAccessible() ) {
+        	result = Database.query(query);
+		} else {
+			throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{objectName}));
+		}
 		return result.get(0);
 	}
 
@@ -98,22 +115,36 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
   	public static RemoteActionResult save( CourseStatus__c record, List<String> nullFields) {
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
+		Map<String,Schema.SObjectField> courseStatusFieldsMap = Schema.SObjectType.CourseStatus__c.fields.getMap();
 		try{
 			sp = Database.setSavepoint();
-			for ( String f :nullFields ) {
+			for ( String f : nullFields ) {
          		record.put(f, null );
 			}
 
-			if(SecurityUtils.canInsert(CourseStatus__c.sObjectType, nullFields) && SecurityUtils.canUpdate(CourseStatus__c.sObjectType, nullFields)){
-                   upsert record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			Set<String> courseStatusFields = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
+			if ( nullFields != null && !nullFields.isEmpty() ) {
+				courseStatusFields.addAll(nullFields);
+			}
+
+			// SR: Dynamic FLS Check
+			for ( String fieldName : courseStatusFields ) {
+				// SR: Update / Insert Check
+				if ( !courseStatusFieldsMap.get(fieldName).getDescribe().isUpdateable() || !courseStatusFieldsMap.get(fieldName).getDescribe().isCreateable() ) {
+					throw new FieloException(String.format(Label.security_error_field_not_updateable, new List<String>{'CourseStatus__c', fieldName}));
+				}
+			}
+
+			if( Schema.sObjectType.CourseStatus__c.isCreateable() && Schema.sObjectType.CourseStatus__c.isUpdateable() ){
+				upsert record;
+            } else {
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'CourseStatus__c'}));
+			}
         	
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );
 			result.redirectURL = '/' + record.Id;
-    	}catch(DmlException e){
+    	} catch(DmlException e) {
     		if(sp != null){
 	            Database.rollback(sp);
         	}
@@ -129,6 +160,7 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 
   	@RemoteAction
   	public static RemoteActionResult saveModuleResponse( SObject record, List<String> nullFields) {
+		Map<String,Schema.SObjectField> objectFieldsMap = Schema.SObjectType.CourseStatus__c.fields.getMap();
 		Savepoint sp;
 		RemoteActionResult result = new RemoteActionResult();
 		try{
@@ -136,12 +168,26 @@ public with sharing class CourseStatusViewController extends PageSettingsControl
 			for ( String f :nullFields ) {
          		record.put(f, null );
 			}
+
+			Set<String> fieldSet = new Set<String>(record.getPopulatedFieldsAsMap().keySet());
+			if ( nullFields != null && !nullFields.isEmpty() ) {
+				fieldSet.addAll(nullFields);
+			}
+
+			// SR: Dynamic FLS Check
+			for ( String fieldName : fieldSet ) {
+				// SR: Update / Insert Check
+				if ( !objectFieldsMap.get(fieldName).getDescribe().isCreateable() || !objectFieldsMap.get(fieldName).getDescribe().isUpdateable()) {
+					throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseStatus__c', fieldName}));
+				}
+			}
+
 			// TODO: Change to Create API
-			if(SecurityUtils.canInsert(ModuleResponse__c.sObjectType, nullFields) && SecurityUtils.canUpdate(ModuleResponse__c.sObjectType, nullFields)){
-                  upsert (ModuleResponse__c) record;
-                }else{
-                    throw new FieloPLT.FieloException(Label.FieloPLT.CannotInsertUpdateRecords);
-                }
+			if( Schema.sObjectType.ModuleResponse__c.isUpdateable() && Schema.sObjectType.ModuleResponse__c.isCreateable() ) {
+				upsert (ModuleResponse__c) record;
+			} else {
+				throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'ModuleResponse__c'}));
+			}
 
 			//TODO Crear Label DataSavedSuccessfully
 			result.addMessage(new RemoteActionResult.RemoteActionMessage( ApexPages.Severity.Confirm, Label.DataSavedSuccessfully) );

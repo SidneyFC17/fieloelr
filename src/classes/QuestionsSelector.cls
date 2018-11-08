@@ -30,11 +30,9 @@ public class QuestionsSelector extends SObjectSelector {
     }
 
     public List<Question__c> selectByIdWithCorrectAnswers(Set<Id> questionIds) {
-     List<Question__c> listQuestion;
-
-     if(Schema.sObjectType.Question__c.isAccessible()){	
-
-        listQuestion = (List<Question__c>) Database.query(String.format(
+        List<Question__c> listQuestion;
+        if( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.AnswerOption__c.isAccessible() ){
+            listQuestion = (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id, Name, AnswerOptionText__c, MatchingText__c FROM AnswerOptions__r WHERE IsCorrect__c = true) ' +
                   'FROM {1} ' +
@@ -44,20 +42,17 @@ public class QuestionsSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
-
-                     }else{
+        }else{
             throw new FieloException(Label.CannotAccessRecords);
-          }
-
-          return listQuestion;
+        }
+        return listQuestion;
     }
 
     public List<Question__c> selectByIdWithQuestionResponses(Set<Id> questionIds) {
         List<Question__c> listQuestion;
 
-     if(Schema.sObjectType.Question__c.isAccessible()){	
-
-        listQuestion = (List<Question__c>) Database.query(String.format(
+        if( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.QuestionResponse__c.isAccessible() ){
+            listQuestion = (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   ', (SELECT Id FROM QuestionsResponses__r LIMIT 1) ' +
                   'FROM {1} ' +
@@ -68,17 +63,16 @@ public class QuestionsSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
 
-            }else{
+        }else{
             throw new FieloException(Label.CannotAccessRecords);
-          }
-
-          return listQuestion;
+        }
+        return listQuestion;
     }
 
     public List<Question__c> selectByModuleHavingAnswers(Set<Id> moduleIds) {
       List<Question__c> listQuestion;
 
-     if(Schema.sObjectType.Question__c.isAccessible()){	
+        if( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.AnswerOption__c.isAccessible() ){
 
         listQuestion = (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -104,7 +98,7 @@ public class QuestionsSelector extends SObjectSelector {
     public List<Question__c> selectByIdHavingAnswers(Set<Id> questionIds) {
       List<Question__c> listQuestion;
 
-     if(Schema.sObjectType.Question__c.isAccessible()){	
+        if( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.AnswerOption__c.isAccessible() ){
 
         listQuestion = (List<Question__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -172,7 +166,7 @@ public class QuestionsSelector extends SObjectSelector {
     public List<Question__c> selectByModuleHavingAnswerOptions(Set<Id> moduleIds, Set<String> answerOptionFields) {
       List<Question__c> listQuestion;
 
-     if(Schema.sObjectType.Question__c.isAccessible()){	
+        if( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.AnswerOption__c.isAccessible() ){
 
         listQuestion = (List<Question__c>) Database.query(String.format('SELECT {0} ' +
                    ', (SELECT {1} FROM AnswerOptions__r) ' +
@@ -193,16 +187,14 @@ public class QuestionsSelector extends SObjectSelector {
     }
 
     public List<AggregateResult> selectByModuleGroupByModule(Set<Id> moduleIds) {
-
         List<AggregateResult> listQuestion;
 
-       if(Schema.sObjectType.Question__c.isAccessible()){	
-        listQuestion =  [SELECT MAX(Order__c) order, Module__c FROM Question__c WHERE Module__c in : moduleIds GROUP BY Module__c];
-      }else{
+        if(Schema.sObjectType.Question__c.isAccessible()){	
+            listQuestion =  [SELECT MAX(Order__c) order, Module__c FROM Question__c WHERE Module__c in : moduleIds GROUP BY Module__c];
+        }else{
             throw new FieloException(Label.CannotAccessRecords);
-          }
+        }
 
-          return listQuestion;
-
+        return listQuestion;
     }
 }

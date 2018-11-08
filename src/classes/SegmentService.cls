@@ -14,10 +14,16 @@ public class SegmentService {
         }
         segmentsCode = segmentsCode.removeEnd(';');
 
-        SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
-            SecurityUtils.checkObjectIsReadable(convertType);
+        //SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
+        //SecurityUtils.checkObjectIsReadable(convertType);
 
-        List<FieloPLT__Segment__c> metasegment = [SELECT Id FROM FieloPLT__Segment__c WHERE (FieloPLT__Program__c = :programId OR FieloPLT__Program__c = null) AND FieloPLT__RelatedSegments__c =: segmentsCode AND Recordtype.DeveloperName = 'Metasegment' ];
+        List<FieloPLT__Segment__c> metasegment = new List<FieloPLT__Segment__c>();
+        if ( Schema.sObjectType.FieloPLT__Segment__c.isAccessible() ) {
+            metasegment = [SELECT Id FROM FieloPLT__Segment__c WHERE (FieloPLT__Program__c = :programId OR FieloPLT__Program__c = null) AND FieloPLT__RelatedSegments__c =: segmentsCode AND Recordtype.DeveloperName = 'Metasegment' ];
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Segment__c'}));
+        }
+
         if(metasegment.isEmpty()){
             Id metasegmentRTId = getRecordTypeId('FieloPLT__Segment__c', 'Metasegment');
             SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SObjectType>{FieloPLT__Segment__c.SObjectType});
@@ -30,7 +36,7 @@ public class SegmentService {
             );
             uow.registerNew(newSegment);
 
-            if(Schema.sObjectType.FieloPLT__Segment__c.isCreateable() ){
+            if( Schema.sObjectType.FieloPLT__Segment__c.isCreateable() && Schema.sObjectType.FieloPLT__Segment__c.isUpdateable() ){
                 uow.commitWork();
             }else{
                 throw new FieloException(Label.CannotInsertUpdateRecords);

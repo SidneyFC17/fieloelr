@@ -63,12 +63,31 @@ public class ExportService{
         courseDependencyFieldsList = new List<String>(courseDependencyFieldsSet);
         courseDependencyFieldsSet.addAll(new Set<String>{'Predecessor__c','Predecessor__r.Name'});
 
-        if(courseIds == null){
-            courses = new CoursesSelector(coursefieldsSet).selectByProgramHavingPredecessor(program.Id, courseDependencyFieldsSet);
-            coursesMap = new Map<Id,Course__c>(courses);
-        }else if(!courseIds.isEmpty()){
-            courses = new CoursesSelector(coursefieldsSet).selectByIdHavingPredecessor(new Set<Id>(courseIds), courseDependencyFieldsSet);
-            coursesMap = new Map<Id,Course__c>(courses);
+        // SR: FLS Check for Course
+        for( String fieldName: coursefieldsSet ) {
+            if ( courseFields.containsKey(fieldName) && !courseFields.get(fieldName).getDescribe().isAccessible() ) {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Course__c', fieldName}));
+            }
+        }
+
+        // SR: FLS Check for CourseDependency
+        for( String fieldName: courseDependencyFieldsSet ) {
+            if ( courseDependencyFields.containsKey(fieldName) && !courseDependencyFields.get(fieldName).getDescribe().isAccessible() ) {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'CourseDependency__c', fieldName}));
+            }
+        }
+
+        // SR: CRUD Check
+        if ( Schema.sObjectType.Course__c.isAccessible() ) {
+            if(courseIds == null){
+                courses = new CoursesSelector(coursefieldsSet).selectByProgramHavingPredecessor(program.Id, courseDependencyFieldsSet);
+                coursesMap = new Map<Id,Course__c>(courses);
+            }else if(!courseIds.isEmpty()){
+                courses = new CoursesSelector(coursefieldsSet).selectByIdHavingPredecessor(new Set<Id>(courseIds), courseDependencyFieldsSet);
+                coursesMap = new Map<Id,Course__c>(courses);
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Course__c'}));
         }
 
         Map<Id,List<Module__c>> modulesMap = new Map<Id,List<Module__c>>();
@@ -85,7 +104,26 @@ public class ExportService{
             moduleDependencyFieldsList = new List<String>(moduleDependencyFieldsSet);
             moduleDependencyFieldsSet.addAll(new Set<String>{'Predecessor__c'});
 
-            modules = new ModulesSelector(modulefieldsSet).selectByCoursesHavingPredecessor(coursesMap.keySet(), moduleDependencyFieldsSet);
+            // SR: FLS Check for Module
+            for( String fieldName: modulefieldsSet ) {
+                if ( moduleFields.containsKey(fieldName) && !moduleFields.get(fieldName).getDescribe().isAccessible() ) {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Module__c', fieldName}));
+                }
+            }
+
+            // SR: FLS Check for ModuleDependency
+            for( String fieldName: moduleDependencyFieldsSet ) {
+                if ( moduleDependencyFields.containsKey(fieldName) && !moduleDependencyFields.get(fieldName).getDescribe().isAccessible() ) {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'ModuleDependency__c', fieldName}));
+                }
+            }
+
+            // SR: CRUD Check
+            if ( Schema.sObjectType.Module__c.isAccessible() ) {
+                modules = new ModulesSelector(modulefieldsSet).selectByCoursesHavingPredecessor(coursesMap.keySet(), moduleDependencyFieldsSet);
+            } else {
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Module__c'}));
+            }
             for(Module__c module : modules){
                 if (!modulesMap.containsKey(module.Course__c)) {
                     modulesMap.put(module.Course__c, new List<Module__c>{module} );
@@ -100,12 +138,29 @@ public class ExportService{
         	Set<Id> moduleIds = new Map<Id,Module__c>(modules).keySet();
             Set<String> questionfieldsSet = new Set<String>(questionFieldsList);
             questionfieldsSet.addAll(new Set<String>{'Module__c'});
-            for(Question__c question : new QuestionsSelector(questionfieldsSet).selectByModuleHavingAnswerOptions(moduleIds, new Set<String>(answerOptionFieldsList))){
-                if (!questionsMap.containsKey(question.Module__c) ) {
-                    questionsMap.put(question.Module__c, new List<Question__c>{question} );
-                }else{
-                    questionsMap.get(question.Module__c).add(question);
+            // SR: CRUD Check
+            if ( Schema.sObjectType.Question__c.isAccessible() && Schema.sObjectType.AnswerOption__c.isAccessible() ) {
+                // SR: FLS Check for Question
+                for( String fieldName: questionfieldsSet ) {
+                    if ( questionFields.containsKey(fieldName) && !questionFields.get(fieldName).getDescribe().isAccessible() ) {
+                        throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'Question__c', fieldName}));
+                    }
                 }
+                // SR: FLS Check for AnswerOption
+                for( String fieldName: answerOptionFieldsList ) {
+                    if ( answerOptionFields.containsKey(fieldName) && !answerOptionFields.get(fieldName).getDescribe().isAccessible() ) {
+                        throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'AnswerOption__c', fieldName}));
+                    }
+                }
+                for(Question__c question : new QuestionsSelector(questionfieldsSet).selectByModuleHavingAnswerOptions(moduleIds, new Set<String>(answerOptionFieldsList))){
+                    if (!questionsMap.containsKey(question.Module__c) ) {
+                        questionsMap.put(question.Module__c, new List<Question__c>{question} );
+                    }else{
+                        questionsMap.get(question.Module__c).add(question);
+                    }
+                }
+            } else {
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'Question__c,AnswerOption__c'}));
             }
         }
 
@@ -116,11 +171,12 @@ public class ExportService{
                 segmentMultiUsedIds.addAll(new Set<String>(c.Segment__r.FieloPLT__RelatedSegments__c.split(';')));
             }
         }
-        // It's giving error, removed temporary
-        // SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
-        // SecurityUtils.checkObjectIsReadable(convertType);
-
-        Map<Id,FieloPLT__Segment__c> segmentsMultiUsedMap = new Map<Id,FieloPLT__Segment__c>([SELECT Id, Name FROM FieloPLT__Segment__c WHERE Id in : segmentMultiUsedIds]);
+        
+        Map<Id,FieloPLT__Segment__c> segmentsMultiUsedMap;
+        // SR: CRUD Check
+        if ( Schema.sObjectType.FieloPLT__Segment__c.isAccessible() ) {
+            segmentsMultiUsedMap = new Map<Id,FieloPLT__Segment__c>([SELECT Id, Name FROM FieloPLT__Segment__c WHERE Id in : segmentMultiUsedIds]);
+        }
 
         JSONGenerator genJson = JSON.createGenerator(true);
         genJson.writeStartObject();
@@ -292,13 +348,26 @@ public class ExportService{
     }
 
     public static void saveData(SObjectUnitOfWork uow, List<MultiSegmentRelation> multiSegmentRelations){
-        
+        Set<String> objectNames = new Set<String>();
+        if ( uow.m_newListByType != null && !uow.m_newListByType.isEmpty() ) {
+            objectNames.addAll( uow.m_newListByType.keySet() );
+        }
+        if ( uow.m_dirtyMapByType != null && !uow.m_dirtyMapByType.isEmpty() ) {
+            objectNames.addAll( uow.m_dirtyMapByType.keySet() );
+        }
+        List<Schema.DescribeSObjectResult> describeList = Schema.describeSObjects(new List<String>( objectNames ));
 
-        if(Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable()){
-                uow.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }
+        // SR: Dynamic CRUD Check
+        for( Schema.DescribeSObjectResult objDescribe : describeList ) {
+            if ( !objDescribe.isUpdateable() ) {
+                throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{objDescribe.getName()}));
+            }
+            if ( !objDescribe.isCreateable() ) {
+                throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{objDescribe.getName()}));
+            }
+        }
+
+        uow.commitWork();
 
         if(multiSegmentRelations != null){
             Set<String> segmentCombinations = new Set<String>();
@@ -314,21 +383,35 @@ public class ExportService{
 
             Map<String,FieloPLT__Segment__c> metaSegmentsByComb = new Map<String,FieloPLT__Segment__c>();
 
-            // It's giving error, removed temporary
-            // SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
-        	// SecurityUtils.checkObjectIsReadable(convertType);
-
-            for(FieloPLT__Segment__c metaSegment : [SELECT Id, FieloPLT__RelatedSegments__c FROM FieloPLT__Segment__c WHERE FieloPLT__RelatedSegments__c in : segmentCombinations]){
-                metaSegmentsByComb.put(metaSegment.FieloPLT__RelatedSegments__c, metaSegment);
+            // SR: CRUD Check
+            if ( Schema.sObjectType.FieloPLT__Segment__c.isAccessible() ) {
+                // SR: FLS Check
+                if ( Schema.sObjectType.FieloPLT__Segment__c.fields.FieloPLT__RelatedSegments__c.isAccessible() ) {
+                    for(FieloPLT__Segment__c metaSegment : [SELECT Id, FieloPLT__RelatedSegments__c FROM FieloPLT__Segment__c WHERE FieloPLT__RelatedSegments__c in : segmentCombinations]){
+                        metaSegmentsByComb.put(metaSegment.FieloPLT__RelatedSegments__c, metaSegment);
+                    }
+                } else {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Segment__c', 'FieloPLT__RelatedSegments__c'}));
+                }
+            } else {
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Segment__c'}));
             }
 
             FieloPLT__Program__c program = ProgramService.getActiveProgram();
 
-            // It's giving error, removed temporary
-            // convertType = Schema.getGlobalDescribe().get('RecordType');
-        	// SecurityUtils.checkObjectIsReadable(convertType);
+            Id metasegmentRTId;
+            // SR: CRUD Check
+            if ( Schema.sObjectType.RecordType.isAccessible() ) {
+                // SR: FLS Check
+                if ( Schema.sObjectType.RecordType.fields.Name.isAccessible() && Schema.sObjectType.RecordType.fields.DeveloperName.isAccessible() && Schema.sObjectType.RecordType.fields.SObjectType.isAccessible() ) {
+                    metasegmentRTId = [SELECT Id, Name, DeveloperName FROM RecordType WHERE SObjectType = 'FieloPLT__Segment__c' AND DeveloperName =: 'Metasegment'].Id;
+                } else {
+                    throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'RecordType', 'Name, DeveloperName, SObjectType'}));
+                }
+            } else {
+                throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'RecordType'}));
+            }
 
-            Id metasegmentRTId = [SELECT Id, Name, DeveloperName FROM RecordType WHERE SObjectType = 'FieloPLT__Segment__c' AND DeveloperName =: 'Metasegment'].Id;
             SObjectUnitOfWork uowMetaSegments = new SObjectUnitOfWork(new List<Schema.SObjectType>{FieloPLT__Segment__c.SObjectType, Course__c.SObjectType});
             for(MultiSegmentRelation msr : multiSegmentRelations){
                 if(metaSegmentsByComb.containsKey(msr.segmentsCombination)){
@@ -342,10 +425,10 @@ public class ExportService{
             }
 
             if(Schema.sObjectType.FieloPLT__Segment__c.isCreateable() && Schema.sObjectType.FieloPLT__Segment__c.isUpdateable()){
-                 uowMetaSegments.commitWork();
-          }else{
-            throw new FieloException(Label.CannotInsertUpdateRecords);
-          }          
+                uowMetaSegments.commitWork();
+            } else {
+                throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{'Segment__c'}));
+            }          
         }
     }
 
@@ -354,82 +437,73 @@ public class ExportService{
     }
 
     public static SObjectUnitOfWork importData(String jsonImport, List<MultiSegmentRelation> multiSegmentRelations){
-        //try{
-            // Carga los mapas de campos y de los recordtypes de los objetos que usa
-            Map<String, Schema.RecordTypeInfo> segmentRecordTypes;
-            Map<String, Schema.DescribeFieldResult> courseFieldsMap, courseDependencyFieldsMap, moduleFieldsMap, moduleDependencyFieldsMap, questionFieldsMap, answerOptionFieldsMap;
+        // Carga los mapas de campos y de los recordtypes de los objetos que usa
+        Map<String, Schema.RecordTypeInfo> segmentRecordTypes;
+        Map<String, Schema.DescribeFieldResult> courseFieldsMap, courseDependencyFieldsMap, moduleFieldsMap, moduleDependencyFieldsMap, questionFieldsMap, answerOptionFieldsMap;
 
-        	Schema.DescribeSObjectResult[] describes = FieloELR.SObjectDescribe.describeSObjects(new String[]{'FieloELR__Course__c','FieloELR__CourseDependency__c', 'FieloELR__Module__c', 'FieloELR__ModuleDependency__c', 'FieloELR__Question__c', 'FieloELR__AnswerOption__c'});
-            for ( Schema.DescribeSObjectResult describe :describes ) {
-	            if(describe.getLocalName() == 'Course__c'){
-	                courseFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
-	            }else if(describe.getLocalName() == 'CourseDependency__c'){
-	                courseDependencyFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
-	            }else if(describe.getLocalName() == 'Module__c'){
-	                moduleFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
-	            }else if(describe.getLocalName() == 'ModuleDependency__c'){
-	                moduleDependencyFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
-	            }else if(describe.getLocalName() == 'Question__c'){
-	                questionFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
-	            }else if(describe.getLocalName() == 'AnswerOption__c'){
-	                answerOptionFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
-	            }
-	        }
-
-            SObjectUnitOfWork uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{Course__c.SObjectType, CourseDependency__c.SObjectType, Module__c.SObjectType, ModuleDependency__c.SObjectType, Question__c.SObjectType, AnswerOption__c.SObjectType});
-
-            Map<Id,SObject> mapReferences = new Map<Id,SObject>();
-            Map<Id,List<Relation>> pendingRelations = new Map<Id,List<Relation>>();
-
-            Map<String,FieloPLT__Segment__c> segmentsByName = new Map<String,FieloPLT__Segment__c>();
-            Map<String,Course__c> coursesByName = new Map<String,Course__c>();
-            //Map<String,List<Relation>> courseNameRelations = new Map<String,List<Relation>>();
-
-            Set<Id> originalMultiSegmentIds = new Set<Id>();
-
-            JSONParser parser = JSON.createParser(jsonImport);
-            while(parser.nextToken() != null){
-                if(parser.getCurrentToken() == JSONToken.FIELD_NAME){
-                    
-                    // It's giving error, removed temporary
-                    // SObjectType convertType = Schema.getGlobalDescribe().get('FieloPLT__Segment__c');
-        	        // SecurityUtils.checkObjectIsReadable(convertType);
-
-                    FieloPLT__Program__c program = ProgramService.getActiveProgram();
-                    for(FieloPLT__Segment__c segment : [SELECT Name, Id FROM FieloPLT__Segment__c WHERE FieloPLT__Program__c =: program.Id AND RecordType.DeveloperName != 'Metasegment']){
-                        segmentsByName.put(segment.Name, segment);
-                    }
-
-                    // It's giving error, removed temporary
-                    // convertType = Schema.getGlobalDescribe().get('Course__c');
-        	        // SecurityUtils.checkObjectIsReadable(convertType);
-
-                    for(Course__c course : [SELECT Name, Id FROM Course__c WHERE Program__c =: program.Id]){
-                        coursesByName.put(course.Name, course);
-                    }
-
-                    do{
-                        if ( parser.getCurrentToken() == JSONToken.FIELD_NAME )  {
-                            String tokenText = parser.getCurrentName();
-                            if ( tokenText == 'courses' ) {
-                                parseCourses( parser, uow, program, courseFieldsMap, courseDependencyFieldsMap, moduleFieldsMap, moduleDependencyFieldsMap, questionFieldsMap, answerOptionFieldsMap, mapReferences, pendingRelations, segmentsByName, coursesByName, originalMultiSegmentIds, multiSegmentRelations);
-                            }
-                        }
-                    }while ( parser.nextToken() != null);
-
-                    /*if(!courseNameRelations.isEmpty()){
-                        for(Course__c course : [SELECT Name, Id FROM Course__c WHERE Name in : courseNameRelations.keySet() AND Program__c =: program.Id]){
-                            for(Relation r : courseNameRelations.get(course.Name)){
-                                r.record.put(r.relationField, course.Id);
-                            }
-                        }
-                    }*/
-                }
+        Schema.DescribeSObjectResult[] describes = FieloELR.SObjectDescribe.describeSObjects(new String[]{'FieloELR__Course__c','FieloELR__CourseDependency__c', 'FieloELR__Module__c', 'FieloELR__ModuleDependency__c', 'FieloELR__Question__c', 'FieloELR__AnswerOption__c'});
+        for ( Schema.DescribeSObjectResult describe :describes ) {
+            if(describe.getLocalName() == 'Course__c'){
+                courseFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
+            }else if(describe.getLocalName() == 'CourseDependency__c'){
+                courseDependencyFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
+            }else if(describe.getLocalName() == 'Module__c'){
+                moduleFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
+            }else if(describe.getLocalName() == 'ModuleDependency__c'){
+                moduleDependencyFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
+            }else if(describe.getLocalName() == 'Question__c'){
+                questionFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
+            }else if(describe.getLocalName() == 'AnswerOption__c'){
+                answerOptionFieldsMap = getObjectFieldsDescribe(describe.fields.getMap());
             }
-            return uow;
-        /*}catch(Exception e){
-            throw new FieloException( e.getMessage());
-        }*/
+        }
+
+        SObjectUnitOfWork uow;
+        
+        // SR: CRUD Check, in this class, only Update / Insert may happen.
+        if ( Schema.sObjectType.Course__c.isUpdateable() && Schema.sObjectType.Course__c.isCreateable() && Schema.sObjectType.CourseDependency__c.isUpdateable() && Schema.sObjectType.CourseDependency__c.isCreateable() && Schema.sObjectType.Module__c.isUpdateable() && Schema.sObjectType.Module__c.isCreateable() && Schema.sObjectType.ModuleDependency__c.isUpdateable() && Schema.sObjectType.ModuleDependency__c.isCreateable() && Schema.sObjectType.Question__c.isUpdateable() && Schema.sObjectType.Question__c.isCreateable() && Schema.sObjectType.AnswerOption__c.isUpdateable() && Schema.sObjectType.AnswerOption__c.isCreateable() ) {
+            uow = new SObjectUnitOfWork(new List<Schema.SobjectType>{ Course__c.SObjectType, CourseDependency__c.SObjectType, Module__c.SObjectType, ModuleDependency__c.SObjectType, Question__c.SObjectType, AnswerOption__c.SObjectType});
+        }
+
+        Map<Id,SObject> mapReferences = new Map<Id,SObject>();
+        Map<Id,List<Relation>> pendingRelations = new Map<Id,List<Relation>>();
+
+        Map<String,FieloPLT__Segment__c> segmentsByName = new Map<String,FieloPLT__Segment__c>();
+        Map<String,Course__c> coursesByName = new Map<String,Course__c>();
+
+        Set<Id> originalMultiSegmentIds = new Set<Id>();
+
+        JSONParser parser = JSON.createParser(jsonImport);
+        // SR: CRUD Check
+        if ( Schema.sObjectType.FieloPLT__Segment__c.isAccessible() && Schema.sObjectType.RecordType.isAccessible() && Schema.sObjectType.Course__c.isAccessible() ) {
+            // SR: FLS Check
+            if ( Schema.sObjectType.FieloPLT__Segment__c.fields.Name.isAccessible() && Schema.sObjectType.FieloPLT__Segment__c.fields.FieloPLT__Program__c.isAccessible() && Schema.sObjectType.FieloPLT__Segment__c.fields.RecordTypeId.isAccessible() && Schema.sObjectType.RecordType.fields.DeveloperName.isAccessible() && Schema.sObjectType.Course__c.fields.Name.isAccessible() && Schema.sObjectType.Course__c.fields.Program__c.isAccessible()) {
+                while(parser.nextToken() != null){
+                    if(parser.getCurrentToken() == JSONToken.FIELD_NAME){
+                        FieloPLT__Program__c program = ProgramService.getActiveProgram();
+                        for(FieloPLT__Segment__c segment : [SELECT Name, Id FROM FieloPLT__Segment__c WHERE FieloPLT__Program__c =: program.Id AND RecordType.DeveloperName != 'Metasegment']){
+                            segmentsByName.put(segment.Name, segment);
+                        }
+                        for(Course__c course : [SELECT Name, Id FROM Course__c WHERE Program__c =: program.Id]){
+                            coursesByName.put(course.Name, course);
+                        }
+                        do {
+                            if ( parser.getCurrentToken() == JSONToken.FIELD_NAME )  {
+                                String tokenText = parser.getCurrentName();
+                                if ( tokenText == 'courses' ) {
+                                    parseCourses( parser, uow, program, courseFieldsMap, courseDependencyFieldsMap, moduleFieldsMap, moduleDependencyFieldsMap, questionFieldsMap, answerOptionFieldsMap, mapReferences, pendingRelations, segmentsByName, coursesByName, originalMultiSegmentIds, multiSegmentRelations);
+                                }
+                            }
+                        } while ( parser.nextToken() != null);
+                    }
+                }
+            } else {
+                throw new FieloException(String.format(Label.security_error_field_not_readable, new List<String>{'FieloPLT__Segment__c, RecordType, Course__c', 'FieloPLT__Segment__c.Name, FieloPLT__Segment__c.FieloPLT__Program__c, FieloPLT__Segment__c.RecordTypeId, RecordType.DeveloperName, Course__c.Name, Course__c.Program__c'}));
+            }
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'FieloPLT__Segment__c, RecordType, Course__c'}));
+        }
+        return uow;
     }
 
     private static void parseCourses( JSONParser parser, SObjectUnitOfWork uow, FieloPLT__Program__c program, Map<String, Schema.DescribeFieldResult> courseFieldsMap, Map<String, Schema.DescribeFieldResult> courseDependencyFieldsMap, Map<String, Schema.DescribeFieldResult> moduleFieldsMap, Map<String, Schema.DescribeFieldResult> moduleDependencyFieldsMap, Map<String, Schema.DescribeFieldResult> questionFieldsMap, Map<String, Schema.DescribeFieldResult> answerOptionsFieldsMap, Map<Id,SObject> mapReferences, Map<Id,List<Relation>> pendingRelations, Map<String,FieloPLT__Segment__c> segmentsByName, Map<String,Course__c> coursesByName, Set<Id> originalMultiSegmentIds, List<MultiSegmentRelation> multiSegmentRelations) {
@@ -636,7 +710,24 @@ public class ExportService{
     }
 
     public static void saveIncentives(SObjectUnitOfWork uow){
-        
+        Set<String> objectNames = new Set<String>();
+        if ( uow.m_newListByType != null && !uow.m_newListByType.isEmpty() ) {
+            objectNames.addAll( uow.m_newListByType.keySet() );
+        }
+        if ( uow.m_dirtyMapByType != null && !uow.m_dirtyMapByType.isEmpty() ) {
+            objectNames.addAll( uow.m_dirtyMapByType.keySet() );
+        }
+        List<Schema.DescribeSObjectResult> describeList = Schema.describeSObjects(new List<String>( objectNames ));
+
+        // SR: Dynamic CRUD Check, Only Insert / Update may happen
+        for( Schema.DescribeSObjectResult objDescribe : describeList ) {
+            if ( !objDescribe.isUpdateable() ) {
+                throw new FieloException(String.format(Label.security_error_object_not_updateable, new List<String>{objDescribe.getName()}));
+            }
+            if ( !objDescribe.isCreateable() ) {
+                throw new FieloException(String.format(Label.security_error_object_not_insertable, new List<String>{objDescribe.getName()}));
+            }
+        }
         uow.commitWork();
     }
 

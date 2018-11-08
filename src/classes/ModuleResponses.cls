@@ -180,7 +180,7 @@ public class ModuleResponses extends SObjectDomain {
         if(!mrWithNewCourseStatus.isEmpty()){
             CourseStatus.validateAdminFields = false;
 
-            if(Schema.sObjectType.CourseStatus__c.isCreateable()){
+            if( Schema.sObjectType.CourseStatus__c.isCreateable() && Schema.sObjectType.CourseStatus__c.isUpdateable() ){
                  uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);
@@ -423,11 +423,10 @@ public class ModuleResponses extends SObjectDomain {
         }
 
         if(!mrKeys.isEmpty()){
-
-            SObjectType convertType = Schema.getGlobalDescribe().get('FieloELR__ModuleResponse__c');
-        	    SecurityUtils.checkObjectIsReadable(convertType);
-
-            List<AggregateResult> aggResult = [SELECT MAX(NumberOfApprove__c) approveNumber, ExternalKey__c FROM ModuleResponse__c WHERE ExternalKey__c in : mrKeys GROUP BY ExternalKey__c];
+            List<AggregateResult> aggResult;
+            if( Schema.sObjectType.ModuleResponse__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.NumberOfApprove__c.isAccessible() && Schema.sObjectType.ModuleResponse__c.fields.ExternalKey__c.isAccessible() ){
+                aggResult = [SELECT MAX(NumberOfApprove__c) approveNumber, ExternalKey__c FROM ModuleResponse__c WHERE ExternalKey__c in : mrKeys GROUP BY ExternalKey__c];
+            }
             Map<String,Decimal> maxAppByKey = new Map<String,Decimal>();
             for(AggregateResult mr : aggResult){
                 maxAppByKey.put((String)mr.get('FieloELR__ExternalKey__c'), (Decimal)mr.get('approveNumber'));
@@ -527,7 +526,7 @@ public class ModuleResponses extends SObjectDomain {
 
         Boolean validateAdminFields = CourseStatus.validateAdminFields;
         CourseStatus.validateAdminFields = false;
-        if(Schema.sObjectType.CourseStatus__c.isUpdateable()){
+        if( Schema.sObjectType.CourseStatus__c.isCreateable() && Schema.sObjectType.CourseStatus__c.isUpdateable() ){
                 uow.commitWork();
           }else{
             throw new FieloException(Label.CannotInsertUpdateRecords);

@@ -2,7 +2,7 @@ public class CourseStatusSelector extends SObjectSelector {
 
     public List<Schema.SObjectField> getSObjectFieldList(){
         return new List<Schema.SObjectField> {
-                CourseStatus__c.Id                
+                CourseStatus__c.Id
             };
     }
 
@@ -23,14 +23,9 @@ public class CourseStatusSelector extends SObjectSelector {
     }
 
     public List<CourseStatus__c> selectByKey(Set<String> keys) {
-
-        
-      List<CourseStatus__c> listCourse;
-
-      if(Schema.sObjectType.CourseStatus__c.isAccessible()){	
-           
-           
-        listCourse = (List<CourseStatus__c>) Database.query(String.format(
+        List<CourseStatus__c> listCourse;
+        if ( Schema.sObjectType.CourseStatus__c.isAccessible() ) {
+            listCourse = (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
                   'FROM {1} ' +
                   'WHERE ExternalKey__c IN : keys ' +
@@ -40,16 +35,14 @@ public class CourseStatusSelector extends SObjectSelector {
                     getSObjectName(),
                     getOrderBy() } ));
 
-                      }else{
-            throw new FieloException(Label.CannotAccessRecords);
-          }
-
-          return listCourse;
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c'}));
+        }
+        return listCourse;
     }
 
     public List<CourseStatus__c> selectByKeyCompleted(Set<String> keys) {
         List<CourseStatus__c> listCourse;
-
         if(Schema.sObjectType.CourseStatus__c.isAccessible()) {
             listCourse = (List<CourseStatus__c>) Database.query(String.format(
                 'SELECT {0} ' +
@@ -60,21 +53,30 @@ public class CourseStatusSelector extends SObjectSelector {
                     getFieldListString(),
                     getSObjectName(),
                     getOrderBy() } ));
-        }else{
-            throw new FieloException(Label.CannotAccessRecords);
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c'}));
         }
         return listCourse;
     }
 
     public List<CourseStatus__c> selectByMemberId(Set<Id> memberIds) {
-        return (List<CourseStatus__c>) Database.query(String.format(
-                'SELECT {0} ' +
-                  'FROM {1} ' +
-                  'WHERE FieloELR__Member__c IN : memberIds ' +
-                  'ORDER BY {2}',
-                new List<String> {
-                    getFieldListString(),
-                    getSObjectName(),
-                    getOrderBy() } ));
+        List<CourseStatus__c> listCourse;
+        if ( Schema.sObjectType.CourseStatus__c.isAccessible() ) {
+            listCourse = (List<CourseStatus__c>) Database.query(String.format(
+                    'SELECT {0} ' +
+                    'FROM {1} ' +
+                    'WHERE FieloELR__Member__c IN : memberIds ' +
+                    'ORDER BY {2}',
+                    new List<String> {
+                        getFieldListString(),
+                        getSObjectName(),
+                        getOrderBy()
+                    }
+                )
+            );
+        } else {
+            throw new FieloException(String.format(Label.security_error_object_not_readable, new List<String>{'CourseStatus__c'}));
+        }
+        return listCourse;
     }
 }
