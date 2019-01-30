@@ -1,6 +1,6 @@
 {
 	"type":"package",
-	"version":"1.70",
+	"version":"1.70.1",
 	"name":"FieloELR",
 	"dependencies":[
 		{
