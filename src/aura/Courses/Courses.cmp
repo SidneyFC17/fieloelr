@@ -1,4 +1,4 @@
-<aura:component controller="CoursesController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >  
+<aura:component controller="CoursesController" access="global" >  
     
     <aura:attribute type="sObject" name="moduleContent" />
     
